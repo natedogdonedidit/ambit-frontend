@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
-const LoginScreen = props => {
+const OnboardingScreen3 = props => {
   // state declaration
 
   // navigation
@@ -9,7 +9,7 @@ const LoginScreen = props => {
 
   return (
     <View style={styles.container}>
-      <Text>Login Screen</Text>
+      <Text>Onboarding #3</Text>
     </View>
   );
 };
@@ -19,13 +19,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: 'powderblue',
+    backgroundColor: '#9CD6A4',
     padding: 20,
   },
 });
 
-LoginScreen.navigationOptions = {
-  title: 'Login',
+OnboardingScreen3.navigationOptions = {
+  title: 'Onboarding3',
 };
 
-export default LoginScreen;
+export default OnboardingScreen3;
