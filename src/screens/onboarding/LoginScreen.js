@@ -1,4 +1,4 @@
-import React, { useState, useDebugValue } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -13,17 +13,19 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { HeaderBackButton, NavigationEvents } from 'react-navigation';
 
-import { UserContextConsumer } from 'library/utils/UserContext';
+import { UserContext } from 'library/utils/UserContext';
 
 const LoginScreen = props => {
   // state declaration
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const { loginCTX } = useContext(UserContext);
+
   // navigation
   const { navigation } = props;
 
-  const onLoginSubmit = async (login, loginCTX) => {
+  const onLoginSubmit = async login => {
     try {
       // 1. send login request to backend
       const res = await login();
@@ -53,68 +55,61 @@ const LoginScreen = props => {
   };
 
   return (
-    <UserContextConsumer>
-      {({ loginCTX }) => (
-        <Mutation mutation={LOGIN_MUTATION} variables={{ email, password }} errorPolicy="all">
-          {(login, { error, loading }) => {
-            return (
-              <SafeAreaView style={{ flex: 1 }}>
-                <View style={styles.container}>
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={val => setEmail(val)}
-                    editable={!loading}
-                  />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={val => setPassword(val)}
-                    secureTextEntry
-                    editable={!loading}
-                  />
-                  <TouchableOpacity onPress={() => onLoginSubmit(login, loginCTX)}>
-                    <View style={styles.loginButton}>
-                      <Text style={{ color: 'white' }}>Log{loading ? 'ging in...' : 'in'}</Text>
-                    </View>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity onPress={() => null}>
-                    <View style={styles.linkedinButton}>
-                      <Text style={{ color: 'white' }}>Login with LinkedIn</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => null}>
-                    <View style={styles.googleButton}>
-                      <Text style={{ color: 'white' }}>Login with Google</Text>
-                    </View>
-                  </TouchableOpacity>
-                  <Button
-                    title="Create Account"
-                    onPress={() => navigation.navigate('CreateAccount')}
-                  />
-
-                  {renderErrors(error)}
-
-                  <NavigationEvents
-                    onDidFocus={payload => {
-                      setEmail('');
-                      setPassword('');
-                    }}
-                    onDidBlur={payload => {
-                      setEmail('');
-                      setPassword('');
-                    }}
-                  />
+    <Mutation mutation={LOGIN_MUTATION} variables={{ email, password }} errorPolicy="all">
+      {(login, { error, loading }) => {
+        return (
+          <SafeAreaView style={{ flex: 1 }}>
+            <View style={styles.container}>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={email}
+                onChangeText={val => setEmail(val)}
+                editable={!loading}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={password}
+                onChangeText={val => setPassword(val)}
+                secureTextEntry
+                editable={!loading}
+              />
+              <TouchableOpacity onPress={() => onLoginSubmit(login)}>
+                <View style={styles.loginButton}>
+                  <Text style={{ color: 'white' }}>Log{loading ? 'ging in...' : 'in'}</Text>
                 </View>
-              </SafeAreaView>
-            );
-          }}
-        </Mutation>
-      )}
-    </UserContextConsumer>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => null}>
+                <View style={styles.linkedinButton}>
+                  <Text style={{ color: 'white' }}>Login with LinkedIn</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => null}>
+                <View style={styles.googleButton}>
+                  <Text style={{ color: 'white' }}>Login with Google</Text>
+                </View>
+              </TouchableOpacity>
+              <Button title="Create Account" onPress={() => navigation.navigate('CreateAccount')} />
+
+              {renderErrors(error)}
+
+              <NavigationEvents
+                onDidFocus={payload => {
+                  setEmail('');
+                  setPassword('');
+                }}
+                onDidBlur={payload => {
+                  setEmail('');
+                  setPassword('');
+                }}
+              />
+            </View>
+          </SafeAreaView>
+        );
+      }}
+    </Mutation>
   );
 };
 

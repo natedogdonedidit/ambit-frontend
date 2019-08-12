@@ -4,8 +4,7 @@ import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { NavigationEvents } from 'react-navigation';
 
-import { signIn, signOut, getToken } from 'library/utils/authUtil';
-// import { CURRENT_USER_QUERY } from '../../App';
+import { UserContextConsumer } from 'library/utils/UserContext';
 
 const CreateAccountScreen = props => {
   // state declaration
@@ -17,21 +16,25 @@ const CreateAccountScreen = props => {
   // navigation
   const { navigation } = props;
 
-  const onSignupSubmit = async signup => {
-    const res = await signup();
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPassword('');
-
+  const onSignupSubmit = async (signup, loginCTX) => {
     try {
-      // attempt to sign in (add JWT token to storage)
-      await signIn(res.data.signup.token);
-      navigation.navigate('Main');
+      // 1. send signup request to backend
+      const res = await signup();
+
+      // 2. store token in storage, save user in CTX
+      await loginCTX(res.data.signup);
+
+      // 3. clear state
+      setFirstName('');
+      setLastName('');
+      setEmail('');
+      setPassword('');
+
+      // 4. navigate to Onboarding
+      navigation.navigate('Onboarding');
     } catch (e) {
-      // AsyncStorage errors would lead us here
-      console.log('ERROR SIGNING IN:', e.message);
-      Alert.alert('Login failed');
+      // Backend GraphQL errors would lead us here
+      console.log('ERROR SIGNING UP IN BACKEND:', e.message);
     }
   };
 
@@ -41,70 +44,74 @@ const CreateAccountScreen = props => {
   };
 
   return (
-    <Mutation
-      mutation={SIGNUP_MUTATION}
-      variables={{ firstName, lastName, email, password }}
-      errorPolicy="all"
-    >
-      {(signup, { error, loading }) => {
-        return (
-          <View style={styles.container}>
-            <TextInput
-              style={styles.input}
-              placeholder="First Name"
-              value={firstName}
-              onChangeText={val => setFirstName(val)}
-              editable={!loading}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Last Name"
-              value={lastName}
-              onChangeText={val => setLastName(val)}
-              editable={!loading}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              value={email}
-              onChangeText={val => setEmail(val)}
-              autoCapitalize="none"
-              editable={!loading}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              value={password}
-              onChangeText={val => setPassword(val)}
-              secureTextEntry
-              editable={!loading}
-            />
-            <TouchableOpacity onPress={() => onSignupSubmit(signup)}>
-              <View style={styles.signupButton}>
-                <Text style={{ color: 'white' }}>Sign{loading ? 'ing Up...' : ' Up'}</Text>
+    <UserContextConsumer>
+      {({ loginCTX }) => (
+        <Mutation
+          mutation={SIGNUP_MUTATION}
+          variables={{ firstName, lastName, email, password }}
+          errorPolicy="all"
+        >
+          {(signup, { error, loading }) => {
+            return (
+              <View style={styles.container}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="First Name"
+                  value={firstName}
+                  onChangeText={val => setFirstName(val)}
+                  editable={!loading}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChangeText={val => setLastName(val)}
+                  editable={!loading}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  value={email}
+                  onChangeText={val => setEmail(val)}
+                  autoCapitalize="none"
+                  editable={!loading}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Password"
+                  value={password}
+                  onChangeText={val => setPassword(val)}
+                  secureTextEntry
+                  editable={!loading}
+                />
+                <TouchableOpacity onPress={() => onSignupSubmit(signup, loginCTX)}>
+                  <View style={styles.signupButton}>
+                    <Text style={{ color: 'white' }}>Sign{loading ? 'ing Up...' : ' Up'}</Text>
+                  </View>
+                </TouchableOpacity>
+
+                {renderErrors(error)}
+
+                <NavigationEvents
+                  onDidFocus={payload => {
+                    setFirstName('');
+                    setLastName('');
+                    setEmail('');
+                    setPassword('');
+                  }}
+                  onDidBlur={payload => {
+                    setFirstName('');
+                    setLastName('');
+                    setEmail('');
+                    setPassword('');
+                  }}
+                />
               </View>
-            </TouchableOpacity>
-
-            {renderErrors(error)}
-
-            <NavigationEvents
-              onDidFocus={payload => {
-                setFirstName('');
-                setLastName('');
-                setEmail('');
-                setPassword('');
-              }}
-              onDidBlur={payload => {
-                setFirstName('');
-                setLastName('');
-                setEmail('');
-                setPassword('');
-              }}
-            />
-          </View>
-        );
-      }}
-    </Mutation>
+            );
+          }}
+        </Mutation>
+      )}
+    </UserContextConsumer>
   );
 };
 

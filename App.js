@@ -2,17 +2,12 @@ import React from 'react';
 import { useScreens } from 'react-native-screens';
 import {
   createSwitchNavigator,
-  createDrawerNavigator,
-  createBottomTabNavigator,
   createStackNavigator,
   createAppContainer,
   HeaderBackButton,
 } from 'react-navigation';
-import { Text } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import MainNavigator from './src/screens/main/MainNavigator';
-
 import AuthLoadingScreen from './src/screens/onboarding/AuthLoadingScreen';
 import BenefitsScreen1 from './src/screens/onboarding/BenefitsScreen1';
 import BenefitsScreen2 from './src/screens/onboarding/BenefitsScreen2';
@@ -57,6 +52,7 @@ const OnboardingNavigator = createStackNavigator(
       headerStyle: {
         backgroundColor: '#fff',
       },
+      initialRouteName: 'Onboarding1',
     }),
   }
 );

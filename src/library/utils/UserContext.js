@@ -1,10 +1,8 @@
 /* eslint-disable */
 
 import React, { useState, createContext } from 'react'
-import { Query } from 'react-apollo'
 
 import { getToken, signIn, signOut } from 'library/utils/authUtil'
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY'
 
 const UserContext = createContext();
 
@@ -33,6 +31,7 @@ const UserContextProvider = (props) => {
       console.log('Cleared login token from storage, user logged out!');
       // 2. clear user in context
       setCurrentUser(null)
+      console.log('Cleared user from context')
     } catch (e) {
       // AsyncStorage errors would lead us here
       console.log('ERROR LOGGING OUT:', e.message);
@@ -41,27 +40,17 @@ const UserContextProvider = (props) => {
   }
 
   return (
-    <Query query={CURRENT_USER_QUERY}>
-      {(loading, error, data, refetch) => {
-        if (!loading && !error && data) {
-          setCurrentUser(data.userLoggedIn)
-        }
-
-        return (
-          <UserContext.Provider
-            value={{ loadingUser: loading, errorUser: error, refetchUser: refetch, currentUser, loginCTX, logoutCTX }}
-          >
-            {props.children}
-          </UserContext.Provider>
-        )
-      }}
-    </Query>
-
+    <UserContext.Provider
+      value={{ currentUser, setCurrentUser, loginCTX, logoutCTX }}
+    >
+      {props.children}
+    </UserContext.Provider>
   )
 }
 
 const UserContextConsumer = UserContext.Consumer;
 
+export { UserContext };
 export { UserContextProvider };
 export { UserContextConsumer };
 

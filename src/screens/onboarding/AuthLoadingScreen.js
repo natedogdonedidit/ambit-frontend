@@ -1,51 +1,45 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { Query } from 'react-apollo';
+import React, { useEffect, useContext } from 'react';
+import { StyleSheet, SafeAreaView, View, Text } from 'react-native';
+import { useQuery } from '@apollo/react-hooks';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-
-// there might be a better way to navigate from here...getting error
-// "Cannot update during existing state transition...blah blah"
+import { UserContext } from 'library/utils/UserContext';
+import { getToken } from 'library/utils/authUtil';
 
 const AuthLoadingScreen = props => {
   const { navigation } = props;
+  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+  const { setCurrentUser } = useContext(UserContext);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const token = await getToken();
+
+      if (!token) {
+        setCurrentUser(null);
+        navigation.navigate('Benefits1');
+      }
+
+      if (token && data && !loading && !error) {
+        setCurrentUser(data.userLoggedIn);
+        navigation.navigate('Main');
+      }
+    };
+
+    fetchToken();
+  });
+
+  if (error) {
+    console.log('ERROR LOADING USER:', error.message);
+    return `Error! ${error}`;
+  }
 
   return (
-    <Query query={CURRENT_USER_QUERY}>
-      {({ loading, error, data }) => {
-        if (loading) {
-          return (
-            <View style={styles.container}>
-              <Text>Loading User...</Text>
-            </View>
-          );
-        }
-
-        if (error) {
-          console.log('ERROR LOADING USER:', error.message);
-        }
-
-        if (data) {
-          const currentUser = data.userLoggedIn;
-
-          // if we returned an actual user that means a token was in storage...navigate to Main app
-          if (currentUser && currentUser.id) {
-            navigation.navigate('Main', { currentUser });
-          }
-
-          // if currentUser is null that means a token was not in storage...navigate to Auth Navigator
-          if (currentUser === null) {
-            navigation.navigate('Benefits1');
-          }
-        }
-
-        return (
-          <View style={styles.container}>
-            <Text>Loading Userrr...</Text>
-          </View>
-        );
-      }}
-    </Query>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text>Loading User...</Text>
+      </View>
+    </SafeAreaView>
   );
 };
 

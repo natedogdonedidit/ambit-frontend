@@ -1,28 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { DrawerItems, SafeAreaView } from 'react-navigation';
-// import { Query } from 'react-apollo';
 
-// import CURRENT_USER_QUERY from '../queries/CURRENT_USER_QUERY';
-
-// import LogoutButton from './LogoutButton';
-
-import { signOut } from 'library/utils/authUtil';
+import { UserContext } from 'library/utils/UserContext';
 
 const CustomDrawer = props => {
-  // console.log(props);
+  const { logoutCTX, currentUser } = useContext(UserContext);
 
   const { navigation } = props;
-  // const { isLoggedIn, currentUser } = props.screenProps;
-
-  // set name
-  // let name = 'Foodmap';
-  // if (isLoggedIn && currentUser) name = currentUser.name;
 
   const handleLogout = async () => {
     try {
-      // attempt to sign in (add JWT token to storage)
-      await signOut();
+      // attempt to sign out (remove JWT token to storage)
+      await logoutCTX();
       navigation.navigate('Auth');
     } catch (e) {
       // AsyncStorage errors would lead us here
@@ -35,7 +25,7 @@ const CustomDrawer = props => {
     <ScrollView>
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>Name</Text>
+          <Text style={styles.headerText}>{currentUser ? currentUser.firstName : 'Name'}</Text>
         </View>
         <>
           <TouchableOpacity onPress={() => handleLogout()}>
