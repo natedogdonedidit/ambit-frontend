@@ -7,7 +7,7 @@ module.exports = {
   ],
   "rules": {
     "import/no-extraneous-dependencies": "off",
-    "react/prop-types": ["error", { "ignore": ["navigation"] }],
+    "react/prop-types": 0,
     "no-console": "off",
     "no-use-before-define": ["error", { "functions": true, "classes": true, "variables": false }], // disable the rule for variables, but enable it for functions and classes
     "react/jsx-filename-extension": [
@@ -31,7 +31,7 @@ module.exports = {
   "settings": {
     "import/resolver": {
       "node": {
-        "paths": ["src", "src/library/components/UI"]
+        "paths": ["src"]
       }
     }
   },

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, View, Text } from 'react-native';
 
-import colors from 'res/colors';
-import ButtonPurp from 'library/components/UI/ButtonPurp';
+import colors from 'styles/colors';
+import ButtonDefault from 'library/components/UI/ButtonDefault';
 
 const BenefitsScreen1 = props => {
   // state declaration
@@ -22,9 +22,7 @@ const BenefitsScreen1 = props => {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Text>Benefits #1</Text>
-        <ButtonPurp height={40} width={200} onPress={() => navigation.navigate('Login')}>
-          Get Started
-        </ButtonPurp>
+        <ButtonDefault onPress={() => navigation.navigate('Login')}>Get Started</ButtonDefault>
         <View style={styles.circles}>
           <View style={styles.circleFilled} />
           <View style={styles.circle} />

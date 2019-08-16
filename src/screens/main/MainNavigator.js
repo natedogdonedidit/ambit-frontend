@@ -17,10 +17,26 @@ import ProfileScreen from './ProfileScreen';
 import RequestsScreen from './RequestsScreen';
 
 // create tab navigator
+// const ProfileStack = createStackNavigator({
+//   {
+//     Profile: ProfileScreen,
+//     EditProfileModal: EditProfileModalScreen,
+//   },
+//   {
+//     mode: 'modal',
+//     headerMode: 'none',
+//   }
+// })
+
 const HomeStack = createStackNavigator(
   {
     Home: HomeScreen,
-    Profile: ProfileScreen,
+    Profile: {
+      screen: ProfileScreen,
+      navigationOptions: ({ navigation }) => ({
+        header: null,
+      }),
+    },
   },
   {
     initialRouteName: 'Home',
@@ -218,6 +234,7 @@ const MainNavigator = createDrawerNavigator(
     drawerPosition: 'left',
     drawerType: 'slide',
     contentComponent: CustomDrawer,
+    drawerWidth: 300,
   }
 );
 

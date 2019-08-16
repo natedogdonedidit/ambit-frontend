@@ -1,4 +1,4 @@
-import React, { useState, useDebugValue } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -8,8 +8,7 @@ import { UserContextConsumer } from 'library/utils/UserContext';
 
 const CreateAccountScreen = props => {
   // state declaration
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -25,13 +24,12 @@ const CreateAccountScreen = props => {
       await loginCTX(res.data.signup);
 
       // 3. clear state
-      setFirstName('');
-      setLastName('');
+      setName('');
       setEmail('');
       setPassword('');
 
-      // 4. navigate to Onboarding
-      navigation.navigate('Onboarding');
+      // 4. navigate to Onboarding (changing to Main for now)
+      navigation.navigate('Main');
     } catch (e) {
       // Backend GraphQL errors would lead us here
       console.log('ERROR SIGNING UP IN BACKEND:', e.message);
@@ -48,7 +46,7 @@ const CreateAccountScreen = props => {
       {({ loginCTX }) => (
         <Mutation
           mutation={SIGNUP_MUTATION}
-          variables={{ firstName, lastName, email, password }}
+          variables={{ name, email, password }}
           errorPolicy="all"
         >
           {(signup, { error, loading }) => {
@@ -56,16 +54,9 @@ const CreateAccountScreen = props => {
               <View style={styles.container}>
                 <TextInput
                   style={styles.input}
-                  placeholder="First Name"
-                  value={firstName}
-                  onChangeText={val => setFirstName(val)}
-                  editable={!loading}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChangeText={val => setLastName(val)}
+                  placeholder="Name"
+                  value={name}
+                  onChangeText={val => setName(val)}
                   editable={!loading}
                 />
                 <TextInput
@@ -94,14 +85,12 @@ const CreateAccountScreen = props => {
 
                 <NavigationEvents
                   onDidFocus={payload => {
-                    setFirstName('');
-                    setLastName('');
+                    setName('');
                     setEmail('');
                     setPassword('');
                   }}
                   onDidBlur={payload => {
-                    setFirstName('');
-                    setLastName('');
+                    setName('');
                     setEmail('');
                     setPassword('');
                   }}
@@ -147,18 +136,12 @@ CreateAccountScreen.navigationOptions = {
 };
 
 const SIGNUP_MUTATION = gql`
-  mutation SIGNUP_MUTATION(
-    $firstName: String!
-    $lastName: String!
-    $email: String!
-    $password: String!
-  ) {
-    signup(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
+  mutation SIGNUP_MUTATION($name: String!, $email: String!, $password: String!) {
+    signup(name: $name, email: $email, password: $password) {
       token
       user {
         id
-        firstName
-        lastName
+        name
         email
       }
     }

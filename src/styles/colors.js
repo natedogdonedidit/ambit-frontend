@@ -6,6 +6,7 @@ const colors = {
   peach: '#FF6565',
   darkGray: '#404040',
   lightGray: '#F4F4F5',
+  iosBlue: '#126CFC',
 };
 
 export default colors;

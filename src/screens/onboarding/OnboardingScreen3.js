@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, View, Text } from 'react-native';
 
-import colors from 'res/colors';
-import ButtonPurp from 'library/components/UI/ButtonPurp';
+import colors from 'styles/colors';
+import ButtonDefault from 'library/components/UI/ButtonDefault';
 
 const OnboardingScreen3 = props => {
   // state declaration
@@ -16,12 +16,18 @@ const OnboardingScreen3 = props => {
         <Text>Onboarding #3</Text>
 
         <View style={styles.nextBack}>
-          <ButtonPurp height={40} width={80} onPress={() => navigation.navigate('Onboarding2')}>
+          <ButtonDefault
+            buttonStyle={styles.buttonStyle}
+            onPress={() => navigation.navigate('Onboarding2')}
+          >
             Back
-          </ButtonPurp>
-          <ButtonPurp height={40} width={80} onPress={() => navigation.navigate('Main')}>
+          </ButtonDefault>
+          <ButtonDefault
+            buttonStyle={styles.buttonStyle}
+            onPress={() => navigation.navigate('Main')}
+          >
             Let's Go!
-          </ButtonPurp>
+          </ButtonDefault>
         </View>
         <View style={styles.circles}>
           <View style={styles.circle} />

@@ -25,9 +25,16 @@ const CustomDrawer = props => {
     <ScrollView>
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>{currentUser ? currentUser.firstName : 'Name'}</Text>
+          <Text style={styles.headerText}>{currentUser ? currentUser.name : 'Name'}</Text>
         </View>
         <>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Profile', { profileId: currentUser.id })}
+          >
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>My Profile</Text>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => handleLogout()}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Logout</Text>
