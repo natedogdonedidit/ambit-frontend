@@ -6,6 +6,7 @@ module.exports = {
     "prettier/react"
   ],
   "rules": {
+    "react/no-array-index-key": 0,
     "import/no-extraneous-dependencies": "off",
     "react/prop-types": 0,
     "no-console": "off",
@@ -24,7 +25,7 @@ module.exports = {
       {
         "trailingComma": "es5",
         "singleQuote": true,
-        "printWidth": 100
+        "printWidth": 130
       }
     ]
   },

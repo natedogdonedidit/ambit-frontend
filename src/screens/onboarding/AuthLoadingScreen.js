@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import { StyleSheet, SafeAreaView, View, Text } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 
+import Loader from 'library/components/UI/Loader';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import { UserContext } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
@@ -9,19 +10,19 @@ import { getToken } from 'library/utils/authUtil';
 const AuthLoadingScreen = props => {
   const { navigation } = props;
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUserId } = useContext(UserContext);
 
   useEffect(() => {
     const fetchToken = async () => {
       const token = await getToken();
 
       if (!token) {
-        setCurrentUser(null);
+        setCurrentUserId(null);
         navigation.navigate('Benefits1');
       }
 
       if (token && data && !loading && !error) {
-        setCurrentUser(data.userLoggedIn);
+        setCurrentUserId(data.userLoggedIn.id);
         navigation.navigate('Main');
       }
     };
@@ -29,9 +30,16 @@ const AuthLoadingScreen = props => {
     fetchToken();
   });
 
+  if (loading) return <Loader active={loading} />;
   if (error) {
     console.log('ERROR LOADING USER:', error.message);
-    return `Error! ${error}`;
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Text>{error.message}</Text>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   return (

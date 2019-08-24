@@ -18,51 +18,80 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
   },
+  smallMute: {
+    color: colors.darkGray,
+    fontSize: 11,
+    fontWeight: '400',
+    opacity: 0.6,
+  },
   smallText: {
     color: colors.darkGray,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '400',
   },
   smallBold: {
     color: colors.darkGray,
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
   },
   defaultMute: {
     color: colors.darkGray,
-    fontSize: 14,
-    fontWeight: '400',
+    fontSize: 13,
+    fontWeight: '300',
     opacity: 0.3,
   },
   defaultText: {
     color: colors.darkGray,
-    fontSize: 14,
-    fontWeight: '400',
+    fontSize: 13,
+    fontWeight: '300',
+  },
+  defaultMedium: {
+    color: colors.darkGray,
+    fontSize: 13,
+    fontWeight: '500',
   },
   defaultBold: {
     color: colors.darkGray,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
   },
   largeThin: {
     color: colors.darkGray,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '200',
   },
   largeText: {
     color: colors.darkGray,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '400',
+  },
+  largeMedium: {
+    color: colors.darkGray,
+    fontSize: 15,
+    fontWeight: '500',
   },
   largeBold: {
     color: colors.darkGray,
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
   },
   headerTitle: {
     color: colors.darkGray,
     fontSize: 17,
     fontWeight: '600',
+  },
+  hugeText: {
+    color: colors.darkGray,
+    fontSize: 17,
+    fontWeight: '400',
+  },
+  hugeBold: {
+    color: colors.darkGray,
+    fontSize: 17,
+    fontWeight: '600',
+  },
+  paddingBottomNav: {
+    paddingBottom: 50,
   },
 });
 

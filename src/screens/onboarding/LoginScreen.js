@@ -1,14 +1,5 @@
 import React, { useState, useContext } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  Button,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
 import { HeaderBackButton, NavigationEvents } from 'react-navigation';
@@ -176,8 +167,6 @@ const LOGIN_MUTATION = gql`
       token
       user {
         id
-        name
-        email
       }
     }
   }

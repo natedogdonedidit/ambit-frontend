@@ -1,13 +1,16 @@
 /* eslint-disable */
 
 import React, { useState, createContext } from 'react'
+// import { useQuery } from '@apollo/react-hooks';
 
 import { getToken, signIn, signOut } from 'library/utils/authUtil'
+// import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const UserContext = createContext();
 
 const UserContextProvider = (props) => {
-  const [currentUser, setCurrentUser] = useState(null)
+  const [currentUserId, setCurrentUserId] = useState(null)
+  // const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
 
   const loginCTX = async (loginData) => {
     try {
@@ -15,8 +18,8 @@ const UserContextProvider = (props) => {
       await signIn(loginData.token);
       console.log('Saved login token in Storage', loginData.token);
       // 2. store the user in context
-      setCurrentUser(loginData.user)
-      console.log('Updated Context with new user', loginData.user.email);
+      setCurrentUserId(loginData.user.id)
+      console.log('Updated Context with new user', loginData.user.id);
     } catch (e) {
       // AsyncStorage errors would lead us here
       console.log('ERROR LOGGING IN:', e.message);
@@ -30,7 +33,7 @@ const UserContextProvider = (props) => {
       await signOut();
       console.log('Cleared login token from storage, user logged out!');
       // 2. clear user in context
-      setCurrentUser(null)
+      setCurrentUserId(null)
       console.log('Cleared user from context')
     } catch (e) {
       // AsyncStorage errors would lead us here
@@ -41,7 +44,7 @@ const UserContextProvider = (props) => {
 
   return (
     <UserContext.Provider
-      value={{ currentUser, setCurrentUser, loginCTX, logoutCTX }}
+      value={{ currentUserId, setCurrentUserId, loginCTX, logoutCTX }}
     >
       {props.children}
     </UserContext.Provider>

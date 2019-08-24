@@ -26,7 +26,6 @@ import RequestsScreen from './RequestsScreen';
 //     mode: 'modal',
 //     headerMode: 'none',
 //   }
-// })
 
 const HomeStack = createStackNavigator(
   {

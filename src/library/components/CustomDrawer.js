@@ -1,11 +1,20 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { DrawerItems, SafeAreaView } from 'react-navigation';
+import { useQuery } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
 
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+
 const CustomDrawer = props => {
-  const { logoutCTX, currentUser } = useContext(UserContext);
+  const { logoutCTX } = useContext(UserContext);
+  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+
+  if (loading) return null;
+  if (error) return <Text>{`Error! ${error}`}</Text>;
+
+  const { userLoggedIn } = data;
 
   const { navigation } = props;
 
@@ -25,11 +34,11 @@ const CustomDrawer = props => {
     <ScrollView>
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>{currentUser ? currentUser.name : 'Name'}</Text>
+          <Text style={styles.headerText}>{userLoggedIn ? userLoggedIn.name : 'Name'}</Text>
         </View>
         <>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Profile', { profileId: currentUser.id })}
+            onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}
           >
             <View style={styles.button}>
               <Text style={styles.buttonText}>My Profile</Text>

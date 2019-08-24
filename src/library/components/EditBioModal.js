@@ -1,43 +1,77 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Modal,
-  SafeAreaView,
-  View,
-  Text,
-  Image,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, Modal, SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useMutation } from '@apollo/react-hooks';
+
+import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
+import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import TextButton from 'library/components/UI/TextButton';
 import WhiteButton from 'library/components/UI/WhiteButton';
 import EditProfessionModal from 'library/components/EditProfessionModal';
+import Loader from 'library/components/UI/Loader';
 
-const EditProfileModal = ({ modalVisible, setModalVisible }) => {
-  const [profilePic, setProfilePic] = useState(
-    'https://res.cloudinary.com/cwhit/image/upload/v1554496137/sickfits/bnv8g9tra0urzouy2dmn.jpg'
-  );
-  const [bannerPic, setBannerPic] = useState('');
-  const [name, setName] = useState('');
-  const [jobTitle, setJobTitle] = useState('');
-  const [profession, setProfession] = useState('');
-  const [industry, setIndustry] = useState('');
-  const [location, setLocation] = useState('');
-  const [website, setWebsite] = useState('');
-  const [bio, setBio] = useState('');
-  const [skills, setSkills] = useState([]);
-  const [interests, setInterests] = useState([]);
-  const [jobHistory, setJobHistory] = useState([]);
-  const [schoolHistory, setSchoolHistory] = useState([]);
+const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
+  const [profilePic, setProfilePic] = useState(user.profilePic);
+  const [bannerPic, setBannerPic] = useState(user.bannerPic);
+  const [name, setName] = useState(user.name);
+  const [jobTitle, setJobTitle] = useState(user.jobTitle);
+  const [profession, setProfession] = useState(user.profession);
+  const [industry, setIndustry] = useState(user.industry);
+  const [location, setLocation] = useState(user.location);
+  const [website, setWebsite] = useState(user.website);
+  const [bio, setBio] = useState(user.bio);
   const [proModalVisible, setProModalVisible] = useState(false);
+  // const [skills, setSkills] = useState([]);
+  // const [interests, setInterests] = useState([]);
+  // const [jobHistory, setJobHistory] = useState([]);
+  // const [schoolHistory, setSchoolHistory] = useState([]);
+
+  const [editBio, { loading, error, called, data }] = useMutation(EDIT_BIO_MUTATION, {
+    variables: {
+      id: user.id,
+      name,
+      jobTitle,
+      profession,
+      industry,
+      location,
+      website,
+      bio,
+    },
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }, { query: CURRENT_USER_QUERY }],
+    onCompleted: () => {
+      setModalVisible(false);
+    },
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your profile. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
+  const resetState = () => {
+    setProfilePic(user.profilePic);
+    setBannerPic(user.bannerPic);
+    setName(user.name);
+    setJobTitle(user.jobTitle);
+    setProfession(user.profession);
+    setIndustry(user.industry);
+    setLocation(user.location);
+    setWebsite(user.website);
+    setBio(user.bio);
+  };
+
+  const handleCancel = () => {
+    resetState();
+    setModalVisible(false);
+  };
 
   return (
     <Modal animationType="slide" visible={modalVisible}>
       <EditProfessionModal
+        user={user}
         proModalVisible={proModalVisible}
         setProModalVisible={setProModalVisible}
         jobTitle={jobTitle}
@@ -50,19 +84,23 @@ const EditProfileModal = ({ modalVisible, setModalVisible }) => {
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <View style={styles.modalHeader}>
-            <TextButton textStyle={styles.closeButtonText} onPress={() => setModalVisible(false)}>
-              Close
+            <TextButton textStyle={styles.closeButtonText} onPress={() => handleCancel()}>
+              Cancel
             </TextButton>
-            <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>
-              Edit Profile
-            </Text>
-            <TextButton textStyle={styles.saveButtonText} onPress={() => null}>
+            <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>Edit Profile</Text>
+            <TextButton textStyle={styles.saveButtonText} onPress={() => editBio()}>
               Save
             </TextButton>
           </View>
           <View style={styles.profileBox}>
             <View style={styles.profilePicView}>
-              <Image style={styles.profilePic} resizeMode="cover" source={{ uri: profilePic }} />
+              <Image
+                style={styles.profilePic}
+                resizeMode="cover"
+                source={{
+                  uri: profilePic || 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg',
+                }}
+              />
             </View>
             <WhiteButton buttonStyle={{ marginBottom: 10 }} onPress={() => null}>
               Edit Pic
@@ -72,9 +110,7 @@ const EditProfileModal = ({ modalVisible, setModalVisible }) => {
             </WhiteButton>
           </View>
           <View style={styles.section}>
-            <Text style={{ ...defaultStyles.largeThin, ...styles.sectionTitle }}>
-              Personal Info
-            </Text>
+            <Text style={{ ...defaultStyles.largeMedium, ...styles.sectionTitle }}>Personal Info</Text>
 
             <View style={styles.row}>
               <View style={styles.rowTitle}>
@@ -92,10 +128,7 @@ const EditProfileModal = ({ modalVisible, setModalVisible }) => {
                 <Text style={{ ...defaultStyles.defaultBold }}>Profession</Text>
               </View>
               <View style={styles.rowInput}>
-                <TouchableOpacity
-                  onPress={() => setProModalVisible(true)}
-                  style={styles.touchableRow}
-                >
+                <TouchableOpacity onPress={() => setProModalVisible(true)} style={styles.touchableRow}>
                   {jobTitle ? (
                     <Text style={{ ...defaultStyles.defaultText }}>{jobTitle}</Text>
                   ) : (
@@ -111,8 +144,8 @@ const EditProfileModal = ({ modalVisible, setModalVisible }) => {
               </View>
               <TextInput
                 style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                onChangeText={() => null}
-                value={null}
+                onChangeText={val => setLocation(val)}
+                value={location}
                 placeholder="Add your location"
               />
             </View>
@@ -122,44 +155,31 @@ const EditProfileModal = ({ modalVisible, setModalVisible }) => {
               </View>
               <TextInput
                 style={{ ...styles.rowInputNoBorder, ...defaultStyles.defaultText }}
-                autoCapitalize={false}
-                onChangeText={() => null}
-                value={null}
+                onChangeText={val => setWebsite(val)}
+                value={website}
                 placeholder="Add your website"
+                autoCapitalize="none"
               />
             </View>
           </View>
           <View style={styles.section}>
-            <Text style={{ ...defaultStyles.largeThin, ...styles.sectionTitle }}>Bio</Text>
+            <Text style={{ ...defaultStyles.largeMedium, ...styles.sectionTitle }}>Bio</Text>
             <TextInput
               style={{ ...styles.multilineInput, ...defaultStyles.defaultText }}
-              onChangeText={() => null}
-              value={null}
-              multiline
+              onChangeText={val => setBio(val)}
+              value={bio}
               placeholder="Start your bio"
+              multiline
             />
-          </View>
-          <View style={styles.section}>
-            <Text style={{ ...defaultStyles.largeThin, ...styles.sectionTitle }}>Skills</Text>
-            <View style={styles.skillRow}>
-              <TextInput
-                style={styles.skillInput}
-                onChangeText={() => null}
-                value={null}
-                placeholder="Add a new skill"
-              />
-              <TextButton textStyle={styles.addButton} onPress={() => null}>
-                Add
-              </TextButton>
-            </View>
           </View>
         </View>
       </SafeAreaView>
+      {loading && <Loader active={loading} />}
     </Modal>
   );
 };
 
-export default EditProfileModal;
+export default EditBioModal;
 
 const styles = StyleSheet.create({
   container: {
@@ -211,7 +231,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     width: '100%',
     paddingBottom: 15,
-    color: colors.purp,
+    color: colors.darkGray,
   },
   row: {
     flexDirection: 'row',
@@ -247,15 +267,5 @@ const styles = StyleSheet.create({
   },
   multilineInput: {
     width: '100%',
-  },
-  skillRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  skillInput: {
-    width: '70%',
-  },
-  addButton: {
-    fontSize: 14,
   },
 });

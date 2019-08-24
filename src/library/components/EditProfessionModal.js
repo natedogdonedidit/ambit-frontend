@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  Modal,
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-} from 'react-native';
+import { StyleSheet, Modal, SafeAreaView, View, Text, TextInput, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
@@ -18,6 +8,7 @@ import TextButton from 'library/components/UI/TextButton';
 import { professionList, industryList } from 'library/utils/lists';
 
 const EditProfessionModal = ({
+  user,
   jobTitle,
   setJobTitle,
   profession,
@@ -29,10 +20,6 @@ const EditProfessionModal = ({
 }) => {
   const [activeList, setActiveList] = useState([]);
   const [whichList, setWhichList] = useState('');
-
-  // const displayList = list => {
-  //   return list.map(() => <View style={styles.listRow} />);
-  // };
 
   const changeProfession = () => {
     setActiveList(professionList);
@@ -56,22 +43,29 @@ const EditProfessionModal = ({
     setWhichList('');
   };
 
+  const handleCancel = () => {
+    // set these back to whats in the database
+    setJobTitle(user.jobTitle);
+    setProfession(user.profession);
+    setIndustry(user.industry);
+    setProModalVisible(false);
+  };
+
+  const handleDone = () => {
+    setProModalVisible(false);
+  };
+
   return (
     <Modal animationType="slide" visible={proModalVisible}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <View style={styles.modalHeader}>
-            <TextButton
-              textStyle={styles.closeButtonText}
-              onPress={() => setProModalVisible(false)}
-            >
-              Close
+            <TextButton textStyle={styles.closeButtonText} onPress={() => handleCancel()}>
+              Cancel
             </TextButton>
-            <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>
-              Edit Profession
-            </Text>
-            <TextButton textStyle={styles.saveButtonText} onPress={() => null}>
-              Save
+            <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>Edit Profession</Text>
+            <TextButton textStyle={styles.saveButtonText} onPress={() => handleDone()}>
+              Done
             </TextButton>
           </View>
           <View style={styles.section}>

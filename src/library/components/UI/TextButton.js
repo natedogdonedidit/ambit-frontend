@@ -5,7 +5,7 @@ import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 
 import colors from 'styles/colors';
 
-const ButtonDefault = ({ onPress, buttonStyle, textStyle, children }) => {
+const TextButton = ({ onPress, buttonStyle, textStyle, children }) => {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.iosBlue,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '400',
   },
 });
 
-export default ButtonDefault;
+export default TextButton;
