@@ -36,8 +36,9 @@ const styles = StyleSheet.create({
     flexBasis: 0,
     flexGrow: 1,
     height: 36,
-    borderBottomColor: colors.darkGray,
+    borderBottomColor: colors.borderBlack,
     borderBottomWidth: 0.2,
+    backgroundColor: 'white',
   },
   tabSelected: {
     flexBasis: 0,
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
     height: 36,
     borderBottomColor: colors.purp,
     borderBottomWidth: 3,
+    backgroundColor: 'white',
   },
   touchable: {
     justifyContent: 'center',
@@ -62,6 +64,6 @@ const styles = StyleSheet.create({
     color: colors.purp,
     opacity: 1.0,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });
