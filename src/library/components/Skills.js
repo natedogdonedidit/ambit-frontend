@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   skill: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 0.2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
   },
   skillNoBorder: {

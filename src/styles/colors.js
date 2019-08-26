@@ -10,6 +10,8 @@ const colors = {
   lightGray: 'rgba(233, 237, 246, 0.8)',
   iosBlue: '#126CFC',
   borderBlack: 'rgba(0, 0, 0, 0.4)',
+  blueGradient: '#5680E9',
+  purpGradient: '#8860D0',
 };
 
 export default colors;

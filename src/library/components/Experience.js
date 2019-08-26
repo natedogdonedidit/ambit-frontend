@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   experience: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: 0.2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
     paddingVertical: 15,
   },

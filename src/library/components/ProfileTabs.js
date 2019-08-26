@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     height: 36,
     borderBottomColor: colors.borderBlack,
-    borderBottomWidth: 0.2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     backgroundColor: 'white',
   },
   tabSelected: {

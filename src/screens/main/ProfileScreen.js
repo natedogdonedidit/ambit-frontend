@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, ScrollView, Text, Image, Alert, StatusBar } from 'react-native';
+import { StyleSheet, SafeAreaView, View, ScrollView, Text, Image, ImageBackground, Alert, StatusBar } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
@@ -17,6 +17,8 @@ import Loader from 'library/components/UI/Loader';
 import ProfileBio from 'library/components/ProfileBio';
 import ProfilePosts from 'library/components/ProfilePosts';
 import ProfileNetwork from 'library/components/ProfileNetwork';
+import LinearGradient from 'react-native-linear-gradient';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const ProfileScreen = ({ navigation }) => {
   // VARIABLES
@@ -94,37 +96,74 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisibleEducation(true);
   };
 
+  const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
+  // const profilePicExample =
+  // 'https://images.unsplash.com/photo-1541271696563-3be2f555fc4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80';
+  const bannerExample =
+    'https://images.unsplash.com/photo-1460134741496-83752c8919df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80';
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="dark-content" />
       <ScrollView contentContainerStyle={styles.scrollView} stickyHeaderIndices={[1]}>
-        <View style={styles.profileBox}>
-          <View style={styles.profilePicView}>
-            <Image
-              style={styles.profilePic}
+        <View style={{ width: '100%' }}>
+          <LinearGradient
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            colors={[colors.blueGradient, colors.purpGradient]}
+            style={styles.linearGradient}
+          >
+            <ImageBackground
               resizeMode="cover"
+              style={{ width: '100%' }}
+              imageStyle={{ opacity: 0.1 }}
               source={{
-                uri:
-                  user.profilePic || 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg',
+                uri: user.profileBanner || bannerExample,
               }}
-            />
-          </View>
-          <Text style={{ ...defaultStyles.h2, ...styles.name }}>{user.name}</Text>
-          <Text style={{ ...defaultStyles.h3, ...styles.job }}>
-            {user.jobTitle || 'Job title'} | {user.location || 'Location'}
-          </Text>
-          <View style={styles.twoButtons}>
-            {isMyProfile ? (
-              <WhiteButton onPress={() => setModalVisibleBio(true)}>Edit Profile</WhiteButton>
-            ) : (
-              <>
-                <WhiteButton onPress={() => null}>Follow</WhiteButton>
-                <WhiteButton onPress={() => null}>Connect</WhiteButton>
-              </>
-            )}
-          </View>
-          <Text style={{ ...defaultStyles.smallBold, ...styles.websiteFont }}>{user.website || 'wwww.mywebsite.com'}</Text>
+            >
+              <View style={styles.profileBox}>
+                <View style={{ ...styles.profilePicView }}>
+                  <Image
+                    style={{ ...styles.profilePic }}
+                    resizeMode="cover"
+                    source={{
+                      uri: user.profilePic || profilePicExample,
+                    }}
+                  />
+                </View>
+                <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
+                <Text style={{ ...defaultStyles.defaultText, ...styles.job }}>
+                  {user.jobTitle || 'Job title'} | {user.location || 'Location'}
+                </Text>
+                <View style={styles.twoButtons}>
+                  {isMyProfile ? (
+                    <WhiteButton onPress={() => setModalVisibleBio(true)}>Edit Profile</WhiteButton>
+                  ) : (
+                    <>
+                      <WhiteButton onPress={() => null}>Follow</WhiteButton>
+                      <WhiteButton onPress={() => null}>Connect</WhiteButton>
+                    </>
+                  )}
+                </View>
+
+                <TouchableOpacity onPress={() => null}>
+                  <View style={styles.websiteView}>
+                    <View>
+                      <Image
+                        source={require('../../images/internet.png')}
+                        resizeMode="contain"
+                        style={{ width: 18, height: 18 }}
+                      />
+                    </View>
+                    <Text style={{ ...defaultStyles.smallText, ...styles.websiteFont }}>
+                      {user.website || 'wwww.mywebsite.com'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </ImageBackground>
+          </LinearGradient>
         </View>
+
         <ProfileTabs tabState={tabState} setTabState={setTabState} />
         {tabState === 0 && (
           <ProfileBio
@@ -164,9 +203,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   scrollView: {},
+  linearGradient: {},
   profileBox: {
-    backgroundColor: colors.purp,
-    paddingTop: 50,
+    paddingTop: 30,
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
@@ -177,7 +216,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'white',
     overflow: 'hidden',
-    marginBottom: 10,
+    marginBottom: 15,
+    backgroundColor: 'white',
   },
   profilePic: {
     width: '100%',
@@ -186,20 +226,32 @@ const styles = StyleSheet.create({
   name: {
     color: 'white',
     marginBottom: 5,
+    fontSize: 18,
   },
   job: {
     color: 'white',
-    fontWeight: '100',
-    marginBottom: 15,
+    fontSize: 14,
+    marginBottom: 20,
   },
   twoButtons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 15,
+    marginBottom: 20,
+  },
+  websiteView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   websiteFont: {
     color: 'white',
-    marginBottom: 15,
+    fontSize: 12,
+    fontWeight: '500',
+    paddingLeft: 10,
+    textShadowOffset: { width: 0, height: 3 },
+    textShadowColor: colors.darkGray,
+    textShadowRadius: 12,
   },
   tabs: {
     flexDirection: 'row',
@@ -210,30 +262,6 @@ const styles = StyleSheet.create({
   },
   editButton: {
     fontSize: 14,
-  },
-  content: {
-    padding: 6,
-    backgroundColor: colors.lightGray,
-  },
-  contentSection: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 12,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    marginBottom: 6,
-  },
-  contentHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingBottom: 20,
-  },
-  projectsSection: {
-    paddingTop: 12,
-    paddingBottom: 15,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    marginBottom: 6,
   },
 });
 

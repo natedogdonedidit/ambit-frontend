@@ -29,10 +29,15 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '400',
   },
-  smallBold: {
+  smallMedium: {
     color: colors.darkGray,
     fontSize: 11,
     fontWeight: '500',
+  },
+  smallBold: {
+    color: colors.darkGray,
+    fontSize: 11,
+    fontWeight: '600',
   },
   defaultMute: {
     color: colors.darkGray,
@@ -40,10 +45,20 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     opacity: 0.3,
   },
+  defaultThin: {
+    color: colors.darkGray,
+    fontSize: 13,
+    fontWeight: '100',
+  },
   defaultText: {
     color: colors.darkGray,
     fontSize: 13,
     fontWeight: '300',
+  },
+  defaultRegular: {
+    color: colors.darkGray,
+    fontSize: 13,
+    fontWeight: '400',
   },
   defaultMedium: {
     color: colors.darkGray,
@@ -85,6 +100,11 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '400',
   },
+  hugeMedium: {
+    color: colors.darkGray,
+    fontSize: 17,
+    fontWeight: '500',
+  },
   hugeBold: {
     color: colors.darkGray,
     fontSize: 17,
@@ -92,6 +112,48 @@ const styles = StyleSheet.create({
   },
   paddingBottomNav: {
     paddingBottom: 50,
+  },
+  shadow3: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+
+    elevation: 3,
+  },
+  shadow6: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
+    elevation: 6,
+  },
+  shadow12: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.37,
+    shadowRadius: 7.49,
+    elevation: 12,
+  },
+  shadow18: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 9,
+    },
+    shadowOpacity: 0.48,
+    shadowRadius: 11.95,
+
+    elevation: 18,
   },
 });
 
