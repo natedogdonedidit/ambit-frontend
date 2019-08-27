@@ -1,3 +1,5 @@
+import { PermissionsAndroid } from 'react-native';
+
 const monthToFloat = month => {
   if (month === 'Jan') return 0.01;
   if (month === 'Feb') return 0.02;
@@ -37,5 +39,25 @@ const sortExperiences = (a, b) => {
   return 1;
 };
 
+async function requestCameraRollPermission() {
+  try {
+    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
+      title: 'Ambit Camera Roll Permission',
+      message: 'Ambit needs access to your camera roll for your profile picture.',
+      // buttonNeutral: 'Ask Me Later',
+      buttonNegative: 'Cancel',
+      buttonPositive: 'OK',
+    });
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('You can use the camera roll');
+    } else {
+      console.log('Camera roll permission denied');
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
+
 export { monthToFloat };
 export { sortExperiences };
+export { requestCameraRollPermission };

@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
-import { StyleSheet, Modal, SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, Alert } from 'react-native';
+import {
+  StyleSheet,
+  Modal,
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  PermissionsAndroid,
+  Platform,
+  ImageBackground,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
+import CameraRoll from '@react-native-community/cameraroll';
+import LinearGradient from 'react-native-linear-gradient';
 
 import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
@@ -9,10 +24,17 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import { cloud_name } from 'library/config';
+import { requestCameraRollPermission } from 'library/utils';
 import TextButton from 'library/components/UI/TextButton';
 import WhiteButton from 'library/components/UI/WhiteButton';
 import EditProfessionModal from 'library/components/EditProfessionModal';
+import CameraRollModal from 'library/components/CameraRollModal';
 import Loader from 'library/components/UI/Loader';
+
+const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
+const bannerExample =
+  'https://images.unsplash.com/photo-1460134741496-83752c8919df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80';
 
 const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
   const [profilePic, setProfilePic] = useState(user.profilePic);
@@ -25,10 +47,9 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
   const [website, setWebsite] = useState(user.website);
   const [bio, setBio] = useState(user.bio);
   const [proModalVisible, setProModalVisible] = useState(false);
-  // const [skills, setSkills] = useState([]);
-  // const [interests, setInterests] = useState([]);
-  // const [jobHistory, setJobHistory] = useState([]);
-  // const [schoolHistory, setSchoolHistory] = useState([]);
+  const [cameraRollModalVisible, setCameraRollModalVisible] = useState(false);
+  const [cameraRoll, setCameraRoll] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   const [editBio, { loading, error, called, data }] = useMutation(EDIT_BIO_MUTATION, {
     variables: {
@@ -40,10 +61,12 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
       location,
       website,
       bio,
+      profilePic,
+      bannerPic,
     },
     refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }, { query: CURRENT_USER_QUERY }],
     onCompleted: () => {
-      setModalVisible(false);
+      // setModalVisible(false);
     },
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to edit your profile. Try again later!', [
@@ -61,6 +84,8 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
     setLocation(user.location);
     setWebsite(user.website);
     setBio(user.bio);
+    setProfilePic(user.profilePic);
+    setBannerPic(user.bannerPic);
   };
 
   const handleCancel = () => {
@@ -68,19 +93,93 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
     setModalVisible(false);
   };
 
+  const handleSave = async () => {
+    // if profile picture is different ... try uploading the image to cloudinary
+    if (user.profilePic !== profilePic) {
+      await imageUpload();
+    }
+
+    // run mutation
+    editBio();
+    resetState();
+    setModalVisible(false);
+  };
+
+  const handleEditPicButton = async () => {
+    // 1. request camera roll permission if android
+    if (Platform.OS === 'android') {
+      const isTrue = await PermissionsAndroid.check('READ_EXTERNAL_STORAGE');
+      if (!isTrue) await requestCameraRollPermission();
+    }
+
+    // 2. get images from camera roll
+    try {
+      const res = await CameraRoll.getPhotos({
+        first: 10,
+        assetType: 'Photos',
+      });
+
+      const cameraRollImages = res.edges.map(image => image.node.image.uri);
+
+      // 3. put images into state and open modal to dispaly images
+      setCameraRoll(cameraRollImages);
+      setCameraRollModalVisible(true);
+    } catch (e) {
+      console.error(e);
+      // alert could not get images from camera roll
+      Alert.alert('Oh no!', 'We could not access your camera roll. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    }
+  };
+
+  const handleImageSelect = image => {
+    // put image into state
+    setProfilePic(image);
+  };
+
+  const imageUpload = async () => {
+    setUploading(true);
+    // create tags
+    const tags = `profilepic,${user.id}`;
+    // create context
+    const context = `user=${user.id}`;
+    // create file object
+    const photo = {
+      uri: profilePic,
+      type: 'image',
+      name: `${user.id}-profilepic`,
+    };
+    // create body
+    const uploadData = new FormData();
+    uploadData.append('file', photo);
+    uploadData.append('upload_preset', 'ambit-profilepic-preset');
+    uploadData.append('tags', tags);
+    uploadData.append('context', context);
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+        method: 'POST',
+        body: uploadData,
+      });
+      const resJson = await res.json();
+
+      // put image into state
+      setUploading(false);
+      setProfilePic(resJson.url);
+    } catch (e) {
+      console.log('an error occured trying to upload your photo');
+      console.error(e);
+      Alert.alert('Oh no!', 'We could not upload your new profile picture at this time. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+      setUploading(false);
+      setProfilePic(user.profilePic);
+    }
+  };
+
   return (
     <Modal animationType="slide" visible={modalVisible}>
-      <EditProfessionModal
-        user={user}
-        proModalVisible={proModalVisible}
-        setProModalVisible={setProModalVisible}
-        jobTitle={jobTitle}
-        setJobTitle={setJobTitle}
-        profession={profession}
-        setProfession={setProfession}
-        industry={industry}
-        setIndustry={setIndustry}
-      />
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
           <View style={styles.modalHeader}>
@@ -88,26 +187,45 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
               Cancel
             </TextButton>
             <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>Edit Profile</Text>
-            <TextButton textStyle={styles.saveButtonText} onPress={() => editBio()}>
+            <TextButton textStyle={styles.saveButtonText} onPress={() => handleSave()}>
               Save
             </TextButton>
           </View>
-          <View style={styles.profileBox}>
-            <View style={styles.profilePicView}>
-              <Image
-                style={styles.profilePic}
+
+          <View style={{ width: '100%' }}>
+            <LinearGradient
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              colors={[colors.blueGradient, colors.purpGradient]}
+              style={styles.linearGradient}
+            >
+              <ImageBackground
                 resizeMode="cover"
+                style={{ width: '100%' }}
+                imageStyle={{ opacity: 0.1 }}
                 source={{
-                  uri: profilePic || 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg',
+                  uri: bannerPic || bannerExample,
                 }}
-              />
-            </View>
-            <WhiteButton buttonStyle={{ marginBottom: 10 }} onPress={() => null}>
-              Edit Pic
-            </WhiteButton>
-            <WhiteButton buttonStyle={{}} onPress={() => null}>
-              Edit Banner
-            </WhiteButton>
+              >
+                <View style={styles.profileBox}>
+                  <View style={{ ...styles.profilePicView }}>
+                    <Image
+                      style={{ ...styles.profilePic }}
+                      resizeMode="cover"
+                      source={{
+                        uri: profilePic || profilePicExample,
+                      }}
+                    />
+                  </View>
+                  <WhiteButton buttonStyle={{ marginBottom: 10 }} onPress={() => handleEditPicButton()}>
+                    Edit Pic
+                  </WhiteButton>
+                  <WhiteButton buttonStyle={{ marginBottom: 20 }} onPress={() => null}>
+                    Edit Banner
+                  </WhiteButton>
+                </View>
+              </ImageBackground>
+            </LinearGradient>
           </View>
           <View style={styles.section}>
             <Text style={{ ...defaultStyles.largeMedium, ...styles.sectionTitle }}>Personal Info</Text>
@@ -174,7 +292,25 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
           </View>
         </View>
       </SafeAreaView>
-      {loading && <Loader active={loading} />}
+      <EditProfessionModal
+        user={user}
+        proModalVisible={proModalVisible}
+        setProModalVisible={setProModalVisible}
+        jobTitle={jobTitle}
+        setJobTitle={setJobTitle}
+        profession={profession}
+        setProfession={setProfession}
+        industry={industry}
+        setIndustry={setIndustry}
+      />
+      <CameraRollModal
+        cameraRollModalVisible={cameraRollModalVisible}
+        setCameraRollModalVisible={setCameraRollModalVisible}
+        cameraRoll={cameraRoll}
+        setCameraRoll={setCameraRoll}
+        handleImageSelect={handleImageSelect}
+      />
+      {loading || (uploading && <Loader active={loading || uploading} />)}
     </Modal>
   );
 };
@@ -203,9 +339,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     textAlign: 'center',
   },
+  scrollView: {},
+  linearGradient: {},
   profileBox: {
-    backgroundColor: colors.purp,
-    paddingVertical: 20,
+    paddingTop: 30,
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
@@ -216,7 +353,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'white',
     overflow: 'hidden',
-    marginBottom: 10,
+    marginBottom: 15,
+    backgroundColor: 'white',
   },
   profilePic: {
     width: '100%',

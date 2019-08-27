@@ -20,6 +20,10 @@ import ProfileNetwork from 'library/components/ProfileNetwork';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
+const bannerExample =
+  'https://images.unsplash.com/photo-1460134741496-83752c8919df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80';
+
 const ProfileScreen = ({ navigation }) => {
   // VARIABLES
   const blankExperience = {
@@ -96,11 +100,6 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisibleEducation(true);
   };
 
-  const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
-  // const profilePicExample =
-  // 'https://images.unsplash.com/photo-1541271696563-3be2f555fc4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80';
-  const bannerExample =
-    'https://images.unsplash.com/photo-1460134741496-83752c8919df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80';
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="dark-content" />

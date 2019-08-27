@@ -205,6 +205,9 @@ dependencies {
     } else {
       implementation jscFlavor
     }
+
+    // chad added
+    // compile project(':@react-native-community_cameraroll')
 }
 
 // Run this once to be able to run the application with BUCK

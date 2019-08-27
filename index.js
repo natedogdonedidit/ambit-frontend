@@ -30,7 +30,8 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     ios: 'http://localhost:4000/',
-    android: 'http://127.0.0.1:4000/',
+    android: 'http://10.0.2.2:4000/',
+    // android: 'http://127.0.0.1:4000/',
   }),
 });
 

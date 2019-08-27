@@ -10,6 +10,8 @@ const EDIT_BIO_MUTATION = gql`
     $location: String
     $website: String
     $bio: String
+    $profilePic: String
+    $bannerPic: String
   ) {
     editBio(
       id: $id
@@ -20,6 +22,8 @@ const EDIT_BIO_MUTATION = gql`
       location: $location
       website: $website
       bio: $bio
+      profilePic: $profilePic
+      bannerPic: $bannerPic
     ) {
       id
       name

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
+    "@react-native-community/cameraroll": "^1.2.1",
     "apollo-boost": "^0.4.4",
     "apollo-link-context": "^1.0.18",
     "apollo-link-error": "^1.1.11",
