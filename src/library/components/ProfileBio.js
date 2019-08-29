@@ -18,7 +18,7 @@ const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEdu
       </View>
       <View style={{ ...styles.projectsSection }}>
         <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
-          <Text style={{ ...defaultStyles.largeMedium }}>My Projects</Text>
+          <Text style={{ ...defaultStyles.largeMedium }}>Projects</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => null}>
               New

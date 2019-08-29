@@ -1,28 +1,29 @@
 import React from 'react';
-import { StyleSheet, Modal, View, ScrollView, Text, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Modal, View, ScrollView, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { years } from 'library/utils/lists';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { months } from 'library/utils/lists';
 
-const YearModal = ({ yearModalVisible, handleYearSelect }) => {
+const MonthModal = ({ monthModalVisible, handleMonthSelect }) => {
   const renderDates = () => {
-    return years.map((year, i) => (
-      <TouchableOpacity key={i} onPress={() => handleYearSelect(year)}>
-        <View style={styles.yearView}>
-          <Text style={{ ...defaultStyles.largeText }}>{year}</Text>
-        </View>
-      </TouchableOpacity>
-    ));
+    return months.map((month, i) => {
+      return (
+        <TouchableOpacity key={i} onPress={() => handleMonthSelect(month)}>
+          <View style={styles.monthView}>
+            <Text style={{ ...defaultStyles.largeText }}>{month}</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    });
   };
 
   return (
-    <Modal animationType="slide" visible={yearModalVisible} transparent>
+    <Modal animationType="slide" visible={monthModalVisible} transparent>
       <View style={styles.container}>
         <TouchableWithoutFeedback
           onPress={() => {
-            handleYearSelect(null);
+            handleMonthSelect(null);
           }}
         >
           <View style={styles.closeModal} />
@@ -31,7 +32,7 @@ const YearModal = ({ yearModalVisible, handleYearSelect }) => {
           <View style={styles.handleView}>
             <View style={styles.handle} />
           </View>
-          <Text style={{ ...defaultStyles.hugeText, ...styles.modalHeader }}>Select a year</Text>
+          <Text style={{ ...defaultStyles.hugeText, ...styles.modalHeader }}>Select a month</Text>
           <ScrollView style={styles.scrollView}>{renderDates()}</ScrollView>
         </View>
       </View>
@@ -39,7 +40,7 @@ const YearModal = ({ yearModalVisible, handleYearSelect }) => {
   );
 };
 
-export default YearModal;
+export default MonthModal;
 
 const styles = StyleSheet.create({
   container: {
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 50,
   },
-  yearView: {
+  monthView: {
     height: 50,
     width: '100%',
     justifyContent: 'center',

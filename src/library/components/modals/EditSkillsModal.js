@@ -7,8 +7,8 @@ import update from 'immutability-helper';
 
 import EDIT_SKILLS_MUTATION from 'library/mutations/EDIT_SKILLS_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
-import PopupSkills from 'library/components/PopupSkills';
-import PopupBackground from 'library/components/PopupBackground';
+import PopupSkills from 'library/components/modals/PopupSkills';
+import PopupBackground from 'library/components/modals/PopupBackground';
 import Loader from 'library/components/UI/Loader';
 
 import colors from 'styles/colors';

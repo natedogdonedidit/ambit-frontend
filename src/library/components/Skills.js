@@ -36,11 +36,10 @@ const Skills = ({ skills, height = 44, editable = false, popupVisible, setPopupV
     ));
   };
 
-  return <View style={styles.skills}>{renderSkills()}</View>;
+  return <View>{renderSkills()}</View>;
 };
 
 const styles = StyleSheet.create({
-  skills: {},
   skill: {
     flexDirection: 'row',
     alignItems: 'center',

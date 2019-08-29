@@ -6,13 +6,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import GrayButton from 'library/components/UI/GrayButton';
 
-const PopupSkills = ({
-  popupVisible,
-  setPopupVisible,
-  skillDelete,
-  skillChangeOrder,
-  flipExpert,
-}) => {
+const PopupSkills = ({ popupVisible, setPopupVisible, skillDelete, skillChangeOrder, flipExpert }) => {
   return (
     <Modal animationType="slide" visible={popupVisible} transparent>
       <View style={styles.container}>
@@ -59,11 +53,7 @@ const PopupSkills = ({
                 <View style={styles.rowIcon}>
                   <Icon name="trash" size={20} color={colors.peach} />
                 </View>
-                <Text
-                  style={{ ...defaultStyles.largeThin, ...styles.rowText, color: colors.peach }}
-                >
-                  Delete
-                </Text>
+                <Text style={{ ...defaultStyles.largeThin, ...styles.rowText, color: colors.peach }}>Delete</Text>
               </View>
             </TouchableOpacity>
           </View>

@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Modal, SafeAreaView, View, ScrollView, Text, TextInput, Alert, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  Modal,
+  SafeAreaView,
+  View,
+  ScrollView,
+  Text,
+  TextInput,
+  Alert,
+  TouchableOpacity,
+  Switch,
+} from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 
-import CREATE_EDUCATION_MUTATION from 'library/mutations/CREATE_EDUCATION_MUTATION';
-import EDIT_EDUCATION_MUTATION from 'library/mutations/EDIT_EDUCATION_MUTATION';
-import DELETE_EDUCATION_MUTATION from 'library/mutations/DELETE_EDUCATION_MUTATION';
+import CREATE_EXPERIENCE_MUTATION from 'library/mutations/CREATE_EXPERIENCE_MUTATION';
+import EDIT_EXPERIENCE_MUTATION from 'library/mutations/EDIT_EXPERIENCE_MUTATION';
+import DELETE_EXPERIENCE_MUTATION from 'library/mutations/DELETE_EXPERIENCE_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 import colors from 'styles/colors';
@@ -12,13 +23,12 @@ import defaultStyles from 'styles/defaultStyles';
 import TextButton from 'library/components/UI/TextButton';
 import GrayButton from 'library/components/UI/GrayButton';
 import Loader from 'library/components/UI/Loader';
-import YearModal from 'library/components/YearModal';
-import MonthModal from 'library/components/MonthModal';
-import PopupBackground from 'library/components/PopupBackground';
-import { Switch } from 'react-native-gesture-handler';
+import YearModal from 'library/components/modals/YearModal';
+import MonthModal from 'library/components/modals/MonthModal';
+import PopupBackground from 'library/components/modals/PopupBackground';
 
-const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, setActiveEducation, owner }) => {
-  // state will be filled with activeEducation after the modal is opened
+const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, setActiveExperience, owner }) => {
+  // state will be filled with activeExperience after the modal is opened
   const [name, setName] = useState(null);
   const [subText, setSubText] = useState(null);
   const [location, setLocation] = useState(null);
@@ -34,29 +44,29 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
   const [yearModalVisible, setYearModalVisible] = useState(false);
 
   // VARIABLES
-  const isNew = activeEducation.name === '';
+  const isNew = activeExperience.name === '';
 
   // EFFECTS
 
   useEffect(() => {
-    // if modal opened, fill state with the education to edit (or the blank education)
-    if (modalVisible && activeEducation) {
-      setName(activeEducation.name);
-      setSubText(activeEducation.subText);
-      setLocation(activeEducation.location);
-      setStartDateYear(activeEducation.startDateYear);
-      setStartDateMonth(activeEducation.startDateMonth);
-      setEndDateYear(activeEducation.endDateYear);
-      setEndDateMonth(activeEducation.endDateMonth);
-      setCurrentRole(activeEducation.currentRole);
+    // if modal opened, fill state with the experience to edit (or the blank experience)
+    if (modalVisible && activeExperience) {
+      setName(activeExperience.name);
+      setSubText(activeExperience.subText);
+      setLocation(activeExperience.location);
+      setStartDateYear(activeExperience.startDateYear);
+      setStartDateMonth(activeExperience.startDateMonth);
+      setEndDateYear(activeExperience.endDateYear);
+      setEndDateMonth(activeExperience.endDateMonth);
+      setCurrentRole(activeExperience.currentRole);
     }
   }, [modalVisible]);
 
   // MUTATIONS
-  const [createEducation, payloadCreate] = useMutation(CREATE_EDUCATION_MUTATION, {
+  const [createExperience, payloadCreate] = useMutation(CREATE_EXPERIENCE_MUTATION, {
     variables: {
       owner,
-      education: {
+      experience: {
         name,
         subText,
         location,
@@ -72,17 +82,17 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
       closeModal();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to create this education. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to create this experience. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
   const loadingCreate = payloadCreate.loading;
 
-  const [editEducation, payloadEdit] = useMutation(EDIT_EDUCATION_MUTATION, {
+  const [editExperience, payloadEdit] = useMutation(EDIT_EXPERIENCE_MUTATION, {
     variables: {
       owner,
-      id: activeEducation.id,
-      education: {
+      id: activeExperience.id,
+      experience: {
         name,
         subText,
         location,
@@ -98,23 +108,23 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
       closeModal();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to edit this education. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to edit this experience. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
   const loadingEdit = payloadEdit.loading;
 
-  const [deleteEducation, payloadDelete] = useMutation(DELETE_EDUCATION_MUTATION, {
+  const [deleteExperience, payloadDelete] = useMutation(DELETE_EXPERIENCE_MUTATION, {
     variables: {
       owner,
-      id: activeEducation.id,
+      id: activeExperience.id,
     },
     refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
     onCompleted: () => {
       closeModal();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this education. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to delete this experience. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
@@ -176,7 +186,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
     setEndDateYear(null);
     setEndDateMonth(null);
     setCurrentRole(null);
-    setActiveEducation({});
+    setActiveExperience({});
     setModalVisible(false);
   };
 
@@ -185,7 +195,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
   };
 
   const handleDelete = () => {
-    deleteEducation();
+    deleteExperience();
     // closeModal();
   };
 
@@ -210,11 +220,11 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
       ]);
     }
 
-    // if validation passed, create education mutation
+    // if validation passed, create experience mutation
     if (isNew) {
-      createEducation();
+      createExperience();
     } else {
-      editEducation();
+      editExperience();
     }
   };
 
@@ -229,7 +239,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
               Cancel
             </TextButton>
             <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>
-              {isNew ? 'New Education' : 'Edit Education'}
+              {isNew ? 'New Experience' : 'Edit Experience'}
             </Text>
             <TextButton textStyle={styles.saveButtonText} onPress={() => handleSave()}>
               Save
@@ -237,22 +247,22 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
           </View>
           <ScrollView style={styles.content}>
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>School</Text>
+              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Company</Text>
             </View>
             <TextInput
               style={{ ...styles.input, ...defaultStyles.defaultText }}
               onChangeText={val => setName(val)}
               value={name}
-              placeholder="Add school name"
+              placeholder="Add company name"
             />
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Degree</Text>
+              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Job Title</Text>
             </View>
             <TextInput
               style={{ ...styles.input, ...defaultStyles.defaultText }}
               onChangeText={val => setSubText(val)}
               value={subText}
-              placeholder="Add degree"
+              placeholder="Add job title"
             />
             <View style={styles.inputTitle}>
               <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Location</Text>
@@ -261,7 +271,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
               style={{ ...styles.input, ...defaultStyles.defaultText }}
               onChangeText={val => setLocation(val)}
               value={location}
-              placeholder="Add school location"
+              placeholder="Add location"
             />
             <View style={styles.inputTitle}>
               <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Start Date</Text>
@@ -295,7 +305,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
             {!currentRole && (
               <View>
                 <View style={styles.inputTitle}>
-                  <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Graduation Date</Text>
+                  <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>End Date</Text>
                 </View>
                 <View style={styles.dateView}>
                   <View style={styles.dateInput}>
@@ -327,7 +337,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
             )}
 
             <View style={styles.switchRow}>
-              <Text style={{ ...defaultStyles.defaultText }}>I am currently enrolled</Text>
+              <Text style={{ ...defaultStyles.defaultText }}>This is my current role</Text>
               <View style={styles.switch}>
                 <Switch value={currentRole} onValueChange={val => setCurrentRole(val)} />
               </View>
@@ -339,7 +349,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
                 buttonStyle={{ backgroundColor: colors.peach, marginTop: 30, marginBottom: 15 }}
                 textStyle={{ color: 'white', fontWeight: '400' }}
               >
-                Delete education
+                Delete experience
               </GrayButton>
             )}
           </ScrollView>
@@ -351,7 +361,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
   );
 };
 
-export default EditEducationModal;
+export default EditExperienceModal;
 
 const styles = StyleSheet.create({
   container: {

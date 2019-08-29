@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   largeThin: {
     color: colors.darkGray,
     fontSize: 15,
-    fontWeight: '200',
+    fontWeight: '300',
   },
   largeText: {
     color: colors.darkGray,

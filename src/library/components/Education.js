@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconF from 'react-native-vector-icons/FontAwesome5';
 
@@ -95,9 +95,6 @@ const styles = StyleSheet.create({
   },
   locationText: {
     paddingLeft: 5,
-  },
-  editButtonView: {
-    height: '100%',
   },
   editButton: {
     justifyContent: 'center',

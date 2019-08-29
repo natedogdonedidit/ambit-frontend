@@ -9,10 +9,10 @@ import defaultStyles from 'styles/defaultStyles';
 import { UserContext } from 'library/utils/UserContext';
 import WhiteButton from 'library/components/UI/WhiteButton';
 import ProfileTabs from 'library/components/ProfileTabs';
-import EditBioModal from 'library/components/EditBioModal';
-import EditSkillsModal from 'library/components/EditSkillsModal';
-import EditExperienceModal from 'library/components/EditExperienceModal';
-import EditEducationModal from 'library/components/EditEducationModal';
+import EditBioModal from 'library/components/modals/EditBioModal';
+import EditSkillsModal from 'library/components/modals/EditSkillsModal';
+import EditExperienceModal from 'library/components/modals/EditExperienceModal';
+import EditEducationModal from 'library/components/modals/EditEducationModal';
 import Loader from 'library/components/UI/Loader';
 import ProfileBio from 'library/components/ProfileBio';
 import ProfilePosts from 'library/components/ProfilePosts';
@@ -114,7 +114,7 @@ const ProfileScreen = ({ navigation }) => {
             <ImageBackground
               resizeMode="cover"
               style={{ width: '100%' }}
-              imageStyle={{ opacity: 0.1 }}
+              imageStyle={{ opacity: 0.0 }}
               source={{
                 uri: user.profileBanner || bannerExample,
               }}
@@ -129,8 +129,8 @@ const ProfileScreen = ({ navigation }) => {
                     }}
                   />
                 </View>
-                <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
-                <Text style={{ ...defaultStyles.defaultText, ...styles.job }}>
+                <Text style={{ ...defaultStyles.hugeText, ...styles.name }}>{user.name}</Text>
+                <Text style={{ ...defaultStyles.defaultRegular, ...styles.job }}>
                   {user.jobTitle || 'Job title'} | {user.location || 'Location'}
                 </Text>
                 <View style={styles.twoButtons}>
@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
   job: {
     color: 'white',
     fontSize: 14,
+    fontWeight: '400',
     marginBottom: 20,
   },
   twoButtons: {

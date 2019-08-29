@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  createDrawerNavigator,
-  createBottomTabNavigator,
-  createStackNavigator,
-} from 'react-navigation';
+import { createDrawerNavigator, createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CustomDrawer from 'library/components/CustomDrawer';
@@ -15,17 +11,6 @@ import MessagesScreen from './MessagesScreen';
 import NetworkScreen from './NetworkScreen';
 import ProfileScreen from './ProfileScreen';
 import RequestsScreen from './RequestsScreen';
-
-// create tab navigator
-// const ProfileStack = createStackNavigator({
-//   {
-//     Profile: ProfileScreen,
-//     EditProfileModal: EditProfileModalScreen,
-//   },
-//   {
-//     mode: 'modal',
-//     headerMode: 'none',
-//   }
 
 const HomeStack = createStackNavigator(
   {
@@ -40,19 +25,7 @@ const HomeStack = createStackNavigator(
   {
     initialRouteName: 'Home',
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: '#5A50CC',
-      headerStyle: {
-        backgroundColor: '#fff',
-      },
-      headerLeft: (
-        <Icon
-          name="account-circle"
-          size={25}
-          color="#5A50CC"
-          style={{ paddingLeft: 15 }}
-          onPress={() => navigation.openDrawer()}
-        />
-      ),
+      header: null,
     }),
   }
 );

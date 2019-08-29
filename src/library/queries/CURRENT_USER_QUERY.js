@@ -6,6 +6,7 @@ export default CURRENT_USER_QUERY = gql`
       id
       name
       email
+      profilePic
     }
   }
 `;

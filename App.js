@@ -1,11 +1,6 @@
 import React from 'react';
 import { useScreens } from 'react-native-screens';
-import {
-  createSwitchNavigator,
-  createStackNavigator,
-  createAppContainer,
-  HeaderBackButton,
-} from 'react-navigation';
+import { createSwitchNavigator, createStackNavigator, createAppContainer, HeaderBackButton } from 'react-navigation';
 
 import MainNavigator from './src/screens/main/MainNavigator';
 import AuthLoadingScreen from './src/screens/onboarding/AuthLoadingScreen';

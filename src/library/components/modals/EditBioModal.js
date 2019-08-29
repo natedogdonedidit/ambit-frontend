@@ -28,8 +28,8 @@ import { cloud_name } from 'library/config';
 import { requestCameraRollPermission } from 'library/utils';
 import TextButton from 'library/components/UI/TextButton';
 import WhiteButton from 'library/components/UI/WhiteButton';
-import EditProfessionModal from 'library/components/EditProfessionModal';
-import CameraRollModal from 'library/components/CameraRollModal';
+import EditProfessionModal from 'library/components/modals/EditProfessionModal';
+import CameraRollModal from 'library/components/modals/CameraRollModal';
 import Loader from 'library/components/UI/Loader';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';

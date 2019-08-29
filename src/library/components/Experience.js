@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconF from 'react-native-vector-icons/FontAwesome5';
 
@@ -21,7 +21,6 @@ const Experience = ({ isMyProfile, experience, handleSelectExperience }) => {
     return experienceSorted.map((exp, i) => (
       <View key={i} style={i === experience.length - 1 ? { ...styles.experienceNoBorder } : { ...styles.experience }}>
         <View style={styles.iconView}>
-          {/* <Image source={require('../../images/briefcase.png')} resizeMode="contain" style={{ width: 30, height: 30 }} /> */}
           <IconF name="building" size={22} solid color={colors.darkGray} />
         </View>
         <View style={styles.infoView}>
@@ -54,11 +53,10 @@ const Experience = ({ isMyProfile, experience, handleSelectExperience }) => {
     ));
   };
 
-  return <View style={styles.experiences}>{renderExperiences()}</View>;
+  return <View>{renderExperiences()}</View>;
 };
 
 const styles = StyleSheet.create({
-  experiences: {},
   experience: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -98,9 +96,6 @@ const styles = StyleSheet.create({
   },
   locationText: {
     paddingLeft: 5,
-  },
-  editButtonView: {
-    height: '100%',
   },
   editButton: {
     justifyContent: 'center',

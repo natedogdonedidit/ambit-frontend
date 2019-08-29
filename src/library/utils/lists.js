@@ -1,10 +1,28 @@
-const industryList = ['Tech', 'Banking', 'Finance', 'Real Estate', 'Arts'];
-
-const professionList = ['Engineer', 'Executive', 'Consultant', 'CEO', 'CFO', 'Sales'];
-
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-const years = [
+export const invest = ['Find investors', 'Invest in projects'];
+export const hire = [
+  'Hire employees',
+  'Explore job opportunities',
+  'Hire for startup',
+  'Join a startup',
+  'Hire freelancers',
+  'Find freelance jobs',
+];
+export const connect = [
+  'Find mentors',
+  'Mentor others',
+  'Network',
+  'Network within field',
+  'Find business partners',
+  'Find clients',
+  'Grow my business',
+  'Help businesses grow',
+  'Explore a career change',
+  'Seek guidance',
+];
+export const industryList = ['Tech', 'Banking', 'Finance', 'Real Estate', 'Arts'];
+export const professionList = ['Engineer', 'Executive', 'Consultant', 'CEO', 'CFO', 'Sales'];
+export const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export const years = [
   2019,
   2018,
   2017,
@@ -67,7 +85,7 @@ const years = [
   1960,
 ];
 
-export { industryList };
-export { professionList };
-export { months };
-export { years };
+// export { industryList };
+// export { professionList };
+// export { months };
+// export { years };

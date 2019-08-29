@@ -4,8 +4,6 @@ import { StyleSheet, View, Text } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import TextButton from 'library/components/UI/TextButton';
-
 const ProfilePosts = () => {
   return (
     <View style={styles.content}>
