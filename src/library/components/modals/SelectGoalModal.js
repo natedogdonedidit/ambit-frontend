@@ -11,11 +11,12 @@ import HeaderSelectGoal from 'library/components/headers/HeaderSelectGoal';
 import HeaderBackground from 'library/components/headers/HeaderBackground';
 import Goal from 'library/components/UI/Goal';
 
-const SelectGoalModal = ({ goalModalVisible, setGoalModalVisible, goal, setGoal }) => {
+const SelectGoalModal = ({ goalModalVisible, setGoalModalVisible, goal, setGoal, isGoal, setIsGoal }) => {
   // CUSTOM FUNCTIONS
 
   const handleGoalSelect = goalText => {
     setGoal(goalText);
+    if (goalText) setIsGoal(true);
     setGoalModalVisible(false);
   };
 

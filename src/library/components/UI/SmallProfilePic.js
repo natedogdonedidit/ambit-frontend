@@ -10,7 +10,11 @@ const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uplo
 
 const SmallProfilePic = () => {
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
-  const profilePic = data ? data.userLoggedIn.profilePic : null;
+
+  let profilePic = null;
+  if (data) {
+    profilePic = data.userLoggedIn.profilePic;
+  }
 
   return (
     <View style={{ ...styles.profilePicView }}>

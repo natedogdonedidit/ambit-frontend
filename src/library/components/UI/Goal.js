@@ -11,8 +11,6 @@ const Goal = ({ goal, activeGoal, showIcon = true, fill = true, onPress }) => {
   let white = false;
   if (!fill && goal !== activeGoal) white = true;
 
-  console.log(goal, activeGoal);
-
   const selectBackground = () => {
     if (white) return { backgroundColor: 'white', borderWidth: StyleSheet.hairlineWidth, borderColor: colors.borderBlack };
     if (invest.includes(goal)) return { backgroundColor: colors.greenO };

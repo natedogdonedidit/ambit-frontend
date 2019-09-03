@@ -9,7 +9,8 @@ const HeaderSelectGoal = ({ setGoalModalVisible }) => {
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={() => setGoalModalVisible(false)} style={{ width: 60 }}>
-        <Icon name="chevron-left" size={20} color="white" />
+        {/* <Icon name="chevron-left" size={20} color="white" /> */}
+        <Text style={{ ...defaultStyles.largeThin, color: 'white' }}>Cancel</Text>
       </TouchableOpacity>
 
       <Text style={{ ...defaultStyles.hugeBold, ...styles.title }}>Select a Goal</Text>

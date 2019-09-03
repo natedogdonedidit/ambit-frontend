@@ -1,12 +1,14 @@
 import gql from 'graphql-tag';
 
-const CREATE_POST_MUTATION = gql`
-  mutation CREATE_POST_MUTATION($owner: ID!, $post: PostCreateInput!) {
-    createPost(owner: $owner, post: $post) {
+export default GLOBAL_POSTS_QUERY = gql`
+  query GLOBAL_POSTS_QUERY {
+    postsGlobal {
       id
       createdAt
+      lastUpdated
       owner {
         id
+        name
       }
       isGoal
       goal
@@ -17,7 +19,6 @@ const CREATE_POST_MUTATION = gql`
       video
       pitch
       isPrivate
-      lastUpdated
       likes {
         id
       }
@@ -27,5 +28,3 @@ const CREATE_POST_MUTATION = gql`
     }
   }
 `;
-
-export default CREATE_POST_MUTATION;

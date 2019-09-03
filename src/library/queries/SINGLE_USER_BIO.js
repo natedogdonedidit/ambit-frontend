@@ -43,21 +43,28 @@ const SINGLE_USER_BIO = gql`
         currentRole
       }
       # interests
-      # posts {
-      #   id
-      #   createdAt
-      #   owner
-      #   isGoal
-      #   goal
-      #   location
-      #   content
-      #   tags
-      #   images
-      #   video
-      #   pitch
-      #   likes
-      #   comments
-      # }
+      posts {
+        id
+        createdAt
+        owner {
+          id
+        }
+        isGoal
+        goal
+        location
+        content
+        tags
+        images
+        video
+        pitch
+        isPrivate
+        likes {
+          id
+        }
+        comments {
+          id
+        }
+      }
     }
   }
 `;

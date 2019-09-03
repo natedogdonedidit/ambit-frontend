@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Modal,
@@ -9,16 +9,18 @@ import {
   StatusBar,
   TextInput,
   KeyboardAvoidingView,
-  Keyboard,
   TouchableOpacity,
   TouchableWithoutFeedback,
   SafeAreaView,
 } from 'react-native';
-import { useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+// import { useQuery, useMutation } from 'react-apollo';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
+import { UserContext } from 'library/utils/UserContext';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -31,6 +33,7 @@ import SelectGoalModal from 'library/components/modals/SelectGoalModal';
 import Goal from 'library/components/UI/Goal';
 
 const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) => {
+  // initialize state
   const [isGoal, setIsGoal] = useState(false);
   const [goal, setGoal] = useState('');
   const [content, setContent] = useState('');
@@ -46,50 +49,115 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
 
   const [goalModalVisible, setGoalModalVisible] = useState(false);
 
-  // MUTATIONS
-  // const [createPost, { loading, error, data }] = useMutation(CREATE_POST_MUTATION, {
-  //   variables: {
-  //     owner,
-  //     post: {},
-  //   },
-  //   refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
-  //   onCompleted: () => {
-  //     closeModal();
-  //   },
-  //   onError: () =>
-  //     Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
-  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
-  //     ]),
-  // });
-
-  // CUSTOM FUNCTIONS
   const closeModal = () => {
+    setIsGoal(false);
+    setGoal('');
+    setContent('');
+    setTags([]);
+    setImages([]);
+    setVideo('');
+    setPitch('');
+    setLocation('');
+    setIsPrivate(false);
+    setActiveTag('');
+    setSelectedTag(null);
     setNewPostModalVisible(false);
   };
+
+  // CONTEXT
+  const { currentUserId } = useContext(UserContext);
+
+  // QUERIES
+  const payloadUser = useQuery(SINGLE_USER_BIO, {
+    variables: { id: owner },
+  });
+  const loadingUser = payloadUser.loading;
+  const errorUser = payloadUser.error;
+  const dataUser = payloadUser.data;
+  const { user } = dataUser;
+
+  // MUTATIONS
+  const [createPost, payloadCreate] = useMutation(CREATE_POST_MUTATION, {
+    variables: {
+      owner: currentUserId,
+      post: {
+        isGoal,
+        goal,
+        location,
+        content,
+        video,
+        pitch,
+        isPrivate,
+        images,
+        lastUpdated: new Date(),
+        owner: {
+          connect: { id: currentUserId },
+        },
+        tags: {
+          set: [...tags],
+        },
+      },
+    },
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }, { query: GLOBAL_POSTS_QUERY }],
+    onCompleted: () => {
+      closeModal();
+    },
+    onError: error => {
+      console.log(error);
+      Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
+  });
+  const loadingCreate = payloadCreate.loading;
+  const errorCreate = payloadCreate.error;
+  // const dataCreate = payloadCreate.data;
+
+  const loading = loadingUser || loadingCreate;
+
+  // EFFECTS
+  // always put latest location into state when new modal opens
+  useEffect(() => {
+    if (newPostModalVisible) {
+      setLocation(user.location);
+    }
+  }, [newPostModalVisible]);
+
+  // if (loading) return <Loader active={loading} />;
+  if (loading) return null;
+
+  if (errorUser) {
+    console.log('ERROR LOADING USER:', errorUser.message);
+    // probably change this to now display error on screen
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <View style={styles.container}>
+          <Text>{errorUser.message}</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // CUSTOM FUNCTION
 
   const handleBack = () => {
     closeModal();
   };
 
   const handleSubmit = () => {
-    // const message = validateInputs();
-
-    // // if missing a required field, Alert user
-    // if (message) {
-    //   Alert.alert('Please fill in required field:', `${message}`, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
-    //   return;
-    // }
-
-    // // if validation passed, create experience mutation
-    // createPost();
-    closeModal();
+    const message = validateInputs();
+    // if missing a required field, Alert user
+    if (message) {
+      Alert.alert('Please fill in required field:', `${message}`, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+      return;
+    }
+    createPost();
   };
 
-  // const validateInputs = () => {
-  //   return null;
-  // };
-
-  // GOAL FUNCTIONS
+  const validateInputs = () => {
+    if (!content) return 'Post';
+    return null;
+  };
 
   // TAG FUNCTIONS
   const addTag = () => {
@@ -196,13 +264,13 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
                 <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                   <View style={{ ...styles.publicView }}>
                     <Icon name="map-marker-alt" size={12} color={colors.darkGray} style={{ paddingRight: 7 }} />
-                    <Text style={{ ...defaultStyles.smallMedium }}>Charlotte, NC</Text>
+                    <Text style={{ ...defaultStyles.smallMedium }}>{location || 'Add location'}</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <TouchableOpacity onPress={() => setIsPrivate(!isPrivate)} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                   <View style={{ ...styles.publicView }}>
                     <Icon name="globe" size={12} color={colors.darkGray} style={{ paddingRight: 7 }} />
-                    <Text style={{ ...defaultStyles.smallMedium }}>Public</Text>
+                    <Text style={{ ...defaultStyles.smallMedium }}>{isPrivate ? 'Network Only' : 'Public'}</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -214,10 +282,12 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
           setGoalModalVisible={setGoalModalVisible}
           goal={goal}
           setGoal={setGoal}
+          isGoal={isGoal}
+          setIsGoal={setIsGoal}
         />
       </SafeAreaView>
 
-      {/* {loading && <Loader active={loading} />} */}
+      {loading && <Loader active={loading} />}
     </Modal>
   );
 };
