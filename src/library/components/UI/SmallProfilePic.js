@@ -12,9 +12,10 @@ const SmallProfilePic = () => {
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
 
   let profilePic = null;
-  if (data) {
-    profilePic = data.userLoggedIn.profilePic;
-  }
+  if (loading) profilePic = null;
+  if (error) profilePic = null;
+
+  profilePic = data.userLoggedIn.profilePic;
 
   return (
     <View style={{ ...styles.profilePicView }}>

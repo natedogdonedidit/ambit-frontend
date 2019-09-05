@@ -1,6 +1,7 @@
 import { PermissionsAndroid } from 'react-native';
+import { differenceInSeconds } from 'date-fns';
 
-const monthToFloat = month => {
+export const monthToFloat = month => {
   if (month === 'Jan') return 0.01;
   if (month === 'Feb') return 0.02;
   if (month === 'Mar') return 0.03;
@@ -17,7 +18,7 @@ const monthToFloat = month => {
 };
 
 // order experiences
-const sortExperiences = (a, b) => {
+export const sortExperiences = (a, b) => {
   const yearAs = a.startDateYear;
   const monthAs = monthToFloat(a.startDateMonth);
   const yearAe = a.endDateYear;
@@ -39,7 +40,7 @@ const sortExperiences = (a, b) => {
   return 1;
 };
 
-async function requestCameraRollPermission() {
+export async function requestCameraRollPermission() {
   try {
     const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
       title: 'Ambit Camera Roll Permission',
@@ -58,6 +59,24 @@ async function requestCameraRollPermission() {
   }
 }
 
-export { monthToFloat };
-export { sortExperiences };
-export { requestCameraRollPermission };
+export const timeDifference = (laterDate, earlierDate) => {
+  let timeDiff = differenceInSeconds(laterDate, earlierDate);
+  let period = 's';
+
+  if (timeDiff >= 60) {
+    timeDiff /= 60;
+    period = 'm';
+    if (timeDiff >= 60) {
+      timeDiff /= 60;
+      period = 'h';
+      if (timeDiff >= 24) {
+        timeDiff /= 24;
+        period = 'd';
+      }
+    }
+  }
+
+  timeDiff = Math.round(timeDiff);
+
+  return { timeDiff, period };
+};

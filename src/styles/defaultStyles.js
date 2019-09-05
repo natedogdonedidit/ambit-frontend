@@ -3,20 +3,12 @@ import { StyleSheet } from 'react-native';
 import colors from 'styles/colors';
 
 const styles = StyleSheet.create({
-  h2: {
+  // SMALL, 11px
+  smallThinMute: {
     color: colors.darkGray,
-    fontSize: 18,
-    fontWeight: '500',
-  },
-  h3: {
-    color: colors.darkGray,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  h4: {
-    color: colors.darkGray,
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 11,
+    fontWeight: '300',
+    opacity: 0.8,
   },
   smallMute: {
     color: colors.darkGray,
@@ -39,6 +31,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
   },
+  // DEFAULT, 13px
   defaultMute: {
     color: colors.darkGray,
     fontSize: 13,
@@ -53,7 +46,7 @@ const styles = StyleSheet.create({
   defaultText: {
     color: colors.darkGray,
     fontSize: 13,
-    fontWeight: '300',
+    fontWeight: '400',
   },
   defaultRegular: {
     color: colors.darkGray,
@@ -70,6 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
   },
+  // LARGE, 15px
   largeThin: {
     color: colors.darkGray,
     fontSize: 15,
@@ -90,6 +84,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
   },
+  // HEADER, 17px
   headerTitle: {
     color: colors.darkGray,
     fontSize: 17,
@@ -113,16 +108,17 @@ const styles = StyleSheet.create({
   paddingBottomNav: {
     paddingBottom: 50,
   },
+  // SHADOWS
   shadow3: {
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 3,
     },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
 
-    elevation: 3,
+    // elevation: 3,
   },
   shadow6: {
     shadowColor: '#000',

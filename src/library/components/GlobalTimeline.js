@@ -5,17 +5,21 @@ import { useQuery } from 'react-apollo';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
+
 import Loader from 'library/components/UI/Loader';
+import Post from 'library/components/Post';
 
 const GlobalTimeline = props => {
   // QUERIES
   const { loading, error, data } = useQuery(GLOBAL_POSTS_QUERY);
 
+  const currentTime = new Date();
+
   if (loading)
     return (
-      <ScrollView style={styles.timeline}>
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
         <Loader active={loading} full={false} />
-      </ScrollView>
+      </View>
     );
 
   if (error) {
@@ -31,27 +35,17 @@ const GlobalTimeline = props => {
 
   const renderPosts = () => {
     return posts.map((post, i) => {
-      return (
-        <View key={i}>
-          <Text>{post.content}</Text>
-        </View>
-      );
+      return <Post key={i} post={post} currentTime={currentTime} />;
     });
   };
 
-  return (
-    <ScrollView style={styles.timeline}>
-      <Text style={{ textAlign: 'center', width: '100%' }}>Timeline</Text>
-      {renderPosts()}
-    </ScrollView>
-  );
+  return <ScrollView style={styles.timeline}>{renderPosts()}</ScrollView>;
 };
 
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: 'white',
     height: 500,
-    paddingTop: 30,
   },
 });
 

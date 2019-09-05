@@ -9,7 +9,7 @@ import { invest, hire, connect } from 'library/utils/lists';
 
 import HeaderSelectGoal from 'library/components/headers/HeaderSelectGoal';
 import HeaderBackground from 'library/components/headers/HeaderBackground';
-import Goal from 'library/components/UI/Goal';
+import GoalSelect from 'library/components/UI/GoalSelect';
 
 const SelectGoalModal = ({ goalModalVisible, setGoalModalVisible, goal, setGoal, isGoal, setIsGoal }) => {
   // CUSTOM FUNCTIONS
@@ -23,7 +23,7 @@ const SelectGoalModal = ({ goalModalVisible, setGoalModalVisible, goal, setGoal,
   const renderGoals = list => {
     return list.map((goalText, i) => (
       <View key={i} style={styles.goal}>
-        <Goal goal={goalText} activeGoal={goal} showIcon={false} fill={false} onPress={() => handleGoalSelect(goalText)} />
+        <GoalSelect goal={goalText} activeGoal={goal} showIcon={false} fill={false} onPress={() => handleGoalSelect(goalText)} />
       </View>
     ));
   };

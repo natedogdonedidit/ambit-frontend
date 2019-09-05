@@ -9,6 +9,12 @@ export default GLOBAL_POSTS_QUERY = gql`
       owner {
         id
         name
+        profilePic
+        location
+        jobTitle
+        profession
+        industry
+        intro
       }
       isGoal
       goal
