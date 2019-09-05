@@ -12,6 +12,8 @@ import {
   PermissionsAndroid,
   Platform,
   ImageBackground,
+  KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
@@ -26,11 +28,12 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { cloud_name } from 'library/config';
 import { requestCameraRollPermission } from 'library/utils';
-import TextButton from 'library/components/UI/TextButton';
 import WhiteButton from 'library/components/UI/WhiteButton';
 import EditProfessionModal from 'library/components/modals/EditProfessionModal';
+import EditLocationModal from 'library/components/modals/EditLocationModal';
 import CameraRollModal from 'library/components/modals/CameraRollModal';
 import Loader from 'library/components/UI/Loader';
+import HeaderWhite from 'library/components/headers/HeaderWhite';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 const bannerExample =
@@ -44,9 +47,11 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
   const [profession, setProfession] = useState(user.profession);
   const [industry, setIndustry] = useState(user.industry);
   const [location, setLocation] = useState(user.location);
+  const [locationCord, setLocationCord] = useState(user.locationCord);
   const [website, setWebsite] = useState(user.website);
   const [bio, setBio] = useState(user.bio);
   const [proModalVisible, setProModalVisible] = useState(false);
+  const [locModalVisible, setLocModalVisible] = useState(false);
   const [cameraRollModalVisible, setCameraRollModalVisible] = useState(false);
   const [cameraRoll, setCameraRoll] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -59,6 +64,7 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
       profession,
       industry,
       location,
+      locationCord,
       website,
       bio,
       profilePic,
@@ -82,6 +88,7 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
     setProfession(user.profession);
     setIndustry(user.industry);
     setLocation(user.location);
+    setLocationCord(user.locationCord);
     setWebsite(user.website);
     setBio(user.bio);
     setProfilePic(user.profilePic);
@@ -181,117 +188,132 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
   return (
     <Modal animationType="slide" visible={modalVisible}>
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <View style={styles.modalHeader}>
-            <TextButton textStyle={styles.closeButtonText} onPress={() => handleCancel()}>
-              Cancel
-            </TextButton>
-            <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>Edit Profile</Text>
-            <TextButton textStyle={styles.saveButtonText} onPress={() => handleSave()}>
-              Save
-            </TextButton>
-          </View>
-
-          <View style={{ width: '100%' }}>
-            <LinearGradient
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              colors={[colors.blueGradient, colors.purpGradient]}
-              style={styles.linearGradient}
-            >
-              <ImageBackground
-                resizeMode="cover"
-                style={{ width: '100%' }}
-                imageStyle={{ opacity: 0.1 }}
-                source={{
-                  uri: bannerPic || bannerExample,
-                }}
+        <HeaderWhite handleLeft={handleCancel} handleRight={handleSave} textLeft="Cancel" textRight="Save" title="Edit Profile" />
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+          <ScrollView>
+            <View style={{ width: '100%' }}>
+              <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                colors={[colors.blueGradient, colors.purpGradient]}
+                style={styles.linearGradient}
               >
-                <View style={styles.profileBox}>
-                  <View style={{ ...styles.profilePicView }}>
-                    <Image
-                      style={{ ...styles.profilePic }}
-                      resizeMode="cover"
-                      source={{
-                        uri: profilePic || profilePicExample,
-                      }}
-                    />
+                <ImageBackground
+                  resizeMode="cover"
+                  style={{ width: '100%' }}
+                  imageStyle={{ opacity: 0.1 }}
+                  source={{
+                    uri: bannerPic || bannerExample,
+                  }}
+                >
+                  <View style={styles.profileBox}>
+                    <View style={{ ...styles.profilePicView }}>
+                      <Image
+                        style={{ ...styles.profilePic }}
+                        resizeMode="cover"
+                        source={{
+                          uri: profilePic || profilePicExample,
+                        }}
+                      />
+                    </View>
+                    <WhiteButton buttonStyle={{ marginBottom: 10 }} onPress={() => handleEditPicButton()}>
+                      Edit Pic
+                    </WhiteButton>
+                    <WhiteButton buttonStyle={{ marginBottom: 20 }} onPress={() => null}>
+                      Edit Banner
+                    </WhiteButton>
                   </View>
-                  <WhiteButton buttonStyle={{ marginBottom: 10 }} onPress={() => handleEditPicButton()}>
-                    Edit Pic
-                  </WhiteButton>
-                  <WhiteButton buttonStyle={{ marginBottom: 20 }} onPress={() => null}>
-                    Edit Banner
-                  </WhiteButton>
-                </View>
-              </ImageBackground>
-            </LinearGradient>
-          </View>
-          <View style={styles.section}>
-            <Text style={{ ...defaultStyles.largeMedium, ...styles.sectionTitle }}>Personal Info</Text>
+                </ImageBackground>
+              </LinearGradient>
+            </View>
+            <View style={styles.section}>
+              <Text style={{ ...defaultStyles.largeMedium, ...styles.sectionTitle }}>Personal Info</Text>
 
-            <View style={styles.row}>
-              <View style={styles.rowTitle}>
-                <Text style={{ ...defaultStyles.defaultBold }}>Name</Text>
+              <View style={styles.row}>
+                <View style={styles.rowTitle}>
+                  <Text style={{ ...defaultStyles.defaultBold }}>Name</Text>
+                </View>
+                <TextInput
+                  style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
+                  onChangeText={val => setName(val)}
+                  value={name}
+                  placeholder="Add your name"
+                />
               </View>
+              <View style={styles.row}>
+                <View style={styles.rowTitle}>
+                  <Text style={{ ...defaultStyles.defaultBold }}>Profession</Text>
+                </View>
+                <View style={styles.rowInput}>
+                  <TouchableOpacity
+                    onPress={() => setProModalVisible(true)}
+                    style={styles.touchableRow}
+                    hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
+                  >
+                    {jobTitle ? (
+                      <Text style={{ ...defaultStyles.defaultText }}>{jobTitle}</Text>
+                    ) : (
+                      <Text style={{ ...defaultStyles.defaultMute }}>Select your profession</Text>
+                    )}
+                    <Icon name="angle-down" size={15} color={colors.darkGray} style={{}} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.row}>
+                <View style={styles.rowTitle}>
+                  <Text style={{ ...defaultStyles.defaultBold }}>Location</Text>
+                </View>
+                <View style={styles.rowInput}>
+                  <TouchableOpacity
+                    onPress={() => setLocModalVisible(true)}
+                    style={styles.touchableRow}
+                    hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
+                  >
+                    {location ? (
+                      <Text style={{ ...defaultStyles.defaultText }}>{location}</Text>
+                    ) : (
+                      <Text style={{ ...defaultStyles.defaultMute }}>Select your location</Text>
+                    )}
+                    <Icon name="angle-down" size={15} color={colors.darkGray} style={{}} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.row}>
+                <View style={styles.rowTitle}>
+                  <Text style={{ ...defaultStyles.defaultBold }}>Website</Text>
+                </View>
+                <TextInput
+                  style={{ ...styles.rowInputNoBorder, ...defaultStyles.defaultText }}
+                  onChangeText={val => setWebsite(val)}
+                  value={website}
+                  placeholder="Add your website"
+                  autoCapitalize="none"
+                />
+              </View>
+            </View>
+            <View style={styles.section}>
+              <Text style={{ ...defaultStyles.largeMedium, ...styles.sectionTitle }}>Bio</Text>
               <TextInput
-                style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                onChangeText={val => setName(val)}
-                value={name}
-                placeholder="Add your name"
+                style={{ ...styles.multilineInput, ...defaultStyles.defaultText }}
+                onChangeText={val => setBio(val)}
+                value={bio}
+                placeholder="Start your bio"
+                multiline
+                scrollEnabled={false}
               />
             </View>
-            <View style={styles.row}>
-              <View style={styles.rowTitle}>
-                <Text style={{ ...defaultStyles.defaultBold }}>Profession</Text>
-              </View>
-              <View style={styles.rowInput}>
-                <TouchableOpacity onPress={() => setProModalVisible(true)} style={styles.touchableRow}>
-                  {jobTitle ? (
-                    <Text style={{ ...defaultStyles.defaultText }}>{jobTitle}</Text>
-                  ) : (
-                    <Text style={{ ...defaultStyles.defaultMute }}>Select your profession</Text>
-                  )}
-                  <Icon name="angle-down" size={15} color={colors.darkGray} style={{}} />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={styles.row}>
-              <View style={styles.rowTitle}>
-                <Text style={{ ...defaultStyles.defaultBold }}>Location</Text>
-              </View>
-              <TextInput
-                style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                onChangeText={val => setLocation(val)}
-                value={location}
-                placeholder="Add your location"
-              />
-            </View>
-            <View style={styles.row}>
-              <View style={styles.rowTitle}>
-                <Text style={{ ...defaultStyles.defaultBold }}>Website</Text>
-              </View>
-              <TextInput
-                style={{ ...styles.rowInputNoBorder, ...defaultStyles.defaultText }}
-                onChangeText={val => setWebsite(val)}
-                value={website}
-                placeholder="Add your website"
-                autoCapitalize="none"
-              />
-            </View>
-          </View>
-          <View style={styles.section}>
-            <Text style={{ ...defaultStyles.largeMedium, ...styles.sectionTitle }}>Bio</Text>
-            <TextInput
-              style={{ ...styles.multilineInput, ...defaultStyles.defaultText }}
-              onChangeText={val => setBio(val)}
-              value={bio}
-              placeholder="Start your bio"
-              multiline
-            />
-          </View>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
+      <EditLocationModal
+        user={user}
+        locModalVisible={locModalVisible}
+        setLocModalVisible={setLocModalVisible}
+        location={location}
+        setLocation={setLocation}
+        locationCord={locationCord}
+        setLocationCord={setLocationCord}
+      />
       <EditProfessionModal
         user={user}
         proModalVisible={proModalVisible}
@@ -319,28 +341,9 @@ export default EditBioModal;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
+    height: '100%',
   },
-  modalHeader: {
-    flexDirection: 'row',
-    height: 40,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    width: 60,
-    textAlign: 'left',
-  },
-  saveButtonText: {
-    width: 60,
-    textAlign: 'right',
-  },
-  headerTitle: {
-    flexGrow: 1,
-    textAlign: 'center',
-  },
-  scrollView: {},
-  linearGradient: {},
   profileBox: {
     paddingTop: 30,
     justifyContent: 'flex-start',
