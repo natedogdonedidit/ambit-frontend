@@ -1,10 +1,22 @@
 import React, { useState } from 'react';
-import { StyleSheet, Modal, SafeAreaView, View, Text, TextInput, TouchableOpacity, ScrollView, FlatList } from 'react-native';
+import {
+  StyleSheet,
+  Modal,
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  FlatList,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import TextButton from 'library/components/UI/TextButton';
+import HeaderWhite from 'library/components/headers/HeaderWhite';
 import { professionList, industryList } from 'library/utils/lists';
 
 const EditProfessionModal = ({
@@ -59,15 +71,14 @@ const EditProfessionModal = ({
     <Modal animationType="slide" visible={proModalVisible}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.container}>
-          <View style={styles.modalHeader}>
-            <TextButton textStyle={styles.closeButtonText} onPress={() => handleCancel()}>
-              Cancel
-            </TextButton>
-            <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>Edit Profession</Text>
-            <TextButton textStyle={styles.saveButtonText} onPress={() => handleDone()}>
-              Done
-            </TextButton>
-          </View>
+          <HeaderWhite
+            handleLeft={handleCancel}
+            handleRight={handleDone}
+            textLeft="Cancel"
+            textRight="Done"
+            title="Edit Profession"
+          />
+
           <View style={styles.section}>
             <View style={styles.row}>
               <View style={styles.rowTitle}>
@@ -111,27 +122,30 @@ const EditProfessionModal = ({
               </View>
             </View>
           </View>
+          <View style={styles.grayBox} />
 
-          <FlatList
-            style={styles.listView}
-            data={activeList}
-            keyExtractor={(item, index) => index}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => {
-                  if (whichList === 'profession') {
-                    selectProfession(item);
-                  } else if (whichList === 'industry') {
-                    selectIndustry(item);
-                  }
-                }}
-              >
-                <View style={styles.listRow}>
-                  <Text style={{ ...defaultStyles.defaultText }}>{item}</Text>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
+          <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+            <FlatList
+              style={styles.listView}
+              data={activeList}
+              keyExtractor={(item, index) => index}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    if (whichList === 'profession') {
+                      selectProfession(item);
+                    } else if (whichList === 'industry') {
+                      selectIndustry(item);
+                    }
+                  }}
+                >
+                  <View style={styles.listRow}>
+                    <Text style={{ ...defaultStyles.defaultText }}>{item}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </KeyboardAvoidingView>
         </View>
       </SafeAreaView>
     </Modal>
@@ -164,10 +178,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   section: {
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderTopWidth: 0.2,
-    borderTopColor: colors.darkGray,
+    paddingHorizontal: 10,
+    paddingTop: 15,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
   },
   row: {
     flexDirection: 'row',
@@ -181,8 +195,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     height: '100%',
-    borderBottomWidth: 0.2,
-    borderBottomColor: colors.darkGray,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   rowInputNoBorder: {
     flexGrow: 1,
@@ -197,13 +211,18 @@ const styles = StyleSheet.create({
   listView: {
     flex: 1,
     width: '100%',
-    padding: 15,
   },
   listRow: {
     justifyContent: 'center',
     width: '100%',
+    padding: 10,
     height: 40,
-    borderBottomWidth: 0.2,
-    borderBottomColor: colors.darkGray,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
+  },
+  grayBox: {
+    width: '100%',
+    height: 10,
+    backgroundColor: colors.lightGray,
   },
 });

@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, Modal, SafeAreaView, View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  Modal,
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
@@ -8,13 +18,14 @@ import TextButton from 'library/components/UI/TextButton';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
 const EditLocationModal = ({
-  user,
   locModalVisible,
   setLocModalVisible,
   location,
   setLocation,
-  locationCord,
-  setLocationCord,
+  locationLat,
+  setLocationLat,
+  locationLon,
+  setLocationLon,
 }) => {
   const didMountRef = useRef(false);
   const [locationInput, setLocationInput] = useState(location);
@@ -33,8 +44,36 @@ const EditLocationModal = ({
         if (resJson.suggestions) {
           cities = resJson.suggestions.filter(loc => loc.matchLevel === 'city');
         }
-        console.log(cities);
         setLocationList(cities);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getSingleLocationFromAPIandClose(locationId) {
+    const app_id = 'h9qumdLXOxidgnOtyADi';
+    const app_code = 'AeO_1-X9yngGRO4RHd_IsQ';
+    const url = `http://geocoder.api.here.com/6.2/geocode.json?app_id=${app_id}&app_code=${app_code}&locationid=${locationId}&jsonattributes=1&gen=9`;
+
+    try {
+      const response = await fetch(url);
+      if (response.status === 200) {
+        const responseJson = await response.json();
+        if (responseJson.response) {
+          // console.log(responseJson);
+          // console.log(responseJson.response.view[0]);
+          // console.log(responseJson.response.view[0].result[0].location);
+          const loc = `${responseJson.response.view[0].result[0].location.address.city}, ${responseJson.response.view[0].result[0].location.address.state}`;
+          const lat = responseJson.response.view[0].result[0].location.displayPosition.latitude;
+          const lon = responseJson.response.view[0].result[0].location.displayPosition.longitude;
+          setLocation(loc);
+          setLocationLat(lat);
+          setLocationLon(lon);
+          setLocationInput(loc);
+          setLocationList([]);
+          setLocModalVisible(false);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -51,14 +90,12 @@ const EditLocationModal = ({
 
   const handleCancel = () => {
     // set these back to whats in the database
-    setLocation(user.location);
-    setLocationCord(user.locationCord);
+    setLocation(location);
+    setLocationLat(locationLat);
+    setLocationLon(locationLon);
+    // reset location state
     setLocationInput(location);
     setLocationList([]);
-    setLocModalVisible(false);
-  };
-
-  const handleDone = () => {
     setLocModalVisible(false);
   };
 
@@ -67,11 +104,13 @@ const EditLocationModal = ({
 
     return locationList.map((loc, i) => {
       return (
-        <View key={i} style={styles.location}>
-          <Text style={defaultStyles.defaultText}>
-            {loc.address.city}, {loc.address.state}
-          </Text>
-        </View>
+        <TouchableOpacity key={i} onPress={() => getSingleLocationFromAPIandClose(loc.locationId)}>
+          <View style={styles.location}>
+            <Text style={defaultStyles.defaultText}>
+              {loc.address.city}, {loc.address.state}
+            </Text>
+          </View>
+        </TouchableOpacity>
       );
     });
   };
@@ -79,23 +118,25 @@ const EditLocationModal = ({
   return (
     <Modal animationType="slide" visible={locModalVisible}>
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <HeaderWhite handleLeft={handleCancel} handleRight={handleDone} textLeft="Cancel" textRight="Done" title="Location" />
-          <View style={styles.inputRow}>
-            <TextInput
-              style={{ ...styles.input, ...defaultStyles.defaultText }}
-              onChangeText={val => setLocationInput(val)}
-              value={locationInput}
-              placeholder="Search for location"
-              autoFocus
-            />
-            <TouchableOpacity onPress={() => setLocationInput('')} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
-              <Icon name="times-circle" solid size={15} color={colors.darkGray} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.grayBox} />
-          <ScrollView style={styles.locationList}>{renderLocations()}</ScrollView>
+        <HeaderWhite handleLeft={handleCancel} handleRight={null} textLeft="Cancel" textRight="" title="Location" />
+        <View style={styles.inputRow}>
+          <TextInput
+            style={{ ...styles.input, ...defaultStyles.defaultText }}
+            onChangeText={val => setLocationInput(val)}
+            value={locationInput}
+            placeholder="Columbus, OH"
+            autoFocus
+          />
+          <TouchableOpacity onPress={() => setLocationInput('')} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
+            <Icon name="times-circle" solid size={15} color={colors.darkGray} />
+          </TouchableOpacity>
         </View>
+        <View style={styles.grayBox} />
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+          <ScrollView style={styles.locationList} keyboardShouldPersistTaps="always">
+            {renderLocations()}
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </Modal>
   );
@@ -131,7 +172,6 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderBlack,
     width: '100%',
-    height: 60,
   },
   location: {
     padding: 10,

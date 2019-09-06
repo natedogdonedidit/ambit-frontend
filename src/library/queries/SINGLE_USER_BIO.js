@@ -10,7 +10,8 @@ const SINGLE_USER_BIO = gql`
       profilePic
       bannerPic
       location
-      locationCord
+      locationLat
+      locationLon
       jobTitle
       profession
       industry

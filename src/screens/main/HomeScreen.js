@@ -17,7 +17,6 @@ const HomeScreen = props => {
 
   // navigation
   const { navigation } = props;
-  const { currentUserId } = useContext(UserContext);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -34,11 +33,7 @@ const HomeScreen = props => {
       {activeTimeline === 1 && <GlobalTimeline />}
       {activeTimeline === 2 && <GlobalTimeline />}
 
-      <NewPostModal
-        newPostModalVisible={newPostModalVisible}
-        setNewPostModalVisible={setNewPostModalVisible}
-        owner={currentUserId}
-      />
+      <NewPostModal newPostModalVisible={newPostModalVisible} setNewPostModalVisible={setNewPostModalVisible} />
     </SafeAreaView>
   );
 };

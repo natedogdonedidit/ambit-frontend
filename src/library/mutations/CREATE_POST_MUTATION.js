@@ -11,6 +11,8 @@ const CREATE_POST_MUTATION = gql`
       isGoal
       goal
       location
+      locationLon
+      locationLat
       content
       tags
       images

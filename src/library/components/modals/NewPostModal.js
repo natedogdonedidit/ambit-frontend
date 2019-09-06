@@ -31,8 +31,9 @@ import HeaderBackground from 'library/components/headers/HeaderBackground';
 import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 import SelectGoalModal from 'library/components/modals/SelectGoalModal';
 import Goal from 'library/components/UI/Goal';
+import EditLocationModal from 'library/components/modals/EditLocationModal';
 
-const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) => {
+const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
   // initialize state
   const [isGoal, setIsGoal] = useState(false);
   const [goal, setGoal] = useState('');
@@ -42,12 +43,15 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
   const [video, setVideo] = useState('');
   const [pitch, setPitch] = useState('');
   const [location, setLocation] = useState('');
+  const [locationLat, setLocationLat] = useState(null);
+  const [locationLon, setLocationLon] = useState(null);
   const [isPrivate, setIsPrivate] = useState(false);
 
   const [activeTag, setActiveTag] = useState('');
   const [selectedTag, setSelectedTag] = useState(null);
 
   const [goalModalVisible, setGoalModalVisible] = useState(false);
+  const [locModalVisible, setLocModalVisible] = useState(false);
 
   const closeModal = () => {
     setIsGoal(false);
@@ -58,6 +62,8 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
     setVideo('');
     setPitch('');
     setLocation('');
+    setLocationLat(null);
+    setLocationLon(null);
     setIsPrivate(false);
     setActiveTag('');
     setSelectedTag(null);
@@ -69,7 +75,7 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
 
   // QUERIES
   const payloadUser = useQuery(SINGLE_USER_BIO, {
-    variables: { id: owner },
+    variables: { id: currentUserId },
   });
   const loadingUser = payloadUser.loading;
   const errorUser = payloadUser.error;
@@ -84,6 +90,8 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
         isGoal,
         goal,
         location,
+        locationLat,
+        locationLon,
         content,
         video,
         pitch,
@@ -120,6 +128,8 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
   useEffect(() => {
     if (newPostModalVisible) {
       setLocation(user.location);
+      setLocationLat(user.locationLat);
+      setLocationLon(user.locationLon);
     }
   }, [newPostModalVisible]);
 
@@ -261,7 +271,7 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
                 <View style={styles.tags}>{renderTags()}</View>
               </ScrollView>
               <View style={styles.aboveKeyboard}>
-                <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <TouchableOpacity onPress={() => setLocModalVisible(true)} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                   <View style={{ ...styles.publicView }}>
                     <Icon name="map-marker-alt" size={12} color={colors.darkGray} style={{ paddingRight: 7 }} />
                     <Text style={{ ...defaultStyles.smallMedium }}>{location || 'Add location'}</Text>
@@ -284,6 +294,16 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, owner }) =>
           setGoal={setGoal}
           isGoal={isGoal}
           setIsGoal={setIsGoal}
+        />
+        <EditLocationModal
+          locModalVisible={locModalVisible}
+          setLocModalVisible={setLocModalVisible}
+          location={location}
+          setLocation={setLocation}
+          locationLat={locationLat}
+          setLocationLat={setLocationLat}
+          locationLon={locationLon}
+          setLocationLon={setLocationLon}
         />
       </SafeAreaView>
 

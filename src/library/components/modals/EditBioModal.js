@@ -47,28 +47,34 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
   const [profession, setProfession] = useState(user.profession);
   const [industry, setIndustry] = useState(user.industry);
   const [location, setLocation] = useState(user.location);
-  const [locationCord, setLocationCord] = useState(user.locationCord);
+  const [locationLat, setLocationLat] = useState(user.locationLat);
+  const [locationLon, setLocationLon] = useState(user.locationLon);
   const [website, setWebsite] = useState(user.website);
   const [bio, setBio] = useState(user.bio);
+
   const [proModalVisible, setProModalVisible] = useState(false);
   const [locModalVisible, setLocModalVisible] = useState(false);
   const [cameraRollModalVisible, setCameraRollModalVisible] = useState(false);
+
   const [cameraRoll, setCameraRoll] = useState([]);
   const [uploading, setUploading] = useState(false);
 
   const [editBio, { loading, error, called, data }] = useMutation(EDIT_BIO_MUTATION, {
     variables: {
       id: user.id,
-      name,
-      jobTitle,
-      profession,
-      industry,
-      location,
-      locationCord,
-      website,
-      bio,
-      profilePic,
-      bannerPic,
+      data: {
+        name,
+        jobTitle,
+        profession,
+        industry,
+        location,
+        locationLat,
+        locationLon,
+        website,
+        bio,
+        profilePic,
+        bannerPic,
+      },
     },
     refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }, { query: CURRENT_USER_QUERY }],
     onCompleted: () => {
@@ -88,7 +94,8 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
     setProfession(user.profession);
     setIndustry(user.industry);
     setLocation(user.location);
-    setLocationCord(user.locationCord);
+    setLocationLat(user.locationLat);
+    setLocationLon(user.locationLon);
     setWebsite(user.website);
     setBio(user.bio);
     setProfilePic(user.profilePic);
@@ -108,7 +115,7 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
 
     // run mutation
     editBio();
-    resetState();
+    // resetState();
     setModalVisible(false);
   };
 
@@ -306,13 +313,14 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
         </KeyboardAvoidingView>
       </SafeAreaView>
       <EditLocationModal
-        user={user}
         locModalVisible={locModalVisible}
         setLocModalVisible={setLocModalVisible}
         location={location}
         setLocation={setLocation}
-        locationCord={locationCord}
-        setLocationCord={setLocationCord}
+        locationLat={locationLat}
+        setLocationLat={setLocationLat}
+        locationLon={locationLon}
+        setLocationLon={setLocationLon}
       />
       <EditProfessionModal
         user={user}
