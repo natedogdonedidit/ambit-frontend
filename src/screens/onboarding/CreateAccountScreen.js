@@ -44,11 +44,7 @@ const CreateAccountScreen = props => {
   return (
     <UserContextConsumer>
       {({ loginCTX }) => (
-        <Mutation
-          mutation={SIGNUP_MUTATION}
-          variables={{ name, email, password }}
-          errorPolicy="all"
-        >
+        <Mutation mutation={SIGNUP_MUTATION} variables={{ name, email, password }} errorPolicy="all">
           {(signup, { error, loading }) => {
             return (
               <View style={styles.container}>

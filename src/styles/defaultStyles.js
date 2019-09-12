@@ -2,108 +2,160 @@ import { StyleSheet } from 'react-native';
 
 import colors from 'styles/colors';
 
+const small = 11;
+const reg = 13;
+const large = 15;
+const huge = 17;
+
 const styles = StyleSheet.create({
-  // SMALL, 11px
+  // SMALL
   smallThinMute: {
     color: colors.darkGray,
-    fontSize: 11,
-    fontWeight: '300',
+    fontSize: small,
     opacity: 0.8,
+    fontFamily: 'SFProText-Thin',
   },
   smallMute: {
     color: colors.darkGray,
-    fontSize: 11,
-    fontWeight: '400',
-    opacity: 0.6,
+    fontSize: small,
+    opacity: 0.8,
+    fontFamily: 'SFProText-Regular',
   },
-  smallText: {
+  smallThin: {
     color: colors.darkGray,
-    fontSize: 11,
-    fontWeight: '400',
+    fontSize: small,
+    fontFamily: 'SFProText-Thin',
+  },
+  smallLight: {
+    color: colors.darkGray,
+    fontSize: small,
+    fontFamily: 'SFProText-Light',
+  },
+  smallRegular: {
+    color: colors.darkGray,
+    fontSize: small,
+    fontFamily: 'SFProText-Regular',
   },
   smallMedium: {
     color: colors.darkGray,
-    fontSize: 11,
-    fontWeight: '500',
+    fontSize: small,
+    fontFamily: 'SFProText-Medium',
+  },
+  smallSemibold: {
+    color: colors.darkGray,
+    fontSize: small,
+    fontFamily: 'SFProText-Semibold',
   },
   smallBold: {
     color: colors.darkGray,
-    fontSize: 11,
-    fontWeight: '600',
+    fontSize: small,
+    fontFamily: 'SFProText-Bold',
   },
-  // DEFAULT, 13px
+
+  // DEFAULT
   defaultMute: {
     color: colors.darkGray,
-    fontSize: 13,
-    fontWeight: '300',
+    fontSize: reg,
     opacity: 0.3,
+    fontFamily: 'SFProText-Light',
   },
   defaultThin: {
     color: colors.darkGray,
-    fontSize: 13,
-    fontWeight: '100',
+    fontSize: reg,
+    fontFamily: 'SFProText-Thin',
   },
   defaultText: {
     color: colors.darkGray,
-    fontSize: 13,
-    fontWeight: '400',
+    fontSize: reg,
+    fontFamily: 'SFProText-Light',
   },
   defaultRegular: {
     color: colors.darkGray,
-    fontSize: 13,
-    fontWeight: '400',
+    fontSize: reg,
+    fontFamily: 'SFProText-Regular',
   },
   defaultMedium: {
     color: colors.darkGray,
-    fontSize: 13,
-    fontWeight: '500',
+    fontSize: reg,
+    fontFamily: 'SFProText-Medium',
+  },
+  defaultSemibold: {
+    color: colors.darkGray,
+    fontSize: reg,
+    fontFamily: 'SFProText-Semibold',
   },
   defaultBold: {
     color: colors.darkGray,
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: reg,
+    fontFamily: 'SFProText-Bold',
   },
   // LARGE, 15px
   largeThin: {
     color: colors.darkGray,
-    fontSize: 15,
-    fontWeight: '300',
+    fontSize: large,
+    fontFamily: 'SFProText-Thin',
   },
-  largeText: {
+  largeLight: {
     color: colors.darkGray,
-    fontSize: 15,
-    fontWeight: '400',
+    fontSize: large,
+    fontFamily: 'SFProText-Light',
+  },
+  largeRegular: {
+    color: colors.darkGray,
+    fontSize: large,
+    fontFamily: 'SFProText-Regular',
   },
   largeMedium: {
     color: colors.darkGray,
-    fontSize: 15,
-    fontWeight: '500',
+    fontSize: large,
+    fontFamily: 'SFProText-Medium',
+  },
+  largeSemibold: {
+    color: colors.darkGray,
+    fontSize: large,
+    fontFamily: 'SFProText-Semibold',
   },
   largeBold: {
     color: colors.darkGray,
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: large,
+    fontFamily: 'SFProText-Bold',
   },
-  // HEADER, 17px
-  headerTitle: {
+  // HUGE, 17px
+  hugeThin: {
     color: colors.darkGray,
-    fontSize: 17,
-    fontWeight: '600',
+    fontSize: huge,
+    fontFamily: 'SFProText-Thin',
   },
-  hugeText: {
+  hugeLight: {
     color: colors.darkGray,
-    fontSize: 17,
-    fontWeight: '400',
+    fontSize: huge,
+    fontFamily: 'SFProText-Light',
+  },
+  hugeRegular: {
+    color: colors.darkGray,
+    fontSize: huge,
+    fontFamily: 'SFProText-Regular',
   },
   hugeMedium: {
     color: colors.darkGray,
-    fontSize: 17,
-    fontWeight: '500',
+    fontSize: huge,
+    fontFamily: 'SFProText-Medium',
+  },
+  hugeSemibold: {
+    color: colors.darkGray,
+    fontSize: huge,
+    fontFamily: 'SFProText-Semibold',
   },
   hugeBold: {
     color: colors.darkGray,
-    fontSize: 17,
-    fontWeight: '600',
+    fontSize: huge,
+    fontFamily: 'SFProText-Bold',
+  },
+
+  headerTitle: {
+    color: colors.darkGray,
+    fontSize: huge,
+    fontFamily: 'SFProText-Bold',
   },
   paddingBottomNav: {
     paddingBottom: 50,
@@ -115,7 +167,7 @@ const styles = StyleSheet.create({
       width: 0,
       height: 3,
     },
-    shadowOpacity: 0.07,
+    shadowOpacity: 0.12,
     shadowRadius: 6,
 
     // elevation: 3,

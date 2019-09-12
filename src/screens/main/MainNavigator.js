@@ -2,6 +2,8 @@ import React from 'react';
 import { createDrawerNavigator, createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import colors from 'styles/colors';
+
 import CustomDrawer from 'library/components/CustomDrawer';
 import AccountScreen from './AccountScreen';
 import SettingsScreen from './SettingsScreen';
@@ -38,7 +40,7 @@ const PeopleStack = createStackNavigator(
   {
     initialRouteName: 'Suggestions',
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: '#5A50CC',
+      headerTintColor: colors.purp,
       headerStyle: {
         backgroundColor: '#fff',
       },
@@ -46,7 +48,7 @@ const PeopleStack = createStackNavigator(
         <Icon
           name="account-circle"
           size={25}
-          color="#5A50CC"
+          color={colors.purp}
           style={{ paddingLeft: 15 }}
           onPress={() => navigation.openDrawer()}
         />
@@ -64,7 +66,7 @@ const InboxStack = createStackNavigator(
   {
     initialRouteName: 'Messages',
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: '#5A50CC',
+      headerTintColor: colors.purp,
       headerStyle: {
         backgroundColor: '#fff',
       },
@@ -72,7 +74,7 @@ const InboxStack = createStackNavigator(
         <Icon
           name="account-circle"
           size={25}
-          color="#5A50CC"
+          color={colors.purp}
           style={{ paddingLeft: 15 }}
           onPress={() => navigation.openDrawer()}
         />
@@ -89,7 +91,7 @@ const NetworkStack = createStackNavigator(
   {
     initialRouteName: 'Network',
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: '#5A50CC',
+      headerTintColor: colors.purp,
       headerStyle: {
         backgroundColor: '#fff',
       },
@@ -97,7 +99,7 @@ const NetworkStack = createStackNavigator(
         <Icon
           name="account-circle"
           size={25}
-          color="#5A50CC"
+          color={colors.purp}
           style={{ paddingLeft: 15 }}
           onPress={() => navigation.openDrawer()}
         />
@@ -140,7 +142,7 @@ const TabNavigator = createBottomTabNavigator(
       },
     }),
     tabBarOptions: {
-      activeTintColor: '#5A50CC',
+      activeTintColor: colors.purp,
       inactiveTintColor: 'rgba(64, 64, 64, 0.2)',
       showLabel: false,
     },
@@ -153,7 +155,7 @@ const AccountStack = createStackNavigator(
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: '#5A50CC',
+      headerTintColor: colors.purp,
       headerStyle: {
         backgroundColor: '#fff',
       },
@@ -161,7 +163,7 @@ const AccountStack = createStackNavigator(
         <Icon
           name="account-circle"
           size={25}
-          color="#5A50CC"
+          color={colors.purp}
           style={{ paddingLeft: 15 }}
           onPress={() => navigation.openDrawer()}
         />
@@ -177,7 +179,7 @@ const SettingsStack = createStackNavigator(
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: '#5A50CC',
+      headerTintColor: colors.purp,
       headerStyle: {
         backgroundColor: '#fff',
       },
@@ -185,7 +187,7 @@ const SettingsStack = createStackNavigator(
         <Icon
           name="account-circle"
           size={25}
-          color="#5A50CC"
+          color={colors.purp}
           style={{ paddingLeft: 15 }}
           onPress={() => navigation.openDrawer()}
         />

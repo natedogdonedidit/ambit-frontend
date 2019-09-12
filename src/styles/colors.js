@@ -1,5 +1,6 @@
 const colors = {
-  purp: '#5A50CC',
+  // purp: '#5A50CC',  // original purp
+  purp: '#4E6EF4',
   blue: '#3476E2',
   green: '#588E5F',
   purpO: '#5A50CC33',

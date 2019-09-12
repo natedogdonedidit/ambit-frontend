@@ -4,6 +4,7 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import colors from 'styles/colors';
+import defaultStyles from 'styles/defaultStyles';
 
 const ProfileTabs = ({ tabState, setTabState }) => {
   const tabNames = ['Bio', 'Goals & Posts', 'Network'];
@@ -55,15 +56,12 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   tabText: {
+    ...defaultStyles.largeRegular,
     color: colors.darkGray,
     opacity: 0.6,
-    fontSize: 14,
-    fontWeight: '400',
   },
   tabSelectedText: {
+    ...defaultStyles.largeSemibold,
     color: colors.purp,
-    opacity: 1.0,
-    fontSize: 14,
-    fontWeight: '600',
   },
 });

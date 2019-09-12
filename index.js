@@ -4,6 +4,7 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-boost';
 import { setContext } from 'apollo-link-context';
 import { onError } from 'apollo-link-error';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { UserContextProvider } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
@@ -50,9 +51,11 @@ const client = new ApolloClient({
 const App = () => {
   return (
     <ApolloProvider client={client}>
-      <UserContextProvider>
-        <AppContainer />
-      </UserContextProvider>
+      <SafeAreaProvider>
+        <UserContextProvider>
+          <AppContainer />
+        </UserContextProvider>
+      </SafeAreaProvider>
     </ApolloProvider>
   );
 };

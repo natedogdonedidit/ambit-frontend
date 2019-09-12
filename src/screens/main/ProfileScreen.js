@@ -1,6 +1,18 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, ScrollView, Text, Image, ImageBackground, Alert, StatusBar } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  ScrollView,
+  Text,
+  Image,
+  ImageBackground,
+  Alert,
+  StatusBar,
+  Animated,
+} from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
@@ -8,6 +20,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { UserContext } from 'library/utils/UserContext';
 import WhiteButton from 'library/components/UI/WhiteButton';
+import TextButton from 'library/components/UI/TextButton';
 import ProfileTabs from 'library/components/ProfileTabs';
 import EditBioModal from 'library/components/modals/EditBioModal';
 import EditSkillsModal from 'library/components/modals/EditSkillsModal';
@@ -17,12 +30,16 @@ import Loader from 'library/components/UI/Loader';
 import ProfileBio from 'library/components/ProfileBio';
 import ProfilePosts from 'library/components/ProfilePosts';
 import ProfileNetwork from 'library/components/ProfileNetwork';
-import LinearGradient from 'react-native-linear-gradient';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import LargeProfilePic from 'library/components/UI/LargeProfilePic';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
-const bannerExample =
-  'https://images.unsplash.com/photo-1460134741496-83752c8919df?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80';
+const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
+
+const HEADER_MAX_HEIGHT = 120;
+const HEADER_MIN_HEIGHT = 40;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+
+const ADDED_ANIMATION_DISTANCE = 100;
 
 const ProfileScreen = ({ navigation }) => {
   // VARIABLES
@@ -46,11 +63,13 @@ const ProfileScreen = ({ navigation }) => {
   const [activeExperience, setActiveExperience] = useState({});
   const [activeEducation, setActiveEducation] = useState({});
 
+  const [scrollY] = useState(new Animated.Value(0)); // change initial value
+
   // CONTEXT & USER CHECK
   const { currentUserId } = useContext(UserContext);
   const profileId = navigation.getParam('profileId', 'NO-ID');
-  const isMyProfile = currentUserId === profileId;
-  // const isMyProfile = false;
+  // const isMyProfile = currentUserId === profileId;
+  const isMyProfile = false;
 
   // QUERIES
   const { loading, error, data } = useQuery(SINGLE_USER_BIO, {
@@ -100,67 +119,67 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisibleEducation(true);
   };
 
+  const insets = useSafeArea();
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="dark-content" />
-      <ScrollView contentContainerStyle={styles.scrollView} stickyHeaderIndices={[1]}>
-        <View style={{ width: '100%' }}>
-          <LinearGradient
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            colors={[colors.blueGradient, colors.purpGradient]}
-            style={styles.linearGradient}
-          >
-            <ImageBackground
-              resizeMode="cover"
-              style={{ width: '100%' }}
-              imageStyle={{ opacity: 0.0 }}
-              source={{
-                uri: user.profileBanner || bannerExample,
-              }}
-            >
-              <View style={styles.profileBox}>
-                <View style={{ ...styles.profilePicView }}>
-                  <Image
-                    style={{ ...styles.profilePic }}
-                    resizeMode="cover"
-                    source={{
-                      uri: user.profilePic || profilePicExample,
-                    }}
-                  />
-                </View>
-                <Text style={{ ...defaultStyles.hugeText, ...styles.name }}>{user.name}</Text>
-                <Text style={{ ...defaultStyles.defaultRegular, ...styles.job }}>
-                  {user.jobTitle || 'Job title'} | {user.location || 'Location'}
-                </Text>
-                <View style={styles.twoButtons}>
-                  {isMyProfile ? (
-                    <WhiteButton onPress={() => setModalVisibleBio(true)}>Edit Profile</WhiteButton>
-                  ) : (
-                    <>
-                      <WhiteButton onPress={() => null}>Follow</WhiteButton>
-                      <WhiteButton onPress={() => null}>Connect</WhiteButton>
-                    </>
-                  )}
-                </View>
+      <View style={{ height: HEADER_MIN_HEIGHT, width: '100%' }} />
+      <Animated.ScrollView
+        style={[
+          {
+            width: '100%',
+            flex: 1,
+            backgroundColor: 'white',
+          },
+        ]}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: scrollY,
+                },
+              },
+            },
+          ],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={1}
+        stickyHeaderIndices={[1]}
+      >
+        <View style={styles.profileBox}>
+          <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
+          <Text style={{ ...defaultStyles.defaultText, ...styles.job }}>
+            {user.jobTitle || 'Job title'} | {user.location || 'Location'}
+          </Text>
+          <View style={styles.stats}>
+            <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>372</Text>
+            <Text style={{ ...defaultStyles.smallLight, marginRight: 20 }}>Followers</Text>
+            <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>32</Text>
+            <Text style={{ ...defaultStyles.smallLight, marginRight: 20 }}>Connections</Text>
+            <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>402</Text>
+            <Text style={{ ...defaultStyles.smallLight, marginRight: 20 }}>Posts</Text>
+          </View>
+          {true && (
+            <View style={styles.whiteButtons}>
+              <WhiteButton active onPress={() => null}>
+                Follow
+              </WhiteButton>
+              <WhiteButton buttonStyle={{ marginLeft: 10 }} onPress={() => null}>
+                Connect
+              </WhiteButton>
+              <WhiteButton buttonStyle={{ marginLeft: 10 }} onPress={() => null}>
+                Meet
+              </WhiteButton>
+            </View>
+          )}
 
-                <TouchableOpacity onPress={() => null}>
-                  <View style={styles.websiteView}>
-                    <View>
-                      <Image
-                        source={require('../../images/internet.png')}
-                        resizeMode="contain"
-                        style={{ width: 18, height: 18 }}
-                      />
-                    </View>
-                    <Text style={{ ...defaultStyles.smallText, ...styles.websiteFont }}>
-                      {user.website || 'wwww.mywebsite.com'}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </ImageBackground>
-          </LinearGradient>
+          {isMyProfile && (
+            <View style={styles.editProfileButton}>
+              <TextButton onPress={() => setModalVisibleBio(true)}>Edit</TextButton>
+            </View>
+          )}
         </View>
 
         <ProfileTabs tabState={tabState} setTabState={setTabState} />
@@ -175,7 +194,91 @@ const ProfileScreen = ({ navigation }) => {
         )}
         {tabState === 1 && <ProfilePosts />}
         {tabState === 2 && <ProfileNetwork />}
-      </ScrollView>
+        {/* <View style={{ width: '100%', height: 500, backgroundColor: 'blue' }} /> */}
+      </Animated.ScrollView>
+
+      <Animated.View
+        style={[
+          styles.slidingBannerView,
+          {
+            height: HEADER_MAX_HEIGHT + insets.top,
+            transform: [
+              {
+                translateY: scrollY.interpolate({
+                  inputRange: [0, HEADER_SCROLL_DISTANCE],
+                  outputRange: [0, -HEADER_SCROLL_DISTANCE],
+                  extrapolate: 'clamp',
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <Animated.Image
+          style={{
+            height: HEADER_MAX_HEIGHT + insets.top,
+            width: '100%',
+            opacity: scrollY.interpolate({
+              inputRange: [HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + ADDED_ANIMATION_DISTANCE],
+              outputRange: [1, 0.4],
+              extrapolate: 'clamp',
+            }),
+          }}
+          resizeMode="cover"
+          source={{
+            uri: user.profileBanner || bannerExample,
+          }}
+        />
+        <Animated.View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            alignItems: 'center',
+            width: '100%',
+            opacity: scrollY.interpolate({
+              inputRange: [HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + ADDED_ANIMATION_DISTANCE],
+              outputRange: [0, 1],
+              extrapolate: 'clamp',
+            }),
+          }}
+        >
+          <Text style={{ ...defaultStyles.largeSemibold, color: 'white', padding: 10 }}>{user.name}</Text>
+        </Animated.View>
+      </Animated.View>
+      <Animated.View
+        style={{
+          position: 'absolute',
+          left: 20,
+          top: HEADER_MAX_HEIGHT + insets.top - 18,
+          opacity: scrollY.interpolate({
+            inputRange: [HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + ADDED_ANIMATION_DISTANCE],
+            outputRange: [1, 0],
+            extrapolate: 'clamp',
+          }),
+          transform: [
+            {
+              translateY: scrollY.interpolate({
+                inputRange: [0, HEADER_MAX_HEIGHT],
+                outputRange: [0, -HEADER_MAX_HEIGHT],
+                extrapolate: 'clamp',
+              }),
+            },
+            {
+              scale: scrollY.interpolate({
+                inputRange: [HEADER_MAX_HEIGHT - 10, HEADER_MAX_HEIGHT + 50],
+                outputRange: [1, 0.1],
+                extrapolate: 'clamp',
+              }),
+            },
+          ],
+          ...defaultStyles.shadow3,
+        }}
+      >
+        <LargeProfilePic pic={user.profilePic} intro={user.intro} />
+      </Animated.View>
+
       <EditBioModal modalVisible={modalVisibleBio} setModalVisible={setModalVisibleBio} user={user} />
       <EditExperienceModal
         modalVisible={modalVisibleExperience}
@@ -201,67 +304,40 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  scrollView: {},
-  linearGradient: {},
-  profileBox: {
-    paddingTop: 30,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  profilePicView: {
-    width: 104,
-    height: 104,
-    borderRadius: 52,
-    borderWidth: 2,
-    borderColor: 'white',
-    overflow: 'hidden',
-    marginBottom: 15,
-    backgroundColor: 'white',
-  },
-  profilePic: {
+  slidingBannerView: {
     width: '100%',
-    height: '100%',
+    height: HEADER_MAX_HEIGHT,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    overflow: 'hidden',
+    backgroundColor: 'black',
   },
+  profileBox: {
+    width: '100%',
+    paddingTop: HEADER_SCROLL_DISTANCE + 70,
+    paddingHorizontal: 20,
+  },
+  profilePicView: {},
   name: {
-    color: 'white',
-    marginBottom: 5,
-    fontSize: 18,
+    marginBottom: 3,
   },
   job: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '400',
+    marginBottom: 15,
+  },
+  whiteButtons: {
+    flexDirection: 'row',
     marginBottom: 20,
   },
-  twoButtons: {
+  stats: {
     flexDirection: 'row',
-    justifyContent: 'center',
     marginBottom: 20,
   },
-  websiteView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  websiteFont: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '500',
-    paddingLeft: 10,
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowColor: colors.darkGray,
-    textShadowRadius: 12,
-  },
-  tabs: {
-    flexDirection: 'row',
-  },
-  tab: {
-    flex: 1,
-    height: 36,
-  },
-  editButton: {
-    fontSize: 14,
+  editProfileButton: {
+    position: 'absolute',
+    top: HEADER_SCROLL_DISTANCE + 10,
+    right: 20,
   },
 });
 

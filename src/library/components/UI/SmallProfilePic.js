@@ -15,7 +15,7 @@ const SmallProfilePic = () => {
   if (loading) profilePic = null;
   if (error) profilePic = null;
 
-  profilePic = data.userLoggedIn.profilePic;
+  profilePic = data.userLoggedIn.profilePic || profilePicExample;
 
   return (
     <View style={{ ...styles.profilePicView }}>
@@ -23,7 +23,7 @@ const SmallProfilePic = () => {
         style={{ ...styles.profilePic }}
         resizeMode="cover"
         source={{
-          uri: profilePic || profilePicExample,
+          uri: profilePic,
         }}
       />
     </View>

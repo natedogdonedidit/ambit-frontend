@@ -6,11 +6,19 @@ import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const ButtonDefault = ({ onPress, buttonStyle, textStyle, children }) => {
+const ButtonDefault = ({ onPress, buttonStyle, textStyle, children, active = false }) => {
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
-      <View style={{ ...styles.button, ...buttonStyle, ...defaultStyles.shadow3 }}>
-        <Text style={{ ...defaultStyles.defaultRegular, ...textStyle }}>{children}</Text>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
+      <View style={active ? { ...styles.buttonActive, ...buttonStyle } : { ...styles.button, ...buttonStyle }}>
+        <Text
+          style={
+            active
+              ? { ...defaultStyles.defaultSemibold, color: 'white', ...textStyle }
+              : { ...defaultStyles.defaultRegular, ...textStyle }
+          }
+        >
+          {children}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -18,21 +26,25 @@ const ButtonDefault = ({ onPress, buttonStyle, textStyle, children }) => {
 
 const styles = StyleSheet.create({
   button: {
-    // padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
-    borderRadius: 5,
-    height: 28,
-    width: 90,
-    marginLeft: 5,
-    marginRight: 5,
+    borderRadius: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
+    height: 32,
+    width: 100,
   },
-  // buttonText: {
-  //   color: colors.darkGray,
-  //   fontSize: 13,
-  //   fontWeight: '400',
-  // },
+  buttonActive: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.purp,
+    borderRadius: 6,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
+    height: 32,
+    width: 100,
+  },
 });
 
 export default ButtonDefault;

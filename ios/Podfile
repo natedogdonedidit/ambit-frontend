@@ -32,6 +32,10 @@ target 'Ambit1' do
   # chad added
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+
+
+
   target 'Ambit1Tests' do
     inherit! :search_paths
     # Pods for testing
