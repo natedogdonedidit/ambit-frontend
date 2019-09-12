@@ -4,15 +4,24 @@ import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
+import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
 
 import Loader from 'library/components/UI/Loader';
 import Post from 'library/components/Post';
 
-const GlobalTimeline = props => {
-  // QUERIES
+const LocalTimeline = props => {
+  const [activeLat, setActiveLat] = useState(41.50473);
+  const [activeLon, setActiveLon] = useState(-81.69075);
+  const [activeLocation, setActiveLocation] = useState('Cleveland, OH');
 
-  const { loading, error, data } = useQuery(GLOBAL_POSTS_QUERY);
+  // QUERIES
+  const { loading, error, data } = useQuery(LOCAL_POSTS_QUERY, {
+    variables: {
+      lat: activeLat,
+      lon: activeLon,
+      radius: 50,
+    },
+  });
 
   const currentTime = new Date();
 
@@ -32,7 +41,7 @@ const GlobalTimeline = props => {
     );
   }
 
-  const posts = data ? data.postsGlobal : [];
+  const posts = data ? data.postsLocal : [];
 
   const renderPosts = () => {
     return posts.map((post, i) => {
@@ -50,4 +59,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GlobalTimeline;
+export default LocalTimeline;

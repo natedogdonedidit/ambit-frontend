@@ -10,6 +10,7 @@ import HeaderBackground from 'library/components/headers/HeaderBackground';
 import NewPostModal from 'library/components/modals/NewPostModal';
 import Loader from 'library/components/UI/Loader';
 import GlobalTimeline from 'library/components/GlobalTimeline';
+import LocalTimeline from 'library/components/LocalTimeline';
 
 const HomeScreen = props => {
   const [activeTimeline, setActiveTimeline] = useState(0);
@@ -30,7 +31,7 @@ const HomeScreen = props => {
       />
 
       {activeTimeline === 0 && <GlobalTimeline />}
-      {activeTimeline === 1 && <GlobalTimeline />}
+      {activeTimeline === 1 && <LocalTimeline />}
       {activeTimeline === 2 && <GlobalTimeline />}
 
       <NewPostModal newPostModalVisible={newPostModalVisible} setNewPostModalVisible={setNewPostModalVisible} />
