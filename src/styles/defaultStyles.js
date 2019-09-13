@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   smallMute: {
     color: colors.darkGray,
     fontSize: small,
-    opacity: 0.8,
+    opacity: 0.6,
     fontFamily: 'SFProText-Regular',
   },
   smallThin: {
@@ -119,6 +119,11 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontSize: large,
     fontFamily: 'SFProText-Bold',
+  },
+  largeHeavy: {
+    color: colors.darkGray,
+    fontSize: large,
+    fontFamily: 'SFProText-Heavy',
   },
   // HUGE, 17px
   hugeThin: {

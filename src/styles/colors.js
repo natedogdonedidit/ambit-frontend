@@ -15,10 +15,11 @@ const colors = {
   darkGrayO: 'rgba(72, 74, 83, 0.5)',
   lightGray: 'rgba(233, 237, 246, 0.8)',
   iosBlue: '#126CFC',
-  borderBlack: 'rgba(0, 0, 0, 0.4)',
+  borderBlack: 'rgba(0, 0, 0, 0.5)',
   blueGradient: '#5680E9',
   purpGradient: '#8860D0',
   tagBlue: '#325B7C',
+  dimGray: '#0C090A',
 };
 
 export default colors;

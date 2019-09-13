@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 
 const RequestsScreen = props => {
   // state declaration
@@ -8,9 +8,9 @@ const RequestsScreen = props => {
   const { navigation } = props;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Requests Screen</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 

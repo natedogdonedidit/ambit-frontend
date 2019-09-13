@@ -21,7 +21,7 @@ const Education = ({ isMyProfile, education, handleSelectEducation }) => {
     return educationSorted.map((exp, i) => (
       <View key={i} style={i === education.length - 1 ? { ...styles.experienceNoBorder } : { ...styles.experience }}>
         <View style={styles.iconView}>
-          <IconF name="graduation-cap" size={20} color={colors.darkGray} />
+          <IconF name="graduation-cap" size={20} color={colors.darkGray} style={{ opacity: 0.5 }} />
         </View>
         <View style={styles.infoView}>
           <Text numberOfLines={2} ellipsizeMode="tail" style={{ ...defaultStyles.defaultMedium, ...styles.nameText }}>
@@ -34,7 +34,7 @@ const Education = ({ isMyProfile, education, handleSelectEducation }) => {
             {exp.startDateMonth} {exp.startDateYear} - {exp.currentRole ? 'Present' : `${exp.endDateMonth} ${exp.endDateYear}`}
           </Text>
           <View style={styles.locationView}>
-            <Icon name="map-marker" size={15} color={colors.darkGray} />
+            <Icon name="map-marker" size={15} color={colors.darkGray} style={{ opacity: 0.5 }} />
             <Text style={{ ...defaultStyles.smallMute, ...styles.locationText }}>{exp.location}</Text>
           </View>
         </View>
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   iconView: {
-    width: 60,
+    width: 45,
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 10,

@@ -11,11 +11,35 @@ const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uplo
 const SmallProfilePic = () => {
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
 
-  let profilePic = null;
-  if (loading) profilePic = null;
-  if (error) profilePic = null;
+  if (loading) {
+    return (
+      <View style={{ ...styles.profilePicView }}>
+        <Image
+          style={{ ...styles.profilePic }}
+          resizeMode="cover"
+          source={{
+            uri: profilePicExample,
+          }}
+        />
+      </View>
+    );
+  }
+  if (error) {
+    console.log(error.message);
+    return (
+      <View style={{ ...styles.profilePicView }}>
+        <Image
+          style={{ ...styles.profilePic }}
+          resizeMode="cover"
+          source={{
+            uri: profilePicExample,
+          }}
+        />
+      </View>
+    );
+  }
 
-  profilePic = data.userLoggedIn.profilePic || profilePicExample;
+  const profilePic = data.userLoggedIn.profilePic || profilePicExample;
 
   return (
     <View style={{ ...styles.profilePicView }}>

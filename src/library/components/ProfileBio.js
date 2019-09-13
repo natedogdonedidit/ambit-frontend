@@ -18,7 +18,7 @@ const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEdu
       </View>
       <View style={{ ...styles.projectsSection }}>
         <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
-          <Text style={{ ...defaultStyles.largeMedium }}>Projects</Text>
+          <Text style={{ ...defaultStyles.hugeMedium }}>Projects</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => null}>
               New
@@ -29,7 +29,7 @@ const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEdu
       </View>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader, paddingBottom: 5 }}>
-          <Text style={{ ...defaultStyles.largeMedium }}>Experience</Text>
+          <Text style={{ ...defaultStyles.hugeMedium }}>Experience</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => handleSelectExperience('new')}>
               New
@@ -40,7 +40,7 @@ const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEdu
       </View>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader, paddingBottom: 5 }}>
-          <Text style={{ ...defaultStyles.largeMedium }}>Education</Text>
+          <Text style={{ ...defaultStyles.hugeMedium }}>Education</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => handleSelectEducation('new')}>
               New
@@ -51,7 +51,7 @@ const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEdu
       </View>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader, paddingBottom: 15 }}>
-          <Text style={{ ...defaultStyles.largeMedium }}>Skills</Text>
+          <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => setModalVisibleSkills(true)}>
               Edit
@@ -69,16 +69,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   content: {
-    padding: 6,
+    padding: 10,
     backgroundColor: colors.lightGray,
   },
   contentSection: {
     paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 15,
+    paddingBottom: 15,
     backgroundColor: 'white',
     borderRadius: 5,
-    marginBottom: 6,
+    marginBottom: 10,
   },
   contentHeader: {
     flexDirection: 'row',
@@ -86,11 +86,11 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   projectsSection: {
-    paddingTop: 12,
+    paddingTop: 15,
     paddingBottom: 15,
     backgroundColor: 'white',
     borderRadius: 5,
-    marginBottom: 6,
+    marginBottom: 10,
   },
 });
 

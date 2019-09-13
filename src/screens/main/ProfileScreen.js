@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useSafeArea } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
@@ -31,12 +32,13 @@ import ProfileBio from 'library/components/ProfileBio';
 import ProfilePosts from 'library/components/ProfilePosts';
 import ProfileNetwork from 'library/components/ProfileNetwork';
 import LargeProfilePic from 'library/components/UI/LargeProfilePic';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
 
 const HEADER_MAX_HEIGHT = 120;
-const HEADER_MIN_HEIGHT = 40;
+const HEADER_MIN_HEIGHT = 44;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const ADDED_ANIMATION_DISTANCE = 100;
@@ -130,7 +132,7 @@ const ProfileScreen = ({ navigation }) => {
           {
             width: '100%',
             flex: 1,
-            backgroundColor: 'white',
+            backgroundColor: colors.lightGray,
           },
         ]}
         onScroll={Animated.event(
@@ -155,11 +157,11 @@ const ProfileScreen = ({ navigation }) => {
           </Text>
           <View style={styles.stats}>
             <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>372</Text>
-            <Text style={{ ...defaultStyles.smallLight, marginRight: 20 }}>Followers</Text>
+            <Text style={{ ...defaultStyles.smallThin, marginRight: 20 }}>Followers</Text>
             <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>32</Text>
-            <Text style={{ ...defaultStyles.smallLight, marginRight: 20 }}>Connections</Text>
+            <Text style={{ ...defaultStyles.smallThin, marginRight: 20 }}>Connections</Text>
             <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>402</Text>
-            <Text style={{ ...defaultStyles.smallLight, marginRight: 20 }}>Posts</Text>
+            <Text style={{ ...defaultStyles.smallThin, marginRight: 20 }}>Posts</Text>
           </View>
           {true && (
             <View style={styles.whiteButtons}>
@@ -235,8 +237,11 @@ const ProfileScreen = ({ navigation }) => {
             bottom: 0,
             left: 0,
             right: 0,
+            justifyContent: 'center',
             alignItems: 'center',
+            height: HEADER_MIN_HEIGHT,
             width: '100%',
+            padding: 5,
             opacity: scrollY.interpolate({
               inputRange: [HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + ADDED_ANIMATION_DISTANCE],
               outputRange: [0, 1],
@@ -244,7 +249,10 @@ const ProfileScreen = ({ navigation }) => {
             }),
           }}
         >
-          <Text style={{ ...defaultStyles.largeSemibold, color: 'white', padding: 10 }}>{user.name}</Text>
+          <Text style={{ ...defaultStyles.largeHeavy, color: 'white' }}>{user.name}</Text>
+          <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
+            {user.jobTitle || 'Job title'} | {user.location || 'Location'}
+          </Text>
         </Animated.View>
       </Animated.View>
       <Animated.View
@@ -279,6 +287,44 @@ const ProfileScreen = ({ navigation }) => {
         <LargeProfilePic pic={user.profilePic} intro={user.intro} />
       </Animated.View>
 
+      {/* back button */}
+      <View
+        style={{
+          position: 'absolute',
+          top: insets.top,
+          left: 12,
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <TouchableOpacity onPress={() => null} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
+          <Icon name="chevron-left" size={15} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      {/* options button */}
+      <View
+        style={{
+          position: 'absolute',
+          top: insets.top,
+          left: 12,
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
+          <Icon name="chevron-left" size={15} color="white" />
+        </TouchableOpacity>
+      </View>
+
       <EditBioModal modalVisible={modalVisibleBio} setModalVisible={setModalVisibleBio} user={user} />
       <EditExperienceModal
         modalVisible={modalVisibleExperience}
@@ -302,7 +348,7 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.lightGray,
   },
   slidingBannerView: {
     width: '100%',
@@ -318,6 +364,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: HEADER_SCROLL_DISTANCE + 70,
     paddingHorizontal: 20,
+    backgroundColor: 'white',
   },
   profilePicView: {},
   name: {
@@ -338,6 +385,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: HEADER_SCROLL_DISTANCE + 10,
     right: 20,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
 });
 

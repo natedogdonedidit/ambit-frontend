@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 
 const NetworkScreen = props => {
   // state declaration
@@ -8,9 +8,9 @@ const NetworkScreen = props => {
   const { navigation } = props;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Network Screen</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 

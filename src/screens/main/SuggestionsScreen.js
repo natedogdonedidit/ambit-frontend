@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 
 const SuggestionsScreen = props => {
   // state declaration
@@ -8,9 +8,9 @@ const SuggestionsScreen = props => {
   const { navigation } = props;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Suggestions Screen</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -21,6 +21,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#D3D0F2',
     padding: 20,
+  },
+  test: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    flex: 1,
   },
 });
 

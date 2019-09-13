@@ -20,7 +20,7 @@ const Projects = ({ projects }) => {
         <View style={{ ...styles.projectImageView }}>
           <Image style={{ ...styles.projectImage }} resizeMode="cover" source={{ uri: defaultImages[1] }} />
         </View>
-        <Text style={{ ...styles.projectText, ...defaultStyles.smallText }} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={{ ...styles.projectText, ...defaultStyles.smallRegular }} numberOfLines={1} ellipsizeMode="tail">
           Wireframes
         </Text>
       </View>
@@ -28,7 +28,7 @@ const Projects = ({ projects }) => {
         <View style={{ ...styles.projectImageView }}>
           <Image style={{ ...styles.projectImage }} resizeMode="cover" source={{ uri: defaultImages[0] }} />
         </View>
-        <Text style={{ ...styles.projectText, ...defaultStyles.smallText }} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={{ ...styles.projectText, ...defaultStyles.smallRegular }} numberOfLines={1} ellipsizeMode="tail">
           Apps
         </Text>
       </View>
@@ -37,7 +37,7 @@ const Projects = ({ projects }) => {
         <View style={{ ...styles.projectImageView }}>
           <Image style={{ ...styles.projectImage }} resizeMode="cover" source={{ uri: defaultImages[2] }} />
         </View>
-        <Text style={{ ...styles.projectText, ...defaultStyles.smallText }} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={{ ...styles.projectText, ...defaultStyles.smallRegular }} numberOfLines={1} ellipsizeMode="tail">
           Photography
         </Text>
       </View>
@@ -45,7 +45,7 @@ const Projects = ({ projects }) => {
         <View style={{ ...styles.projectImageView }}>
           <Image style={{ ...styles.projectImage }} resizeMode="cover" source={{ uri: defaultImages[3] }} />
         </View>
-        <Text style={{ ...styles.projectText, ...defaultStyles.smallText }} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={{ ...styles.projectText, ...defaultStyles.smallRegular }} numberOfLines={1} ellipsizeMode="tail">
           Westworld
         </Text>
       </View>
@@ -53,7 +53,7 @@ const Projects = ({ projects }) => {
         <View style={{ ...styles.projectImageView }}>
           <Image style={{ ...styles.projectImage }} resizeMode="cover" source={{ uri: defaultImages[4] }} />
         </View>
-        <Text style={{ ...styles.projectText, ...defaultStyles.smallText }} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={{ ...styles.projectText, ...defaultStyles.smallRegular }} numberOfLines={1} ellipsizeMode="tail">
           ForrestFinder
         </Text>
       </View>
@@ -61,7 +61,7 @@ const Projects = ({ projects }) => {
         <View style={{ ...styles.projectImageView }}>
           <Image style={{ ...styles.projectImage }} resizeMode="cover" source={{ uri: defaultImages[5] }} />
         </View>
-        <Text style={{ ...styles.projectText, ...defaultStyles.smallText }} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={{ ...styles.projectText, ...defaultStyles.smallRegular }} numberOfLines={1} ellipsizeMode="tail">
           Cars
         </Text>
       </View>

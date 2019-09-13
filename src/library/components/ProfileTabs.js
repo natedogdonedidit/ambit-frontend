@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexBasis: 0,
     flexGrow: 1,
-    height: 36,
+    height: 42,
     borderBottomColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     backgroundColor: 'white',
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   tabSelected: {
     flexBasis: 0,
     flexGrow: 1,
-    height: 36,
+    height: 42,
     borderBottomColor: colors.purp,
     borderBottomWidth: 3,
     backgroundColor: 'white',
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   tabText: {
     ...defaultStyles.largeRegular,
-    color: colors.darkGray,
+    color: 'black',
     opacity: 0.6,
   },
   tabSelectedText: {

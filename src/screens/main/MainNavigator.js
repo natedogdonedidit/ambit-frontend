@@ -19,9 +19,6 @@ const HomeStack = createStackNavigator(
     Home: HomeScreen,
     Profile: {
       screen: ProfileScreen,
-      navigationOptions: ({ navigation }) => ({
-        header: null,
-      }),
     },
   },
   {
@@ -35,24 +32,14 @@ const HomeStack = createStackNavigator(
 const PeopleStack = createStackNavigator(
   {
     Suggestions: SuggestionsScreen,
-    Profile: ProfileScreen,
+    Profile: {
+      screen: ProfileScreen,
+    },
   },
   {
     initialRouteName: 'Suggestions',
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: colors.purp,
-      headerStyle: {
-        backgroundColor: '#fff',
-      },
-      headerLeft: (
-        <Icon
-          name="account-circle"
-          size={25}
-          color={colors.purp}
-          style={{ paddingLeft: 15 }}
-          onPress={() => navigation.openDrawer()}
-        />
-      ),
+      header: null,
     }),
   }
 );
@@ -61,24 +48,14 @@ const InboxStack = createStackNavigator(
   {
     Messages: MessagesScreen,
     Requests: RequestsScreen,
-    Profile: ProfileScreen,
+    Profile: {
+      screen: ProfileScreen,
+    },
   },
   {
     initialRouteName: 'Messages',
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: colors.purp,
-      headerStyle: {
-        backgroundColor: '#fff',
-      },
-      headerLeft: (
-        <Icon
-          name="account-circle"
-          size={25}
-          color={colors.purp}
-          style={{ paddingLeft: 15 }}
-          onPress={() => navigation.openDrawer()}
-        />
-      ),
+      header: null,
     }),
   }
 );
@@ -86,24 +63,14 @@ const InboxStack = createStackNavigator(
 const NetworkStack = createStackNavigator(
   {
     Network: NetworkScreen,
-    Profile: ProfileScreen,
+    Profile: {
+      screen: ProfileScreen,
+    },
   },
   {
     initialRouteName: 'Network',
     defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: colors.purp,
-      headerStyle: {
-        backgroundColor: '#fff',
-      },
-      headerLeft: (
-        <Icon
-          name="account-circle"
-          size={25}
-          color={colors.purp}
-          style={{ paddingLeft: 15 }}
-          onPress={() => navigation.openDrawer()}
-        />
-      ),
+      header: null,
     }),
   }
 );

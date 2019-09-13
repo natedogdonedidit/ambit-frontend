@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 
 const AccountScreen = props => {
   // state declaration
@@ -8,9 +8,9 @@ const AccountScreen = props => {
   const { navigation } = props;
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>Account Screen</Text>
-    </View>
+    </SafeAreaView>
   );
 };
 
