@@ -42,7 +42,8 @@ const bannerExample =
 const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
   const [profilePic, setProfilePic] = useState(user.profilePic);
   const [bannerPic, setBannerPic] = useState(user.bannerPic);
-  const [name, setName] = useState(user.name);
+  const [firstName, setFirstName] = useState(user.firstName);
+  const [lastName, setLastName] = useState(user.lastName);
   const [jobTitle, setJobTitle] = useState(user.jobTitle);
   const [profession, setProfession] = useState(user.profession);
   const [industry, setIndustry] = useState(user.industry);
@@ -63,7 +64,9 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
     variables: {
       id: user.id,
       data: {
-        name,
+        firstName,
+        lastName,
+        name: `${firstName} ${lastName}`,
         jobTitle,
         profession,
         industry,
@@ -89,7 +92,8 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
   const resetState = () => {
     setProfilePic(user.profilePic);
     setBannerPic(user.bannerPic);
-    setName(user.name);
+    setFirstName(user.firstName);
+    setLastName(user.lastName);
     setJobTitle(user.jobTitle);
     setProfession(user.profession);
     setIndustry(user.industry);
@@ -238,13 +242,24 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
 
               <View style={styles.row}>
                 <View style={styles.rowTitle}>
-                  <Text style={{ ...defaultStyles.defaultBold }}>Name</Text>
+                  <Text style={{ ...defaultStyles.defaultBold }}>First Name</Text>
                 </View>
                 <TextInput
                   style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                  onChangeText={val => setName(val)}
-                  value={name}
-                  placeholder="Add your name"
+                  onChangeText={val => setFirstName(val)}
+                  value={firstName}
+                  placeholder="John"
+                />
+              </View>
+              <View style={styles.row}>
+                <View style={styles.rowTitle}>
+                  <Text style={{ ...defaultStyles.defaultBold }}>Last Name</Text>
+                </View>
+                <TextInput
+                  style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
+                  onChangeText={val => setLastName(val)}
+                  value={lastName}
+                  placeholder="Doe"
                 />
               </View>
               <View style={styles.row}>
@@ -270,7 +285,7 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
                 <View style={styles.rowTitle}>
                   <Text style={{ ...defaultStyles.defaultBold }}>Location</Text>
                 </View>
-                <View style={styles.rowInput}>
+                <View style={styles.rowInputNoBorder}>
                   <TouchableOpacity
                     onPress={() => setLocModalVisible(true)}
                     style={styles.touchableRow}
@@ -285,7 +300,7 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
                   </TouchableOpacity>
                 </View>
               </View>
-              <View style={styles.row}>
+              {/* <View style={styles.row}>
                 <View style={styles.rowTitle}>
                   <Text style={{ ...defaultStyles.defaultBold }}>Website</Text>
                 </View>
@@ -296,7 +311,7 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
                   placeholder="Add your website"
                   autoCapitalize="none"
                 />
-              </View>
+              </View> */}
             </View>
             <View style={styles.section}>
               <Text style={{ ...defaultStyles.largeMedium, ...styles.sectionTitle }}>Bio</Text>

@@ -8,7 +8,8 @@ import { UserContextConsumer } from 'library/utils/UserContext';
 
 const CreateAccountScreen = props => {
   // state declaration
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,7 +25,8 @@ const CreateAccountScreen = props => {
       await loginCTX(res.data.signup);
 
       // 3. clear state
-      setName('');
+      setFirstName('');
+      setLastName('');
       setEmail('');
       setPassword('');
 
@@ -44,15 +46,22 @@ const CreateAccountScreen = props => {
   return (
     <UserContextConsumer>
       {({ loginCTX }) => (
-        <Mutation mutation={SIGNUP_MUTATION} variables={{ name, email, password }} errorPolicy="all">
+        <Mutation mutation={SIGNUP_MUTATION} variables={{ firstName, lastName, email, password }} errorPolicy="all">
           {(signup, { error, loading }) => {
             return (
               <View style={styles.container}>
                 <TextInput
                   style={styles.input}
-                  placeholder="Name"
-                  value={name}
-                  onChangeText={val => setName(val)}
+                  placeholder="First Name"
+                  value={firstName}
+                  onChangeText={val => setFirstName(val)}
+                  editable={!loading}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChangeText={val => setLastName(val)}
                   editable={!loading}
                 />
                 <TextInput
@@ -81,12 +90,14 @@ const CreateAccountScreen = props => {
 
                 <NavigationEvents
                   onDidFocus={payload => {
-                    setName('');
+                    setFirstName('');
+                    setLastName('');
                     setEmail('');
                     setPassword('');
                   }}
                   onDidBlur={payload => {
-                    setName('');
+                    setFirstName('');
+                    setLastName('');
                     setEmail('');
                     setPassword('');
                   }}
@@ -132,12 +143,13 @@ CreateAccountScreen.navigationOptions = {
 };
 
 const SIGNUP_MUTATION = gql`
-  mutation SIGNUP_MUTATION($name: String!, $email: String!, $password: String!) {
-    signup(name: $name, email: $email, password: $password) {
+  mutation SIGNUP_MUTATION($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
+    signup(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
       token
       user {
         id
-        name
+        firstName
+        lastName
         email
       }
     }

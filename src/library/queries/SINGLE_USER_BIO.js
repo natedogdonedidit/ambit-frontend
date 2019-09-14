@@ -6,6 +6,8 @@ const SINGLE_USER_BIO = gql`
       id
       createdAt
       name
+      firstName
+      lastName
       email
       profilePic
       bannerPic
