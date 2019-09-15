@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   Animated,
   RefreshControl,
+  Platform,
 } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
@@ -40,7 +41,8 @@ const SLIDE_DISTANCE = BANNER_HEIGHT;
 const HomeScreen = props => {
   const [activeTimeline, setActiveTimeline] = useState(0);
   const [newPostModalVisible, setNewPostModalVisible] = useState(false);
-  const [scrollY] = useState(new Animated.Value(-180));
+  const [scrollY] = useState(new Animated.Value(Platform.OS === 'ios' ? -180 : 0));
+  // const [scrollY] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
   const [requestRefresh, setRequestRefresh] = useState(false);
 
@@ -53,8 +55,6 @@ const HomeScreen = props => {
   if (errorUser) return <Text>{`Error! ${errorUser}`}</Text>;
   const { userLoggedIn } = dataUser;
 
-  const currentTime = new Date();
-
   const onRefresh = () => {
     setRequestRefresh(true);
     setRefreshing(true);
@@ -62,16 +62,15 @@ const HomeScreen = props => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
       <View style={{ height: HEADER_HEIGHT + TABS_HEIGHT, width: '100%' }} />
       <Animated.ScrollView
-        contentInset={{ top: BANNER_HEIGHT }}
+        contentInset={{ top: Platform.OS === 'ios' ? BANNER_HEIGHT : 0 }}
         style={[
           {
             width: '100%',
             flex: 1,
             backgroundColor: 'white',
-            // marginTop: BANNER_HEIGHT,
           },
         ]}
         onScroll={Animated.event(
@@ -87,9 +86,9 @@ const HomeScreen = props => {
           { useNativeDriver: true }
         )}
         scrollEventThrottle={1}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={BANNER_HEIGHT} />}
       >
-        {/* <View style={{ height: BANNER_HEIGHT, width: '100%' }} /> */}
+        <View style={{ height: Platform.OS === 'ios' ? 0 : BANNER_HEIGHT, width: '100%' }} />
         {activeTimeline === 0 && (
           <PersonalTimeline
             requestRefresh={requestRefresh}
@@ -124,7 +123,7 @@ const HomeScreen = props => {
           transform: [
             {
               translateY: scrollY.interpolate({
-                inputRange: [-SLIDE_DISTANCE, 0],
+                inputRange: Platform.OS === 'ios' ? [-SLIDE_DISTANCE, 0] : [0, SLIDE_DISTANCE],
                 outputRange: [0, -SLIDE_DISTANCE],
                 extrapolate: 'clamp',
               }),
@@ -134,7 +133,7 @@ const HomeScreen = props => {
       >
         <View style={{ height: insets.top + HEADER_HEIGHT, width: '100%', backgroundColor: 'white' }} />
         <View style={{ height: BANNER_HEIGHT, padding: 20 }}>
-          <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>
+          {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>}
           <Text style={styles.welcomeText}>Welcome to Ambit</Text>
           <TouchableOpacity onPress={() => null}>
             <View style={styles.taskView}>
