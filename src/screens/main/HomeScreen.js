@@ -1,5 +1,16 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, TouchableOpacity, Animated } from 'react-native';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  ScrollView,
+  FlatList,
+  StatusBar,
+  TouchableOpacity,
+  Animated,
+  RefreshControl,
+} from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -18,35 +29,49 @@ import GlobalTimeline from 'library/components/GlobalTimeline';
 import LocalTimeline from 'library/components/LocalTimeline';
 import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 import TimelineTabs from 'library/components/TimelineTabs';
+import Post from 'library/components/Post';
 
 const HEADER_HEIGHT = 42;
-const SLIDER_HEIGHT = 180;
+const BANNER_HEIGHT = 180;
+const TABS_HEIGHT = 42;
+
+const SLIDE_DISTANCE = BANNER_HEIGHT;
 
 const HomeScreen = props => {
   const [activeTimeline, setActiveTimeline] = useState(0);
   const [newPostModalVisible, setNewPostModalVisible] = useState(false);
-  const [scrollY] = useState(new Animated.Value(0));
+  const [scrollY] = useState(new Animated.Value(-180));
+  const [refreshing, setRefreshing] = useState(false);
+  const [requestRefresh, setRequestRefresh] = useState(false);
 
   const { navigation } = props;
+  const insets = useSafeArea();
 
   // QUERIES
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
-  if (loading) return null;
-  if (error) return <Text>{`Error! ${error}`}</Text>;
-  const { userLoggedIn } = data;
+  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
+  if (loadingUser) return null;
+  if (errorUser) return <Text>{`Error! ${errorUser}`}</Text>;
+  const { userLoggedIn } = dataUser;
 
-  const insets = useSafeArea();
+  const currentTime = new Date();
+
+  const onRefresh = () => {
+    setRequestRefresh(true);
+    setRefreshing(true);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={{ height: HEADER_HEIGHT, width: '100%' }} />
+      <View style={{ height: HEADER_HEIGHT + TABS_HEIGHT, width: '100%' }} />
       <Animated.ScrollView
+        contentInset={{ top: BANNER_HEIGHT }}
         style={[
           {
             width: '100%',
             flex: 1,
             backgroundColor: 'white',
+            // marginTop: BANNER_HEIGHT,
           },
         ]}
         onScroll={Animated.event(
@@ -62,46 +87,69 @@ const HomeScreen = props => {
           { useNativeDriver: true }
         )}
         scrollEventThrottle={1}
-        stickyHeaderIndices={[1]}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <View style={{ height: SLIDER_HEIGHT, width: '100%' }} />
-        <TimelineTabs tabState={activeTimeline} setTabState={setActiveTimeline} />
-        <View style={{ height: 900, width: '100%', backgroundColor: colors.lightGray }} />
+        {/* <View style={{ height: BANNER_HEIGHT, width: '100%' }} /> */}
+        {activeTimeline === 0 && (
+          <PersonalTimeline
+            requestRefresh={requestRefresh}
+            setRequestRefresh={setRequestRefresh}
+            refreshing={refreshing}
+            setRefreshing={setRefreshing}
+          />
+        )}
+        {activeTimeline === 1 && (
+          <LocalTimeline
+            requestRefresh={requestRefresh}
+            setRequestRefresh={setRequestRefresh}
+            refreshing={refreshing}
+            setRefreshing={setRefreshing}
+          />
+        )}
+        {activeTimeline === 2 && (
+          <GlobalTimeline
+            requestRefresh={requestRefresh}
+            setRequestRefresh={setRequestRefresh}
+            refreshing={refreshing}
+            setRefreshing={setRefreshing}
+          />
+        )}
 
-        {/* {activeTimeline === 0 && <PersonalTimeline />}
-        {activeTimeline === 1 && <LocalTimeline />}
-        {activeTimeline === 2 && <GlobalTimeline />} */}
+        {/* <View style={{ height: 900, width: '100%', backgroundColor: 'pink' }} /> */}
       </Animated.ScrollView>
 
       <Animated.View
         style={{
           ...styles.sliderView,
-          marginTop: insets.top + HEADER_HEIGHT,
-          padding: 20,
           transform: [
             {
               translateY: scrollY.interpolate({
-                inputRange: [0, SLIDER_HEIGHT],
-                outputRange: [0, -SLIDER_HEIGHT],
+                inputRange: [-SLIDE_DISTANCE, 0],
+                outputRange: [0, -SLIDE_DISTANCE],
                 extrapolate: 'clamp',
               }),
             },
           ],
         }}
       >
-        <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>
-        <Text style={styles.welcomeText}>Welcome to Ambit</Text>
-        <TouchableOpacity onPress={() => null}>
-          <View style={styles.taskView}>
-            <View>
-              <Text style={{ ...defaultStyles.largeBold, color: 'white' }}>Learn how to use{'\n'}Ambit!</Text>
-            </View>
+        <View style={{ height: insets.top + HEADER_HEIGHT, width: '100%', backgroundColor: 'white' }} />
+        <View style={{ height: BANNER_HEIGHT, padding: 20 }}>
+          <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>
+          <Text style={styles.welcomeText}>Welcome to Ambit</Text>
+          <TouchableOpacity onPress={() => null}>
+            <View style={styles.taskView}>
+              <View>
+                <Text style={{ ...defaultStyles.largeBold, color: 'white' }}>Learn how to use{'\n'}Ambit!</Text>
+              </View>
 
-            <View>
-              <Text style={{ ...defaultStyles.defaultText, color: 'white', textAlign: 'center' }}>Step{'\n'}1/4</Text>
+              <View>
+                <Text style={{ ...defaultStyles.defaultText, color: 'white', textAlign: 'center' }}>Step{'\n'}1/4</Text>
+              </View>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
+
+        <TimelineTabs height={TABS_HEIGHT} tabState={activeTimeline} setTabState={setActiveTimeline} />
       </Animated.View>
 
       <View style={styles.headerBarView}>
@@ -110,7 +158,7 @@ const HomeScreen = props => {
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <SmallProfilePic />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => null}>
+          <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
             <Icon name="search" size={20} color={colors.darkGray} style={{ opacity: 0.6 }} />
           </TouchableOpacity>
         </View>
@@ -144,7 +192,7 @@ const styles = StyleSheet.create({
   },
   sliderView: {
     width: '100%',
-    height: SLIDER_HEIGHT,
+    // height: SLIDER_HEIGHT,
     position: 'absolute',
     top: 0,
     left: 0,
@@ -175,3 +223,36 @@ export default HomeScreen;
 // {/* {activeTimeline === 0 && <GlobalTimeline />}
 // {activeTimeline === 1 && <LocalTimeline />}
 // {activeTimeline === 2 && <GlobalTimeline />} */}
+
+// {/* <Animated.ScrollView
+// style={[
+//   {
+//     width: '100%',
+//     flex: 1,
+//     backgroundColor: 'white',
+//   },
+// ]}
+// onScroll={Animated.event(
+//   [
+//     {
+//       nativeEvent: {
+//         contentOffset: {
+//           y: scrollY,
+//         },
+//       },
+//     },
+//   ],
+//   { useNativeDriver: true }
+// )}
+// scrollEventThrottle={1}
+// stickyHeaderIndices={[1]}
+// >
+// {/* <View style={{ height: SLIDER_HEIGHT, width: '100%' }} /> */}
+// {/* <TimelineTabs tabState={activeTimeline} setTabState={setActiveTimeline} /> */ }
+
+// {/* {activeTimeline === 0 && <PersonalTimeline />}
+// {activeTimeline === 1 && <PersonalTimeline />}
+// {activeTimeline === 2 && <PersonalTimeline />} */}
+
+// <View style={{ height: 900, width: '100%', backgroundColor: 'pink' }} />
+// </Animated.ScrollView > * /}

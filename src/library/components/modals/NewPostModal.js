@@ -26,7 +26,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import TextButton from 'library/components/UI/TextButton';
 import Loader from 'library/components/UI/Loader';
-import HeaderNewPost from 'library/components/headers/HeaderNewPost';
+import HeaderWhite from 'library/components/headers/HeaderWhite';
 import HeaderBackground from 'library/components/headers/HeaderBackground';
 import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 import SelectGoalModal from 'library/components/modals/SelectGoalModal';
@@ -201,8 +201,7 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
     <Modal animationType="slide" visible={newPostModalVisible}>
       <SafeAreaView>
         <StatusBar barStyle="light-content" />
-        <HeaderBackground />
-        <HeaderNewPost handleBack={handleBack} handleSubmit={handleSubmit} />
+        <HeaderWhite handleLeft={handleBack} handleRight={handleSubmit} textLeft="Cancel" textRight="Post" title="New Post" />
         <KeyboardAvoidingView behavior="padding" enabled>
           <TouchableWithoutFeedback onPress={() => setSelectedTag(null)}>
             <View style={styles.container}>

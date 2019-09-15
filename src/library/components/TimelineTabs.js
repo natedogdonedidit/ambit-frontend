@@ -6,7 +6,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const TimelineTabs = ({ tabState, setTabState }) => {
+const TimelineTabs = ({ height, tabState, setTabState }) => {
   const tabNames = ['Home', 'Local', 'Global'];
 
   const renderTabs = () => {
@@ -21,7 +21,7 @@ const TimelineTabs = ({ tabState, setTabState }) => {
     });
   };
 
-  return <View style={styles.tabs}>{renderTabs()}</View>;
+  return <View style={{ ...styles.tabs, height }}>{renderTabs()}</View>;
 };
 
 export default TimelineTabs;
@@ -38,12 +38,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: 80,
-    height: 42,
+    height: '100%',
     backgroundColor: 'white',
   },
   tabSelected: {
     width: 80,
-    height: 42,
+    height: '100%',
     // borderBottomColor: colors.purp,
     // borderBottomWidth: 3,
     backgroundColor: 'white',

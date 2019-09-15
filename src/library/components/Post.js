@@ -79,8 +79,12 @@ const styles = StyleSheet.create({
   post: {
     flexDirection: 'row',
     paddingTop: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
+    // borderTopWidth: StyleSheet.hairlineWidth,
+    // borderTopColor: colors.borderBlack,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: colors.borderBlack,
+    backgroundColor: 'white',
+    marginTop: 6,
   },
   leftColumn: {
     flexDirection: 'column',

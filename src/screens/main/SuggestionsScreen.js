@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 
+import PersonalTimeline from 'library/components/PersonalTimeline';
+
 const SuggestionsScreen = props => {
   // state declaration
 
@@ -10,6 +12,7 @@ const SuggestionsScreen = props => {
   return (
     <SafeAreaView style={styles.container}>
       <Text>Suggestions Screen</Text>
+      {/* <PersonalTimeline /> */}
     </SafeAreaView>
   );
 };
