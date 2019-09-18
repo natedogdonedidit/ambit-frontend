@@ -6,6 +6,7 @@ import IconF from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { sortExperiences } from 'library/utils';
+import Location from 'library/components/UI/Location';
 
 const Experience = ({ isMyProfile, experience, handleSelectExperience }) => {
   const renderExperiences = () => {
@@ -33,12 +34,7 @@ const Experience = ({ isMyProfile, experience, handleSelectExperience }) => {
           <Text style={{ ...defaultStyles.defaultText, ...styles.dateText }}>
             {exp.startDateMonth} {exp.startDateYear} - {exp.currentRole ? 'Present' : `${exp.endDateMonth} ${exp.endDateYear}`}
           </Text>
-          <View style={styles.locationView}>
-            <Icon name="map-marker" size={15} color={colors.darkGray} style={{ opacity: 0.5 }} />
-            <Text numberOfLines={1} ellipsizeMode="tail" style={{ ...defaultStyles.smallMute, ...styles.locationText }}>
-              {exp.location}
-            </Text>
-          </View>
+          <Location location={exp.location} />
         </View>
         {isMyProfile && (
           <View style={{ flexDirection: 'row', alignSelf: 'stretch' }}>
@@ -90,13 +86,7 @@ const styles = StyleSheet.create({
   dateText: {
     marginBottom: 8,
   },
-  locationView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  locationText: {
-    paddingLeft: 5,
-  },
+
   editButton: {
     justifyContent: 'center',
     paddingLeft: 15,

@@ -46,7 +46,7 @@ const GoalSelect = ({ goal, activeGoal, showIcon = true, fill = true, onPress })
   const selectShadow = () => {
     if (white) return null;
     // return {};
-    return { ...defaultStyles.shadow3 };
+    return { ...defaultStyles.shadowGoal };
   };
 
   return (

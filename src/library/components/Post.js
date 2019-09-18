@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
+import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
@@ -11,10 +12,18 @@ import Goal from 'library/components/UI/Goal';
 import Tag from 'library/components/UI/Tag';
 import Heart from 'library/components/UI/Heart';
 import Comment from 'library/components/UI/Comment';
-import Coffee from 'library/components/UI/Coffee';
+import Options from 'library/components/UI/Options';
 import Share from 'library/components/UI/Share';
+import Location from 'library/components/UI/Location';
 
-const Post = ({ post, currentTime }) => {
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+const Post = ({ post, currentTime, setModalVisibleEditPost, setPostToEdit, editable = false }) => {
+  const { currentUserId } = useContext(UserContext);
+  const isMyPost = post.owner.id === currentUserId;
+
   const containsMedia = post.video || post.images.length > 0;
 
   const postTime = new Date(post.lastUpdated);
@@ -36,19 +45,24 @@ const Post = ({ post, currentTime }) => {
         <MediumProfilePic pic={post.owner.profilePic} pitch={post.pitch} intro={post.owner.intro} />
         {!!post.pitch && (
           <View style={{ alignItems: 'center', paddingTop: 1 }}>
-            <Text style={{ ...defaultStyles.smallText, color: colors.peach }}>View</Text>
-            <Text style={{ ...defaultStyles.smallText, color: colors.peach }}>Pitch</Text>
+            <Text style={{ ...defaultStyles.smallLight, color: colors.peach }}>View</Text>
+            <Text style={{ ...defaultStyles.smallLight, color: colors.peach }}>Pitch</Text>
           </View>
         )}
       </View>
       <View style={styles.rightColumn}>
         <View style={styles.topRow}>
           <View style={styles.leftSide}>
-            <Text style={defaultStyles.largeMedium}>{post.owner.name}</Text>
+            <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
+              {post.owner.name}
+              {'   '}
+              <Text style={{ ...defaultStyles.smallThinMute }}>
+                <Icon name="map-marker-alt" solid size={10} color={colors.darkGray} style={{ opacity: 0.3 }} /> {post.location}
+              </Text>
+            </Text>
             <View style={{ flex: 1 }}>{post.isGoal && <Text style={defaultStyles.smallThinMute}>is looking to:</Text>}</View>
           </View>
           <View style={styles.rightSide}>
-            {post.location && post.isGoal && <Text style={defaultStyles.smallThinMute}>{post.location}</Text>}
             <Text style={defaultStyles.smallThinMute}>
               {timeDiff} {period}
             </Text>
@@ -59,18 +73,38 @@ const Post = ({ post, currentTime }) => {
             <Goal goal={post.goal} />
           </View>
         )}
+
         <View style={styles.content}>
           <Text style={defaultStyles.defaultText}>{post.content}</Text>
         </View>
-        {post.tags.length > 0 && <View style={styles.tags}>{renderTags()}</View>}
+
+        {/* {post.tags.length > 0 && <View style={styles.tags}>{renderTags()}</View>} */}
         {/* {containsMedia && <View style={styles.media}>{renderMedia()}</View>} */}
         <View style={styles.buttons}>
-          <Comment onPress={() => null} />
-          <Coffee onPress={() => null} />
-          <Share onPress={() => null} />
-          <Heart onPress={() => null} />
+          <View style={styles.button}>
+            <Comment onPress={() => null} />
+            <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>
+          </View>
+          <View style={styles.button}>
+            <Heart onPress={() => null} />
+            <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>
+          </View>
+          <View style={styles.button}>
+            <Share onPress={() => null} />
+            <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>
+          </View>
         </View>
       </View>
+      {isMyPost && editable && (
+        <View style={{ position: 'absolute', top: 30, right: 10 }}>
+          <Options
+            onPress={() => {
+              setPostToEdit({ id: post.id, owner: post.owner.id });
+              setModalVisibleEditPost(true);
+            }}
+          />
+        </View>
+      )}
     </View>
   );
 };
@@ -85,11 +119,13 @@ const styles = StyleSheet.create({
     // borderBottomColor: colors.borderBlack,
     backgroundColor: 'white',
     marginTop: 6,
+    // marginHorizontal: 6,
+    borderRadius: 3,
   },
   leftColumn: {
     flexDirection: 'column',
     alignItems: 'center',
-    width: 74,
+    width: 64,
   },
   rightColumn: {
     flex: 1,
@@ -104,6 +140,8 @@ const styles = StyleSheet.create({
   },
   leftSide: {},
   rightSide: {
+    // flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'flex-end',
   },
   goal: {
@@ -112,8 +150,8 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
   },
   content: {
-    paddingBottom: 12,
-    paddingRight: 20,
+    paddingBottom: 15,
+    paddingRight: 15,
   },
   tags: {
     flexDirection: 'row',
@@ -123,9 +161,13 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingRight: 30,
     paddingBottom: 10,
+    alignItems: 'center',
+  },
+  button: {
+    width: 70,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 

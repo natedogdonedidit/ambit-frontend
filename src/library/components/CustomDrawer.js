@@ -22,6 +22,7 @@ const CustomDrawer = props => {
     try {
       // attempt to sign out (remove JWT token to storage)
       await logoutCTX();
+      // should make sure user is cleared from Cache CURRENT_USER_QUERY
       navigation.navigate('Auth');
     } catch (e) {
       // AsyncStorage errors would lead us here
@@ -37,9 +38,7 @@ const CustomDrawer = props => {
           <Text style={styles.headerText}>{userLoggedIn ? userLoggedIn.name : 'Name'}</Text>
         </View>
         <>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>My Profile</Text>
             </View>

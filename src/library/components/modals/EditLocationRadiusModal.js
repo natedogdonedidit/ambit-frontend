@@ -17,7 +17,7 @@ import defaultStyles from 'styles/defaultStyles';
 import TextButton from 'library/components/UI/TextButton';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
-const EditLocationModal = ({
+const EditLocationRadiusModal = ({
   locModalVisible,
   setLocModalVisible,
   location,
@@ -26,10 +26,13 @@ const EditLocationModal = ({
   setLocationLat,
   locationLon,
   setLocationLon,
+  radius,
+  setRadius,
 }) => {
   const didMountRef = useRef(false);
   const [locationInput, setLocationInput] = useState(location);
   const [locationList, setLocationList] = useState([]);
+  const [radiusText, setRadiusText] = useState(radius);
 
   async function getLocationsFromAPI() {
     const app_id = 'h9qumdLXOxidgnOtyADi';
@@ -61,9 +64,6 @@ const EditLocationModal = ({
       if (response.status === 200) {
         const responseJson = await response.json();
         if (responseJson.response) {
-          // console.log(responseJson);
-          // console.log(responseJson.response.view[0]);
-          // console.log(responseJson.response.view[0].result[0].location);
           const loc = `${responseJson.response.view[0].result[0].location.address.city}, ${responseJson.response.view[0].result[0].location.address.state}`;
           const lat = responseJson.response.view[0].result[0].location.displayPosition.latitude;
           const lon = responseJson.response.view[0].result[0].location.displayPosition.longitude;
@@ -93,6 +93,8 @@ const EditLocationModal = ({
     setLocation(location);
     setLocationLat(locationLat);
     setLocationLon(locationLon);
+    setRadius(radiusText || '10');
+    setRadiusText(radiusText || '10');
     // reset location state
     setLocationInput(location);
     setLocationList([]);
@@ -115,16 +117,29 @@ const EditLocationModal = ({
     });
   };
 
+  // const onChangeRadius = text => {};
+
   return (
-    <Modal animationType="slide" visible={locModalVisible}>
+    <Modal animationType="slide" visible={locModalVisible} keyboardShouldPersistTaps="always">
       <SafeAreaView style={{ flex: 1 }}>
-        <HeaderWhite handleLeft={handleCancel} handleRight={null} textLeft="Cancel" textRight="" title="Location" />
+        <HeaderWhite handleLeft={handleCancel} handleRight={null} textLeft="Done" textRight="" title="Location" />
+        <View style={styles.inputRow}>
+          <Text style={{ ...defaultStyles.defaultText }}>Search radius:</Text>
+          <TextInput
+            style={{ ...styles.input, ...defaultStyles.defaultText, paddingHorizontal: 10 }}
+            onChangeText={text => setRadiusText(text.replace(/[^0-9]/g, ''))}
+            value={radiusText}
+            placeholder="50"
+            keyboardType="numeric"
+          />
+          <Text style={{ ...defaultStyles.defaultText, paddingRight: 15 }}>miles</Text>
+        </View>
         <View style={styles.inputRow}>
           <TextInput
             style={{ ...styles.input, ...defaultStyles.defaultText }}
             onChangeText={val => setLocationInput(val)}
             value={locationInput}
-            placeholder="San Francisco, CA"
+            placeholder="Columbus, OH"
             autoFocus
           />
           <TouchableOpacity onPress={() => setLocationInput('')} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
@@ -142,7 +157,7 @@ const EditLocationModal = ({
   );
 };
 
-export default EditLocationModal;
+export default EditLocationRadiusModal;
 
 const styles = StyleSheet.create({
   container: {

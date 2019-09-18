@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { Mutation } from 'react-apollo';
-import gql from 'graphql-tag';
 import { HeaderBackButton, NavigationEvents } from 'react-navigation';
+import { useMutation } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
+import LOGIN_MUTATION from 'library/mutations/LOGIN_MUTATION';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const LoginScreen = props => {
   // state declaration
@@ -13,10 +14,34 @@ const LoginScreen = props => {
 
   const { loginCTX } = useContext(UserContext);
 
-  // navigation
   const { navigation } = props;
 
-  const onLoginSubmit = async login => {
+  // MUTATIONS
+  const [login, { loading, error }] = useMutation(LOGIN_MUTATION, {
+    variables: {
+      email,
+      password,
+    },
+    // wait for the response from the mutation, write User data (returned from mutation)
+    // into cache CURRENT_USER_QUERY
+    update: (proxy, { data: loginResponse }) => {
+      proxy.writeQuery({
+        query: CURRENT_USER_QUERY,
+        data: {
+          userLoggedIn: loginResponse.login.user,
+        },
+      });
+    },
+    onCompleted: () => {},
+    onError: err => {
+      console.log(err);
+      Alert.alert('Oh no!', 'An error occured when trying to login. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
+  });
+
+  const onLoginSubmit = async () => {
     try {
       // 1. send login request to backend
       const res = await login();
@@ -36,7 +61,7 @@ const LoginScreen = props => {
     }
   };
 
-  const renderErrors = error => {
+  const renderErrors = () => {
     if (!error) return null;
     return error.graphQLErrors.map(({ message }, i) => (
       <Text key={i} style={styles.error}>
@@ -46,61 +71,55 @@ const LoginScreen = props => {
   };
 
   return (
-    <Mutation mutation={LOGIN_MUTATION} variables={{ email, password }} errorPolicy="all">
-      {(login, { error, loading }) => {
-        return (
-          <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.container}>
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={val => setEmail(val)}
-                editable={!loading}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder="Password"
-                value={password}
-                onChangeText={val => setPassword(val)}
-                secureTextEntry
-                editable={!loading}
-              />
-              <TouchableOpacity onPress={() => onLoginSubmit(login)}>
-                <View style={styles.loginButton}>
-                  <Text style={{ color: 'white' }}>Log{loading ? 'ging in...' : 'in'}</Text>
-                </View>
-              </TouchableOpacity>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={val => setEmail(val)}
+          editable={!loading}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={val => setPassword(val)}
+          secureTextEntry
+          editable={!loading}
+        />
+        <TouchableOpacity onPress={() => onLoginSubmit()}>
+          <View style={styles.loginButton}>
+            <Text style={{ color: 'white' }}>Log{loading ? 'ging in...' : 'in'}</Text>
+          </View>
+        </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => null}>
-                <View style={styles.linkedinButton}>
-                  <Text style={{ color: 'white' }}>Login with LinkedIn</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => null}>
-                <View style={styles.googleButton}>
-                  <Text style={{ color: 'white' }}>Login with Google</Text>
-                </View>
-              </TouchableOpacity>
-              <Button title="Create Account" onPress={() => navigation.navigate('CreateAccount')} />
+        <TouchableOpacity onPress={() => null}>
+          <View style={styles.linkedinButton}>
+            <Text style={{ color: 'white' }}>Login with LinkedIn</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => null}>
+          <View style={styles.googleButton}>
+            <Text style={{ color: 'white' }}>Login with Google</Text>
+          </View>
+        </TouchableOpacity>
+        <Button title="Create Account" onPress={() => navigation.navigate('CreateAccount')} />
 
-              {renderErrors(error)}
+        {renderErrors()}
 
-              <NavigationEvents
-                onDidFocus={payload => {
-                  setEmail('');
-                  setPassword('');
-                }}
-                onDidBlur={payload => {
-                  setEmail('');
-                  setPassword('');
-                }}
-              />
-            </View>
-          </SafeAreaView>
-        );
-      }}
-    </Mutation>
+        <NavigationEvents
+          onDidFocus={() => {
+            setEmail('');
+            setPassword('');
+          }}
+          onDidBlur={() => {
+            setEmail('');
+            setPassword('');
+          }}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -160,16 +179,5 @@ LoginScreen.navigationOptions = ({ navigation }) => {
     headerLeft: <HeaderBackButton onPress={() => navigation.navigate('Tabs')} />,
   };
 };
-
-const LOGIN_MUTATION = gql`
-  mutation LOGIN_MUTATION($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      token
-      user {
-        id
-      }
-    }
-  }
-`;
 
 export default LoginScreen;

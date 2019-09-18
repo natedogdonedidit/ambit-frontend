@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const TimelineTabs = ({ height, tabState, setTabState }) => {
+const TimelineTabs = ({ height, tabState, setTabState, setNewPostModalVisible }) => {
   const tabNames = ['Home', 'Local', 'Global'];
 
   const renderTabs = () => {
@@ -21,28 +22,46 @@ const TimelineTabs = ({ height, tabState, setTabState }) => {
     });
   };
 
-  return <View style={{ ...styles.tabs, height }}>{renderTabs()}</View>;
+  return (
+    <View style={styles.container}>
+      <View style={{ ...styles.tabs, height }}>{renderTabs()}</View>
+      <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
+        <View style={{ justifyContent: 'center', height }}>
+          <Icon name="search" size={18} color={colors.darkGray} style={{ opacity: 0.6 }} />
+        </View>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 export default TimelineTabs;
 
 const styles = StyleSheet.create({
-  tabs: {
+  container: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     width: '100%',
-    backgroundColor: 'white',
+    paddingRight: 15,
     borderBottomColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  tabs: {
+    flexDirection: 'row',
+    // justifyContent: 'center',
+    // width: '100%',
+    backgroundColor: 'white',
+    // borderBottomColor: colors.borderBlack,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
   },
   tab: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 80,
+    width: 70,
     height: '100%',
     backgroundColor: 'white',
   },
   tabSelected: {
-    width: 80,
+    width: 70,
     height: '100%',
     // borderBottomColor: colors.purp,
     // borderBottomWidth: 3,
@@ -55,12 +74,20 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   tabText: {
-    ...defaultStyles.largeSemibold,
+    ...defaultStyles.defaultSemibold,
     color: 'black',
-    opacity: 0.3,
+    opacity: 0.4,
   },
   tabSelectedText: {
-    ...defaultStyles.largeBold,
+    ...defaultStyles.defaultBold,
     color: colors.purp,
+  },
+  newPostButton: {
+    height: 30,
+    width: 60,
+    borderRadius: 15,
+    backgroundColor: colors.purp,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

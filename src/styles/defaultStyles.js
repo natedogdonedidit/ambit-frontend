@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontSize: small,
     opacity: 0.8,
-    fontFamily: 'SFProText-Thin',
+    fontFamily: 'SFProText-Light',
   },
   smallMute: {
     color: colors.darkGray,
@@ -162,10 +162,36 @@ const styles = StyleSheet.create({
     fontSize: huge,
     fontFamily: 'SFProText-Bold',
   },
+  ambitLogo: {
+    color: colors.purp,
+    fontSize: 22,
+    fontFamily: 'SFProDisplay-Semibold',
+  },
   paddingBottomNav: {
     paddingBottom: 50,
   },
   // SHADOWS
+  shadowGoal: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+
+    // elevation: 3,
+  },
+  shadowButton: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+
   shadow3: {
     shadowColor: '#000',
     shadowOffset: {

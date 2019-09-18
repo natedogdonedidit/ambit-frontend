@@ -10,7 +10,9 @@ import { getToken, signOut } from 'library/utils/authUtil';
 
 const AuthLoadingScreen = props => {
   const { navigation } = props;
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+  const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
+    fetchPolicy: 'network-only',
+  });
   const { setCurrentUserId } = useContext(UserContext);
 
   useEffect(() => {
@@ -53,13 +55,7 @@ const AuthLoadingScreen = props => {
     );
   }
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Text>Loading User...</Text>
-      </View>
-    </SafeAreaView>
-  );
+  return <Loader full />;
 };
 
 const styles = StyleSheet.create({

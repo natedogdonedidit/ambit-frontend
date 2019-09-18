@@ -18,8 +18,11 @@ import { useQuery } from '@apollo/react-hooks';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import { UserContext } from 'library/utils/UserContext';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
+import HeaderHome from 'library/components/headers/HeaderHome';
+import HeaderBackground from 'library/components/headers/HeaderBackground';
 import NewPostModal from 'library/components/modals/NewPostModal';
 import Loader from 'library/components/UI/Loader';
 import PersonalTimeline from 'library/components/PersonalTimeline';
@@ -27,9 +30,10 @@ import GlobalTimeline from 'library/components/GlobalTimeline';
 import LocalTimeline from 'library/components/LocalTimeline';
 import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 import TimelineTabs from 'library/components/TimelineTabs';
+import Post from 'library/components/Post';
 
 const HEADER_HEIGHT = 42;
-const BANNER_HEIGHT = 140;
+const BANNER_HEIGHT = 180;
 const TABS_HEIGHT = 42;
 
 const SLIDE_DISTANCE = BANNER_HEIGHT;
@@ -37,7 +41,8 @@ const SLIDE_DISTANCE = BANNER_HEIGHT;
 const HomeScreen = props => {
   const [activeTimeline, setActiveTimeline] = useState(0);
   const [newPostModalVisible, setNewPostModalVisible] = useState(false);
-  const [scrollY] = useState(new Animated.Value(Platform.OS === 'ios' ? -BANNER_HEIGHT : 0));
+  const [scrollY] = useState(new Animated.Value(Platform.OS === 'ios' ? -180 : 0));
+  // const [scrollY] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
   const [requestRefresh, setRequestRefresh] = useState(false);
 
@@ -99,7 +104,6 @@ const HomeScreen = props => {
             setRequestRefresh={setRequestRefresh}
             refreshing={refreshing}
             setRefreshing={setRefreshing}
-            userLoggedIn={userLoggedIn}
           />
         )}
         {activeTimeline === 2 && (
@@ -130,27 +134,22 @@ const HomeScreen = props => {
       >
         <View style={{ height: insets.top + HEADER_HEIGHT, width: '100%', backgroundColor: 'white' }} />
         <View style={{ height: BANNER_HEIGHT, padding: 20 }}>
-          {/* {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>} */}
-          <Text style={styles.welcomeText}>Get started in 3 simple steps.</Text>
+          {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>}
+          <Text style={styles.welcomeText}>Welcome to Ambit</Text>
           <TouchableOpacity onPress={() => null}>
-            <View style={{ ...styles.taskView, ...defaultStyles.shadowButton }}>
+            <View style={styles.taskView}>
               <View>
                 <Text style={{ ...defaultStyles.largeBold, color: 'white' }}>Learn how to use{'\n'}Ambit!</Text>
               </View>
 
               <View>
-                <Text style={{ ...defaultStyles.defaultText, color: 'white', textAlign: 'center' }}>Step{'\n'}1/3</Text>
+                <Text style={{ ...defaultStyles.defaultText, color: 'white', textAlign: 'center' }}>Step{'\n'}1/4</Text>
               </View>
             </View>
           </TouchableOpacity>
         </View>
 
-        <TimelineTabs
-          height={TABS_HEIGHT}
-          tabState={activeTimeline}
-          setTabState={setActiveTimeline}
-          setNewPostModalVisible={setNewPostModalVisible}
-        />
+        <TimelineTabs height={TABS_HEIGHT} tabState={activeTimeline} setTabState={setActiveTimeline} />
       </Animated.View>
 
       <View style={styles.headerBarView}>
@@ -159,36 +158,18 @@ const HomeScreen = props => {
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
             <SmallProfilePic />
           </TouchableOpacity>
-          <View style={{ flex: 1, paddingRight: 30, alignItems: 'center' }}>
-            <Text style={{ ...defaultStyles.ambitLogo }}>Ambit</Text>
-          </View>
-          {/* <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
+          <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
             <Icon name="search" size={20} color={colors.darkGray} style={{ opacity: 0.6 }} />
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
       </View>
-      <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
-        <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
-          <Icon name="pen" size={18} color="white" />
-        </View>
-      </TouchableOpacity>
+
       <NewPostModal newPostModalVisible={newPostModalVisible} setNewPostModalVisible={setNewPostModalVisible} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  newPostButton: {
-    position: 'absolute',
-    bottom: 15,
-    right: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.purp,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
   container: {
     flex: 1,
     backgroundColor: colors.lightGray,
@@ -204,7 +185,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: HEADER_HEIGHT,
     flexDirection: 'row',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
     backgroundColor: 'white',
@@ -220,16 +201,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   welcomeText: {
-    fontSize: 15,
-    fontFamily: 'SFProDisplay-Light',
+    fontSize: 26,
+    fontFamily: 'SFProDisplay-Regular',
     color: colors.darkGray,
-    // marginTop: 2,
+    marginTop: 2,
   },
   taskView: {
     width: '100%',
     borderRadius: 10,
     backgroundColor: colors.purp,
-    marginTop: 15,
+    marginTop: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -238,3 +219,40 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
+// {/* {activeTimeline === 0 && <GlobalTimeline />}
+// {activeTimeline === 1 && <LocalTimeline />}
+// {activeTimeline === 2 && <GlobalTimeline />} */}
+
+// {/* <Animated.ScrollView
+// style={[
+//   {
+//     width: '100%',
+//     flex: 1,
+//     backgroundColor: 'white',
+//   },
+// ]}
+// onScroll={Animated.event(
+//   [
+//     {
+//       nativeEvent: {
+//         contentOffset: {
+//           y: scrollY,
+//         },
+//       },
+//     },
+//   ],
+//   { useNativeDriver: true }
+// )}
+// scrollEventThrottle={1}
+// stickyHeaderIndices={[1]}
+// >
+// {/* <View style={{ height: SLIDER_HEIGHT, width: '100%' }} /> */}
+// {/* <TimelineTabs tabState={activeTimeline} setTabState={setActiveTimeline} /> */ }
+
+// {/* {activeTimeline === 0 && <PersonalTimeline />}
+// {activeTimeline === 1 && <PersonalTimeline />}
+// {activeTimeline === 2 && <PersonalTimeline />} */}
+
+// <View style={{ height: 900, width: '100%', backgroundColor: 'pink' }} />
+// </Animated.ScrollView > * /}

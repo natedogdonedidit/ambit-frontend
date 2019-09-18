@@ -40,7 +40,7 @@ const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefr
     );
   }
 
-  const posts = data ? data.postsGlobal : [];
+  const posts = data.postsGlobal || [];
   // console.log(posts);
 
   return (

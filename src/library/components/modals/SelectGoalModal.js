@@ -7,8 +7,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { invest, hire, connect } from 'library/utils/lists';
 
-import HeaderSelectGoal from 'library/components/headers/HeaderSelectGoal';
-import HeaderBackground from 'library/components/headers/HeaderBackground';
+import HeaderWhite from 'library/components/headers/HeaderWhite';
 import GoalSelect from 'library/components/UI/GoalSelect';
 
 const SelectGoalModal = ({ goalModalVisible, setGoalModalVisible, goal, setGoal, isGoal, setIsGoal }) => {
@@ -32,8 +31,7 @@ const SelectGoalModal = ({ goalModalVisible, setGoalModalVisible, goal, setGoal,
     <Modal animationType="slide" visible={goalModalVisible}>
       <SafeAreaView>
         <StatusBar barStyle="light-content" />
-        <HeaderBackground />
-        <HeaderSelectGoal setGoalModalVisible={setGoalModalVisible} />
+        <HeaderWhite handleLeft={() => setGoalModalVisible(false)} textLeft="Cancel" title="Select a Goal" />
 
         <View style={styles.container}>
           <ScrollView contentContainerStyle={styles.content}>

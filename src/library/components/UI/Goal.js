@@ -31,7 +31,7 @@ const Goal = ({ goal, onPress }) => {
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
-      <View style={{ ...defaultStyles.shadow3, backgroundColor: 'white', borderRadius: 10 }}>
+      <View style={{ ...defaultStyles.shadowGoal, backgroundColor: 'white', borderRadius: 10 }}>
         <View style={{ ...styles.goalView, ...selectBackground() }}>
           {selectIcon()}
           <Text style={{ ...defaultStyles.defaultMedium, ...selectText() }}>{goal}</Text>

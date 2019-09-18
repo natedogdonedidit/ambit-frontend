@@ -8,7 +8,8 @@ import defaultStyles from 'styles/defaultStyles';
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
 const MediumProfilePic = ({ pic, pitch, intro }) => {
-  const needsBorder = !!pitch || !!intro;
+  // const needsBorder = !!pitch || !!intro;
+  const needsBorder = true;
 
   return (
     <View style={needsBorder ? styles.outterCircle : null}>
@@ -16,7 +17,7 @@ const MediumProfilePic = ({ pic, pitch, intro }) => {
         <LinearGradient
           start={{ x: 0.4, y: 0.4 }}
           end={{ x: 1, y: 1 }}
-          colors={[colors.blueGradient, colors.purpGradient]}
+          colors={[colors.purp, colors.purpGradient]}
           style={styles.linearGradient}
         />
       )}
@@ -43,16 +44,16 @@ const MediumProfilePic = ({ pic, pitch, intro }) => {
 
 const styles = StyleSheet.create({
   profilePicView: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: 'white',
   },
   whiteBorder: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     borderWidth: 2,
     borderColor: 'white',
     marginTop: 1.5,
@@ -63,9 +64,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   outterCircle: {
-    width: 51,
-    height: 51,
-    borderRadius: 25.5,
+    width: 47,
+    height: 47,
+    borderRadius: 23.5,
     overflow: 'hidden',
     backgroundColor: 'white',
   },

@@ -8,8 +8,8 @@ const PopupBackground = ({ dim }) => {
 const styles = StyleSheet.create({
   containerDim: {
     ...StyleSheet.absoluteFill,
-    width: '100%',
-    height: '100%',
+    // width: '100%',
+    // height: '100%',
     backgroundColor: 'black',
     opacity: 0.4,
     zIndex: 10,

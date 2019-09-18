@@ -11,21 +11,10 @@ const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uplo
 const SmallProfilePic = () => {
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
 
-  if (loading) {
-    return (
-      <View style={{ ...styles.profilePicView }}>
-        <Image
-          style={{ ...styles.profilePic }}
-          resizeMode="cover"
-          source={{
-            uri: profilePicExample,
-          }}
-        />
-      </View>
-    );
-  }
-  if (error) {
-    console.log(error.message);
+  if (loading || !data.userLoggedIn || error) {
+    if (error) {
+      console.log(error.message);
+    }
     return (
       <View style={{ ...styles.profilePicView }}>
         <Image

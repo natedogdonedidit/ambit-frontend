@@ -12,11 +12,13 @@ import {
   Animated,
   TouchableOpacity,
 } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useSafeArea } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+import MY_POSTS_QUERY from 'library/queries/MY_POSTS_QUERY';
+import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -28,6 +30,8 @@ import EditBioModal from 'library/components/modals/EditBioModal';
 import EditSkillsModal from 'library/components/modals/EditSkillsModal';
 import EditExperienceModal from 'library/components/modals/EditExperienceModal';
 import EditEducationModal from 'library/components/modals/EditEducationModal';
+import EditPostModal from 'library/components/modals/EditPostModal';
+import PopupBackground from 'library/components/modals/PopupBackground';
 import Loader from 'library/components/UI/Loader';
 import ProfileBio from 'library/components/ProfileBio';
 import ProfilePosts from 'library/components/ProfilePosts';
@@ -62,8 +66,10 @@ const ProfileScreen = ({ navigation }) => {
   const [modalVisibleSkills, setModalVisibleSkills] = useState(false);
   const [modalVisibleExperience, setModalVisibleExperience] = useState(false);
   const [modalVisibleEducation, setModalVisibleEducation] = useState(false);
+  const [modalVisibleEditPost, setModalVisibleEditPost] = useState(false);
   const [activeExperience, setActiveExperience] = useState({});
   const [activeEducation, setActiveEducation] = useState({});
+  const [postToEdit, setPostToEdit] = useState({ id: null, owner: null });
 
   const [scrollY] = useState(new Animated.Value(0));
 
@@ -78,7 +84,21 @@ const ProfileScreen = ({ navigation }) => {
     variables: { id: profileId },
   });
 
-  if (loading) return <Loader active={loading} />;
+  const [deletePost, payloadDelete] = useMutation(DELETE_POST_MUTATION, {
+    variables: {
+      owner: postToEdit.owner,
+      id: postToEdit.id,
+    },
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }, { query: MY_POSTS_QUERY }],
+    onCompleted: () => {},
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+  const loadingDelete = payloadDelete.loading;
+
+  if (loading || loadingDelete) return <Loader active={loading || loadingDelete} full />;
   if (error) {
     console.log('ERROR LOADING USER:', error.message);
     return (
@@ -119,6 +139,12 @@ const ProfileScreen = ({ navigation }) => {
 
     setActiveEducation(educationToEdit || blankExperience);
     setModalVisibleEducation(true);
+  };
+
+  const handleDeletePost = () => {
+    deletePost();
+    setModalVisibleEditPost(false);
+    setPostToEdit({ id: null, owner: null });
   };
 
   const insets = useSafeArea();
@@ -194,7 +220,9 @@ const ProfileScreen = ({ navigation }) => {
             setModalVisibleSkills={setModalVisibleSkills}
           />
         )}
-        {tabState === 1 && <ProfilePosts />}
+        {tabState === 1 && (
+          <ProfilePosts setModalVisibleEditPost={setModalVisibleEditPost} setPostToEdit={setPostToEdit} navigation={navigation} />
+        )}
         {tabState === 2 && <ProfileNetwork />}
         {/* <View style={{ width: '100%', height: 500, backgroundColor: 'blue' }} /> */}
       </Animated.ScrollView>
@@ -261,7 +289,7 @@ const ProfileScreen = ({ navigation }) => {
           left: 20,
           top: HEADER_MAX_HEIGHT + insets.top - 18,
           opacity: scrollY.interpolate({
-            inputRange: [HEADER_SCROLL_DISTANCE, HEADER_SCROLL_DISTANCE + ADDED_ANIMATION_DISTANCE],
+            inputRange: [60, HEADER_MAX_HEIGHT - 20],
             outputRange: [1, 0],
             extrapolate: 'clamp',
           }),
@@ -274,11 +302,30 @@ const ProfileScreen = ({ navigation }) => {
               }),
             },
             {
-              scale: scrollY.interpolate({
-                inputRange: [HEADER_MAX_HEIGHT - 10, HEADER_MAX_HEIGHT + 50],
-                outputRange: [1, 0.1],
+              translateY: scrollY.interpolate({
+                inputRange: [60, HEADER_MAX_HEIGHT],
+                outputRange: [0, 20],
                 extrapolate: 'clamp',
               }),
+            },
+            {
+              translateX: scrollY.interpolate({
+                inputRange: [60, HEADER_MAX_HEIGHT],
+                outputRange: [0, -30],
+                extrapolate: 'clamp',
+              }),
+            },
+            {
+              scale: scrollY.interpolate({
+                inputRange: [60, HEADER_MAX_HEIGHT],
+                outputRange: [1, 0],
+                extrapolate: 'clamp',
+              }),
+              // scale: scrollY.interpolate({
+              //   inputRange: [HEADER_MAX_HEIGHT - 10, HEADER_MAX_HEIGHT + 50],
+              //   outputRange: [1, 0.1],
+              //   extrapolate: 'clamp',
+              // }),
             },
           ],
           ...defaultStyles.shadow3,
@@ -341,6 +388,12 @@ const ProfileScreen = ({ navigation }) => {
         owner={currentUserId}
       />
       <EditSkillsModal modalVisible={modalVisibleSkills} setModalVisible={setModalVisibleSkills} user={user} />
+      <EditPostModal
+        modalVisibleEditPost={modalVisibleEditPost}
+        setModalVisibleEditPost={setModalVisibleEditPost}
+        handleDeletePost={handleDeletePost}
+      />
+      <PopupBackground dim={modalVisibleEditPost} />
     </SafeAreaView>
   );
 };

@@ -4,16 +4,13 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 
 import colors from 'styles/colors';
+import defaultStyles from 'styles/defaultStyles';
 
 const TextButton = ({ onPress, buttonStyle, textStyle, children }) => {
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      activeOpacity={0.5}
-      hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
-    >
+    <TouchableOpacity onPress={onPress} activeOpacity={0.5} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
       <View style={{ ...styles.button, ...buttonStyle }}>
-        <Text style={{ ...styles.buttonText, ...textStyle }}>{children}</Text>
+        <Text style={{ ...defaultStyles.defaultLight, ...styles.buttonText, ...textStyle }}>{children}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -26,8 +23,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: colors.iosBlue,
-    fontSize: 14,
-    fontWeight: '400',
   },
 });
 

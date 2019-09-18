@@ -17,6 +17,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 // import { useQuery, useMutation } from 'react-apollo';
 
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
@@ -74,9 +75,7 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
   const { currentUserId } = useContext(UserContext);
 
   // QUERIES
-  const payloadUser = useQuery(SINGLE_USER_BIO, {
-    variables: { id: currentUserId },
-  });
+  const payloadUser = useQuery(CURRENT_USER_QUERY);
   const loadingUser = payloadUser.loading;
   const errorUser = payloadUser.error;
   const dataUser = payloadUser.data;
@@ -210,10 +209,17 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
                   {goal ? (
                     <Goal goal={goal} onPress={() => setGoalModalVisible(true)} />
                   ) : (
-                    <View style={styles.selectGoalButton}>
-                      <Text style={defaultStyles.defaultText}>Select a goal</Text>
-                      <Icon name="chevron-right" size={12} color={colors.darkGray} style={{ paddingLeft: 15 }} />
-                    </View>
+                    <>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={styles.selectGoalButton}>
+                          <Text style={defaultStyles.defaultText}>Select a goal</Text>
+                          <Icon name="chevron-right" size={12} color={colors.darkGray} style={{ paddingLeft: 15 }} />
+                        </View>
+                        <View style={{ marginLeft: 15 }}>
+                          <Text style={{ ...defaultStyles.defaultText, opacity: 0.4 }}>(Optional)</Text>
+                        </View>
+                      </View>
+                    </>
                   )}
                 </TouchableOpacity>
 
@@ -242,8 +248,8 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
                       <Icon name="image" size={20} color={colors.darkGray} style={{ opacity: 0.7 }} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => null}>
-                      <View style={{ ...styles.pitchView, ...defaultStyles.shadow3 }}>
-                        <Text style={{ ...defaultStyles.smallMedium, ...styles.pitchText }}>Pitch</Text>
+                      <View style={{ ...styles.pitchView, ...defaultStyles.shadowButton }}>
+                        <Text style={{ ...defaultStyles.smallMedium, color: 'white' }}>Record Pitch</Text>
                         <Icon name="play" size={12} color="white" style={{ paddingLeft: 7 }} />
                       </View>
                     </TouchableOpacity>
@@ -371,12 +377,7 @@ const styles = StyleSheet.create({
     height: 28,
     paddingHorizontal: 10,
     borderRadius: 10,
-    backgroundColor: colors.blueGradient,
-  },
-  pitchText: {
-    fontSize: 12,
-    fontWeight: '400',
-    color: 'white',
+    backgroundColor: colors.purp,
   },
   tagsInputView: {
     flexDirection: 'row',

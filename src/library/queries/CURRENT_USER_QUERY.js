@@ -9,6 +9,9 @@ export default CURRENT_USER_QUERY = gql`
       name
       email
       profilePic
+      location
+      locationLat
+      locationLon
     }
   }
 `;
