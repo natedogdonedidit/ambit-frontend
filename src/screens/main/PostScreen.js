@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Text, TextInput, Alert } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text, TextInput, Alert, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
-// import PostGroup from 'library/components/PostGroup';
+import PostGroupTL from 'library/components/PostGroupTL';
 import MediumProfilePic from 'library/components/UI/MediumProfilePic';
 import ALL_COMMENTS_QUERY from 'library/queries/ALL_COMMENTS_QUERY';
 import Loader from 'library/components/UI/Loader';
@@ -16,9 +16,9 @@ const PostScreen = ({ navigation }) => {
   // constants
   const post = navigation.getParam('post', null); // all the data from parent post down to updates
   const isUpdate = navigation.getParam('isUpdate', false);
-  const updateId = navigation.getParam('updateId', null);
+  const updateInd = navigation.getParam('updateInd', null);
 
-  const idForComments = isUpdate ? updateId : post.id;
+  const idForComments = isUpdate ? post.updates[updateInd].id : post.id;
 
   // QUERIES - this gets the comments for a
   const { loading, error, data } = useQuery(ALL_COMMENTS_QUERY, {
@@ -28,9 +28,11 @@ const PostScreen = ({ navigation }) => {
   const currentTime = new Date();
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
-
+      <ScrollView>
+        <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} />
+      </ScrollView>
       {loading && <Loader loading={loading} full />}
     </SafeAreaView>
   );

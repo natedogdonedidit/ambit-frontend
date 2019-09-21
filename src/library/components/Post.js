@@ -33,6 +33,7 @@ const Post = ({
   editable = false,
   showDetails = false,
   showLine = false,
+  broke = false,
 }) => {
   // MUTATIONS - like, comment, share
   const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
@@ -64,6 +65,7 @@ const Post = ({
   const isMyPost = post.owner.id === currentUserId;
 
   const containsMedia = post.video || post.images.length > 0;
+  const showUpdateButton = isMyPost && post.isGoal && editable;
 
   // for dates
   const createdAt = new Date(post.createdAt);
@@ -100,9 +102,11 @@ const Post = ({
             <Text style={{ ...defaultStyles.smallLight, color: colors.peach }}>Pitch</Text>
           </View>
         )}
-        {showLine && <View style={styles.threadLine} />}
+        {showLine && (
+          <View style={[{ ...styles.threadLine }, broke && { borderBottomLeftRadius: 3, borderBottomRightRadius: 3 }]} />
+        )}
       </View>
-      <View style={[{ ...styles.rightColumn }, showLine && { marginBottom: 20 }]}>
+      <View style={[{ ...styles.rightColumn }, (showLine || showUpdateButton) && { paddingBottom: 0 }]}>
         <View style={styles.topRow}>
           <View style={styles.leftSide}>
             <TouchableOpacity
@@ -112,11 +116,9 @@ const Post = ({
             >
               <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
                 {post.owner.name}
-
+                {'   '}
                 <Text style={{ ...defaultStyles.smallThinMute }}>
-                  <Icon name="map-marker-alt" solid size={10} color={colors.darkGray} style={{ opacity: 0.3 }} />
-                  {'   '}
-                  {post.location}
+                  <Icon name="map-marker-alt" solid size={10} color={colors.darkGray} style={{ opacity: 0.3 }} /> {post.location}
                 </Text>
               </Text>
             </TouchableOpacity>
@@ -141,14 +143,6 @@ const Post = ({
 
         {/* {post.tags.length > 0 && <View style={styles.tags}>{renderTags()}</View>} */}
         {/* {containsMedia && <View style={styles.media}>{renderMedia()}</View>} */}
-        {isMyPost && post.isGoal && editable && (
-          <View style={styles.countdown}>
-            <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-              This goal will expire in {timeRemaining} {per}
-            </Text>
-            <TextButton onPress={() => navigation.navigate('Post', { post, isUpdate: true })}>Update</TextButton>
-          </View>
-        )}
         {showDetails ? (
           <>
             <View style={styles.date}>
@@ -178,7 +172,7 @@ const Post = ({
             </View>
           </>
         ) : (
-          <View style={styles.buttons}>
+          <View style={[{ ...styles.buttons }, showUpdateButton && { paddingBottom: 10 }]}>
             <View style={styles.button}>
               <Comment onPress={() => null} />
               {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>}
@@ -195,9 +189,17 @@ const Post = ({
             </View>
           </View>
         )}
+        {showUpdateButton && (
+          <View style={styles.countdown}>
+            <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
+              This goal will expire in {timeRemaining} {per}
+            </Text>
+            <TextButton onPress={() => navigation.navigate('UpdatePost', { post })}>Update</TextButton>
+          </View>
+        )}
       </View>
       {isMyPost && editable && (
-        <View style={{ position: 'absolute', top: 30, right: 10 }}>
+        <View style={{ position: 'absolute', top: 30, right: 15 }}>
           <Options
             onPress={() => {
               setPostToEdit({ id: post.id, owner: post.owner.id });
@@ -227,7 +229,10 @@ const styles = StyleSheet.create({
   threadLine: {
     flex: 1,
     width: 5,
-    // borderRadius: 3,
+    borderTopLeftRadius: 3,
+    borderTopRightRadius: 3,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     backgroundColor: 'black',
     opacity: 0.2,
   },
@@ -240,7 +245,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     paddingRight: 15,
-    // paddingBottom: 10,
+    paddingBottom: 10,
     // borderBottomWidth: StyleSheet.hairlineWidth,
     // borderBottomColor: colors.borderBlack,
   },
@@ -261,7 +266,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   content: {
-    paddingBottom: 8,
+    paddingBottom: 10,
     // paddingRight: 15,
   },
   tags: {
@@ -272,7 +277,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
-    paddingBottom: 10,
+    // paddingBottom: 10,
     alignItems: 'center',
   },
   button: {
@@ -283,14 +288,15 @@ const styles = StyleSheet.create({
   countdown: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingTop: 6,
-    paddingBottom: 4,
-    marginBottom: 10,
+    paddingBottom: 6,
+    // marginBottom: 10,
 
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: colors.borderBlack,
   },
   date: {
     flexDirection: 'row',

@@ -8,18 +8,31 @@ import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 
 import Post from 'library/components/Post';
 import Update from 'library/components/Update';
+import ThreadLine from 'library/components/UI/ThreadLine';
 
-const PostGroupTL = ({ navigation, currentTime, post }) => {
-  const [showAll, setShowMore] = useState(false);
+const PostGroupTL = ({
+  navigation,
+  currentTime,
+  post,
+  showAll = false,
+  lastOne,
+  showLastLine = false,
+  editable = false,
+  setModalVisibleEditPost,
+  setPostToEdit,
+}) => {
+  // const [showAll, setShowMore] = useState(false);
 
-  const hasUpdates = !!post.updates;
+  const hasUpdates = post.updates.length > 0;
+  // console.log(post);
+  console.log(hasUpdates);
 
   // if there are no updates
   if (!hasUpdates) {
     return (
       <View>
         <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
-          <Post post={post} currentTime={currentTime} navigation={navigation} />
+          <Post post={post} currentTime={currentTime} navigation={navigation} editable={editable} showLine={showAll} />
         </TouchableOpacity>
       </View>
     );
@@ -29,22 +42,36 @@ const PostGroupTL = ({ navigation, currentTime, post }) => {
   const numUpdates = post.updates.length;
   const multipleUpdates = numUpdates > 1;
 
-  // if there is 1 update only
+  // if there is only one update
   if (!multipleUpdates) {
     return (
-      <View>
+      <>
         <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
-          <Post post={post} currentTime={currentTime} navigation={navigation} showLine />
+          <Post
+            post={post}
+            currentTime={currentTime}
+            navigation={navigation}
+            showLine
+            setModalVisibleEditPost={setModalVisibleEditPost}
+            setPostToEdit={setPostToEdit}
+            editable={editable}
+          />
         </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => navigation.navigate('Post', { post, isUpdate: true, whichUpdate: post.updates[0].id })}
-        >
-          <Update post={post} update={post.updates[0]} currentTime={currentTime} navigation={navigation} />
+        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: 0 })}>
+          <ThreadLine />
+          <Update
+            post={post}
+            update={post.updates[0]}
+            currentTime={currentTime}
+            navigation={navigation}
+            showLine={showLastLine}
+          />
         </TouchableOpacity>
-      </View>
+      </>
     );
   }
+
+  // if there are multiple updates
 
   const renderUpdates = () => {
     if (showAll) {
@@ -52,39 +79,47 @@ const PostGroupTL = ({ navigation, currentTime, post }) => {
         return (
           <TouchableOpacity
             activeOpacity={0.7}
-            onPress={() => navigation.navigate('Post', { post, isUpdate: true, whichUpdate: update.id })}
+            onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: i })}
           >
+            <ThreadLine />
             <Update
               post={post}
               update={update}
               currentTime={currentTime}
               navigation={navigation}
-              showLine={i !== numUpdates - 1}
+              showLine={i !== numUpdates - 1 || showLastLine}
             />
           </TouchableOpacity>
         );
       });
     }
 
+    // if a last indice was specified, only render those
+    if (lastOne >= 0) {
+      return post.updates.map((update, i) => {
+        if (i <= lastOne) {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: i })}
+            >
+              <ThreadLine />
+              <Update post={post} update={update} currentTime={currentTime} navigation={navigation} showLine={i !== lastOne} />
+            </TouchableOpacity>
+          );
+        }
+        return null;
+      });
+    }
+
+    // otherwise only show the most recent Update (with broken threadline)
     return (
       <>
-        {/* <View style={styles.showMoreButton}>
-          <View style={styles.leftColumn}>
-            <View style={styles.threadLine} />
-            <View style={{ paddingVertical: 5 }}>
-              <SmallProfilePic pic={post.owner.profilePic} />
-            </View>
-
-            <View style={styles.threadLine} />
-          </View>
-          <View style={styles.rightColumn}>
-            <TextButton onPress={() => setShowMore(true)}>Show more updates</TextButton>
-          </View>
-        </View> */}
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => navigation.navigate('Post', { post, isUpdate: true, whichUpdate: post.updates[numUpdates - 1].id })}
+          onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: numUpdates - 1 })}
         >
+          <ThreadLine broke />
           <Update post={post} update={post.updates[numUpdates - 1]} currentTime={currentTime} navigation={navigation} />
         </TouchableOpacity>
       </>
@@ -93,41 +128,24 @@ const PostGroupTL = ({ navigation, currentTime, post }) => {
 
   // if there are multiple updates
   return (
-    <View>
+    <>
       <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
-        <Post post={post} currentTime={currentTime} navigation={navigation} showLine />
+        <Post
+          post={post}
+          currentTime={currentTime}
+          navigation={navigation}
+          showLine
+          broke={!showAll && !lastOne}
+          setModalVisibleEditPost={setModalVisibleEditPost}
+          setPostToEdit={setPostToEdit}
+          editable={editable}
+        />
       </TouchableOpacity>
       {renderUpdates()}
-    </View>
+    </>
   );
 };
 
-const styles = StyleSheet.create({
-  showMoreButton: {
-    width: '100%',
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    // height: 40,
-  },
-  threadLine: {
-    flex: 1,
-    width: 5,
-    // borderRadius: 3,
-    backgroundColor: 'black',
-    opacity: 0.2,
-  },
-  leftColumn: {
-    alignItems: 'center',
-    width: 64,
-    height: '100%',
-  },
-  rightColumn: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    paddingRight: 15,
-    // paddingVertical: 10,
-  },
-});
+const styles = StyleSheet.create({});
 
 export default PostGroupTL;

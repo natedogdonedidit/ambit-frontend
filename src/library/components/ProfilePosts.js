@@ -7,7 +7,7 @@ import defaultStyles from 'styles/defaultStyles';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 
 import Loader from 'library/components/UI/Loader';
-import Post from 'library/components/Post';
+import PostGroupTL from 'library/components/PostGroupTL';
 import BigButton from 'library/components/UI/BigButton';
 
 const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId }) => {
@@ -67,13 +67,13 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
       keyExtractor={(item, index) => item + index}
       renderItem={({ item }) => {
         return (
-          <Post
+          <PostGroupTL
             post={item}
             currentTime={currentTime}
+            navigation={navigation}
             setModalVisibleEditPost={setModalVisibleEditPost}
             setPostToEdit={setPostToEdit}
             editable
-            navigation={navigation}
           />
         );
       }}
@@ -84,7 +84,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
-    // height: 500,
+    marginTop: 10,
   },
 });
 

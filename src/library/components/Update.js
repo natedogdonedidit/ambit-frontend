@@ -96,7 +96,7 @@ const Update = ({
         <SmallProfilePic pic={post.owner.profilePic} />
         {showLine && <View style={styles.threadLine} />}
       </View>
-      <View style={[{ ...styles.rightColumn }, showLine && { marginBottom: 10 }]}>
+      <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 0 }]}>
         <View style={styles.topRow}>
           <View style={styles.leftSide}>
             <TouchableOpacity
@@ -204,7 +204,11 @@ const styles = StyleSheet.create({
   threadLine: {
     flex: 1,
     width: 5,
-    // borderRadius: 3,
+    marginTop: 3,
+    borderTopLeftRadius: 3,
+    borderTopRightRadius: 3,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     backgroundColor: 'black',
     opacity: 0.2,
   },
@@ -217,6 +221,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     paddingRight: 15,
+    paddingBottom: 10,
   },
   topRow: {
     flexDirection: 'row',
@@ -246,7 +251,7 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
-    paddingBottom: 10,
+    // paddingBottom: 10,
     alignItems: 'center',
   },
   button: {

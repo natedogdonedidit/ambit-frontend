@@ -13,6 +13,7 @@ import MessagesScreen from './MessagesScreen';
 import NetworkScreen from './NetworkScreen';
 import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
+import UpdatePostScreen from './UpdatePostScreen';
 import RequestsScreen from './RequestsScreen';
 
 const HomeStack = createStackNavigator(
@@ -23,6 +24,9 @@ const HomeStack = createStackNavigator(
     },
     Post: {
       screen: PostScreen,
+    },
+    UpdatePost: {
+      screen: UpdatePostScreen,
     },
   },
   {
