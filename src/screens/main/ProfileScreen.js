@@ -17,7 +17,7 @@ import { useSafeArea } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
-import MY_POSTS_QUERY from 'library/queries/MY_POSTS_QUERY';
+import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 
 import colors from 'styles/colors';
@@ -74,6 +74,7 @@ const ProfileScreen = ({ navigation }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
   // CONTEXT & USER CHECK
+  const insets = useSafeArea();
   const { currentUserId } = useContext(UserContext);
   const profileId = navigation.getParam('profileId', 'NO-ID');
   const isMyProfile = currentUserId === profileId;
@@ -89,7 +90,7 @@ const ProfileScreen = ({ navigation }) => {
       owner: postToEdit.owner,
       id: postToEdit.id,
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }, { query: MY_POSTS_QUERY }],
+    refetchQueries: () => [{ query: USER_POSTS_QUERY, variables: { id: profileId } }],
     onCompleted: () => {},
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
@@ -146,8 +147,6 @@ const ProfileScreen = ({ navigation }) => {
     setModalVisibleEditPost(false);
     setPostToEdit({ id: null, owner: null });
   };
-
-  const insets = useSafeArea();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -221,7 +220,13 @@ const ProfileScreen = ({ navigation }) => {
           />
         )}
         {tabState === 1 && (
-          <ProfilePosts setModalVisibleEditPost={setModalVisibleEditPost} setPostToEdit={setPostToEdit} navigation={navigation} />
+          <ProfilePosts
+            setModalVisibleEditPost={setModalVisibleEditPost}
+            setPostToEdit={setPostToEdit}
+            navigation={navigation}
+            isMyProfile={isMyProfile}
+            profileId={profileId}
+          />
         )}
         {tabState === 2 && <ProfileNetwork />}
         {/* <View style={{ width: '100%', height: 500, backgroundColor: 'blue' }} /> */}

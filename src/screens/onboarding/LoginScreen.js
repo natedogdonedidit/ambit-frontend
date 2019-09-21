@@ -24,20 +24,20 @@ const LoginScreen = props => {
     },
     // wait for the response from the mutation, write User data (returned from mutation)
     // into cache CURRENT_USER_QUERY
-    update: (proxy, { data: loginResponse }) => {
+    update: (proxy, { data: dataReturned }) => {
       proxy.writeQuery({
         query: CURRENT_USER_QUERY,
         data: {
-          userLoggedIn: loginResponse.login.user,
+          userLoggedIn: dataReturned.login.user,
         },
       });
     },
     onCompleted: () => {},
     onError: err => {
       console.log(err);
-      Alert.alert('Oh no!', 'An error occured when trying to login. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+      // Alert.alert('Oh no!', 'An error occured when trying to login. Try again later!', [
+      //   { text: 'OK', onPress: () => console.log('OK Pressed') },
+      // ]);
     },
   });
 

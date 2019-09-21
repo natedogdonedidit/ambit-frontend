@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import { ListPosts } from 'library/queries/_fragments';
 
-export default GLOBAL_POSTS_QUERY = gql`
-  query GLOBAL_POSTS_QUERY {
-    postsGlobal {
+export default USER_POSTS_QUERY = gql`
+  query USER_POSTS_QUERY($id: ID!) {
+    postsUser(id: $id) {
       ...ListPosts
     }
   }

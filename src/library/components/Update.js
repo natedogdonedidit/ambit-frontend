@@ -11,21 +11,21 @@ import { timeDifference, timeDifferenceGoal } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import TextButton from 'library/components/UI/TextButton';
 
-import MediumProfilePic from 'library/components/UI/MediumProfilePic';
+import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 import Goal from 'library/components/UI/Goal';
 import Tag from 'library/components/UI/Tag';
 import Heart from 'library/components/UI/Heart';
 import Comment from 'library/components/UI/Comment';
 import Options from 'library/components/UI/Options';
 import Share from 'library/components/UI/Share';
-import Update from 'library/components/Update';
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const Post = ({
+const Update = ({
   post,
+  update,
   currentTime,
   navigation,
   setModalVisibleEditPost,
@@ -35,49 +35,49 @@ const Post = ({
   showLine = false,
 }) => {
   // MUTATIONS - like, comment, share
-  const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
-    variables: {
-      postId: post.id,
-    },
-    optimisticResponse: {
-      __typename: 'Mutation',
-      likePost: {
-        id: post.id,
-        __typename: 'Post',
-        ...post,
-        likedByMe: !post.likedByMe,
-        likesCount: post.likedByMe ? post.likesCount - 1 : post.likesCount + 1,
-      },
-    },
-    onCompleted: () => {
-      // closeModal();
-    },
-    onError: error => {
-      console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to like this post. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
-    },
-  });
+  // const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
+  //   variables: {
+  //     postId: post.id,
+  //   },
+  //   optimisticResponse: {
+  //     __typename: 'Mutation',
+  //     likePost: {
+  //       id: post.id,
+  //       __typename: 'Post',
+  //       ...post,
+  //       likedByMe: !post.likedByMe,
+  //       likesCount: post.likedByMe ? post.likesCount - 1 : post.likesCount + 1,
+  //     },
+  //   },
+  //   onCompleted: () => {
+  //     // closeModal();
+  //   },
+  //   onError: error => {
+  //     console.log(error);
+  //     Alert.alert('Oh no!', 'An error occured when trying to like this post. Try again later!', [
+  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
+  //     ]);
+  //   },
+  // });
 
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;
 
-  const containsMedia = post.video || post.images.length > 0;
+  const containsMedia = !!update.image;
 
   // for dates
-  const createdAt = new Date(post.createdAt);
+  const createdAt = new Date(update.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
   const formatedDate = format(createdAt, 'M/d/yy h:mm a');
 
   // for goal remaining time
-  const lastUpdated = new Date(post.lastUpdated);
-  const { timeRemaining, period: per } = timeDifferenceGoal(currentTime, lastUpdated);
+  // const lastUpdated = !isUpdate ? new Date(post.lastUpdated) : null;
+  // const { timeRemaining, period: per } = timeDifferenceGoal(currentTime, lastUpdated);
 
   // for potential updates
 
   const handleLike = () => {
-    if (!loadingLike) likePost();
+    // if (!loadingLike) likePost();
   };
 
   // const renderTags = () => {
@@ -93,16 +93,10 @@ const Post = ({
   return (
     <View style={styles.post}>
       <View style={styles.leftColumn}>
-        <MediumProfilePic pic={post.owner.profilePic} pitch={post.pitch} intro={post.owner.intro} />
-        {!!post.pitch && (
-          <View style={{ alignItems: 'center', paddingTop: 1 }}>
-            <Text style={{ ...defaultStyles.smallLight, color: colors.peach }}>View</Text>
-            <Text style={{ ...defaultStyles.smallLight, color: colors.peach }}>Pitch</Text>
-          </View>
-        )}
+        <SmallProfilePic pic={post.owner.profilePic} />
         {showLine && <View style={styles.threadLine} />}
       </View>
-      <View style={[{ ...styles.rightColumn }, showLine && { marginBottom: 20 }]}>
+      <View style={[{ ...styles.rightColumn }, showLine && { marginBottom: 10 }]}>
         <View style={styles.topRow}>
           <View style={styles.leftSide}>
             <TouchableOpacity
@@ -112,15 +106,8 @@ const Post = ({
             >
               <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
                 {post.owner.name}
-
-                <Text style={{ ...defaultStyles.smallThinMute }}>
-                  <Icon name="map-marker-alt" solid size={10} color={colors.darkGray} style={{ opacity: 0.3 }} />
-                  {'   '}
-                  {post.location}
-                </Text>
               </Text>
             </TouchableOpacity>
-            <View>{post.isGoal && <Text style={defaultStyles.smallThinMute}>is looking to:</Text>}</View>
           </View>
 
           <View style={styles.rightSide}>
@@ -129,26 +116,21 @@ const Post = ({
             </Text>
           </View>
         </View>
-        {post.isGoal && (
-          <View style={styles.goal}>
-            <Goal goal={post.goal} />
-          </View>
-        )}
 
         <View style={styles.content}>
-          <Text style={defaultStyles.defaultText}>{post.content}</Text>
+          <Text style={defaultStyles.defaultText}>{update.content}</Text>
         </View>
 
         {/* {post.tags.length > 0 && <View style={styles.tags}>{renderTags()}</View>} */}
         {/* {containsMedia && <View style={styles.media}>{renderMedia()}</View>} */}
-        {isMyPost && post.isGoal && editable && (
-          <View style={styles.countdown}>
-            <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-              This goal will expire in {timeRemaining} {per}
-            </Text>
-            <TextButton onPress={() => navigation.navigate('Post', { post, isUpdate: true })}>Update</TextButton>
-          </View>
-        )}
+        {/* {isMyPost && post.isGoal && editable && (
+            <View style={styles.countdown}>
+              <Text style={{ ...defaultStyles.defaultText, opacity: 0.6, paddingRight: 15 }}>
+                This goal will expire in {timeRemaining} {per}
+              </Text>
+              <TextButton onPress={() => navigation.navigate('Post', { post, isUpdate: true })}>Update</TextButton>
+            </View>
+          )} */}
         {showDetails ? (
           <>
             <View style={styles.date}>
@@ -158,10 +140,10 @@ const Post = ({
             <View style={styles.likesRow}>
               <View style={{ flexDirection: 'row' }}>
                 <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-                  {post.likesCount || 0} Likes
+                  {update.likesCount || 0} Likes
                 </Text>
                 <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-                  {post.sharesCount || 0} Shares
+                  {update.sharesCount || 0} Shares
                 </Text>
               </View>
               <View style={{ flexDirection: 'row' }}>
@@ -169,7 +151,7 @@ const Post = ({
                   <Comment onPress={() => null} />
                 </View>
                 <View style={{ paddingLeft: 15 }}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
                 </View>
                 <View style={{ paddingLeft: 15 }}>
                   <Share onPress={() => null} />
@@ -184,9 +166,11 @@ const Post = ({
               {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>}
             </View>
             <View style={styles.button}>
-              <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+              <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
               {!showDetails && (
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount < 1 ? '' : post.likesCount}</Text>
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
+                  {update.likesCount < 1 ? '' : update.likesCount}
+                </Text>
               )}
             </View>
             <View style={styles.button}>
@@ -196,7 +180,7 @@ const Post = ({
           </View>
         )}
       </View>
-      {isMyPost && editable && (
+      {/* {isMyPost && editable && (
         <View style={{ position: 'absolute', top: 30, right: 10 }}>
           <Options
             onPress={() => {
@@ -205,7 +189,7 @@ const Post = ({
             }}
           />
         </View>
-      )}
+      )} */}
     </View>
   );
 };
@@ -214,15 +198,8 @@ const styles = StyleSheet.create({
   post: {
     width: '100%',
     flexDirection: 'row',
-    paddingTop: 12,
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
     backgroundColor: 'white',
-    marginTop: 3,
-    // marginHorizontal: 6,
-    borderRadius: 3,
+    paddingTop: 3,
   },
   threadLine: {
     flex: 1,
@@ -240,9 +217,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     paddingRight: 15,
-    // paddingBottom: 10,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
   },
   topRow: {
     flexDirection: 'row',
@@ -257,8 +231,8 @@ const styles = StyleSheet.create({
   },
   goal: {
     alignSelf: 'flex-start',
-    paddingTop: 8,
-    paddingBottom: 10,
+    paddingTop: 5,
+    paddingBottom: 15,
   },
   content: {
     paddingBottom: 8,
@@ -282,10 +256,8 @@ const styles = StyleSheet.create({
   },
   countdown: {
     flexDirection: 'row',
-    alignItems: 'center',
-    paddingTop: 6,
-    paddingBottom: 4,
-    marginBottom: 10,
+    paddingVertical: 10,
+    marginBottom: 15,
 
     // borderTopWidth: StyleSheet.hairlineWidth,
     // borderTopColor: colors.borderBlack,
@@ -319,4 +291,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Post;
+export default Update;

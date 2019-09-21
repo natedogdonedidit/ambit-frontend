@@ -17,6 +17,7 @@
     "apollo-link-error": "^1.1.11",
     "date-fns": "^2.0.0",
     "graphql": "^14.4.2",
+    "graphql-anywhere": "^4.2.4",
     "graphql-tag": "^2.10.1",
     "immutability-helper": "^3.0.1",
     "lodash-move": "^1.1.1",

@@ -1,5 +1,5 @@
 import { PermissionsAndroid } from 'react-native';
-import { differenceInSeconds } from 'date-fns';
+import { differenceInSeconds, differenceInDays, differenceInHours } from 'date-fns';
 
 export const monthToFloat = month => {
   if (month === 'Jan') return 0.01;
@@ -79,4 +79,29 @@ export const timeDifference = (laterDate, earlierDate) => {
   timeDiff = Math.round(timeDiff);
 
   return { timeDiff, period };
+};
+
+export const timeDifferenceGoal = (laterDate, earlierDate) => {
+  const timeDiffDays = differenceInDays(laterDate, earlierDate);
+  const timeDiffHours = differenceInHours(laterDate, earlierDate);
+
+  const maxDays = 14;
+
+  const timeRemainingDays = maxDays - timeDiffDays;
+  const timeRemainingHours = maxDays * 24 - timeDiffHours;
+
+  let timeRemaining = maxDays;
+  let period = 'd';
+
+  if (timeRemainingDays >= 1) {
+    timeRemaining = timeRemainingDays;
+    period = 'days';
+  } else {
+    timeRemaining = timeRemainingHours;
+    period = 'hours';
+  }
+
+  // timeDiff = Math.round(timeDiff);
+
+  return { timeRemaining, period };
 };

@@ -1,19 +1,13 @@
 import gql from 'graphql-tag';
+import { DetailedUser } from 'library/queries/_fragments';
 
 const CREATE_EXPERIENCE_MUTATION = gql`
   mutation CREATE_EXPERIENCE_MUTATION($owner: ID!, $experience: ExperienceCreateWithoutOwnerInput!) {
     createExperience(owner: $owner, experience: $experience) {
-      id
-      name
-      subText
-      startDateMonth
-      startDateYear
-      endDateMonth
-      endDateYear
-      location
-      currentRole
+      ...DetailedUser
     }
   }
+  ${DetailedUser}
 `;
 
 export default CREATE_EXPERIENCE_MUTATION;

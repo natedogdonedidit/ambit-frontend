@@ -20,6 +20,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
+import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
+import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
 
@@ -34,7 +36,7 @@ import SelectGoalModal from 'library/components/modals/SelectGoalModal';
 import Goal from 'library/components/UI/Goal';
 import EditLocationModal from 'library/components/modals/EditLocationModal';
 
-const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
+const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedIn }) => {
   // initialize state
   const [isGoal, setIsGoal] = useState(false);
   const [goal, setGoal] = useState('');
@@ -43,9 +45,12 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState('');
   const [pitch, setPitch] = useState('');
-  const [location, setLocation] = useState('');
-  const [locationLat, setLocationLat] = useState(null);
-  const [locationLon, setLocationLon] = useState(null);
+  // const [location, setLocation] = useState('');
+  // const [locationLat, setLocationLat] = useState(null);
+  // const [locationLon, setLocationLon] = useState(null);
+  const [location, setLocation] = useState(userLoggedIn.location);
+  const [locationLat, setLocationLat] = useState(userLoggedIn.locationLat);
+  const [locationLon, setLocationLon] = useState(userLoggedIn.locationLon);
   const [isPrivate, setIsPrivate] = useState(false);
 
   const [activeTag, setActiveTag] = useState('');
@@ -62,9 +67,9 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
     setImages([]);
     setVideo('');
     setPitch('');
-    setLocation('');
-    setLocationLat(null);
-    setLocationLon(null);
+    setLocation(userLoggedIn.location);
+    setLocationLat(userLoggedIn.locationLat);
+    setLocationLon(userLoggedIn.locationLon);
     setIsPrivate(false);
     setActiveTag('');
     setSelectedTag(null);
@@ -75,14 +80,10 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
   const { currentUserId } = useContext(UserContext);
 
   // QUERIES
-  const payloadUser = useQuery(CURRENT_USER_QUERY);
-  const loadingUser = payloadUser.loading;
-  const errorUser = payloadUser.error;
-  const dataUser = payloadUser.data;
-  const { user } = dataUser;
+  // const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
 
   // MUTATIONS
-  const [createPost, payloadCreate] = useMutation(CREATE_POST_MUTATION, {
+  const [createPost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
     variables: {
       owner: currentUserId,
       post: {
@@ -105,7 +106,12 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
         },
       },
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }, { query: GLOBAL_POSTS_QUERY }],
+    refetchQueries: () => [
+      { query: GLOBAL_POSTS_QUERY },
+      { query: LOCAL_POSTS_QUERY },
+      { query: USER_POSTS_QUERY, variables: { id: currentUserId } },
+    ],
+    // add update here to add post to GLOBAL, NETWORK, AND MYPOST arrays in cache
     onCompleted: () => {
       closeModal();
     },
@@ -116,36 +122,35 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible }) => {
       ]);
     },
   });
-  const loadingCreate = payloadCreate.loading;
-  const errorCreate = payloadCreate.error;
-  // const dataCreate = payloadCreate.data;
-
-  const loading = loadingUser || loadingCreate;
 
   // EFFECTS
   // always put latest location into state when new modal opens
   useEffect(() => {
     if (newPostModalVisible) {
-      setLocation(user.location);
-      setLocationLat(user.locationLat);
-      setLocationLon(user.locationLon);
+      setLocation(userLoggedIn.location);
+      setLocationLat(userLoggedIn.locationLat);
+      setLocationLon(userLoggedIn.locationLon);
     }
   }, [newPostModalVisible]);
 
-  // if (loading) return <Loader active={loading} />;
-  if (loading) return null;
+  const loading = loadingCreate;
+  // const loading = loadingUser || loadingCreate;
+  if (loading) return <Loader active={loading} />;
+  // if (loading) return null;
 
-  if (errorUser) {
-    console.log('ERROR LOADING USER:', errorUser.message);
-    // probably change this to now display error on screen
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Text>{errorUser.message}</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  // if (errorUser) {
+  //   console.log('ERROR LOADING USER:', errorUser.message);
+  //   // probably change this to now display error on screen
+  //   return (
+  //     <SafeAreaView style={{ flex: 1 }}>
+  //       <View style={styles.container}>
+  //         <Text>{errorUser.message}</Text>
+  //       </View>
+  //     </SafeAreaView>
+  //   );
+  // }
+
+  // const { user } = dataUser;
 
   // CUSTOM FUNCTION
 

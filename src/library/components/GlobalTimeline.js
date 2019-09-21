@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, FlatList } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, FlatList, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
@@ -7,9 +7,9 @@ import defaultStyles from 'styles/defaultStyles';
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
 
 import Loader from 'library/components/UI/Loader';
-import Post from 'library/components/Post';
+import PostGroupTL from 'library/components/PostGroupTL';
 
-const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing }) => {
+const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing, navigation }) => {
   useEffect(() => {
     if (requestRefresh) {
       refetch();
@@ -49,7 +49,7 @@ const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefr
       data={posts}
       keyExtractor={(item, index) => item + index}
       renderItem={({ item }) => {
-        return <Post post={item} currentTime={currentTime} />;
+        return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
       }}
     />
   );
@@ -58,6 +58,7 @@ const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefr
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
+    marginTop: 10,
     // height: 500,
   },
 });

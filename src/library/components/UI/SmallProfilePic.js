@@ -8,35 +8,14 @@ import defaultStyles from 'styles/defaultStyles';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
-const SmallProfilePic = () => {
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
-
-  if (loading || !data.userLoggedIn || error) {
-    if (error) {
-      console.log(error.message);
-    }
-    return (
-      <View style={{ ...styles.profilePicView }}>
-        <Image
-          style={{ ...styles.profilePic }}
-          resizeMode="cover"
-          source={{
-            uri: profilePicExample,
-          }}
-        />
-      </View>
-    );
-  }
-
-  const profilePic = data.userLoggedIn.profilePic || profilePicExample;
-
+const SmallProfilePic = ({ pic }) => {
   return (
     <View style={{ ...styles.profilePicView }}>
       <Image
         style={{ ...styles.profilePic }}
         resizeMode="cover"
         source={{
-          uri: profilePic,
+          uri: pic || profilePicExample,
         }}
       />
     </View>

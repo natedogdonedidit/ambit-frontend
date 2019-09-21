@@ -36,7 +36,15 @@ const EditSkillsModal = ({ modalVisible, setModalVisible, user }) => {
       id: user.id,
       skills,
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }],
+    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }],
+    update: (proxy, { data: dataReturned }) => {
+      proxy.writeQuery({
+        query: SINGLE_USER_BIO,
+        data: {
+          user: dataReturned.editSkills,
+        },
+      });
+    },
     onCompleted: () => {
       setModalVisible(false);
     },

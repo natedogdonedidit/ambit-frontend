@@ -1,6 +1,7 @@
 const colors = {
   // purp: '#5A50CC',  // original purp
-  purp: '#4E6EF4',
+  purp: 'rgb(78,110,244)',
+  purpGradient: 'rgba(78,110,244, 0.2)',
   blue: '#3476E2',
   green: '#588E5F',
   purpO: '#5A50CC33',
@@ -18,7 +19,7 @@ const colors = {
   iosBlue: '#126CFC',
   borderBlack: 'rgba(0, 0, 0, 0.5)',
   blueGradient: '#5680E9',
-  purpGradient: '#8860D0',
+  // purpGradient: '#8860D0',
   tagBlue: '#325B7C',
   dimGray: '#0C090A',
 };

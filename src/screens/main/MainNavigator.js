@@ -12,6 +12,7 @@ import SuggestionsScreen from './SuggestionsScreen';
 import MessagesScreen from './MessagesScreen';
 import NetworkScreen from './NetworkScreen';
 import ProfileScreen from './ProfileScreen';
+import PostScreen from './PostScreen';
 import RequestsScreen from './RequestsScreen';
 
 const HomeStack = createStackNavigator(
@@ -19,6 +20,9 @@ const HomeStack = createStackNavigator(
     Home: HomeScreen,
     Profile: {
       screen: ProfileScreen,
+    },
+    Post: {
+      screen: PostScreen,
     },
   },
   {
@@ -34,6 +38,9 @@ const PeopleStack = createStackNavigator(
     Suggestions: SuggestionsScreen,
     Profile: {
       screen: ProfileScreen,
+    },
+    Post: {
+      screen: PostScreen,
     },
   },
   {
@@ -51,6 +58,9 @@ const InboxStack = createStackNavigator(
     Profile: {
       screen: ProfileScreen,
     },
+    Post: {
+      screen: PostScreen,
+    },
   },
   {
     initialRouteName: 'Messages',
@@ -65,6 +75,9 @@ const NetworkStack = createStackNavigator(
     Network: NetworkScreen,
     Profile: {
       screen: ProfileScreen,
+    },
+    Post: {
+      screen: PostScreen,
     },
   },
   {

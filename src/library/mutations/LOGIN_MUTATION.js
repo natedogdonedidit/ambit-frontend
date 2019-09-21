@@ -1,22 +1,16 @@
 import gql from 'graphql-tag';
+import { LoggedInUser } from 'library/queries/_fragments';
 
 const LOGIN_MUTATION = gql`
   mutation LOGIN_MUTATION($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       token
       user {
-        id
-        firstName
-        lastName
-        name
-        email
-        profilePic
-        location
-        locationLat
-        locationLon
+        ...LoggedInUser
       }
     }
   }
+  ${LoggedInUser}
 `;
 
 export default LOGIN_MUTATION;

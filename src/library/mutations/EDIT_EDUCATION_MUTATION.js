@@ -1,19 +1,13 @@
 import gql from 'graphql-tag';
+import { DetailedUser } from 'library/queries/_fragments';
 
 const EDIT_EDUCATION_MUTATION = gql`
   mutation EDIT_EDUCATION_MUTATION($owner: ID!, $id: ID!, $education: EducationUpdateInput!) {
     editEducation(owner: $owner, id: $id, education: $education) {
-      id
-      name
-      subText
-      startDateMonth
-      startDateYear
-      endDateMonth
-      endDateYear
-      location
-      currentRole
+      ...DetailedUser
     }
   }
+  ${DetailedUser}
 `;
 
 export default EDIT_EDUCATION_MUTATION;

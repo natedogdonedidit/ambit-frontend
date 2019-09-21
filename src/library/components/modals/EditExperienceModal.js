@@ -77,7 +77,17 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
         currentRole,
       },
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    // wait for the response from the mutation, write User data (returned from mutation)
+    // into cache SINGLE_USER_BIO
+    update: (proxy, { data: dataReturned }) => {
+      proxy.writeQuery({
+        query: SINGLE_USER_BIO,
+        data: {
+          user: dataReturned.createExperience,
+        },
+      });
+    },
     onCompleted: () => {
       closeModal();
     },
@@ -103,7 +113,15 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
         currentRole,
       },
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    update: (proxy, { data: dataReturned }) => {
+      proxy.writeQuery({
+        query: SINGLE_USER_BIO,
+        data: {
+          user: dataReturned.editExperience,
+        },
+      });
+    },
     onCompleted: () => {
       closeModal();
     },
@@ -119,7 +137,15 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
       owner,
       id: activeExperience.id,
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    update: (proxy, { data: dataReturned }) => {
+      proxy.writeQuery({
+        query: SINGLE_USER_BIO,
+        data: {
+          user: dataReturned.deleteExperience,
+        },
+      });
+    },
     onCompleted: () => {
       closeModal();
     },
@@ -202,10 +228,8 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
   const validateInputs = () => {
     if (!name) return 'Company';
     if (!subText) return 'Job Title';
-    if (!startDateMonth) return 'Start Date Month';
     if (!startDateYear) return 'Start Date Year';
     // end date only required if its not your current role
-    if (!endDateMonth && !currentRole) return 'End Date Month';
     if (!endDateYear && !currentRole) return 'End Date Year';
     return null;
   };
@@ -247,7 +271,7 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
           </View>
           <ScrollView style={styles.content}>
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Company</Text>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Company</Text>
             </View>
             <TextInput
               style={{ ...styles.input, ...defaultStyles.defaultText }}
@@ -256,7 +280,7 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
               placeholder="Add company name"
             />
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Job Title</Text>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Job Title</Text>
             </View>
             <TextInput
               style={{ ...styles.input, ...defaultStyles.defaultText }}
@@ -265,7 +289,7 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
               placeholder="Add job title"
             />
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Location</Text>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Location</Text>
             </View>
             <TextInput
               style={{ ...styles.input, ...defaultStyles.defaultText }}
@@ -274,7 +298,7 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
               placeholder="Add location"
             />
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Start Date</Text>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Start Date</Text>
             </View>
             <View style={styles.dateView}>
               <View style={styles.dateInput}>
@@ -305,7 +329,7 @@ const EditExperienceModal = ({ modalVisible, setModalVisible, activeExperience, 
             {!currentRole && (
               <View>
                 <View style={styles.inputTitle}>
-                  <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>End Date</Text>
+                  <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>End Date</Text>
                 </View>
                 <View style={styles.dateView}>
                   <View style={styles.dateInput}>

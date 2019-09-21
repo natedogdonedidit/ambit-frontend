@@ -61,9 +61,6 @@ const EditLocationModal = ({
       if (response.status === 200) {
         const responseJson = await response.json();
         if (responseJson.response) {
-          // console.log(responseJson);
-          // console.log(responseJson.response.view[0]);
-          // console.log(responseJson.response.view[0].result[0].location);
           const loc = `${responseJson.response.view[0].result[0].location.address.city}, ${responseJson.response.view[0].result[0].location.address.state}`;
           const lat = responseJson.response.view[0].result[0].location.displayPosition.latitude;
           const lon = responseJson.response.view[0].result[0].location.displayPosition.longitude;
@@ -87,6 +84,12 @@ const EditLocationModal = ({
       didMountRef.current = true;
     }
   }, [locationInput]);
+
+  useEffect(() => {
+    if (locModalVisible) {
+      setLocationInput(location);
+    }
+  }, [locModalVisible]);
 
   const handleCancel = () => {
     // set these back to whats in the database

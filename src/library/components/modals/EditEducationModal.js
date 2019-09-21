@@ -77,7 +77,15 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
         currentRole,
       },
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    update: (proxy, { data: dataReturned }) => {
+      proxy.writeQuery({
+        query: SINGLE_USER_BIO,
+        data: {
+          user: dataReturned.createEducation,
+        },
+      });
+    },
     onCompleted: () => {
       closeModal();
     },
@@ -103,7 +111,15 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
         currentRole,
       },
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    update: (proxy, { data: dataReturned }) => {
+      proxy.writeQuery({
+        query: SINGLE_USER_BIO,
+        data: {
+          user: dataReturned.editEducation,
+        },
+      });
+    },
     onCompleted: () => {
       closeModal();
     },
@@ -119,7 +135,15 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
       owner,
       id: activeEducation.id,
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: owner } }],
+    update: (proxy, { data: dataReturned }) => {
+      proxy.writeQuery({
+        query: SINGLE_USER_BIO,
+        data: {
+          user: dataReturned.deleteEducation,
+        },
+      });
+    },
     onCompleted: () => {
       closeModal();
     },
@@ -202,10 +226,8 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
   const validateInputs = () => {
     if (!name) return 'Company';
     if (!subText) return 'Job Title';
-    if (!startDateMonth) return 'Start Date Month';
     if (!startDateYear) return 'Start Date Year';
     // end date only required if its not your current role
-    if (!endDateMonth && !currentRole) return 'End Date Month';
     if (!endDateYear && !currentRole) return 'End Date Year';
     return null;
   };
@@ -247,7 +269,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
           </View>
           <ScrollView style={styles.content}>
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>School</Text>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>School</Text>
             </View>
             <TextInput
               style={{ ...styles.input, ...defaultStyles.defaultText }}
@@ -256,7 +278,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
               placeholder="Add school name"
             />
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Degree</Text>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Degree</Text>
             </View>
             <TextInput
               style={{ ...styles.input, ...defaultStyles.defaultText }}
@@ -265,7 +287,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
               placeholder="Add degree"
             />
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Location</Text>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Location</Text>
             </View>
             <TextInput
               style={{ ...styles.input, ...defaultStyles.defaultText }}
@@ -274,7 +296,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
               placeholder="Add school location"
             />
             <View style={styles.inputTitle}>
-              <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Start Date</Text>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Start Date</Text>
             </View>
             <View style={styles.dateView}>
               <View style={styles.dateInput}>
@@ -305,7 +327,7 @@ const EditEducationModal = ({ modalVisible, setModalVisible, activeEducation, se
             {!currentRole && (
               <View>
                 <View style={styles.inputTitle}>
-                  <Text style={{ ...defaultStyles.largeText, color: colors.peach }}>Graduation Date</Text>
+                  <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Graduation Date</Text>
                 </View>
                 <View style={styles.dateView}>
                   <View style={styles.dateInput}>

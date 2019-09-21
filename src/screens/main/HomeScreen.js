@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
+import LinearGradient from 'react-native-linear-gradient';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';
@@ -27,21 +28,21 @@ import GlobalTimeline from 'library/components/GlobalTimeline';
 import LocalTimeline from 'library/components/LocalTimeline';
 import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 import TimelineTabs from 'library/components/TimelineTabs';
+import { LoggedInUser } from '../../library/queries/_fragments';
 
 const HEADER_HEIGHT = 42;
-const BANNER_HEIGHT = 140;
+const BANNER_HEIGHT = 115;
 const TABS_HEIGHT = 42;
 
 const SLIDE_DISTANCE = BANNER_HEIGHT;
 
-const HomeScreen = props => {
+const HomeScreen = ({ navigation }) => {
   const [activeTimeline, setActiveTimeline] = useState(0);
   const [newPostModalVisible, setNewPostModalVisible] = useState(false);
   const [scrollY] = useState(new Animated.Value(Platform.OS === 'ios' ? -BANNER_HEIGHT : 0));
   const [refreshing, setRefreshing] = useState(false);
   const [requestRefresh, setRequestRefresh] = useState(false);
 
-  const { navigation } = props;
   const insets = useSafeArea();
 
   // QUERIES
@@ -100,6 +101,7 @@ const HomeScreen = props => {
             refreshing={refreshing}
             setRefreshing={setRefreshing}
             userLoggedIn={userLoggedIn}
+            navigation={navigation}
           />
         )}
         {activeTimeline === 2 && (
@@ -108,6 +110,7 @@ const HomeScreen = props => {
             setRequestRefresh={setRequestRefresh}
             refreshing={refreshing}
             setRefreshing={setRefreshing}
+            navigation={navigation}
           />
         )}
 
@@ -117,6 +120,7 @@ const HomeScreen = props => {
       <Animated.View
         style={{
           ...styles.sliderView,
+          ...defaultStyles.shadowButton,
           transform: [
             {
               translateY: scrollY.interpolate({
@@ -129,17 +133,23 @@ const HomeScreen = props => {
         }}
       >
         <View style={{ height: insets.top + HEADER_HEIGHT, width: '100%', backgroundColor: 'white' }} />
-        <View style={{ height: BANNER_HEIGHT, padding: 20 }}>
+        <View style={{ height: BANNER_HEIGHT, paddingHorizontal: 20, paddingVertical: 15, backgroundColor: 'white' }}>
           {/* {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>} */}
           <Text style={styles.welcomeText}>Get started in 3 simple steps.</Text>
           <TouchableOpacity onPress={() => null}>
             <View style={{ ...styles.taskView, ...defaultStyles.shadowButton }}>
+              <LinearGradient
+                start={{ x: 0.2, y: 0.2 }}
+                end={{ x: 1, y: 6 }}
+                colors={[colors.purp, colors.purpGradient]}
+                style={{ ...styles.linearGradient }}
+              />
               <View>
                 <Text style={{ ...defaultStyles.largeBold, color: 'white' }}>Learn how to use{'\n'}Ambit!</Text>
               </View>
 
               <View>
-                <Text style={{ ...defaultStyles.defaultText, color: 'white', textAlign: 'center' }}>Step{'\n'}1/3</Text>
+                <Text style={{ ...defaultStyles.defaultMedium, color: 'white', textAlign: 'center' }}>Step{'\n'}1/3</Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -157,7 +167,7 @@ const HomeScreen = props => {
         <View style={{ height: insets.top, width: '100%', backgroundColor: 'white' }} />
         <View style={styles.headerBar}>
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <SmallProfilePic />
+            <SmallProfilePic pic={userLoggedIn.profilePic} />
           </TouchableOpacity>
           <View style={{ flex: 1, paddingRight: 30, alignItems: 'center' }}>
             <Text style={{ ...defaultStyles.ambitLogo }}>Ambit</Text>
@@ -172,7 +182,11 @@ const HomeScreen = props => {
           <Icon name="pen" size={18} color="white" />
         </View>
       </TouchableOpacity>
-      <NewPostModal newPostModalVisible={newPostModalVisible} setNewPostModalVisible={setNewPostModalVisible} />
+      <NewPostModal
+        newPostModalVisible={newPostModalVisible}
+        setNewPostModalVisible={setNewPostModalVisible}
+        userLoggedIn={userLoggedIn}
+      />
     </SafeAreaView>
   );
 };
@@ -185,13 +199,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.purp,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 54,
+    height: 54,
+    borderRadius: 27,
   },
   container: {
     flex: 1,
     backgroundColor: colors.lightGray,
+    overflow: 'hidden',
   },
   headerBarView: {
     position: 'absolute',
@@ -216,7 +231,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    overflow: 'hidden',
+    // overflow: 'hidden',
     backgroundColor: 'white',
   },
   welcomeText: {
@@ -228,12 +243,21 @@ const styles = StyleSheet.create({
   taskView: {
     width: '100%',
     borderRadius: 10,
-    backgroundColor: colors.purp,
+    backgroundColor: 'white',
     marginTop: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
+    paddingVertical: 10,
+  },
+  linearGradient: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 10,
   },
 });
 

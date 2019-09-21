@@ -11,7 +11,7 @@ import TextButton from 'library/components/UI/TextButton';
 import Post from 'library/components/Post';
 import EditLocationRadiusModal from './modals/EditLocationRadiusModal';
 
-const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing, userLoggedIn }) => {
+const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing, userLoggedIn, navigation }) => {
   const [locationLat, setLocationLat] = useState(userLoggedIn.locationLat || 37.77713);
   const [locationLon, setLocationLon] = useState(userLoggedIn.locationLon || -122.41964);
   const [location, setLocation] = useState(userLoggedIn.location || 'San Francisco, CA');
@@ -67,7 +67,7 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
           <Text style={defaultStyles.smallThinMute}>within {radius} mile radius</Text>
         </View>
         <View style={styles.editButton}>
-          <TextButton onPress={() => setLocModalVisible(true)}>Edit</TextButton>
+          <TextButton onPress={() => setLocModalVisible(true)}>Change</TextButton>
         </View>
       </View>
 
@@ -77,7 +77,7 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
           data={posts}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => {
-            return <Post post={item} currentTime={currentTime} />;
+            return <Post post={item} currentTime={currentTime} navigation={navigation} />;
           }}
         />
       )}
@@ -107,13 +107,15 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
+    marginTop: 10,
     // height: 500,
   },
   locationSelect: {
     flexDirection: 'row',
-    paddingVertical: 12,
+    paddingVertical: 8,
     backgroundColor: 'white',
-    marginTop: 6,
+    marginTop: 10,
+    marginBottom: -3,
     // marginHorizontal: 6,
     borderRadius: 3,
   },

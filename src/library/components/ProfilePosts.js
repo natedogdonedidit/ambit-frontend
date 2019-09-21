@@ -4,28 +4,28 @@ import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import MY_POSTS_QUERY from 'library/queries/MY_POSTS_QUERY';
+import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 
 import Loader from 'library/components/UI/Loader';
 import Post from 'library/components/Post';
 import BigButton from 'library/components/UI/BigButton';
 
-const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation }) => {
+const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId }) => {
   // QUERIES
-  const { loading, error, data, refetch } = useQuery(MY_POSTS_QUERY, {
-    fetchPolicy: 'cache-and-network',
-    // notifyOnNetworkStatusChange: true,
+  const { loading, error, data, refetch } = useQuery(USER_POSTS_QUERY, {
+    variables: { id: profileId },
+    fetchPolicy: 'cache-and-network', // doing it this way because cannot pull to refresh at the moment
   });
 
   const currentTime = new Date();
 
-  if (loading) {
-    return (
-      <View style={styles.timeline}>
-        <Loader loading={loading} full={false} />
-      </View>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <View style={styles.timeline}>
+  //       <Loader loading={loading} full={false} />
+  //     </View>
+  //   );
+  // }
 
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
@@ -36,17 +36,28 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation }) =>
     );
   }
 
-  const posts = data.postsMy || [];
+  const posts = data ? data.postsUser || [] : [];
 
-  if (posts.length < 1) {
+  if (posts.length < 1 && !loading && isMyProfile) {
+    if (isMyProfile) {
+      return (
+        <View style={{ height: 100, width: '100%', alignItems: 'center', marginVertical: 40 }}>
+          <Text style={defaultStyles.defaultText}>You don't have any posts yet!</Text>
+          <BigButton onPress={() => navigation.navigate('Home')} buttonStyle={{ ...defaultStyles.shadow3, marginTop: 20 }}>
+            Create a post
+          </BigButton>
+        </View>
+      );
+    }
     return (
       <View style={{ height: 100, width: '100%', alignItems: 'center', marginVertical: 40 }}>
-        <Text style={defaultStyles.defaultText}>You don't have any posts yet!</Text>
-        <BigButton onPress={() => navigation.navigate('Home')} buttonStyle={{ ...defaultStyles.shadow3, marginTop: 20 }}>
-          Create a post
-        </BigButton>
+        <Text style={defaultStyles.defaultText}>No posts yet</Text>
       </View>
     );
+  }
+
+  if (posts.length < 1) {
+    return <Loader loading={loading} full={false} />;
   }
 
   return (
@@ -62,6 +73,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation }) =>
             setModalVisibleEditPost={setModalVisibleEditPost}
             setPostToEdit={setPostToEdit}
             editable
+            navigation={navigation}
           />
         );
       }}

@@ -41,7 +41,9 @@ const httpLink = new HttpLink({
 const client = new ApolloClient({
   connectToDevTools: true,
   link: ApolloLink.from([errorLink, authLink, httpLink]),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    // dataIdFromObject: o => o.id,
+  }),
   onError: ({ networkError, graphQLErrors }) => {
     console.log('graphQLErrors', graphQLErrors);
     console.log('networkError', networkError);

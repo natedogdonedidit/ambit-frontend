@@ -1,17 +1,11 @@
 import gql from 'graphql-tag';
+import { LoggedInUser } from 'library/queries/_fragments';
 
 export default CURRENT_USER_QUERY = gql`
   query CURRENT_USER_QUERY {
     userLoggedIn {
-      id
-      firstName
-      lastName
-      name
-      email
-      profilePic
-      location
-      locationLat
-      locationLon
+      ...LoggedInUser
     }
   }
+  ${LoggedInUser}
 `;

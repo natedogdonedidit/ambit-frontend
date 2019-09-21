@@ -19,10 +19,12 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
 import CameraRoll from '@react-native-community/cameraroll';
 import LinearGradient from 'react-native-linear-gradient';
+import { filter } from 'graphql-anywhere';
 
 import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import { LoggedInUser } from 'library/queries/_fragments';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -79,7 +81,24 @@ const EditBioModal = ({ modalVisible, setModalVisible, user }) => {
         bannerPic,
       },
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }, { query: CURRENT_USER_QUERY }],
+    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }, { query: CURRENT_USER_QUERY }],
+    refetchQueries: () => [{ query: CURRENT_USER_QUERY }],
+    update: (proxy, { data: dataReturned }) => {
+      proxy.writeQuery({
+        query: SINGLE_USER_BIO,
+        data: {
+          user: dataReturned.editBio,
+        },
+      });
+      // // could not get this to work bc fragment matcher error
+      // // ok tho bc just refetch CURRENT_USER_QUERY
+      // proxy.writeQuery({
+      //   query: CURRENT_USER_QUERY,
+      //   data: {
+      //     userLoggedIn: filter(LoggedInUser, dataReturned.editBio),
+      //   },
+      // });
+    },
     onCompleted: () => {
       // setModalVisible(false);
     },

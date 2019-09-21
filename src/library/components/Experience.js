@@ -32,7 +32,8 @@ const Experience = ({ isMyProfile, experience, handleSelectExperience }) => {
             {exp.subText}
           </Text>
           <Text style={{ ...defaultStyles.defaultText, ...styles.dateText }}>
-            {exp.startDateMonth} {exp.startDateYear} - {exp.currentRole ? 'Present' : `${exp.endDateMonth} ${exp.endDateYear}`}
+            {exp.startDateMonth ? `${exp.startDateMonth} ${exp.startDateYear}` : exp.startDateYear} -{' '}
+            {exp.currentRole ? 'Present' : `${exp.endDateMonth}${exp.endDateMonth && ' '}${exp.endDateYear}`}
           </Text>
           <Location location={exp.location} />
         </View>

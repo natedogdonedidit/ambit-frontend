@@ -1,31 +1,81 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Animated } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const TimelineTabs = ({ height, tabState, setTabState, setNewPostModalVisible }) => {
-  const tabNames = ['Home', 'Local', 'Global'];
+  const tabNames = ['My Feed', 'Local', 'Global'];
+
+  const [widthAnim] = useState(new Animated.Value(0));
+
+  // const widthAnim = new Animated.Value(0);
+
+  useEffect(() => {
+    // setWidthAnim(0);
+    Animated.sequence([
+      Animated.timing(widthAnim, {
+        toValue: 0,
+        duration: 0,
+      }),
+      Animated.spring(widthAnim, {
+        toValue: 80,
+        friction: 20,
+        tension: 1,
+        delay: 200,
+        // speed: 1,
+        // bounciness: 0,
+        // stiffness: 300,
+        // damping: 100,
+        // mass: 1,
+      }),
+    ]).start();
+  }, [tabState]);
 
   const renderTabs = () => {
     return tabNames.map((tabName, i) => {
       return (
-        <View key={i} style={tabState === i ? styles.tabSelected : styles.tab}>
-          <TouchableOpacity onPress={() => setTabState(i)} style={styles.touchable}>
-            <Text style={tabState === i ? styles.tabSelectedText : styles.tabText}>{tabName}</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity key={i} onPress={() => setTabState(i)}>
+          <View style={{ justifyContent: 'center' }}>
+            <View style={tabState === i ? styles.tabSelected : styles.tab}>
+              <Text style={tabState === i ? styles.tabSelectedText : styles.tabText}>{tabName}</Text>
+            </View>
+            {tabState === i && (
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  height: 2,
+                  width: '100%',
+                  alignItems: 'center',
+                  // borderRadius: 2,
+                  // backgroundColor: colors.purp,
+                }}
+              >
+                <Animated.View
+                  style={{
+                    height: '100%',
+                    width: widthAnim,
+                    // borderRadius: 2,
+                    backgroundColor: colors.purp,
+                  }}
+                />
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
       );
     });
   };
 
   return (
-    <View style={styles.container}>
+    <View style={{ ...styles.container }}>
       <View style={{ ...styles.tabs, height }}>{renderTabs()}</View>
-      <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
+      <TouchableOpacity onPress={() => null}>
         <View style={{ justifyContent: 'center', height }}>
           <Icon name="search" size={18} color={colors.darkGray} style={{ opacity: 0.6 }} />
         </View>
@@ -42,30 +92,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     paddingRight: 15,
-    borderBottomColor: colors.borderBlack,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  tabs: {
-    flexDirection: 'row',
-    // justifyContent: 'center',
-    // width: '100%',
     backgroundColor: 'white',
     // borderBottomColor: colors.borderBlack,
     // borderBottomWidth: StyleSheet.hairlineWidth,
   },
+  tabs: {
+    flexDirection: 'row',
+    // paddingLeft: 20,
+  },
   tab: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 70,
+    width: 80,
+    // paddingRight: 30,
     height: '100%',
-    backgroundColor: 'white',
   },
   tabSelected: {
-    width: 70,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    // paddingRight: 30,
     height: '100%',
-    // borderBottomColor: colors.purp,
-    // borderBottomWidth: 3,
-    backgroundColor: 'white',
   },
   touchable: {
     justifyContent: 'center',
@@ -76,11 +123,17 @@ const styles = StyleSheet.create({
   tabText: {
     ...defaultStyles.defaultSemibold,
     color: 'black',
-    opacity: 0.4,
+    opacity: 0.6,
+    // paddingLeft: 15,
+    // paddingRight: 15,
+    // marginRight: 12,
   },
   tabSelectedText: {
-    ...defaultStyles.defaultBold,
+    ...defaultStyles.defaultSemibold,
     color: colors.purp,
+    // paddingLeft: 15,
+    // paddingRight: 15,
+    // marginRight: 12,
   },
   newPostButton: {
     height: 30,

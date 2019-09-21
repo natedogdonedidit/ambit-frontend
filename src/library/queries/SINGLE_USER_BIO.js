@@ -1,76 +1,13 @@
 import gql from 'graphql-tag';
+import { DetailedUser } from 'library/queries/_fragments';
 
 const SINGLE_USER_BIO = gql`
   query SINGLE_USER_BIO($id: ID!) {
     user(id: $id) {
-      id
-      createdAt
-      name
-      firstName
-      lastName
-      email
-      profilePic
-      bannerPic
-      location
-      locationLat
-      locationLon
-      jobTitle
-      profession
-      industry
-      website
-      bio
-      skills {
-        id
-        skill
-        isExpert
-      }
-      experience {
-        id
-        name
-        subText
-        startDateMonth
-        startDateYear
-        endDateMonth
-        endDateYear
-        location
-        currentRole
-      }
-      education {
-        id
-        name
-        subText
-        startDateMonth
-        startDateYear
-        endDateMonth
-        endDateYear
-        location
-        currentRole
-      }
-      # interests
-      posts {
-        id
-        createdAt
-        owner {
-          id
-        }
-        isGoal
-        goal
-        location
-        content
-        tags
-        images
-        video
-        pitch
-        isPrivate
-        likes {
-          id
-        }
-        comments {
-          id
-        }
-      }
+      ...DetailedUser
     }
   }
+  ${DetailedUser}
 `;
 
 export default SINGLE_USER_BIO;
