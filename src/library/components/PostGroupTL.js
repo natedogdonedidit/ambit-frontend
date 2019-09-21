@@ -32,7 +32,7 @@ const PostGroupTL = ({
     return (
       <View>
         <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
-          <Post post={post} currentTime={currentTime} navigation={navigation} editable={editable} showLine={showAll} />
+          <Post post={post} currentTime={currentTime} navigation={navigation} editable={editable} showLine={showLastLine} />
         </TouchableOpacity>
       </View>
     );
@@ -78,6 +78,7 @@ const PostGroupTL = ({
       return post.updates.map((update, i) => {
         return (
           <TouchableOpacity
+            key={i}
             activeOpacity={0.7}
             onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: i })}
           >
@@ -100,6 +101,7 @@ const PostGroupTL = ({
         if (i <= lastOne) {
           return (
             <TouchableOpacity
+              key={i}
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: i })}
             >

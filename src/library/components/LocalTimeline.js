@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
 import TextButton from 'library/components/UI/TextButton';
 
-import Post from 'library/components/Post';
+import PostGroupTL from 'library/components/PostGroupTL';
 import EditLocationRadiusModal from './modals/EditLocationRadiusModal';
 
 const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing, userLoggedIn, navigation }) => {
@@ -77,7 +77,7 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
           data={posts}
           keyExtractor={(item, index) => item + index}
           renderItem={({ item }) => {
-            return <Post post={item} currentTime={currentTime} navigation={navigation} />;
+            return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
           }}
         />
       )}
@@ -107,15 +107,15 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
-    marginTop: 10,
+    // marginTop: 10,
     // height: 500,
   },
   locationSelect: {
     flexDirection: 'row',
     paddingVertical: 8,
     backgroundColor: 'white',
-    marginTop: 10,
-    marginBottom: -3,
+    marginTop: 13,
+    // marginBottom: -3,
     // marginHorizontal: 6,
     borderRadius: 3,
   },

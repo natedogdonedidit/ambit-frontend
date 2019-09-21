@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: 60,
+    width: 55,
     flexDirection: 'row',
     alignItems: 'center',
   },

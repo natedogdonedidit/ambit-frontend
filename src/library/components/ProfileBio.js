@@ -28,7 +28,7 @@ const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEdu
         <Projects projects={user.projects} />
       </View>
       <View style={styles.contentSection}>
-        <View style={{ ...styles.contentHeader, paddingBottom: 5 }}>
+        <View style={{ ...styles.contentHeader }}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Experience</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => handleSelectExperience('new')}>
@@ -39,7 +39,7 @@ const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEdu
         <Experience isMyProfile={isMyProfile} experience={user.experience} handleSelectExperience={handleSelectExperience} />
       </View>
       <View style={styles.contentSection}>
-        <View style={{ ...styles.contentHeader, paddingBottom: 5 }}>
+        <View style={{ ...styles.contentHeader }}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Education</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => handleSelectEducation('new')}>
@@ -50,7 +50,7 @@ const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEdu
         <Education isMyProfile={isMyProfile} education={user.education} handleSelectEducation={handleSelectEducation} />
       </View>
       <View style={styles.contentSection}>
-        <View style={{ ...styles.contentHeader, paddingBottom: 15 }}>
+        <View style={[{ ...styles.contentHeader }, !!user.skills && { paddingBottom: 15 }]}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => setModalVisibleSkills(true)}>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   contentHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: 20,
+    paddingBottom: 5,
   },
   projectsSection: {
     paddingTop: 15,

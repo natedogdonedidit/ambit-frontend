@@ -31,7 +31,7 @@ const PostScreen = ({ navigation }) => {
     <SafeAreaView style={{ flex: 1 }}>
       <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
       <ScrollView>
-        <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} />
+        <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} showAll={!isUpdate} />
       </ScrollView>
       {loading && <Loader loading={loading} full />}
     </SafeAreaView>

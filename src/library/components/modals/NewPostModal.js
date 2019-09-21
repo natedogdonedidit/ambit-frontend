@@ -8,14 +8,17 @@ import {
   Alert,
   StatusBar,
   TextInput,
+  PermissionsAndroid,
+  Platform,
   KeyboardAvoidingView,
   TouchableOpacity,
   TouchableWithoutFeedback,
   SafeAreaView,
+  Image,
 } from 'react-native';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-// import { useQuery, useMutation } from 'react-apollo';
+import CameraRoll from '@react-native-community/cameraroll';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
@@ -35,6 +38,9 @@ import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 import SelectGoalModal from 'library/components/modals/SelectGoalModal';
 import Goal from 'library/components/UI/Goal';
 import EditLocationModal from 'library/components/modals/EditLocationModal';
+import CameraRollModal from 'library/components/modals/CameraRollModal';
+import { cloud_name } from 'library/config';
+import { requestCameraRollPermission } from 'library/utils';
 
 const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedIn }) => {
   // initialize state
@@ -58,6 +64,10 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
 
   const [goalModalVisible, setGoalModalVisible] = useState(false);
   const [locModalVisible, setLocModalVisible] = useState(false);
+  const [cameraRollModalVisible, setCameraRollModalVisible] = useState(false);
+
+  const [cameraRoll, setCameraRoll] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   const closeModal = () => {
     setIsGoal(false);
@@ -79,9 +89,6 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
   // CONTEXT
   const { currentUserId } = useContext(UserContext);
 
-  // QUERIES
-  // const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
-
   // MUTATIONS
   const [createPost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
     variables: {
@@ -96,7 +103,7 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
         video,
         pitch,
         isPrivate,
-        images,
+        images: { set: images },
         lastUpdated: new Date(),
         owner: {
           connect: { id: currentUserId },
@@ -133,38 +140,24 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
     }
   }, [newPostModalVisible]);
 
-  const loading = loadingCreate;
-  // const loading = loadingUser || loadingCreate;
-  if (loading) return <Loader active={loading} />;
-  // if (loading) return null;
+  const loading = loadingCreate || uploading;
 
-  // if (errorUser) {
-  //   console.log('ERROR LOADING USER:', errorUser.message);
-  //   // probably change this to now display error on screen
-  //   return (
-  //     <SafeAreaView style={{ flex: 1 }}>
-  //       <View style={styles.container}>
-  //         <Text>{errorUser.message}</Text>
-  //       </View>
-  //     </SafeAreaView>
-  //   );
-  // }
+  // if (loading) return <Loader active={loading} />;
 
-  // const { user } = dataUser;
-
-  // CUSTOM FUNCTION
+  // CUSTOM FUNCTIONS
 
   const handleBack = () => {
     closeModal();
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const message = validateInputs();
     // if missing a required field, Alert user
     if (message) {
       Alert.alert('Please fill in required field:', `${message}`, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
       return;
     }
+    if (images.length > 0) await imageUpload();
     createPost();
   };
 
@@ -186,6 +179,83 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
     setSelectedTag(null);
   };
 
+  // CAMERA ROLL FUNCTIONS
+  const handleEditPicButton = async () => {
+    // 1. request camera roll permission if android
+    if (Platform.OS === 'android') {
+      const isTrue = await PermissionsAndroid.check('READ_EXTERNAL_STORAGE');
+      if (!isTrue) await requestCameraRollPermission();
+    }
+
+    // 2. get images from camera roll
+    try {
+      const res = await CameraRoll.getPhotos({
+        first: 10,
+        assetType: 'Photos',
+      });
+
+      const cameraRollImages = res.edges.map(image => image.node.image.uri);
+
+      // 3. put images into state and open modal to dispaly images
+      setCameraRoll(cameraRollImages);
+      setCameraRollModalVisible(true);
+    } catch (e) {
+      console.error(e);
+      // alert could not get images from camera roll
+      Alert.alert('Oh no!', 'We could not access your camera roll. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    }
+  };
+
+  const handleImageSelect = image => {
+    // put image into state
+    setImages([image]);
+  };
+
+  const imageUpload = async () => {
+    setUploading(true);
+    // create tags
+    const tagss = `${userLoggedIn.id}`;
+    // create context
+    const context = `user=${userLoggedIn.id}`;
+    // create file object
+    const photo = {
+      uri: images[0],
+      type: 'image',
+      name: `${userLoggedIn.id}-${images[0]}`,
+    };
+    // create body
+    const uploadData = new FormData();
+    uploadData.append('file', photo);
+    uploadData.append('upload_preset', 'ambit-profilepic-preset');
+    uploadData.append('tags', tagss);
+    uploadData.append('context', context);
+
+    console.log(uploadData);
+
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+        method: 'POST',
+        body: uploadData,
+      });
+      const resJson = await res.json();
+      console.log(resJson);
+
+      // put image into state
+      setUploading(false);
+      setImages([resJson.url]);
+    } catch (e) {
+      console.log('an error occured trying to upload your photo');
+      console.error(e);
+      Alert.alert('Oh no!', 'We could not upload your new profile picture at this time. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+      setUploading(false);
+      setImages([]);
+    }
+  };
+
   const renderTags = () => {
     return tags.map((tag, i) => (
       <TouchableOpacity key={i} onPress={() => setSelectedTag(i)} activeOpacity={1}>
@@ -200,6 +270,12 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
       </TouchableOpacity>
     ));
   };
+
+  const renderMedia = () => {
+    return <Image style={{ width: '100%', height: 160 }} source={{ uri: images[0] }} resizeMode="cover" />;
+  };
+
+  const containsMedia = images.length > 0;
 
   return (
     <Modal animationType="slide" visible={newPostModalVisible}>
@@ -231,7 +307,7 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
                 <View style={styles.postInputView}>
                   <View style={styles.topHalf}>
                     <View style={styles.leftSide}>
-                      <SmallProfilePic />
+                      <SmallProfilePic pic={userLoggedIn.profilePic} />
                     </View>
                     <View style={styles.rightSide}>
                       <TextInput
@@ -249,7 +325,7 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
                     </View>
                   </View>
                   <View style={styles.bottomHalf}>
-                    <TouchableOpacity onPress={() => null}>
+                    <TouchableOpacity onPress={() => handleEditPicButton()}>
                       <Icon name="image" size={20} color={colors.darkGray} style={{ opacity: 0.7 }} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => null}>
@@ -260,8 +336,9 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
                     </TouchableOpacity>
                   </View>
                 </View>
+                {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
 
-                <View style={styles.tagsInputView}>
+                {/* <View style={styles.tagsInputView}>
                   <TextInput
                     style={{ flex: 1, marginRight: 35 }}
                     onChangeText={val => setActiveTag(val)}
@@ -278,7 +355,7 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
                     <Icon name="check" size={12} color={colors.darkGray} style={{ paddingLeft: 10, opacity: 0.7 }} />
                   </TouchableOpacity>
                 </View>
-                <View style={styles.tags}>{renderTags()}</View>
+                <View style={styles.tags}>{renderTags()}</View> */}
               </ScrollView>
               <View style={styles.aboveKeyboard}>
                 <TouchableOpacity onPress={() => setLocModalVisible(true)} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
@@ -314,6 +391,13 @@ const NewPostModal = ({ newPostModalVisible, setNewPostModalVisible, userLoggedI
           setLocationLat={setLocationLat}
           locationLon={locationLon}
           setLocationLon={setLocationLon}
+        />
+        <CameraRollModal
+          cameraRollModalVisible={cameraRollModalVisible}
+          setCameraRollModalVisible={setCameraRollModalVisible}
+          cameraRoll={cameraRoll}
+          setCameraRoll={setCameraRoll}
+          handleImageSelect={handleImageSelect}
         />
       </SafeAreaView>
 
@@ -383,6 +467,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     backgroundColor: colors.purp,
+  },
+  media: {
+    width: '100%',
+    // height: 240,
+    borderRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
+    marginTop: 10,
+    marginBottom: 10,
+    overflow: 'hidden',
   },
   tagsInputView: {
     flexDirection: 'row',

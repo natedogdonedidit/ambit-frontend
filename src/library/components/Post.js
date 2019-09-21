@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
-import { parseISO, format } from 'date-fns';
+import { format } from 'date-fns';
 
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
@@ -63,6 +63,7 @@ const Post = ({
 
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;
+  console.log(post);
 
   const containsMedia = post.video || post.images.length > 0;
   const showUpdateButton = isMyPost && post.isGoal && editable;
@@ -90,7 +91,9 @@ const Post = ({
   //   ));
   // };
 
-  // const renderMedia = () => {};
+  const renderMedia = () => {
+    return <Image style={{ width: '100%', height: 160 }} source={{ uri: post.images[0] }} resizeMode="cover" />;
+  };
 
   return (
     <View style={styles.post}>
@@ -142,7 +145,7 @@ const Post = ({
         </View>
 
         {/* {post.tags.length > 0 && <View style={styles.tags}>{renderTags()}</View>} */}
-        {/* {containsMedia && <View style={styles.media}>{renderMedia()}</View>} */}
+        {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
         {showDetails ? (
           <>
             <View style={styles.date}>
@@ -267,7 +270,15 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingBottom: 10,
-    // paddingRight: 15,
+  },
+  media: {
+    width: '100%',
+    // height: 240,
+    borderRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
+    marginBottom: 10,
+    overflow: 'hidden',
   },
   tags: {
     flexDirection: 'row',
@@ -281,7 +292,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: 60,
+    width: 55,
     flexDirection: 'row',
     alignItems: 'center',
   },

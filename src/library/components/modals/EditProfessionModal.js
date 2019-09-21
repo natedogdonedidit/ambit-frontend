@@ -110,7 +110,7 @@ const EditProfessionModal = ({
               <View style={styles.rowTitle}>
                 <Text style={{ ...defaultStyles.defaultBold }}>Industry</Text>
               </View>
-              <View style={styles.rowInput}>
+              <View style={{ ...styles.rowInput, borderBottomWidth: 0 }}>
                 <TouchableOpacity onPress={() => changeIndustry()} style={styles.touchableRow}>
                   {industry ? (
                     <Text style={{ ...defaultStyles.defaultText }}>{industry}</Text>
