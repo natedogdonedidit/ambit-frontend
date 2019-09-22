@@ -28,7 +28,6 @@ import GlobalTimeline from 'library/components/GlobalTimeline';
 import LocalTimeline from 'library/components/LocalTimeline';
 import SmallProfilePic from 'library/components/UI/SmallProfilePic';
 import TimelineTabs from 'library/components/TimelineTabs';
-import { LoggedInUser } from '../../library/queries/_fragments';
 
 const HEADER_HEIGHT = 42;
 const BANNER_HEIGHT = 115;
@@ -85,7 +84,7 @@ const HomeScreen = ({ navigation }) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={BANNER_HEIGHT} />}
       >
         <View style={{ height: Platform.OS === 'ios' ? 0 : BANNER_HEIGHT, width: '100%' }} />
-        {activeTimeline === 0 && (
+        {activeTimeline === 2 && (
           <PersonalTimeline
             requestRefresh={requestRefresh}
             setRequestRefresh={setRequestRefresh}
@@ -104,7 +103,7 @@ const HomeScreen = ({ navigation }) => {
             navigation={navigation}
           />
         )}
-        {activeTimeline === 2 && (
+        {activeTimeline === 0 && (
           <GlobalTimeline
             requestRefresh={requestRefresh}
             setRequestRefresh={setRequestRefresh}
@@ -235,8 +234,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   welcomeText: {
-    fontSize: 15,
-    fontFamily: 'SFProDisplay-Light',
+    fontSize: 14,
+    fontFamily: 'SFProDisplay-Thin',
     color: colors.darkGray,
     // marginTop: 2,
   },

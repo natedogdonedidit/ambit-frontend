@@ -2,8 +2,12 @@ import React, { useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { DrawerItems, SafeAreaView } from 'react-navigation';
 import { useQuery } from '@apollo/react-hooks';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { UserContext } from 'library/utils/UserContext';
+import SmallProfilePic from 'library/components/UI/SmallProfilePic';
+import colors from 'styles/colors';
+import defaultStyles from 'styles/defaultStyles';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
@@ -35,7 +39,8 @@ const CustomDrawer = props => {
     <ScrollView>
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
         <View style={styles.header}>
-          <Text style={styles.headerText}>{userLoggedIn ? userLoggedIn.name : 'Name'}</Text>
+          <SmallProfilePic pic={userLoggedIn.profilePic} />
+          <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.firstName}!</Text>
         </View>
         <>
           <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
@@ -69,9 +74,12 @@ const styles = StyleSheet.create({
   },
   header: {
     width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: 'black',
+    marginBottom: 15,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   headerText: {
     color: 'tomato',
@@ -83,9 +91,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   buttonText: {
-    color: 'purple',
-    fontWeight: 'bold',
-    fontSize: 14,
+    ...defaultStyles.largeLight,
   },
 });
 

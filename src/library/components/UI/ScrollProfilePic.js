@@ -7,7 +7,7 @@ import defaultStyles from 'styles/defaultStyles';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
-const MediumProfilePic = ({ pic, pitch, intro }) => {
+const ScrollProfilePic = ({ pic, pitch, intro = true, selected = false }) => {
   // const needsBorder = !!pitch || !!intro;
   const needsBorder = true;
 
@@ -44,16 +44,16 @@ const MediumProfilePic = ({ pic, pitch, intro }) => {
 
 const styles = StyleSheet.create({
   profilePicView: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     overflow: 'hidden',
     backgroundColor: 'white',
   },
   whiteBorder: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 54,
+    height: 54,
+    borderRadius: 26,
     borderWidth: 2,
     borderColor: 'white',
     marginTop: 1.5,
@@ -64,9 +64,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   outterCircle: {
-    width: 47,
-    height: 47,
-    borderRadius: 23.5,
+    width: 57,
+    height: 57,
+    borderRadius: 28.5,
     overflow: 'hidden',
     backgroundColor: 'white',
   },
@@ -79,4 +79,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MediumProfilePic;
+export default ScrollProfilePic;

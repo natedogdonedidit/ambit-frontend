@@ -32,7 +32,15 @@ const PostGroupTL = ({
     return (
       <View>
         <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
-          <Post post={post} currentTime={currentTime} navigation={navigation} editable={editable} showLine={showLastLine} />
+          <Post
+            post={post}
+            currentTime={currentTime}
+            navigation={navigation}
+            editable={editable}
+            showLine={showLastLine}
+            setModalVisibleEditPost={setModalVisibleEditPost}
+            setPostToEdit={setPostToEdit}
+          />
         </TouchableOpacity>
       </View>
     );

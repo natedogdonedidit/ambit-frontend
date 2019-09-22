@@ -53,6 +53,11 @@ const styles = StyleSheet.create({
   },
 
   // DEFAULT
+  defaultItalic: {
+    color: colors.darkGray,
+    fontSize: reg,
+    fontFamily: 'SFProText-LightItalic',
+  },
   defaultMute: {
     color: colors.darkGray,
     fontSize: reg,

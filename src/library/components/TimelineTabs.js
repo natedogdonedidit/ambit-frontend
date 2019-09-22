@@ -8,7 +8,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const TimelineTabs = ({ height, tabState, setTabState, setNewPostModalVisible }) => {
-  const tabNames = ['My Feed', 'Local', 'Global'];
+  const tabNames = ['Global', 'Local', 'My Feed'];
 
   const [widthAnim] = useState(new Animated.Value(0));
 
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
-    paddingRight: 15,
+    paddingHorizontal: 20,
     backgroundColor: 'white',
     // borderBottomColor: colors.borderBlack,
     // borderBottomWidth: StyleSheet.hairlineWidth,

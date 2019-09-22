@@ -19,7 +19,7 @@ const colors = {
   iosBlue: '#126CFC',
   borderBlack: 'rgba(0, 0, 0, 0.5)',
   blueGradient: '#5680E9',
-  // purpGradient: '#8860D0',
+  purple: '#8860D0',
   tagBlue: '#325B7C',
   dimGray: '#0C090A',
 };

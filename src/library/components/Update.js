@@ -203,14 +203,14 @@ const styles = StyleSheet.create({
   },
   threadLine: {
     flex: 1,
-    width: 5,
+    width: 4,
     marginTop: 3,
-    borderTopLeftRadius: 3,
-    borderTopRightRadius: 3,
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     backgroundColor: 'black',
-    opacity: 0.2,
+    opacity: 0.15,
   },
   leftColumn: {
     alignItems: 'center',

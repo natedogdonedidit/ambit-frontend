@@ -10,15 +10,23 @@ import Skills from 'library/components/Skills';
 import Experience from 'library/components/Experience';
 import Education from 'library/components/Education';
 
-const ProfileBio = ({ isMyProfile, user, handleSelectExperience, handleSelectEducation, setModalVisibleSkills }) => {
+const ProfileBio = ({ isMyProfile, user, handleSelectExperience = null, handleSelectEducation, setModalVisibleSkills }) => {
   return (
     <View style={styles.content}>
       <View style={styles.contentSection}>
+        <View style={{ ...styles.contentHeader }}>
+          <Text style={{ ...defaultStyles.hugeMedium }}>About</Text>
+          {isMyProfile && (
+            <TextButton textStyle={styles.editButton} onPress={() => null}>
+              Edit
+            </TextButton>
+          )}
+        </View>
         <Text style={{ ...defaultStyles.defaultText }}>{user.bio}</Text>
       </View>
       <View style={{ ...styles.projectsSection }}>
         <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
-          <Text style={{ ...defaultStyles.hugeMedium }}>Projects</Text>
+          <Text style={{ ...defaultStyles.hugeMedium, paddingBottom: 10 }}>Projects</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => null}>
               New

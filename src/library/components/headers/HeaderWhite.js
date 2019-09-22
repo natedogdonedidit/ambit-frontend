@@ -7,7 +7,7 @@ import defaultStyles from 'styles/defaultStyles';
 
 import TextButton from 'library/components/UI/TextButton';
 
-const HeaderEditBio = ({ handleLeft, handleRight, textLeft, textRight, title }) => {
+const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, title }) => {
   return (
     <SafeAreaView style={styles.container}>
       <TextButton textStyle={styles.closeButtonText} onPress={() => handleLeft()}>
@@ -46,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HeaderEditBio;
+export default HeaderWhite;

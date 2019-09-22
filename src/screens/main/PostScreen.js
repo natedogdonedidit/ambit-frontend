@@ -28,10 +28,13 @@ const PostScreen = ({ navigation }) => {
   const currentTime = new Date();
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.container}>
       <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
-      <ScrollView>
+      <ScrollView style={styles.scrollView}>
         <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} showAll={!isUpdate} />
+        <View style={styles.commentsView}>
+          <Text style={defaultStyles.defaultItalic}>No comments</Text>
+        </View>
       </ScrollView>
       {loading && <Loader loading={loading} full />}
     </SafeAreaView>
@@ -41,10 +44,10 @@ const PostScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     backgroundColor: 'white',
-    padding: 20,
+  },
+  scrollView: {
+    backgroundColor: colors.lightGray,
   },
   update: {
     flexDirection: 'row',
@@ -69,10 +72,14 @@ const styles = StyleSheet.create({
   updateInput: {
     width: '100%',
   },
-  comments: {
+  commentsView: {
     width: '100%',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.borderBlack,
+    marginTop: 10,
+    height: 500,
+    paddingTop: 40,
+    alignItems: 'center',
+    // borderTopWidth: StyleSheet.hairlineWidth,
+    // borderTopColor: colors.borderBlack,
   },
 });
 
