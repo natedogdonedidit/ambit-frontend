@@ -6,7 +6,6 @@ import com.android.build.OutputFile
 project.ext.vectoricons = [
     iconFontNames: [ 'MaterialIcons.ttf', 'MaterialCommunityIcons.ttf', 'FontAwesome.ttf', 'FontAwesome5_Brands.ttf', 'FontAwesome5_Regular.ttf', 'FontAwesome5_Solid.ttf' ] // Name of the font files you want to copy
 ]
-
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 /**
@@ -206,6 +205,10 @@ dependencies {
     } else {
       implementation jscFlavor
     }
+
+    // chad added
+    compile project(':react-native-video')
+    implementation "androidx.appcompat:appcompat:1.0.0"
 
     // chad added
     // compile project(':@react-native-community_cameraroll')

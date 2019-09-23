@@ -15,6 +15,7 @@ import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
 import UpdatePostScreen from './UpdatePostScreen';
 import RequestsScreen from './RequestsScreen';
+import StoryModal from './StoryModal';
 
 const HomeStack = createStackNavigator(
   {
@@ -196,4 +197,19 @@ const MainNavigator = createDrawerNavigator(
   }
 );
 
-export default MainNavigator;
+const MainNavWithModal = createStackNavigator(
+  {
+    Main: {
+      screen: MainNavigator,
+    },
+    StoryModal: {
+      screen: StoryModal,
+    },
+  },
+  {
+    mode: 'modal',
+    headerMode: 'none',
+  }
+);
+
+export default MainNavWithModal;

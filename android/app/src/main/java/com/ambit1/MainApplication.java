@@ -2,6 +2,7 @@ package com.ambit1;
 
 // chad added
 // import com.reactnativecommunity.cameraroll.CameraRollPackage;
+import com.brentvatne.react.ReactVideoPackage;
 
 import android.app.Application;
 import android.util.Log;
@@ -34,6 +35,15 @@ public class MainApplication extends Application implements ReactApplication {
       // packages.add(new CameraRollPackage());  // chad added
       return packages;
     }
+
+    // chad added
+    @Override
+    protected List<ReactPackage> getPackages() {
+        return Arrays.asList(
+                new MainReactPackage(),
+                new ReactVideoPackage()
+        );
+}
 
     @Override
     protected String getJSMainModuleName() {

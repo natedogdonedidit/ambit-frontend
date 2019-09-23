@@ -7,3 +7,7 @@ include ':app'
 // chad added
 // include ':@react-native-community_cameraroll'
 // project(':@react-native-community_cameraroll').projectDir = new File(rootProject.projectDir, 	'../node_modules/@react-native-community/cameraroll/android')
+
+// chad added
+include ':react-native-video'
+project(':react-native-video').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-video/android-exoplayer')

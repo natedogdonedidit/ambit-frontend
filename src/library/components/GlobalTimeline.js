@@ -41,7 +41,6 @@ const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefr
   }
 
   const posts = data.postsGlobal || [];
-  // console.log(posts);
 
   return (
     <FlatList

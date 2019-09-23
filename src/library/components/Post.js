@@ -98,7 +98,7 @@ const Post = ({
   return (
     <View style={styles.post}>
       <View style={styles.leftColumn}>
-        <MediumProfilePic pic={post.owner.profilePic} pitch={post.pitch} intro={post.owner.intro} />
+        <MediumProfilePic user={post.owner} pitch={post.pitch} navigation={navigation} />
         {!!post.pitch && (
           <View style={{ alignItems: 'center', paddingTop: 1 }}>
             <Text style={{ ...defaultStyles.smallLight, color: colors.peach }}>View</Text>
@@ -115,7 +115,7 @@ const Post = ({
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
-              hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
+              hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
             >
               <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
                 {post.owner.name}
