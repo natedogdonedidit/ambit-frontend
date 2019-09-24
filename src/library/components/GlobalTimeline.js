@@ -43,14 +43,17 @@ const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefr
   const posts = data.postsGlobal || [];
 
   return (
-    <FlatList
-      style={styles.timeline}
-      data={posts}
-      keyExtractor={(item, index) => item + index}
-      renderItem={({ item }) => {
-        return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
-      }}
-    />
+    <>
+      <View style={styles.tasks} />
+      <FlatList
+        style={styles.timeline}
+        data={posts}
+        keyExtractor={(item, index) => item + index}
+        renderItem={({ item }) => {
+          return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
+        }}
+      />
+    </>
   );
 };
 
@@ -60,6 +63,38 @@ const styles = StyleSheet.create({
     marginTop: 10,
     // height: 500,
   },
+  tasks: {
+    height: 140,
+    width: '100%',
+    backgroundColor: colors.purp,
+    marginTop: 15,
+    borderTopColor: colors.borderBlack,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
 });
 
 export default GlobalTimeline;
+
+// {/* <View style={{ height: BANNER_HEIGHT, paddingHorizontal: 20, paddingVertical: 15, backgroundColor: 'white' }}>
+//   {/* {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>} */}
+//   <Text style={styles.welcomeText}>Get started in 3 simple steps.</Text>
+//   <TouchableOpacity onPress={() => null}>
+//     <View style={{ ...styles.taskView, ...defaultStyles.shadowButton }}>
+//       <LinearGradient
+//         start={{ x: 0.2, y: 0.2 }}
+//         end={{ x: 1, y: 6 }}
+//         colors={[colors.purp, colors.purpGradient]}
+//         style={{ ...styles.linearGradient }}
+//       />
+//       <View>
+//         <Text style={{ ...defaultStyles.largeBold, color: 'white' }}>Learn how to use{'\n'}Ambit!</Text>
+//       </View>
+
+//       <View>
+//         <Text style={{ ...defaultStyles.defaultMedium, color: 'white', textAlign: 'center' }}>Step{'\n'}1/3</Text>
+//       </View>
+//     </View>
+//   </TouchableOpacity>
+// </View>; */}

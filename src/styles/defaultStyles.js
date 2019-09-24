@@ -197,6 +197,17 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
 
+  shadowSlider: {
+    shadowColor: colors.purp,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 6,
+    // elevation: 6,
+  },
+
   shadow3: {
     shadowColor: '#000',
     shadowOffset: {

@@ -6,7 +6,6 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import PostGroupTL from 'library/components/PostGroupTL';
-import MediumProfilePic from 'library/components/UI/MediumProfilePic';
 import ALL_COMMENTS_QUERY from 'library/queries/ALL_COMMENTS_QUERY';
 import Loader from 'library/components/UI/Loader';
 

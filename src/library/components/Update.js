@@ -11,7 +11,7 @@ import { timeDifference, timeDifferenceGoal } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import TextButton from 'library/components/UI/TextButton';
 
-import SmallProfilePic from 'library/components/UI/SmallProfilePic';
+import ProfilePic from 'library/components/UI/ProfilePic';
 import Goal from 'library/components/UI/Goal';
 import Tag from 'library/components/UI/Tag';
 import Heart from 'library/components/UI/Heart';
@@ -93,7 +93,7 @@ const Update = ({
   return (
     <View style={styles.post}>
       <View style={styles.leftColumn}>
-        <SmallProfilePic pic={post.owner.profilePic} />
+        <ProfilePic user={post.owner} size={30} disableVideo />
         {showLine && <View style={styles.threadLine} />}
       </View>
       <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 0 }]}>

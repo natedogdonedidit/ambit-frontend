@@ -21,12 +21,12 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import HeaderHome from 'library/components/headers/HeaderHome';
 import NewPostModal from 'library/components/modals/NewPostModal';
 import Loader from 'library/components/UI/Loader';
 import PersonalTimeline from 'library/components/PersonalTimeline';
 import GlobalTimeline from 'library/components/GlobalTimeline';
 import LocalTimeline from 'library/components/LocalTimeline';
+import ProfilePic from 'library/components/UI/ProfilePic';
 import TimelineTabs from 'library/components/TimelineTabs';
 
 const HEADER_HEIGHT = 42;
@@ -58,10 +58,9 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="white" />
-      <HeaderHome user={userLoggedIn} handleMiddle={() => null} handleRight={() => null} navigation={navigation} />
-      <TimelineTabs height={TABS_HEIGHT} tabState={activeTimeline} setTabState={setActiveTimeline} />
-
-      <ScrollView
+      <View style={{ height: HEADER_HEIGHT + TABS_HEIGHT, width: '100%' }} />
+      <Animated.ScrollView
+        contentInset={{ top: Platform.OS === 'ios' ? BANNER_HEIGHT : 0 }}
         style={[
           {
             width: '100%',
@@ -69,10 +68,22 @@ const HomeScreen = ({ navigation }) => {
             backgroundColor: colors.lightGray,
           },
         ]}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-
-        // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={BANNER_HEIGHT} />}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: scrollY,
+                },
+              },
+            },
+          ],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={1}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} progressViewOffset={BANNER_HEIGHT} />}
       >
+        <View style={{ height: Platform.OS === 'ios' ? 0 : BANNER_HEIGHT, width: '100%' }} />
         {activeTimeline === 2 && (
           <PersonalTimeline
             requestRefresh={requestRefresh}
@@ -101,8 +112,70 @@ const HomeScreen = ({ navigation }) => {
             navigation={navigation}
           />
         )}
-      </ScrollView>
 
+        {/* <View style={{ height: 900, width: '100%', backgroundColor: 'pink' }} /> */}
+      </Animated.ScrollView>
+
+      <Animated.View
+        style={{
+          ...styles.sliderView,
+          ...defaultStyles.shadowButton,
+          transform: [
+            {
+              translateY: scrollY.interpolate({
+                inputRange: Platform.OS === 'ios' ? [-SLIDE_DISTANCE, 0] : [0, SLIDE_DISTANCE],
+                outputRange: [0, -SLIDE_DISTANCE],
+                extrapolate: 'clamp',
+              }),
+            },
+          ],
+        }}
+      >
+        <View style={{ height: insets.top + HEADER_HEIGHT, width: '100%', backgroundColor: 'white' }} />
+        <View style={{ height: BANNER_HEIGHT, paddingHorizontal: 20, paddingVertical: 15, backgroundColor: 'white' }}>
+          {/* {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>} */}
+          <Text style={styles.welcomeText}>Get started in 3 simple steps.</Text>
+          <TouchableOpacity onPress={() => null}>
+            <View style={{ ...styles.taskView, ...defaultStyles.shadowButton }}>
+              <LinearGradient
+                start={{ x: 0.2, y: 0.2 }}
+                end={{ x: 1, y: 6 }}
+                colors={[colors.purp, colors.purpGradient]}
+                style={{ ...styles.linearGradient }}
+              />
+              <View>
+                <Text style={{ ...defaultStyles.largeBold, color: 'white' }}>Learn how to use{'\n'}Ambit!</Text>
+              </View>
+
+              <View>
+                <Text style={{ ...defaultStyles.defaultMedium, color: 'white', textAlign: 'center' }}>Step{'\n'}1/3</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        <TimelineTabs
+          height={TABS_HEIGHT}
+          tabState={activeTimeline}
+          setTabState={setActiveTimeline}
+          setNewPostModalVisible={setNewPostModalVisible}
+        />
+      </Animated.View>
+
+      <View style={styles.headerBarView}>
+        <View style={{ height: insets.top, width: '100%', backgroundColor: 'white' }} />
+        <View style={styles.headerBar}>
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <ProfilePic user={userLoggedIn} navigation={navigation} size={30} disableVideo disableClick />
+          </TouchableOpacity>
+          <View style={{ flex: 1, paddingRight: 30, alignItems: 'center' }}>
+            <Text style={{ ...defaultStyles.ambitLogo }}>Ambit</Text>
+          </View>
+          {/* <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
+            <Icon name="search" size={20} color={colors.darkGray} style={{ opacity: 0.6 }} />
+          </TouchableOpacity> */}
+        </View>
+      </View>
       <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
         <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
           <Icon name="pen" size={18} color="white" />
@@ -131,8 +204,24 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: colors.lightLightGray,
+    backgroundColor: colors.lightGray,
     overflow: 'hidden',
+  },
+  headerBarView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+  },
+  headerBar: {
+    width: '100%',
+    height: HEADER_HEIGHT,
+    flexDirection: 'row',
+    // justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    backgroundColor: 'white',
   },
   sliderView: {
     width: '100%',
@@ -172,3 +261,9 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
+/* <TouchableOpacity onPress={() => null}>
+  <View style={{ justifyContent: 'center', height }}>
+    <Icon name="search" size={18} color={colors.darkGray} style={{ opacity: 0.6 }} />
+  </View>
+</TouchableOpacity>; */

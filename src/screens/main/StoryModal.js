@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity, StatusBar } from 'react-native';
 import Video from 'react-native-video';
 import { useQuery } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -7,20 +7,22 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import TestVideo from 'library/assets/testintro.mp4';
-import MediumProfilePic from 'library/components/UI/MediumProfilePic';
+import ProfilePic from 'library/components/UI/ProfilePic';
 
 const StoryModal = ({ navigation }) => {
   const [hasError, setHasError] = useState(false);
   const videoRef = useRef(null);
 
   const user = navigation.getParam('user');
-  const contentType = navigation.getParam('contentType');
+  const contentType = navigation.getParam('contentType', 'Story');
   const pitch = navigation.getParam('pitch', null);
 
   let story = [];
 
-  if (contentType === 'intro') {
+  if (contentType === 'Intro') {
     story = [...user.intro];
+  } else if (contentType === 'Pitch') {
+    story = [pitch];
   }
 
   const onBuffer = () => {};
@@ -39,6 +41,8 @@ const StoryModal = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor="black" barStyle="light-content" />
+
       <Video
         // source={{ uri: 'https://res.cloudinary.com/ambitapp/video/upload/v1569267304/IMG_2418_atnorh-mp4_vkltw5.mp4' }} // Can be a URL or a local file.
         source={{ uri: story[0] }}
@@ -53,10 +57,10 @@ const StoryModal = ({ navigation }) => {
       <SafeAreaView style={styles.overlay}>
         <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: user.id })}>
           <View style={styles.header}>
-            <MediumProfilePic user={user} disableVideo />
+            <ProfilePic user={user} disableVideo size={40} />
             <Text style={{ ...defaultStyles.defaultBold, color: 'white', paddingLeft: 15 }}>{user.name}</Text>
             <Icon style={{ paddingLeft: 10 }} name="circle" solid size={4} color="white" />
-            <Text style={{ ...defaultStyles.defaultMedium, color: 'white', paddingLeft: 10 }}>Intro</Text>
+            <Text style={{ ...defaultStyles.defaultMedium, color: 'white', paddingLeft: 10 }}>{contentType}</Text>
           </View>
         </TouchableOpacity>
 

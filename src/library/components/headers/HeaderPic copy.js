@@ -4,15 +4,15 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import SmallProfilePic from 'library/components/UI/SmallProfilePic';
+import ProfilePic from 'library/components/UI/ProfilePic';
 
 import TextButton from 'library/components/UI/TextButton';
 
-const HeaderPic = ({ handleLeft, handleRight, textRight, title, pic }) => {
+const HeaderPic = ({ handleLeft, handleRight, textRight, title, user }) => {
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.leftSide} onPress={() => handleLeft()}>
-        <SmallProfilePic pic={pic} />
+        <ProfilePic user={user} size={30} disableVideo disableClick />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={() => null}>
         <View style={styles.searchBar}>

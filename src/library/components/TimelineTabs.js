@@ -8,7 +8,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const TimelineTabs = ({ height, tabState, setTabState, setNewPostModalVisible }) => {
-  const tabNames = ['Global', 'Local', 'My Feed'];
+  const tabNames = ['Global', 'Local', 'Following', 'Hot'];
 
   const [widthAnim] = useState(new Animated.Value(0));
 
@@ -22,7 +22,7 @@ const TimelineTabs = ({ height, tabState, setTabState, setNewPostModalVisible })
         duration: 0,
       }),
       Animated.spring(widthAnim, {
-        toValue: 80,
+        toValue: 100,
         friction: 20,
         tension: 1,
         delay: 200,
@@ -59,7 +59,10 @@ const TimelineTabs = ({ height, tabState, setTabState, setNewPostModalVisible })
                 <Animated.View
                   style={{
                     height: '100%',
-                    width: widthAnim,
+                    width: widthAnim.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: ['0%', '100%'],
+                    }),
                     // borderRadius: 2,
                     backgroundColor: colors.purp,
                   }}
@@ -75,11 +78,6 @@ const TimelineTabs = ({ height, tabState, setTabState, setNewPostModalVisible })
   return (
     <View style={{ ...styles.container }}>
       <View style={{ ...styles.tabs, height }}>{renderTabs()}</View>
-      <TouchableOpacity onPress={() => null}>
-        <View style={{ justifyContent: 'center', height }}>
-          <Icon name="search" size={18} color={colors.darkGray} style={{ opacity: 0.6 }} />
-        </View>
-      </TouchableOpacity>
     </View>
   );
 };
@@ -89,12 +87,13 @@ export default TimelineTabs;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '100%',
     paddingHorizontal: 20,
-    backgroundColor: 'white',
-    // borderBottomColor: colors.borderBlack,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // backgroundColor: 'white',
+    backgroundColor: colors.lightLightGray,
+    borderBottomColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   tabs: {
     flexDirection: 'row',
@@ -103,14 +102,16 @@ const styles = StyleSheet.create({
   tab: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 80,
+    paddingHorizontal: 15,
+    // width: 80,
     // paddingRight: 30,
     height: '100%',
   },
   tabSelected: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 80,
+    paddingHorizontal: 15,
+    // width: 80,
     // paddingRight: 30,
     height: '100%',
   },

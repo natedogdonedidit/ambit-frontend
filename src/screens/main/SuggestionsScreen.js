@@ -10,7 +10,7 @@ import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import HeaderPic from 'library/components/headers/HeaderPic';
+import HeaderSearch from 'library/components/headers/HeaderSearch';
 import ProfileComponent from 'library/components/profile/ProfileComponent';
 import UserSlider from 'library/components/UserSlider';
 import Loader from 'library/components/UI/Loader';
@@ -94,17 +94,17 @@ const SuggestionsScreen = ({ navigation }) => {
           },
         ]}
       >
-        <HeaderPic
+        <HeaderSearch
           handleLeft={() => navigation.openDrawer()}
           handleRight={() => null}
           textRight=""
           title="Search"
-          pic={userLoggedIn.profilePic}
+          user={userLoggedIn}
         />
         {loadingUsers ? (
           <Loader loading={loadingUsers} />
         ) : (
-          <UserSlider users={users} handleUserChange={handleUserChange} loading={loading} />
+          <UserSlider users={users} handleUserChange={handleUserChange} loading={loading} profileId={profileId} />
         )}
       </Animated.View>
       <View

@@ -11,7 +11,7 @@ import { timeDifference, timeDifferenceGoal } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import TextButton from 'library/components/UI/TextButton';
 
-import MediumProfilePic from 'library/components/UI/MediumProfilePic';
+import ProfilePic from 'library/components/UI/ProfilePic';
 import Goal from 'library/components/UI/Goal';
 import Tag from 'library/components/UI/Tag';
 import Heart from 'library/components/UI/Heart';
@@ -98,11 +98,11 @@ const Post = ({
   return (
     <View style={styles.post}>
       <View style={styles.leftColumn}>
-        <MediumProfilePic user={post.owner} pitch={post.pitch} navigation={navigation} />
+        <ProfilePic user={post.owner} intro={post.owner.intro} pitch={post.pitch} navigation={navigation} />
         {!!post.pitch && (
           <View style={{ alignItems: 'center', paddingTop: 1 }}>
-            <Text style={{ ...defaultStyles.smallLight, color: colors.peach }}>View</Text>
-            <Text style={{ ...defaultStyles.smallLight, color: colors.peach }}>Pitch</Text>
+            <Text style={{ ...defaultStyles.smallMedium, color: colors.peach }}>View</Text>
+            <Text style={{ ...defaultStyles.smallMedium, color: colors.peach }}>Pitch</Text>
           </View>
         )}
         {showLine && (

@@ -36,7 +36,7 @@ import Loader from 'library/components/UI/Loader';
 import ProfileBio from 'library/components/ProfileBio';
 import ProfilePosts from 'library/components/ProfilePosts';
 import ProfileNetwork from 'library/components/ProfileNetwork';
-import LargeProfilePic from 'library/components/UI/LargeProfilePic';
+import ProfilePic from 'library/components/UI/ProfilePic';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
@@ -336,7 +336,7 @@ const ProfileScreen = ({ navigation }) => {
           ...defaultStyles.shadow3,
         }}
       >
-        <LargeProfilePic pic={user.profilePic} intro={user.intro} />
+        <ProfilePic user={user} intro={user.intro} navigation={navigation} size={70} border disableClick borderWidth={3} />
       </Animated.View>
 
       {/* back button */}

@@ -8,17 +8,20 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 
 import TextButton from 'library/components/UI/TextButton';
 
-const HeaderHome = ({ navigation, handleMiddle, handleRight, user }) => {
+const HeaderPic = ({ handleLeft, handleRight, textRight, title, user }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
+      <TouchableOpacity style={styles.leftSide} onPress={() => handleLeft()}>
         <ProfilePic user={user} size={30} disableVideo disableClick />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
-        <Text style={{ ...defaultStyles.ambitLogo }}>Ambit</Text>
+      <TouchableOpacity style={styles.middleSection} onPress={() => null}>
+        <View style={styles.searchBar}>
+          <Icon name="search" size={15} color={colors.darkGray} />
+          <Text style={{ ...defaultStyles.defaultText, paddingLeft: 35 }}>Search for people</Text>
+        </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.rightSide} onPress={handleRight}>
-        <Icon name="search" size={18} color={colors.darkGray} style={{ opacity: 0.6 }} />
+      <TouchableOpacity style={styles.rightSide} onPres={() => null}>
+        <Icon name="cog" size={20} color={colors.darkGray} />
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -32,9 +35,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
-    backgroundColor: colors.lightLightGray,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   leftSide: {
     width: 60,
@@ -50,6 +52,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     // paddingHorizontal: 10,
   },
+  searchBar: {
+    width: '100%',
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: colors.lightGray,
+    flexDirection: 'row',
+    paddingHorizontal: 15,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
 });
 
-export default HeaderHome;
+export default HeaderPic;

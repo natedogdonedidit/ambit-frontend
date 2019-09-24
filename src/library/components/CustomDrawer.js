@@ -5,13 +5,13 @@ import { useQuery } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { UserContext } from 'library/utils/UserContext';
-import SmallProfilePic from 'library/components/UI/SmallProfilePic';
+import ProfilePic from 'library/components/UI/ProfilePic';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
-const CustomDrawer = props => {
+const CustomDrawer = ({ navigation }) => {
   const { logoutCTX } = useContext(UserContext);
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
 
@@ -19,8 +19,6 @@ const CustomDrawer = props => {
   if (error) return <Text>{`Error! ${error}`}</Text>;
 
   const { userLoggedIn } = data;
-
-  const { navigation } = props;
 
   const handleLogout = async () => {
     try {
@@ -39,7 +37,7 @@ const CustomDrawer = props => {
     <ScrollView>
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
         <View style={styles.header}>
-          <SmallProfilePic pic={userLoggedIn.profilePic} />
+          <ProfilePic user={userLoggedIn} size={30} navigation={navigation} disableVideo />
           <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.firstName}!</Text>
         </View>
         <>

@@ -23,6 +23,7 @@ export const LoggedInUser = gql`
     location
     locationLat
     locationLon
+    intro
   }
 `;
 

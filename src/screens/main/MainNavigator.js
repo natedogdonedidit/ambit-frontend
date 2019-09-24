@@ -205,6 +205,9 @@ const MainNavWithModal = createStackNavigator(
     StoryModal: {
       screen: StoryModal,
     },
+    // RollModal: {
+    //   screen: RollModal,
+    // },
   },
   {
     mode: 'modal',

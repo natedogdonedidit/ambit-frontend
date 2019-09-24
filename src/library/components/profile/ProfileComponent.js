@@ -26,7 +26,7 @@ import TextButton from 'library/components/UI/TextButton';
 import Loader from 'library/components/UI/Loader';
 
 import NameBox from 'library/components/profile/NameBox';
-import LargeProfilePic from 'library/components/UI/LargeProfilePic';
+import ProfilePic from 'library/components/UI/ProfilePic';
 import ProfileTabs from 'library/components/ProfileTabs';
 import ProfileBio from 'library/components/ProfileBio';
 import ProfilePosts from 'library/components/ProfilePosts';
@@ -205,7 +205,7 @@ const ProfileComponent = ({ navigation, profileId, scrollY, OUTSIDE_HEADER_HEIGH
           ...defaultStyles.shadow3,
         }}
       >
-        <LargeProfilePic pic={user.profilePic} intro={user.intro} />
+        <ProfilePic user={user} intro={user.intro} navigation={navigation} size={70} border />
       </Animated.View>
     </SafeAreaView>
   );
