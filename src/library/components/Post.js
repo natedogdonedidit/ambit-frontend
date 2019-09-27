@@ -63,7 +63,6 @@ const Post = ({
 
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;
-  console.log(post);
 
   const containsMedia = post.video || post.images.length > 0;
   const showUpdateButton = isMyPost && post.isGoal && editable;

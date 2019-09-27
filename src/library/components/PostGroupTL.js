@@ -24,8 +24,6 @@ const PostGroupTL = ({
   // const [showAll, setShowMore] = useState(false);
 
   const hasUpdates = post.updates.length > 0;
-  // console.log(post);
-  console.log(hasUpdates);
 
   // if there are no updates
   if (!hasUpdates) {

@@ -1,5 +1,6 @@
 import { PermissionsAndroid } from 'react-native';
 import { differenceInSeconds, differenceInDays, differenceInHours } from 'date-fns';
+import { cloud_name } from 'library/config';
 
 export const monthToFloat = month => {
   if (month === 'Jan') return 0.01;
@@ -58,6 +59,40 @@ export async function requestCameraRollPermission() {
     console.warn(err);
   }
 }
+
+export const imageUpload = async (user, media) => {
+  // create tags
+  const tags = `${user.id}`;
+  // create context
+  const context = `user=${user.id}`;
+  // create file object
+  const photo = {
+    uri: media[0],
+    type: 'image',
+    name: `${user.id}-${media[0]}`,
+  };
+  // create body
+  const uploadData = new FormData();
+  uploadData.append('file', photo);
+  uploadData.append('upload_preset', 'ambit-profilepic-preset');
+  uploadData.append('tags', tags);
+  uploadData.append('context', context);
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+      method: 'POST',
+      body: uploadData,
+    });
+    const resJson = await res.json();
+
+    // return an array of URLs
+    return [resJson.url];
+  } catch (error) {
+    console.log('an error occured trying to upload your photo');
+    console.error(error);
+    return error;
+  }
+};
 
 export const timeDifference = (laterDate, earlierDate) => {
   let timeDiff = differenceInSeconds(laterDate, earlierDate);

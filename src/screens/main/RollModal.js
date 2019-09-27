@@ -1,21 +1,68 @@
-import React, { useState } from 'react';
-import { StyleSheet, Modal, SafeAreaView, View, Text, TouchableOpacity, FlatList, Image, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  StyleSheet,
+  SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  Dimensions,
+  Platform,
+  PermissionsAndroid,
+  Alert,
+} from 'react-native';
+import CameraRoll from '@react-native-community/cameraroll';
+import { requestCameraRollPermission } from 'library/utils';
 
-import defaultStyles from 'styles/defaultStyles';
-import TextButton from 'library/components/UI/TextButton';
+import HeaderWhite from 'library/components/headers/HeaderWhite';
 
 const { width } = Dimensions.get('window');
 
 const RollModal = ({ navigation }) => {
-  const cameraRoll = navigation.getParam('cameraRoll', []);
+  const [cameraRoll, setCameraRoll] = useState([]);
+
+  const assetType = navigation.getParam('assetType', 'Photos');
+  const handleMediaSelect = navigation.getParam('handleMediaSelect');
+
+  const getPhotosFromCameraRoll = async () => {
+    // 1. request camera roll permission if android
+    if (Platform.OS === 'android') {
+      const isTrue = await PermissionsAndroid.check('READ_EXTERNAL_STORAGE');
+      if (!isTrue) await requestCameraRollPermission();
+    }
+
+    // 2. get images from camera roll
+    try {
+      const res = await CameraRoll.getPhotos({
+        first: 10,
+        assetType,
+      });
+
+      const cameraRollImages = res.edges.map(image => image.node.image.uri);
+
+      // 3. put images into state and open modal to dispaly images
+      setCameraRoll(cameraRollImages);
+    } catch (e) {
+      console.error(e);
+      Alert.alert('Oh no!', 'We could not access your camera roll. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    }
+  };
+
+  // execute every
+  useEffect(() => {
+    getPhotosFromCameraRoll();
+  });
 
   const closeModal = () => {
     navigation.goBack();
   };
 
-  const pressImage = async image => {
-    handleImageSelect(image);
-    closeModal();
+  const handleSelect = async media => {
+    handleMediaSelect(media);
+    navigation.goBack();
   };
 
   const renderImages = () => {
@@ -27,7 +74,7 @@ const RollModal = ({ navigation }) => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.picView}>
-            <TouchableOpacity onPress={() => pressImage(item)}>
+            <TouchableOpacity onPress={() => handleSelect(item)}>
               <Image style={styles.pic} resizeMode="cover" source={{ uri: item }} />
             </TouchableOpacity>
           </View>
@@ -37,19 +84,9 @@ const RollModal = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <View style={styles.modalHeader}>
-          <TextButton textStyle={styles.closeButtonText} onPress={() => closeModal()}>
-            Cancel
-          </TextButton>
-          <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>Select an Image</Text>
-          <TextButton textStyle={styles.saveButtonText} onPress={() => closeModal()}>
-            Done
-          </TextButton>
-        </View>
-        {cameraRoll.length > 0 ? renderImages() : <Text>No images in camera roll</Text>}
-      </View>
+    <SafeAreaView style={styles.container}>
+      <HeaderWhite handleLeft={closeModal} textLeft="Back" textRight="" title="Select an Image" />
+      {cameraRoll.length > 0 ? renderImages() : <Text>No images in camera roll</Text>}
     </SafeAreaView>
   );
 };
@@ -59,24 +96,6 @@ export default RollModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    height: 40,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    width: 60,
-    textAlign: 'left',
-  },
-  saveButtonText: {
-    width: 60,
-    textAlign: 'right',
-  },
-  headerTitle: {
-    flexGrow: 1,
-    textAlign: 'center',
   },
   flatList: {
     width: '100%',

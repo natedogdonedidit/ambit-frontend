@@ -15,8 +15,11 @@ import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
 import UpdatePostScreen from './UpdatePostScreen';
 import RequestsScreen from './RequestsScreen';
-import StoryModal from './StoryModal';
 import CustomSearchScreen from './CustomSearchScreen';
+import StoryModal from './StoryModal';
+import NewPostModal from './NewPostModal';
+import RollModal from './RollModal';
+import EditLocationModal from './EditLocationModal';
 
 const HomeStack = createStackNavigator(
   {
@@ -209,9 +212,15 @@ const MainNavWithModal = createStackNavigator(
     StoryModal: {
       screen: StoryModal,
     },
-    // RollModal: {
-    //   screen: RollModal,
-    // },
+    NewPostModal: {
+      screen: NewPostModal,
+    },
+    RollModal: {
+      screen: RollModal,
+    },
+    EditLocationModal: {
+      screen: EditLocationModal,
+    },
   },
   {
     mode: 'modal',

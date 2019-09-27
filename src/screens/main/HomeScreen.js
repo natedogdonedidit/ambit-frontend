@@ -8,7 +8,6 @@ import defaultStyles from 'styles/defaultStyles';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import HeaderHome from 'library/components/headers/HeaderHome';
-import NewPostModal from 'library/components/modals/NewPostModal';
 import Error from 'library/components/UI/Error';
 import PersonalTimeline from 'library/components/PersonalTimeline';
 import GlobalTimeline from 'library/components/GlobalTimeline';
@@ -17,7 +16,7 @@ import TimelineTabs from 'library/components/TimelineTabs';
 
 const HomeScreen = ({ navigation }) => {
   const [activeTimeline, setActiveTimeline] = useState(0);
-  const [newPostModalVisible, setNewPostModalVisible] = useState(false);
+  // const [newPostModalVisible, setNewPostModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [requestRefresh, setRequestRefresh] = useState(false);
 
@@ -73,16 +72,11 @@ const HomeScreen = ({ navigation }) => {
         )}
       </ScrollView>
 
-      <TouchableOpacity onPress={() => setNewPostModalVisible(true)}>
+      <TouchableOpacity onPress={() => navigation.navigate('NewPostModal', { userLoggedIn })}>
         <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
           <Icon name="pen" size={18} color="white" />
         </View>
       </TouchableOpacity>
-      <NewPostModal
-        newPostModalVisible={newPostModalVisible}
-        setNewPostModalVisible={setNewPostModalVisible}
-        userLoggedIn={userLoggedIn}
-      />
     </SafeAreaView>
   );
 };
