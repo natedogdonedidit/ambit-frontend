@@ -15,15 +15,18 @@ import {
 import CameraRoll from '@react-native-community/cameraroll';
 import { requestCameraRollPermission } from 'library/utils';
 
+import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
 const { width } = Dimensions.get('window');
 
 const RollModal = ({ navigation }) => {
-  const [cameraRoll, setCameraRoll] = useState([]);
-
-  const assetType = navigation.getParam('assetType', 'Photos');
+  // make sure these params get passed in!!
+  const assetTypeRequested = navigation.getParam('assetType', 'All');
   const handleMediaSelect = navigation.getParam('handleMediaSelect');
+
+  const [assetType, setAssetType] = useState(assetTypeRequested === 'All' ? 'Photos' : assetTypeRequested);
+  const [cameraRoll, setCameraRoll] = useState([]);
 
   const getPhotosFromCameraRoll = async () => {
     // 1. request camera roll permission if android
@@ -39,10 +42,14 @@ const RollModal = ({ navigation }) => {
         assetType,
       });
 
-      const cameraRollImages = res.edges.map(image => image.node.image.uri);
+      console.log(res);
+
+      const cameraRollObjects = res.edges.map(image => {
+        return { uri: image.node.image.uri, type: image.node.type };
+      });
 
       // 3. put images into state and open modal to dispaly images
-      setCameraRoll(cameraRollImages);
+      setCameraRoll(cameraRollObjects);
     } catch (e) {
       console.error(e);
       Alert.alert('Oh no!', 'We could not access your camera roll. Try again later!', [
@@ -54,15 +61,25 @@ const RollModal = ({ navigation }) => {
   // execute every
   useEffect(() => {
     getPhotosFromCameraRoll();
-  });
+  }, [assetType]);
 
   const closeModal = () => {
     navigation.goBack();
   };
 
-  const handleSelect = async media => {
-    handleMediaSelect(media);
+  const handleSelect = async (uri, type) => {
+    handleMediaSelect(uri, type);
     navigation.goBack();
+  };
+
+  const swapType = () => {
+    setAssetType(assetType === 'Photos' ? 'Videos' : 'Photos');
+  };
+
+  const textRight = () => {
+    if (assetTypeRequested !== 'All') return '';
+
+    return assetType === 'Photos' ? 'Videos' : 'Photos';
   };
 
   const renderImages = () => {
@@ -74,8 +91,8 @@ const RollModal = ({ navigation }) => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <View style={styles.picView}>
-            <TouchableOpacity onPress={() => handleSelect(item)}>
-              <Image style={styles.pic} resizeMode="cover" source={{ uri: item }} />
+            <TouchableOpacity onPress={() => handleSelect(item.uri, item.type)}>
+              <Image style={styles.pic} resizeMode="cover" source={{ uri: item.uri }} />
             </TouchableOpacity>
           </View>
         )}
@@ -85,8 +102,14 @@ const RollModal = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderWhite handleLeft={closeModal} textLeft="Back" textRight="" title="Select an Image" />
-      {cameraRoll.length > 0 ? renderImages() : <Text>No images in camera roll</Text>}
+      <HeaderWhite
+        handleLeft={closeModal}
+        textLeft="Back"
+        handleRight={assetTypeRequested === 'All' ? swapType : () => null}
+        textRight={textRight()}
+        title={assetType === 'Photos' ? 'Photos' : 'Videos'}
+      />
+      {cameraRoll.length > 0 ? renderImages() : <Text style={styles.noImagesText}>No images in camera roll</Text>}
     </SafeAreaView>
   );
 };
@@ -108,5 +131,11 @@ const styles = StyleSheet.create({
   pic: {
     width: '100%',
     height: '100%',
+  },
+  noImagesText: {
+    width: '100%',
+    textAlign: 'center',
+    paddingTop: 30,
+    ...defaultStyles.defaultItalic,
   },
 });

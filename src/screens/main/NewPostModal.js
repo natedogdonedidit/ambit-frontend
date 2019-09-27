@@ -130,8 +130,14 @@ const NewPostModal = ({ navigation }) => {
   };
 
   // must pass this to camera roll modal
-  const handleMediaSelect = image => {
-    setImages([image]);
+  const handleMediaSelect = (uri, type) => {
+    if (type === 'image') {
+      setImages([uri]);
+    }
+    if (type === 'video') {
+      // need to creat the upload video to cloudinary function
+      // setVideo(uri);
+    }
   };
 
   // must pass this to location modal

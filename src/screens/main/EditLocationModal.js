@@ -17,6 +17,7 @@ import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
 const EditLocationModal = ({ navigation }) => {
+  // make sure these params get passed in!!
   const initialLocation = navigation.getParam('initialLocation');
   const handleLocationSelect = navigation.getParam('handleLocationSelect');
 

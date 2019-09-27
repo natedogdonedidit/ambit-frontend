@@ -10,11 +10,11 @@ import TextButton from 'library/components/UI/TextButton';
 const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, title }) => {
   return (
     <SafeAreaView style={styles.container}>
-      <TextButton textStyle={styles.closeButtonText} onPress={() => handleLeft()}>
+      <TextButton textStyle={styles.closeButtonText} onPress={handleLeft}>
         {textLeft}
       </TextButton>
       <Text style={{ ...defaultStyles.headerTitle, ...styles.headerTitle }}>{title}</Text>
-      <TextButton textStyle={styles.saveButtonText} onPress={() => handleRight()}>
+      <TextButton textStyle={styles.saveButtonText} onPress={handleRight}>
         {textRight}
       </TextButton>
     </SafeAreaView>
