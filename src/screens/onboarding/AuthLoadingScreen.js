@@ -1,9 +1,8 @@
 import React, { useEffect, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
-import AsyncStorage from '@react-native-community/async-storage';
 
 import Loader from 'library/components/UI/Loader';
+import Error from 'library/components/UI/Error';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import { UserContext } from 'library/utils/UserContext';
 import { getToken, signOut } from 'library/utils/authUtil';
@@ -46,27 +45,11 @@ const AuthLoadingScreen = props => {
   if (loading) return <Loader active={loading} />;
   if (error) {
     console.log('ERROR LOADING USER:', error.message);
-    return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.container}>
-          <Text>{error.message}</Text>
-        </View>
-      </SafeAreaView>
-    );
+    return <Error error={error} />;
   }
 
   return <Loader full />;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: 'white',
-    padding: 20,
-  },
-});
 
 AuthLoadingScreen.navigationOptions = {
   title: 'Auth Loading Screen',

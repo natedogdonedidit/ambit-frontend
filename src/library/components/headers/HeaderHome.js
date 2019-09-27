@@ -1,12 +1,10 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
-
-import TextButton from 'library/components/UI/TextButton';
 
 const HeaderHome = ({ navigation, handleMiddle, handleRight, user }) => {
   return (
@@ -33,8 +31,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     backgroundColor: colors.lightLightGray,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
   },
   leftSide: {
     width: 60,
@@ -48,7 +44,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    // paddingHorizontal: 10,
   },
 });
 

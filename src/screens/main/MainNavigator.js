@@ -16,6 +16,7 @@ import PostScreen from './PostScreen';
 import UpdatePostScreen from './UpdatePostScreen';
 import RequestsScreen from './RequestsScreen';
 import StoryModal from './StoryModal';
+import CustomSearchScreen from './CustomSearchScreen';
 
 const HomeStack = createStackNavigator(
   {
@@ -28,6 +29,9 @@ const HomeStack = createStackNavigator(
     },
     UpdatePost: {
       screen: UpdatePostScreen,
+    },
+    CustomSearch: {
+      screen: CustomSearchScreen,
     },
   },
   {

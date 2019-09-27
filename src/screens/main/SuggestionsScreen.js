@@ -101,9 +101,7 @@ const SuggestionsScreen = ({ navigation }) => {
           title="Search"
           user={userLoggedIn}
         />
-        {loadingUsers ? (
-          <Loader loading={loadingUsers} />
-        ) : (
+        {loadingUsers ? null : (
           <UserSlider users={users} handleUserChange={handleUserChange} loading={loading} profileId={profileId} />
         )}
       </Animated.View>

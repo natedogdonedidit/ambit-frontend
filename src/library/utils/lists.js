@@ -18,6 +18,7 @@ export const connect = [
   'Help businesses grow',
   'Explore a career change',
   'Seek guidance',
+  'Get feedback',
 ];
 export const industryList = [
   'Accounting',

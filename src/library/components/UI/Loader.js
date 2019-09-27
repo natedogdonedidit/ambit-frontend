@@ -3,7 +3,7 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 
 import colors from 'styles/colors';
 
-const Loader = ({ active, size = 'large', color = colors.peach, full = true }) => {
+const Loader = ({ active, size = 'large', color = colors.purp, full = true }) => {
   return (
     <ActivityIndicator
       style={full ? { ...styles.fullScreen } : { ...styles.fillComponent }}

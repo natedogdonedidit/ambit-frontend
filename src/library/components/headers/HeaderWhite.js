@@ -31,14 +31,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
+    backgroundColor: colors.lightLightGray,
   },
   closeButtonText: {
     width: 60,
     textAlign: 'left',
+    ...defaultStyles.defaultMedium,
+    color: colors.iosBlue,
   },
   saveButtonText: {
     width: 60,
     textAlign: 'right',
+    ...defaultStyles.defaultMedium,
+    color: colors.iosBlue,
   },
   headerTitle: {
     flexGrow: 1,

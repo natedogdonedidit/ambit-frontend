@@ -58,10 +58,15 @@ const styles = StyleSheet.create({
     fontSize: reg,
     fontFamily: 'SFProText-LightItalic',
   },
+  defaultMediumItalic: {
+    color: colors.darkGray,
+    fontSize: reg,
+    fontFamily: 'SFProText-MediumItalic',
+  },
   defaultMute: {
     color: colors.darkGray,
     fontSize: reg,
-    opacity: 0.3,
+    opacity: 0.6,
     fontFamily: 'SFProText-Light',
   },
   defaultThin: {
@@ -129,6 +134,11 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontSize: large,
     fontFamily: 'SFProText-Heavy',
+  },
+  largeDisplay: {
+    color: colors.darkGray,
+    fontSize: large,
+    fontFamily: 'SFProDisplay-Light',
   },
   // HUGE, 17px
   hugeThin: {

@@ -9,8 +9,8 @@ import defaultStyles from 'styles/defaultStyles';
 const BigButton = ({ onPress, buttonStyle, textStyle, children }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
-      <View style={{ ...styles.button, ...buttonStyle }}>
-        <Text style={{ ...defaultStyles.defaultRegular, ...textStyle }}>{children}</Text>
+      <View style={{ ...styles.button, ...defaultStyles.shadow3, ...buttonStyle }}>
+        <Text style={{ ...defaultStyles.largeBold, color: 'white', ...textStyle }}>{children}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   button: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: colors.purp,
     borderRadius: 10,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,

@@ -101,7 +101,7 @@ const Post = ({
         <ProfilePic user={post.owner} intro={post.owner.intro} pitch={post.pitch} navigation={navigation} />
         {!!post.pitch && (
           <View style={{ alignItems: 'center', paddingTop: 1 }}>
-            <Text style={{ ...defaultStyles.smallMedium, color: colors.peach }}>View</Text>
+            {/* <Text style={{ ...defaultStyles.smallMedium, color: colors.peach }}>View</Text> */}
             <Text style={{ ...defaultStyles.smallMedium, color: colors.peach }}>Pitch</Text>
           </View>
         )}
@@ -183,7 +183,9 @@ const Post = ({
             <View style={styles.button}>
               <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
               {!showDetails && (
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount < 1 ? '' : post.likesCount}</Text>
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
+                  {post.likesCount < 1 ? getRandomInt(100) : post.likesCount}
+                </Text>
               )}
             </View>
             <View style={styles.button}>

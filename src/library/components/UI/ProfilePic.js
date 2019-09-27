@@ -23,11 +23,9 @@ const ProfilePic = ({
   // medium = 40
   // large = 70
 
-  // console.log(user);
   const hasPitch = !!pitch;
   const hasIntro = intro.length > 0;
 
-  // const borderWidth = 2;
   const whiteBorder = size + 2 * borderWidth;
   const colorBorder = size + 4 * borderWidth - 1;
 
@@ -51,6 +49,10 @@ const ProfilePic = ({
       width: '100%',
       height: '100%',
     },
+    grayBox: {
+      width: '100%',
+      height: '100%',
+    },
     outterCircle: {
       width: colorBorder,
       height: colorBorder,
@@ -68,6 +70,14 @@ const ProfilePic = ({
       width: '100%',
     },
   });
+
+  if (!user) {
+    return (
+      <View style={border ? styles.whiteBorder : styles.noBorder}>
+        <View style={styles.grayBox} />
+      </View>
+    );
+  }
 
   if (hasPitch && !disableVideo) {
     return (
@@ -134,7 +144,7 @@ const ProfilePic = ({
   }
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: user.id })}>
+    <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('Profile', { profileId: user.id })}>
       <View>
         <View style={border ? styles.whiteBorder : styles.noBorder}>
           <Image
@@ -149,42 +159,5 @@ const ProfilePic = ({
     </TouchableOpacity>
   );
 };
-
-// const styles = StyleSheet.create({
-//   profilePicView: {
-//     width: 40,
-//     height: 40,
-//     borderRadius: 20,
-//     overflow: 'hidden',
-//     backgroundColor: 'white',
-//   },
-//   whiteBorder: {
-//     width: 44,
-//     height: 44,
-//     borderRadius: 22,
-//     borderWidth: 2,
-//     borderColor: 'white',
-//     marginTop: 1.5,
-//     marginLeft: 1.5,
-//   },
-//   profilePic: {
-//     width: '100%',
-//     height: '100%',
-//   },
-//   outterCircle: {
-//     width: 47,
-//     height: 47,
-//     borderRadius: 23.5,
-//     overflow: 'hidden',
-//     backgroundColor: 'white',
-//   },
-//   linearGradient: {
-//     position: 'absolute',
-//     top: 0,
-//     left: 0,
-//     height: '100%',
-//     width: '100%',
-//   },
-// });
 
 export default ProfilePic;
