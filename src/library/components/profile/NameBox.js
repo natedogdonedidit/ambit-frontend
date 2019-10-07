@@ -4,8 +4,9 @@ import { StyleSheet, View, Text } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import WhiteButton from 'library/components/UI/WhiteButton';
+import TextButton from 'library/components/UI/TextButton';
 
-const NameBox = ({ user }) => {
+const NameBox = ({ user, navigation, isMyProfile }) => {
   return (
     <View style={{ ...styles.profileBox }}>
       <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
@@ -31,6 +32,13 @@ const NameBox = ({ user }) => {
           Meet
         </WhiteButton>
       </View>
+      {isMyProfile && (
+        <View style={styles.editProfileButton}>
+          <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditNameModal', { user })}>
+            Edit
+          </TextButton>
+        </View>
+      )}
     </View>
   );
 };
@@ -57,5 +65,13 @@ const styles = StyleSheet.create({
   stats: {
     flexDirection: 'row',
     marginBottom: 20,
+  },
+  editProfileButton: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+  },
+  editButton: {
+    fontSize: 14,
   },
 });

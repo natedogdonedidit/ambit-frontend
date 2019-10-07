@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 
 const TextButton = ({ onPress, buttonStyle, textStyle, children }) => {
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.5} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
+    <TouchableOpacity onPress={() => onPress()} activeOpacity={0.5} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
       <View style={{ ...styles.button, ...buttonStyle }}>
         <Text style={{ ...defaultStyles.defaultText, ...styles.buttonText, ...textStyle }}>{children}</Text>
       </View>

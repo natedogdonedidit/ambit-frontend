@@ -53,7 +53,6 @@ const SuggestionsScreen = ({ navigation }) => {
   const { userLoggedIn } = dataMe;
   const { users } = dataUsers;
   const { user } = dataUser;
-  console.log(user);
 
   const handleUserChange = id => {
     setProfileId(id);
@@ -73,6 +72,8 @@ const SuggestionsScreen = ({ navigation }) => {
           OUTSIDE_HEADER_SCROLL={OUTSIDE_HEADER_SCROLL}
           loading={loadingUser}
           user={user}
+          showBack={false}
+          showOptions={false}
         />
       )}
 

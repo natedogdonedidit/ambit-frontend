@@ -22,7 +22,7 @@ const { width } = Dimensions.get('window');
 
 const RollModal = ({ navigation }) => {
   // make sure these params get passed in!!
-  const assetTypeRequested = navigation.getParam('assetType', 'All');
+  const assetTypeRequested = navigation.getParam('assetType', 'All'); // All, Photos
   const handleMediaSelect = navigation.getParam('handleMediaSelect');
 
   const [assetType, setAssetType] = useState(assetTypeRequested === 'All' ? 'Photos' : assetTypeRequested);
@@ -41,8 +41,6 @@ const RollModal = ({ navigation }) => {
         first: 10,
         assetType,
       });
-
-      console.log(res);
 
       const cameraRollObjects = res.edges.map(image => {
         return { uri: image.node.image.uri, type: image.node.type };

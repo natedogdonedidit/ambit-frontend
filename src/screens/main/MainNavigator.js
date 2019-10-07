@@ -16,10 +16,13 @@ import PostScreen from './PostScreen';
 import UpdatePostScreen from './UpdatePostScreen';
 import RequestsScreen from './RequestsScreen';
 import CustomSearchScreen from './CustomSearchScreen';
-import StoryModal from './StoryModal';
-import NewPostModal from './NewPostModal';
-import RollModal from './RollModal';
-import EditLocationModal from './EditLocationModal';
+// modals
+import StoryModal from './modals/StoryModal';
+import NewPostModal from './modals/NewPostModal';
+import RollModal from './modals/RollModal';
+import EditLocationModal from './modals/EditLocationModal';
+import EditNameModal from './modals/EditNameModal';
+import EditProfessionModal from './modals/EditProfessionModal';
 
 const HomeStack = createStackNavigator(
   {
@@ -220,6 +223,12 @@ const MainNavWithModal = createStackNavigator(
     },
     EditLocationModal: {
       screen: EditLocationModal,
+    },
+    EditNameModal: {
+      screen: EditNameModal,
+    },
+    EditProfessionModal: {
+      screen: EditProfessionModal,
     },
   },
   {

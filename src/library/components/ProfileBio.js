@@ -10,7 +10,14 @@ import Skills from 'library/components/Skills';
 import Experience from 'library/components/Experience';
 import Education from 'library/components/Education';
 
-const ProfileBio = ({ isMyProfile, user, handleSelectExperience = null, handleSelectEducation, setModalVisibleSkills }) => {
+const ProfileBio = ({
+  navigation,
+  isMyProfile,
+  user,
+  handleSelectExperience = null,
+  handleSelectEducation,
+  setModalVisibleSkills,
+}) => {
   return (
     <View style={styles.content}>
       <View style={styles.contentSection}>
