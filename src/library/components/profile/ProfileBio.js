@@ -5,26 +5,26 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import TextButton from 'library/components/UI/TextButton';
-import Projects from 'library/components/Projects';
-import Skills from 'library/components/Skills';
-import Experience from 'library/components/Experience';
-import Education from 'library/components/Education';
+import Projects from 'library/components/profile/Projects';
+import Skills from 'library/components/profile/Skills';
+import Experience from 'library/components/profile/Experience';
+import Education from 'library/components/profile/Education';
 
 const ProfileBio = ({
   navigation,
   isMyProfile,
   user,
-  handleSelectExperience = null,
-  handleSelectEducation,
-  setModalVisibleSkills,
+  // handleSelectExperience = null,
+  // handleSelectEducation,
+  // setModalVisibleSkills,
 }) => {
   return (
     <View style={styles.content}>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader }}>
-          <Text style={{ ...defaultStyles.hugeMedium }}>About</Text>
+          <Text style={{ ...defaultStyles.hugeMedium }}>Bio</Text>
           {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => null}>
+            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditBioModal', { user })}>
               Edit
             </TextButton>
           )}
@@ -46,14 +46,14 @@ const ProfileBio = ({
         <View style={{ ...styles.contentHeader }}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Experience</Text>
           {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => handleSelectExperience('new')}>
+            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditExperienceModal', { isNew: true })}>
               New
             </TextButton>
           )}
         </View>
-        <Experience isMyProfile={isMyProfile} experience={user.experience} handleSelectExperience={handleSelectExperience} />
+        {/* <Experience isMyProfile={isMyProfile} experience={user.experience} handleSelectExperience={handleSelectExperience} /> */}
       </View>
-      <View style={styles.contentSection}>
+      {/* <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader }}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Education</Text>
           {isMyProfile && (
@@ -63,8 +63,8 @@ const ProfileBio = ({
           )}
         </View>
         <Education isMyProfile={isMyProfile} education={user.education} handleSelectEducation={handleSelectEducation} />
-      </View>
-      <View style={styles.contentSection}>
+      </View> */}
+      {/* <View style={styles.contentSection}>
         <View style={[{ ...styles.contentHeader }, !!user.skills && { paddingBottom: 15 }]}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
           {isMyProfile && (
@@ -74,7 +74,7 @@ const ProfileBio = ({
           )}
         </View>
         <Skills skills={user.skills} height={32} />
-      </View>
+      </View> */}
     </View>
   );
 };

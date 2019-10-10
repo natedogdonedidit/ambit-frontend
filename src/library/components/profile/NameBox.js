@@ -10,16 +10,16 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   return (
     <View style={{ ...styles.profileBox }}>
       <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
-      <Text style={{ ...defaultStyles.defaultText, ...styles.job }}>
+      <Text style={{ ...defaultStyles.defaultMute, ...styles.job }}>
         {user.jobTitle || 'Job title'} | {user.location || 'Location'}
       </Text>
       <View style={styles.stats}>
-        <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>372</Text>
-        <Text style={{ ...defaultStyles.smallThin, marginRight: 20 }}>Followers</Text>
-        <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>32</Text>
-        <Text style={{ ...defaultStyles.smallThin, marginRight: 20 }}>Connections</Text>
-        <Text style={{ ...defaultStyles.smallMedium, marginRight: 5 }}>402</Text>
-        <Text style={{ ...defaultStyles.smallThin, marginRight: 20 }}>Posts</Text>
+        <Text style={{ ...defaultStyles.defaultMedium, marginRight: 5 }}>372</Text>
+        <Text style={{ ...defaultStyles.defaultMute, marginRight: 20 }}>Followers</Text>
+        <Text style={{ ...defaultStyles.defaultMedium, marginRight: 5 }}>32</Text>
+        <Text style={{ ...defaultStyles.defaultMute, marginRight: 20 }}>Connections</Text>
+        {/* <Text style={{ ...defaultStyles.defaultMedium, marginRight: 5 }}>402</Text>
+        <Text style={{ ...defaultStyles.defaultMute, marginRight: 20 }}>Posts</Text> */}
       </View>
       <View style={styles.whiteButtons}>
         <WhiteButton active onPress={() => null}>
@@ -53,17 +53,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   name: {
-    marginBottom: 3,
+    marginBottom: 1,
   },
   job: {
     marginBottom: 15,
   },
   whiteButtons: {
     flexDirection: 'row',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   stats: {
     flexDirection: 'row',
+    justifyContent: 'flex-start',
     marginBottom: 20,
   },
   editProfileButton: {

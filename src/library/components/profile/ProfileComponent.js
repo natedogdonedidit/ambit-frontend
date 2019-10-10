@@ -21,10 +21,10 @@ import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 import NameBox from 'library/components/profile/NameBox';
 import ProfilePic from 'library/components/UI/ProfilePic';
-import ProfileTabs from 'library/components/ProfileTabs';
-import ProfileBio from 'library/components/ProfileBio';
-import ProfilePosts from 'library/components/ProfilePosts';
-import ProfileNetwork from 'library/components/ProfileNetwork';
+import ProfileTabs from 'library/components/profile/ProfileTabs';
+import ProfileBio from 'library/components/profile/ProfileBio';
+import ProfilePosts from 'library/components/profile/ProfilePosts';
+import ProfileNetwork from 'library/components/profile/ProfileNetwork';
 
 const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
 

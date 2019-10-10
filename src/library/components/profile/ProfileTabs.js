@@ -7,7 +7,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const ProfileTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['Bio', 'Goals & Posts', 'Network'];
+  const tabNames = ['About', 'Goals & Posts', 'Network'];
 
   const renderTabs = () => {
     return tabNames.map((tabName, i) => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import { createDrawerNavigator, createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -23,6 +24,8 @@ import RollModal from './modals/RollModal';
 import EditLocationModal from './modals/EditLocationModal';
 import EditNameModal from './modals/EditNameModal';
 import EditProfessionModal from './modals/EditProfessionModal';
+import EditBioModal from './modals/EditBioModal';
+import EditExperienceModal from './modals/EditExperienceModal';
 
 const HomeStack = createStackNavigator(
   {
@@ -230,10 +233,24 @@ const MainNavWithModal = createStackNavigator(
     EditProfessionModal: {
       screen: EditProfessionModal,
     },
+    EditBioModal: {
+      screen: EditBioModal,
+    },
+    EditExperienceModal: {
+      screen: EditExperienceModal,
+      // navigationOptions: {
+      //   transparentCard: true,
+      // },
+    },
   },
   {
     mode: 'modal',
     headerMode: 'none',
+    // transparentCard: true,
+    // cardStyle: {
+    //   backgroundColor: 'transparent',
+    //   opacity: Platform.OS === 'android' ? 1 : 0.5,
+    // },
   }
 );
 
