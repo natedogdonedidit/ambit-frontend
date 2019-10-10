@@ -15,7 +15,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { UserContext } from 'library/utils/UserContext';
-// import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
@@ -46,10 +46,11 @@ const ProfileComponent = ({
 }) => {
   const [tabState, setTabState] = useState(0);
   const { currentUserId } = useContext(UserContext);
-  // const insets = useSafeArea();
+  const insets = useSafeArea();
+  const extraDistance = navigation.state.routeName === 'Profile' ? insets.top : 0; // this is a bandaid
 
   // CALCULATED
-  const BANNER_SCROLL_DISTANCE = OUTSIDE_HEADER_HEIGHT + BANNER_MAX_HEIGHT - BANNER_MIN_HEIGHT;
+  const BANNER_SCROLL_DISTANCE = OUTSIDE_HEADER_HEIGHT + BANNER_MAX_HEIGHT - BANNER_MIN_HEIGHT - extraDistance;
   const nullFunction = () => null;
   const isMyProfile = user.id === currentUserId;
 
@@ -60,7 +61,7 @@ const ProfileComponent = ({
   const SCROLLVIEW_PADDING_TOP = OUTSIDE_HEADER_HEIGHT + BANNER_MAX_HEIGHT - BANNER_MIN_HEIGHT;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Animated.ScrollView
         style={{ ...styles.scrollView, marginTop: BANNER_MIN_HEIGHT }}
         onScroll={Animated.event(
@@ -207,7 +208,7 @@ const ProfileComponent = ({
         <View
           style={{
             position: 'absolute',
-            top: 8,
+            top: 8 + insets.top,
             left: 12,
             width: 30,
             height: 30,
@@ -228,7 +229,7 @@ const ProfileComponent = ({
         <View
           style={{
             position: 'absolute',
-            top: 8,
+            top: 8 + insets.top,
             right: 12,
             width: 30,
             height: 30,
@@ -243,7 +244,7 @@ const ProfileComponent = ({
           </TouchableOpacity>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

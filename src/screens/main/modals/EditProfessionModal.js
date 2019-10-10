@@ -69,7 +69,7 @@ const EditProfessionModal = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
         <HeaderWhite
           handleLeft={handleCancel}
@@ -156,7 +156,6 @@ export default EditProfessionModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // height: '100%',
   },
   modalHeader: {
     flexDirection: 'row',

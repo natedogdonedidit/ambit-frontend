@@ -62,7 +62,7 @@ PODS:
   - React-jsinspector (0.60.4)
   - react-native-cameraroll (1.2.1):
     - React
-  - react-native-safe-area-context (0.3.5):
+  - react-native-safe-area-context (0.4.1):
     - React
   - react-native-video/Video (5.0.2):
     - React
@@ -97,7 +97,11 @@ PODS:
     - React-fishhook (= 0.60.4)
   - RNCAsyncStorage (1.6.1):
     - React
-  - RNGestureHandler (1.3.0):
+  - RNCMaskedView (0.1.1):
+    - React
+  - RNGestureHandler (1.4.1):
+    - React
+  - RNReanimated (1.3.0):
     - React
   - RNScreens (1.0.0-alpha.23):
     - React
@@ -133,7 +137,9 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-RCTWebSocket (from `../node_modules/react-native/Libraries/WebSocket`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -197,8 +203,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/WebSocket"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNCMaskedView:
+    :path: "../node_modules/@react-native-community/masked-view"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNVectorIcons:
@@ -222,7 +232,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 7549641e48bafae7bfee3f3ea19bf4901639c5de
   React-jsinspector: 73f24a02fa684ed6a2b828ba116874a2191ded88
   react-native-cameraroll: 9fa61cb36a9cc6d5109b591466a9f985b264c27b
-  react-native-safe-area-context: fdd5c62949ece6bb1ab52496aee84cf4c5bf3852
+  react-native-safe-area-context: f7e489ae5d66ac3d24d617ed082e5c92408fdef4
   react-native-video: 961749da457e73bf0b5565edfbaffc25abfb8974
   React-RCTActionSheet: 9f71d7ae3e8fb10e08d162cbf14c621349dbfab3
   React-RCTAnimation: 981d8c95b0e30918a9832ccac32af83562a27fae
@@ -235,7 +245,9 @@ SPEC CHECKSUMS:
   React-RCTVibration: 0bea40cd51bd089bd591a8f74c86e91fdf2666c5
   React-RCTWebSocket: 163873f4cdd5f1058a9483443404fc3801581cb6
   RNCAsyncStorage: 621bad7a889b5bf1583a52547f2dcd3a4d1ff15e
-  RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
+  RNCMaskedView: 6200428cc4fb088ee7ae64a648e39bd8f4e70b41
+  RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
+  RNReanimated: 6abbbae2e5e72609d85aabd92a982a94566885f1
   RNScreens: f28b48b8345f2f5f39ed6195518291515032a788
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   SPTPersistentCache: df36ea46762d7cf026502bbb86a8b79d0080dff4

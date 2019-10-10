@@ -28,7 +28,7 @@ const ProfileScreen = ({ navigation }) => {
   // CUSTOM FUNCTIONS
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {loading ? (
         <Loader loading={loading} />
       ) : (
@@ -42,14 +42,14 @@ const ProfileScreen = ({ navigation }) => {
           user={user}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.lightGray,
+    backgroundColor: 'white',
   },
 });
 

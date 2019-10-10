@@ -133,7 +133,7 @@ const EditNameModal = ({ navigation }) => {
   const loading = loadingEdit || uploading;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <HeaderWhite
         handleLeft={navigation.goBack}
         handleRight={handleSave}

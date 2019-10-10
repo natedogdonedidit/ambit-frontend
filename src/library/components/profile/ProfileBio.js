@@ -51,30 +51,30 @@ const ProfileBio = ({
             </TextButton>
           )}
         </View>
-        {/* <Experience isMyProfile={isMyProfile} experience={user.experience} handleSelectExperience={handleSelectExperience} /> */}
+        <Experience navigation={navigation} isMyProfile={isMyProfile} experience={user.experience} />
       </View>
-      {/* <View style={styles.contentSection}>
+      <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader }}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Education</Text>
           {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => handleSelectEducation('new')}>
+            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditEducationModal', { isNew: true })}>
               New
             </TextButton>
           )}
         </View>
-        <Education isMyProfile={isMyProfile} education={user.education} handleSelectEducation={handleSelectEducation} />
-      </View> */}
-      {/* <View style={styles.contentSection}>
+        <Education navigation={navigation} isMyProfile={isMyProfile} education={user.education} />
+      </View>
+      <View style={styles.contentSection}>
         <View style={[{ ...styles.contentHeader }, !!user.skills && { paddingBottom: 15 }]}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
           {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => setModalVisibleSkills(true)}>
+            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditSkillsModal', { user })}>
               Edit
             </TextButton>
           )}
         </View>
         <Skills skills={user.skills} height={32} />
-      </View> */}
+      </View>
     </View>
   );
 };

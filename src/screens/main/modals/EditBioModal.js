@@ -41,7 +41,7 @@ const EditBioModal = ({ navigation }) => {
   });
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <HeaderWhite handleLeft={navigation.goBack} handleRight={editBio} textLeft="Cancel" textRight="Save" title="Edit Bio" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView>

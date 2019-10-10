@@ -1,10 +1,14 @@
 import React from 'react';
-import { Platform } from 'react-native';
-import { createDrawerNavigator, createBottomTabNavigator, createStackNavigator } from 'react-navigation';
+import Animated, { Easing } from 'react-native-reanimated';
+// import { TransitionPresets } from 'react-navigation';
+
+import { createStackNavigator, TransitionPresets, TransitionSpecs, CardStyleInterpolators } from 'react-navigation-stack';
+import { createDrawerNavigator } from 'react-navigation-drawer';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import colors from 'styles/colors';
-
 import CustomDrawer from 'library/components/CustomDrawer';
 import AccountScreen from './AccountScreen';
 import SettingsScreen from './SettingsScreen';
@@ -26,6 +30,12 @@ import EditNameModal from './modals/EditNameModal';
 import EditProfessionModal from './modals/EditProfessionModal';
 import EditBioModal from './modals/EditBioModal';
 import EditExperienceModal from './modals/EditExperienceModal';
+import EditEducationModal from './modals/EditEducationModal';
+import EditSkillsModal from './modals/EditSkillsModal';
+import YearModal from './modals/YearModal';
+import MonthModal from './modals/MonthModal';
+
+const { cond, interpolate } = Animated;
 
 const HomeStack = createStackNavigator(
   {
@@ -46,7 +56,7 @@ const HomeStack = createStackNavigator(
   {
     initialRouteName: 'Home',
     defaultNavigationOptions: ({ navigation }) => ({
-      header: null,
+      headerShown: false,
     }),
   }
 );
@@ -64,7 +74,7 @@ const PeopleStack = createStackNavigator(
   {
     initialRouteName: 'Suggestions',
     defaultNavigationOptions: ({ navigation }) => ({
-      header: null,
+      headerShown: false,
     }),
   }
 );
@@ -83,7 +93,7 @@ const InboxStack = createStackNavigator(
   {
     initialRouteName: 'Messages',
     defaultNavigationOptions: ({ navigation }) => ({
-      header: null,
+      headerShown: false,
     }),
   }
 );
@@ -101,7 +111,7 @@ const NetworkStack = createStackNavigator(
   {
     initialRouteName: 'Network',
     defaultNavigationOptions: ({ navigation }) => ({
-      header: null,
+      headerShown: false,
     }),
   }
 );
@@ -236,21 +246,52 @@ const MainNavWithModal = createStackNavigator(
     EditBioModal: {
       screen: EditBioModal,
     },
+    EditSkillsModal: {
+      screen: EditSkillsModal,
+    },
     EditExperienceModal: {
       screen: EditExperienceModal,
+    },
+    EditEducationModal: {
+      screen: EditEducationModal,
       // navigationOptions: {
-      //   transparentCard: true,
+      //   cardTransparent: true,
       // },
+    },
+    YearModal: {
+      screen: YearModal,
+      navigationOptions: {
+        // cant get this to work. messes up entire transition
+        // cardStyleInterpolator: ({ current, closing }) => ({
+        //   overlayStyle: {
+        //     opacity: cond(
+        //       closing,
+        //       current.progress,
+        //       interpolate(current.progress, {
+        //         inputRange: [0, 0.5, 0.9, 1],
+        //         outputRange: [0, 0.25, 0.5, 0.7],
+        //       })
+        //     ),
+        //   },
+        // }),
+      },
+    },
+    MonthModal: {
+      screen: MonthModal,
     },
   },
   {
     mode: 'modal',
     headerMode: 'none',
-    // transparentCard: true,
-    // cardStyle: {
-    //   backgroundColor: 'transparent',
-    //   opacity: Platform.OS === 'android' ? 1 : 0.5,
-    // },
+    defaultNavigationOptions: {
+      ...TransitionPresets.ModalPresentationIOS,
+      // ...TransitionPresets.ModalTransition,
+      // ...TransitionSpecs.TransitionIOSSpec,
+      // ...TransitionPresets.ModalSlideFromBottomIOS,
+      gestureEnabled: true,
+      cardOverlayEnabled: true,
+      cardTransparent: true,
+    },
   }
 );
 

@@ -14,9 +14,9 @@ import {
 import { useMutation } from '@apollo/react-hooks';
 import { UserContext } from 'library/utils/UserContext';
 
-import CREATE_EXPERIENCE_MUTATION from 'library/mutations/CREATE_EXPERIENCE_MUTATION';
-import EDIT_EXPERIENCE_MUTATION from 'library/mutations/EDIT_EXPERIENCE_MUTATION';
-import DELETE_EXPERIENCE_MUTATION from 'library/mutations/DELETE_EXPERIENCE_MUTATION';
+import CREATE_EDUCATION_MUTATION from 'library/mutations/CREATE_EDUCATION_MUTATION';
+import EDIT_EDUCATION_MUTATION from 'library/mutations/EDIT_EDUCATION_MUTATION';
+import DELETE_EDUCATION_MUTATION from 'library/mutations/DELETE_EDUCATION_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 import colors from 'styles/colors';
@@ -37,29 +37,29 @@ const BLANK_EXPERIENCE = {
   currentRole: false,
 };
 
-const EditExperienceModal = ({ navigation }) => {
+const EditEducationModal = ({ navigation }) => {
   // params passed in
   const isNew = navigation.getParam('isNew', false);
-  const experience = navigation.getParam('experience', BLANK_EXPERIENCE);
+  const education = navigation.getParam('education', BLANK_EXPERIENCE);
 
   // context
   const { currentUserId } = useContext(UserContext);
 
   // state
-  const [name, setName] = useState(experience.name);
-  const [subText, setSubText] = useState(experience.subText);
-  const [location, setLocation] = useState(experience.location);
-  const [startDateMonth, setStartDateMonth] = useState(experience.startDateMonth);
-  const [startDateYear, setStartDateYear] = useState(experience.startDateYear);
-  const [endDateMonth, setEndDateMonth] = useState(experience.endDateMonth);
-  const [endDateYear, setEndDateYear] = useState(experience.endDateYear);
-  const [currentRole, setCurrentRole] = useState(experience.currentRole);
+  const [name, setName] = useState(education.name);
+  const [subText, setSubText] = useState(education.subText);
+  const [location, setLocation] = useState(education.location);
+  const [startDateMonth, setStartDateMonth] = useState(education.startDateMonth);
+  const [startDateYear, setStartDateYear] = useState(education.startDateYear);
+  const [endDateMonth, setEndDateMonth] = useState(education.endDateMonth);
+  const [endDateYear, setEndDateYear] = useState(education.endDateYear);
+  const [currentRole, setCurrentRole] = useState(education.currentRole);
 
   // MUTATIONS
-  const [createExperience, payloadCreate] = useMutation(CREATE_EXPERIENCE_MUTATION, {
+  const [createEducation, payloadCreate] = useMutation(CREATE_EDUCATION_MUTATION, {
     variables: {
       owner: currentUserId,
-      experience: {
+      education: {
         name,
         subText,
         location,
@@ -74,7 +74,7 @@ const EditExperienceModal = ({ navigation }) => {
       proxy.writeQuery({
         query: SINGLE_USER_BIO,
         data: {
-          user: dataReturned.createExperience,
+          user: dataReturned.createEducation,
         },
       });
     },
@@ -82,17 +82,17 @@ const EditExperienceModal = ({ navigation }) => {
       navigation.goBack();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to create this experience. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to create this education. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
   const loadingCreate = payloadCreate.loading;
 
-  const [editExperience, payloadEdit] = useMutation(EDIT_EXPERIENCE_MUTATION, {
+  const [editEducation, payloadEdit] = useMutation(EDIT_EDUCATION_MUTATION, {
     variables: {
       owner: currentUserId,
-      id: experience.id,
-      experience: {
+      id: education.id,
+      education: {
         name,
         subText,
         location,
@@ -107,7 +107,7 @@ const EditExperienceModal = ({ navigation }) => {
       proxy.writeQuery({
         query: SINGLE_USER_BIO,
         data: {
-          user: dataReturned.editExperience,
+          user: dataReturned.editEducation,
         },
       });
     },
@@ -115,22 +115,22 @@ const EditExperienceModal = ({ navigation }) => {
       navigation.goBack();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to edit this experience. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to edit this education. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
   const loadingEdit = payloadEdit.loading;
 
-  const [deleteExperience, payloadDelete] = useMutation(DELETE_EXPERIENCE_MUTATION, {
+  const [deleteEducation, payloadDelete] = useMutation(DELETE_EDUCATION_MUTATION, {
     variables: {
       owner: currentUserId,
-      id: experience.id,
+      id: education.id,
     },
     update: (proxy, { data: dataReturned }) => {
       proxy.writeQuery({
         query: SINGLE_USER_BIO,
         data: {
-          user: dataReturned.deleteExperience,
+          user: dataReturned.deleteEducation,
         },
       });
     },
@@ -138,7 +138,7 @@ const EditExperienceModal = ({ navigation }) => {
       navigation.goBack();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this experience. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to delete this education. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
@@ -146,8 +146,9 @@ const EditExperienceModal = ({ navigation }) => {
 
   const loading = loadingCreate || loadingEdit || loadingDelete;
 
+  // CUSTOM FUNCTIONS
   const handleDelete = () => {
-    deleteExperience();
+    deleteEducation();
   };
 
   const validateInputs = () => {
@@ -171,9 +172,9 @@ const EditExperienceModal = ({ navigation }) => {
 
     // if validation passed, create experience mutation
     if (isNew) {
-      createExperience();
+      createEducation();
     } else {
-      editExperience();
+      editEducation();
     }
   };
 
@@ -184,27 +185,27 @@ const EditExperienceModal = ({ navigation }) => {
         handleRight={handleSave}
         textLeft="Cancel"
         textRight="Save"
-        title={isNew ? 'New Experience' : 'Edit Experience'}
+        title={isNew ? 'New Education' : 'Edit Education'}
       />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView contentContainerStyle={{ flex: 1, paddingHorizontal: 20, paddingVertical: 20 }}>
           <View style={styles.inputTitle}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Company</Text>
+            <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>School</Text>
           </View>
           <TextInput
             style={{ ...styles.input, ...defaultStyles.defaultText }}
             onChangeText={val => setName(val)}
             value={name}
-            placeholder="Add company name"
+            placeholder="Add school name"
           />
           <View style={styles.inputTitle}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Job Title</Text>
+            <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Degree</Text>
           </View>
           <TextInput
             style={{ ...styles.input, ...defaultStyles.defaultText }}
             onChangeText={val => setSubText(val)}
             value={subText}
-            placeholder="Add job title"
+            placeholder="Add degree"
           />
           <View style={styles.inputTitle}>
             <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Location</Text>
@@ -245,7 +246,7 @@ const EditExperienceModal = ({ navigation }) => {
           {!currentRole && (
             <View>
               <View style={styles.inputTitle}>
-                <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>End Date</Text>
+                <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Graduation Date</Text>
               </View>
               <View style={styles.dateView}>
                 <View style={styles.dateInput}>
@@ -275,7 +276,7 @@ const EditExperienceModal = ({ navigation }) => {
           )}
 
           <View style={styles.switchRow}>
-            <Text style={{ ...defaultStyles.defaultText }}>This is my current role</Text>
+            <Text style={{ ...defaultStyles.defaultText }}>I am currently enrolled</Text>
             <View style={styles.switch}>
               <Switch value={currentRole} onValueChange={val => setCurrentRole(val)} />
             </View>
@@ -287,7 +288,7 @@ const EditExperienceModal = ({ navigation }) => {
               buttonStyle={{ backgroundColor: colors.peach, marginTop: 30, marginBottom: 15 }}
               textStyle={{ color: 'white', fontWeight: '400' }}
             >
-              Delete experience
+              Delete education
             </GrayButton>
           )}
         </ScrollView>
@@ -297,7 +298,7 @@ const EditExperienceModal = ({ navigation }) => {
   );
 };
 
-export default EditExperienceModal;
+export default EditEducationModal;
 
 const styles = StyleSheet.create({
   container: {

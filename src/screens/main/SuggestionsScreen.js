@@ -23,7 +23,7 @@ const SuggestionsScreen = ({ navigation }) => {
   const [profileId, setProfileId] = useState('ck0tsen1lpd600b09xfi09b14');
   const [scrollY] = useState(new Animated.Value(0));
   const insets = useSafeArea();
-  const OUTSIDE_HEADER_SCROLL = OUTSIDE_HEADER_HEIGHT + insets.top;
+  const OUTSIDE_HEADER_SCROLL = OUTSIDE_HEADER_HEIGHT - insets.top;
   const { currentUserId } = useContext(UserContext);
 
   // QUERIES

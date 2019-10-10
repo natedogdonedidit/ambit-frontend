@@ -116,7 +116,7 @@ const EditLocationModal = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <HeaderWhite handleLeft={handleCancel} handleRight={null} textLeft="Cancel" textRight="" title="Location" />
       <View style={styles.inputRow}>
         <TextInput

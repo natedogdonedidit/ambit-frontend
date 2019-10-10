@@ -208,7 +208,9 @@ dependencies {
 
     // chad added
     compile project(':react-native-video')
-    implementation "androidx.appcompat:appcompat:1.0.0"
+    // implementation "androidx.appcompat:appcompat:1.0.0"          // was this previously until https://reactnavigation.org/docs/en/stack-navigator-2.0.html react-native-screens told me to add these two lines
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
 
     // chad added
     // compile project(':@react-native-community_cameraroll')

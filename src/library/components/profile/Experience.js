@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import { sortExperiences } from 'library/utils';
 import Location from 'library/components/UI/Location';
 
-const Experience = ({ isMyProfile, experience, handleSelectExperience }) => {
+const Experience = ({ isMyProfile, experience, navigation }) => {
   const renderExperiences = () => {
     if (!experience)
       return (
@@ -39,7 +39,10 @@ const Experience = ({ isMyProfile, experience, handleSelectExperience }) => {
         </View>
         {isMyProfile && (
           <View style={{ flexDirection: 'row', alignSelf: 'stretch' }}>
-            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => handleSelectExperience(exp.id)}>
+            <TouchableOpacity
+              style={{ flexDirection: 'row' }}
+              onPress={() => navigation.navigate('EditExperienceModal', { experience: exp })}
+            >
               <View style={styles.editButton}>
                 <Icon name="dots-horizontal" size={25} color={colors.darkGray} />
               </View>

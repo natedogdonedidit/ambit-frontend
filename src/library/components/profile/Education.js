@@ -7,7 +7,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { sortExperiences } from 'library/utils';
 
-const Education = ({ isMyProfile, education, handleSelectEducation }) => {
+const Education = ({ isMyProfile, education, navigation }) => {
   const renderEducation = () => {
     if (!education)
       return (
@@ -41,7 +41,10 @@ const Education = ({ isMyProfile, education, handleSelectEducation }) => {
         </View>
         {isMyProfile && (
           <View style={{ flexDirection: 'row', alignSelf: 'stretch' }}>
-            <TouchableOpacity style={{ flexDirection: 'row' }} onPress={() => handleSelectEducation(exp.id)}>
+            <TouchableOpacity
+              style={{ flexDirection: 'row' }}
+              onPress={() => navigation.navigate('EditEducationModal', { education: exp })}
+            >
               <View style={styles.editButton}>
                 <Icon name="dots-horizontal" size={25} color={colors.darkGray} />
               </View>
@@ -52,11 +55,10 @@ const Education = ({ isMyProfile, education, handleSelectEducation }) => {
     ));
   };
 
-  return <View style={styles.experiences}>{renderEducation()}</View>;
+  return <View>{renderEducation()}</View>;
 };
 
 const styles = StyleSheet.create({
-  experiences: {},
   experience: {
     flexDirection: 'row',
     alignItems: 'center',

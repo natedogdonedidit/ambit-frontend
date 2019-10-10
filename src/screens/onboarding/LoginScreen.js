@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { HeaderBackButton, NavigationEvents } from 'react-navigation';
+import { NavigationEvents } from 'react-navigation';
+import { HeaderBackButton } from 'react-navigation-stack';
 import { useMutation } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
