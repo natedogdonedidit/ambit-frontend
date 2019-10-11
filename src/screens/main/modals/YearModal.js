@@ -1,12 +1,21 @@
 import React from 'react';
-import { StyleSheet, Modal, View, ScrollView, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { StyleSheet, Modal, View, ScrollView, Text, TouchableWithoutFeedback, TouchableOpacity, Animated } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { years } from 'library/utils/lists';
 
 const YearModal = ({ navigation }) => {
+  console.log(navigation);
   const handleSelect = navigation.getParam('handleSelect');
+
+  const didFocusSubscription = navigation.addListener('didFocus', payload => {
+    console.log('didFocus', payload);
+  });
+
+  const didBlurSubscription = navigation.addListener('didBlur', payload => {
+    console.log('didBlur', payload);
+  });
 
   const renderDates = () => {
     return years.map((year, i) => (
@@ -31,7 +40,7 @@ const YearModal = ({ navigation }) => {
           navigation.goBack();
         }}
       >
-        <View style={styles.closeModal} />
+        <View style={styles.transparentSection} />
       </TouchableWithoutFeedback>
       <View style={styles.modalView}>
         <View style={styles.handleView}>
@@ -49,8 +58,9 @@ export default YearModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // backgroundColor: 'rgba(0,0,0,0.3)',
   },
-  closeModal: {
+  transparentSection: {
     flexGrow: 1,
   },
   modalView: {

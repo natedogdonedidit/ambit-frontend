@@ -6,6 +6,8 @@ import { createStackNavigator, TransitionPresets, TransitionSpecs, CardStyleInte
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
+import { forVerticalIOSCustom } from 'library/utils/types.tsx';
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import colors from 'styles/colors';
@@ -254,26 +256,11 @@ const MainNavWithModal = createStackNavigator(
     },
     EditEducationModal: {
       screen: EditEducationModal,
-      // navigationOptions: {
-      //   cardTransparent: true,
-      // },
     },
     YearModal: {
       screen: YearModal,
       navigationOptions: {
-        // cant get this to work. messes up entire transition
-        // cardStyleInterpolator: ({ current, closing }) => ({
-        //   overlayStyle: {
-        //     opacity: cond(
-        //       closing,
-        //       current.progress,
-        //       interpolate(current.progress, {
-        //         inputRange: [0, 0.5, 0.9, 1],
-        //         outputRange: [0, 0.25, 0.5, 0.7],
-        //       })
-        //     ),
-        //   },
-        // }),
+        cardStyleInterpolator: forVerticalIOSCustom,
       },
     },
     MonthModal: {
@@ -283,14 +270,18 @@ const MainNavWithModal = createStackNavigator(
   {
     mode: 'modal',
     headerMode: 'none',
+
     defaultNavigationOptions: {
-      ...TransitionPresets.ModalPresentationIOS,
+      // ...TransitionPresets.ModalPresentationIOS,
       // ...TransitionPresets.ModalTransition,
       // ...TransitionSpecs.TransitionIOSSpec,
-      // ...TransitionPresets.ModalSlideFromBottomIOS,
+      ...TransitionPresets.ModalSlideFromBottomIOS,
       gestureEnabled: true,
       cardOverlayEnabled: true,
       cardTransparent: true,
+      gestureResponseDistance: {
+        vertical: 500,
+      },
     },
   }
 );
