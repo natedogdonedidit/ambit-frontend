@@ -37,12 +37,12 @@ export function forVerticalIOSCustom({
 
   const overlayOpacity = interpolate(current.progress, {
     inputRange: [0, 1],
-    outputRange: [0, 0.1],
+    outputRange: [0, 0.4],
   });
 
   const shadowOpacity = interpolate(current.progress, {
     inputRange: [0, 1],
-    outputRange: [0, 0.4],
+    outputRange: [0, 0.3],
   });
 
   const translateY = interpolate(current.progress, {

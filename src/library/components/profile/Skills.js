@@ -1,11 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import move from 'lodash-move';
+import update from 'immutability-helper';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const Skills = ({ skills, height = 44, editable = false, popupVisible, setPopupVisible, setPopupSkill }) => {
+const Skills = ({ navigation, skills, setSkills, height = 44, editable = false }) => {
+  const [skillToEdit, setSkillToEdit] = useState(null);
+
+  const skillDelete = () => {
+    // remove skill from array
+    skills.splice(skillToEdit, 1);
+  };
+
+  const skillChangeOrder = direction => {
+    // adjust array order
+    if (direction === 'up' && skillToEdit !== 0) {
+      const fromIndex = skillToEdit;
+      const toIndex = skillToEdit - 1;
+      const newArray = move([...skills], fromIndex, toIndex);
+      setSkills(newArray);
+    }
+    if (direction === 'down' && skillToEdit !== skills.length - 1) {
+      const fromIndex = skillToEdit;
+      const toIndex = skillToEdit + 1;
+      const newArray = move([...skills], fromIndex, toIndex);
+      setSkills(newArray);
+    }
+  };
+
+  const flipExpert = () => {
+    // set as expert or skilled
+    const skillToChange = { ...skills[skillToEdit] };
+    const newArray = update(skills, {
+      [skillToEdit]: { isExpert: { $set: !skillToChange.isExpert } },
+    });
+    setSkills(newArray);
+  };
+
   const renderSkills = () => {
     if (!skills) return null;
     return skills.map((skill, i) => (
@@ -23,8 +57,8 @@ const Skills = ({ skills, height = 44, editable = false, popupVisible, setPopupV
         {editable && (
           <TouchableOpacity
             onPress={() => {
-              setPopupSkill(i);
-              setPopupVisible(true);
+              setSkillToEdit(i);
+              navigation.navigate('EditSkillsPopup', { skillDelete, skillChangeOrder, flipExpert });
             }}
           >
             <View style={styles.editButton}>

@@ -6,16 +6,7 @@ import defaultStyles from 'styles/defaultStyles';
 import { years } from 'library/utils/lists';
 
 const YearModal = ({ navigation }) => {
-  console.log(navigation);
   const handleSelect = navigation.getParam('handleSelect');
-
-  const didFocusSubscription = navigation.addListener('didFocus', payload => {
-    console.log('didFocus', payload);
-  });
-
-  const didBlurSubscription = navigation.addListener('didBlur', payload => {
-    console.log('didBlur', payload);
-  });
 
   const renderDates = () => {
     return years.map((year, i) => (
@@ -58,7 +49,6 @@ export default YearModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: 'rgba(0,0,0,0.3)',
   },
   transparentSection: {
     flexGrow: 1,
@@ -67,8 +57,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 400,
     backgroundColor: 'white',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   handleView: {
     alignItems: 'center',

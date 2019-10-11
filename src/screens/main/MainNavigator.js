@@ -28,12 +28,14 @@ import StoryModal from './modals/StoryModal';
 import NewPostModal from './modals/NewPostModal';
 import RollModal from './modals/RollModal';
 import EditLocationModal from './modals/EditLocationModal';
+import EditLocationRadiusModal from './modals/EditLocationRadiusModal';
 import EditNameModal from './modals/EditNameModal';
 import EditProfessionModal from './modals/EditProfessionModal';
 import EditBioModal from './modals/EditBioModal';
 import EditExperienceModal from './modals/EditExperienceModal';
 import EditEducationModal from './modals/EditEducationModal';
 import EditSkillsModal from './modals/EditSkillsModal';
+import EditSkillsPopup from './modals/EditSkillsPopup';
 import YearModal from './modals/YearModal';
 import MonthModal from './modals/MonthModal';
 
@@ -239,6 +241,9 @@ const MainNavWithModal = createStackNavigator(
     EditLocationModal: {
       screen: EditLocationModal,
     },
+    EditLocationRadiusModal: {
+      screen: EditLocationRadiusModal,
+    },
     EditNameModal: {
       screen: EditNameModal,
     },
@@ -250,6 +255,12 @@ const MainNavWithModal = createStackNavigator(
     },
     EditSkillsModal: {
       screen: EditSkillsModal,
+    },
+    EditSkillsPopup: {
+      screen: EditSkillsPopup,
+      navigationOptions: {
+        cardStyleInterpolator: forVerticalIOSCustom,
+      },
     },
     EditExperienceModal: {
       screen: EditExperienceModal,

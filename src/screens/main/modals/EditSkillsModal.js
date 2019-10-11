@@ -14,13 +14,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
-import move from 'lodash-move';
-import update from 'immutability-helper';
 
 import EDIT_SKILLS_MUTATION from 'library/mutations/EDIT_SKILLS_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
-import PopupSkills from 'library/components/modals/PopupSkills';
-import PopupBackground from 'library/components/modals/PopupBackground';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
@@ -43,15 +39,12 @@ const EditSkillsModal = ({ navigation }) => {
 
   const [skills, setSkills] = useState([...(oldSkills || [])]);
   const [newSkill, setNewSkill] = useState('');
-  const [popupSkill, setPopupSkill] = useState(null);
-  const [popupVisible, setPopupVisible] = useState(false);
 
   const [editSkills, { loading, error, called, data }] = useMutation(EDIT_SKILLS_MUTATION, {
     variables: {
       id: user.id,
       skills,
     },
-    // refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }],
     update: (proxy, { data: dataReturned }) => {
       proxy.writeQuery({
         query: SINGLE_USER_BIO,
@@ -79,39 +72,6 @@ const EditSkillsModal = ({ navigation }) => {
     setNewSkill('');
   };
 
-  const skillDelete = () => {
-    // remove skill from array
-    skills.splice(popupSkill, 1);
-    setPopupVisible(false);
-  };
-
-  const skillChangeOrder = direction => {
-    // adjust array order
-    if (direction === 'up' && popupSkill !== 0) {
-      const fromIndex = popupSkill;
-      const toIndex = popupSkill - 1;
-      const newArray = move([...skills], fromIndex, toIndex);
-      setSkills(newArray);
-    }
-    if (direction === 'down' && popupSkill !== skills.length - 1) {
-      const fromIndex = popupSkill;
-      const toIndex = popupSkill + 1;
-      const newArray = move([...skills], fromIndex, toIndex);
-      setSkills(newArray);
-    }
-    setPopupVisible(false);
-  };
-
-  const flipExpert = () => {
-    // set as expert or skilled
-    const skillToChange = { ...skills[popupSkill] };
-    const newArray = update(skills, {
-      [popupSkill]: { isExpert: { $set: !skillToChange.isExpert } },
-    });
-    setSkills(newArray);
-    setPopupVisible(false);
-  };
-
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <HeaderWhite
@@ -135,26 +95,10 @@ const EditSkillsModal = ({ navigation }) => {
               Add
             </TextButton>
           </View>
-          <Skills
-            height={40}
-            editable
-            skills={skills}
-            popupVisible={popupVisible}
-            setPopupVisible={setPopupVisible}
-            setPopupSkill={setPopupSkill}
-          />
+          <Skills navigation={navigation} height={40} editable skills={skills} setSkills={setSkills} />
         </ScrollView>
       </KeyboardAvoidingView>
       {loading && <Loader active={loading} />}
-      <PopupBackground dim={popupVisible} />
-      <PopupSkills
-        popupVisible={popupVisible}
-        setPopupVisible={setPopupVisible}
-        skillDelete={skillDelete}
-        skillChangeOrder={skillChangeOrder}
-        flipExpert={flipExpert}
-        popupSkill={popupSkill}
-      />
     </SafeAreaView>
   );
 };

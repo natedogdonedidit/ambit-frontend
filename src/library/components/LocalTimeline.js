@@ -56,6 +56,15 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
   const posts = data.postsLocal || [];
   const noPosts = posts.length < 1 && !loading;
 
+  // must pass this to location modal
+  const handleLocationSelect = locObject => {
+    if (locObject) {
+      setLocation(locObject.location);
+      setLocationLat(locObject.locationLat);
+      setLocationLon(locObject.locationLon);
+    }
+  };
+
   return (
     <>
       <View style={styles.locationSelect}>
@@ -67,7 +76,18 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
           <Text style={defaultStyles.smallThinMute}>within {radius} mile radius</Text>
         </View>
         <View style={styles.editButton}>
-          <TextButton onPress={() => setLocModalVisible(true)}>Change</TextButton>
+          <TextButton
+            onPress={() =>
+              navigation.navigate('EditLocationRadiusModal', {
+                initialLocation: location,
+                handleLocationSelect,
+                radius,
+                setRadius,
+              })
+            }
+          >
+            Change
+          </TextButton>
         </View>
       </View>
 
@@ -88,7 +108,7 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
         </View>
       )}
 
-      <EditLocationRadiusModal
+      {/* <EditLocationRadiusModal
         locModalVisible={locModalVisible}
         setLocModalVisible={setLocModalVisible}
         location={location}
@@ -99,7 +119,7 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
         setLocationLon={setLocationLon}
         radius={radius}
         setRadius={setRadius}
-      />
+      /> */}
     </>
   );
 };

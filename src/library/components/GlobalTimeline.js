@@ -25,7 +25,7 @@ import PostGroupTL from 'library/components/PostGroupTL';
 const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing, navigation }) => {
   const taskRef = useRef(null);
   const [slideIndex, setSlideIndex] = useState(0);
-  const [showTasks, setShowTasks] = useState(true);
+  const [showTasks, setShowTasks] = useState(false); // set to true to show
   useEffect(() => {
     if (requestRefresh) {
       refetch();
