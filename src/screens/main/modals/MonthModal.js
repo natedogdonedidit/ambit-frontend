@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 400,
     backgroundColor: 'white',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   handleView: {
     alignItems: 'center',

@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import TestVideo from 'library/assets/testintro.mp4';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
 const StoryModal = ({ navigation }) => {
@@ -79,6 +78,7 @@ const StoryModal = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   backgroundVideo: {
     ...StyleSheet.absoluteFill,

@@ -8,9 +8,9 @@ import defaultStyles from 'styles/defaultStyles';
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
 const ProfilePic = ({
-  navigation,
+  navigation, // required
   size = 40,
-  user,
+  user, // required
   intro = [],
   pitch = null,
   disableVideo = false,

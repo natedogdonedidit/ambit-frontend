@@ -26,8 +26,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
-import SmallProfilePic from 'library/components/UI/SmallProfilePic';
-import SelectGoalModal from 'library/components/modals/SelectGoalModal';
+import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 import Goal from 'library/components/UI/Goal';
 
 const NewPostModal = ({ navigation }) => {
@@ -156,15 +155,15 @@ const NewPostModal = ({ navigation }) => {
   const containsMedia = images.length > 0;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar barStyle="dark-content" />
       <HeaderWhite handleLeft={handleBack} handleRight={handleSubmit} textLeft="Cancel" textRight="Post" title="New Post" />
       <KeyboardAvoidingView behavior="padding" enabled>
         <View style={styles.container}>
           <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="always">
-            <TouchableOpacity onPress={() => setGoalModalVisible(true)}>
+            <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setIsGoal })}>
               {goal ? (
-                <Goal goal={goal} onPress={() => setGoalModalVisible(true)} />
+                <Goal goal={goal} onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setIsGoal })} />
               ) : (
                 <>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -183,7 +182,7 @@ const NewPostModal = ({ navigation }) => {
             <View style={styles.postInputView}>
               <View style={styles.topHalf}>
                 <View style={styles.leftSide}>
-                  <SmallProfilePic pic={userLoggedIn.profilePic} />
+                  <ProfilePicBasic pic={userLoggedIn.profilePic} size={30} />
                 </View>
                 <View style={styles.rightSide}>
                   <TextInput
@@ -232,14 +231,6 @@ const NewPostModal = ({ navigation }) => {
           </View>
         </View>
       </KeyboardAvoidingView>
-      <SelectGoalModal
-        goalModalVisible={goalModalVisible}
-        setGoalModalVisible={setGoalModalVisible}
-        goal={goal}
-        setGoal={setGoal}
-        isGoal={isGoal}
-        setIsGoal={setIsGoal}
-      />
       {loading && <Loader active={loading} />}
     </SafeAreaView>
   );
@@ -249,7 +240,6 @@ export default NewPostModal;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
     justifyContent: 'space-between',
     height: '100%',
   },

@@ -5,8 +5,8 @@ import { useMutation } from '@apollo/react-hooks';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
-import PostGroupTL from 'library/components/PostGroupTL';
-import SmallProfilePic from 'library/components/UI/MediumProfilePic';
+import PostGroupTL from 'library/components/post/PostGroupTL';
+import ProfilePic from 'library/components/UI/ProfilePic';
 import CREATE_UPDATE_MUTATION from 'library/mutations/CREATE_UPDATE_MUTATION';
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
 import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
@@ -74,7 +74,7 @@ const UpdatePostScreen = ({ navigation }) => {
 
           <View style={styles.update}>
             <View style={styles.leftColumn}>
-              <SmallProfilePic pic={post.owner.profilePic} />
+              <ProfilePic navigation={navigation} user={post.owner} size={30} />
             </View>
             <View style={styles.rightColumn}>
               <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
@@ -142,38 +142,3 @@ UpdatePostScreen.navigationOptions = {
 };
 
 export default UpdatePostScreen;
-
-/* <FlatList
-data={[{ one: 1 }]}
-renderItem={({ item, index, separators }) => (
-  <>
-    <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} showAll showLastLine />
-    <ThreadLine />
-
-    <View style={styles.update}>
-      <View style={styles.leftColumn}>
-        <SmallProfilePic pic={post.owner.profilePic} />
-      </View>
-      <View style={styles.rightColumn}>
-        <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
-          {post.owner.name}
-        </Text>
-        <View style={{ height: 100, paddingTop: 2 }}>
-          <TextInput
-            style={{ flex: 1, marginRight: 35, ...defaultStyles.defaultText }}
-            onChangeText={val => setUpdateText(val)}
-            value={updateText}
-            autoFocus
-            autoCompleteType="off"
-            autoCorrect={false}
-            multiline
-            scrollEnabled={false}
-            textAlignVertical="top"
-            placeholder="What's your update?"
-          />
-        </View>
-      </View>
-    </View>
-  </>
-)}
-/> */

@@ -26,6 +26,7 @@ import CustomSearchScreen from './CustomSearchScreen';
 // modals
 import StoryModal from './modals/StoryModal';
 import NewPostModal from './modals/NewPostModal';
+import SelectGoalModal from './modals/SelectGoalModal';
 import RollModal from './modals/RollModal';
 import EditLocationModal from './modals/EditLocationModal';
 import EditLocationRadiusModal from './modals/EditLocationRadiusModal';
@@ -35,7 +36,9 @@ import EditBioModal from './modals/EditBioModal';
 import EditExperienceModal from './modals/EditExperienceModal';
 import EditEducationModal from './modals/EditEducationModal';
 import EditSkillsModal from './modals/EditSkillsModal';
+// popups
 import EditSkillsPopup from './modals/EditSkillsPopup';
+import EditPostPopup from './modals/EditPostPopup';
 import YearModal from './modals/YearModal';
 import MonthModal from './modals/MonthModal';
 
@@ -235,6 +238,9 @@ const MainNavWithModal = createStackNavigator(
     NewPostModal: {
       screen: NewPostModal,
     },
+    SelectGoalModal: {
+      screen: SelectGoalModal,
+    },
     RollModal: {
       screen: RollModal,
     },
@@ -262,6 +268,12 @@ const MainNavWithModal = createStackNavigator(
         cardStyleInterpolator: forVerticalIOSCustom,
       },
     },
+    EditPostPopup: {
+      screen: EditPostPopup,
+      navigationOptions: {
+        cardStyleInterpolator: forVerticalIOSCustom,
+      },
+    },
     EditExperienceModal: {
       screen: EditExperienceModal,
     },
@@ -276,6 +288,9 @@ const MainNavWithModal = createStackNavigator(
     },
     MonthModal: {
       screen: MonthModal,
+      navigationOptions: {
+        cardStyleInterpolator: forVerticalIOSCustom,
+      },
     },
   },
   {

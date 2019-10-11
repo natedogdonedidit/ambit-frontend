@@ -35,9 +35,9 @@ const GoalSelect = ({ goal, activeGoal, showIcon = true, fill = true, onPress })
 
   const selectIcon = () => {
     if (showIcon) {
-      if (invest.includes(goal)) return <Image style={styles.imageIcon} source={require('../../../images/invest.png')} />;
+      if (invest.includes(goal)) return <Image style={styles.imageIcon} source={require('library/assets/images/invest.png')} />;
       if (hire.includes(goal)) return <Icon name="briefcase" solid size={15} color={colors.blue} style={{ paddingRight: 8 }} />;
-      if (connect.includes(goal)) return <Image style={styles.imageIcon} source={require('../../../images/connect.png')} />;
+      if (connect.includes(goal)) return <Image style={styles.imageIcon} source={require('library/assets/images/connect.png')} />;
     }
 
     return null;

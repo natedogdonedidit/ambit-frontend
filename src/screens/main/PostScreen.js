@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/react-hooks';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
-import PostGroupTL from 'library/components/PostGroupTL';
+import PostGroupTL from 'library/components/post/PostGroupTL';
 import ALL_COMMENTS_QUERY from 'library/queries/ALL_COMMENTS_QUERY';
 import Loader from 'library/components/UI/Loader';
 
