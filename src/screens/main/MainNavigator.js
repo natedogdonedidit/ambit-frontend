@@ -20,6 +20,7 @@ import MessagesScreen from './MessagesScreen';
 import NetworkScreen from './NetworkScreen';
 import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
+import CommentScreen from './CommentScreen';
 import UpdatePostScreen from './UpdatePostScreen';
 import RequestsScreen from './RequestsScreen';
 import CustomSearchScreen from './CustomSearchScreen';
@@ -55,6 +56,9 @@ const HomeStack = createStackNavigator(
     },
     UpdatePost: {
       screen: UpdatePostScreen,
+    },
+    Comment: {
+      screen: CommentScreen,
     },
     CustomSearch: {
       screen: CustomSearchScreen,

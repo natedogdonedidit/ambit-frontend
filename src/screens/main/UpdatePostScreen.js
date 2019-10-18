@@ -59,7 +59,7 @@ const UpdatePostScreen = ({ navigation }) => {
   const loading = loadingUpdate;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.container}>
       <HeaderWhite
         handleLeft={() => navigation.goBack()}
         handleRight={() => handleUpdate()}
@@ -107,15 +107,12 @@ const UpdatePostScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     backgroundColor: 'white',
-    padding: 20,
   },
   update: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    // marginTop: 20,
+    paddingTop: 3,
     borderRadius: 3,
   },
   leftColumn: {

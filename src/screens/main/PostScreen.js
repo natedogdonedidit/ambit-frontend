@@ -6,36 +6,46 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import PostGroupTL from 'library/components/post/PostGroupTL';
-import ALL_COMMENTS_QUERY from 'library/queries/ALL_COMMENTS_QUERY';
+import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 import Loader from 'library/components/UI/Loader';
+import Error from 'library/components/UI/Error';
 
 const PostScreen = ({ navigation }) => {
-  // state declaration
-
-  // constants
-  const post = navigation.getParam('post', null); // all the data from parent post down to updates
+  // PARAMS
+  const postToQuery = navigation.getParam('post', null); // all the data from parent post down to updates
   const isUpdate = navigation.getParam('isUpdate', false);
   const updateInd = navigation.getParam('updateInd', null);
 
-  const idForComments = isUpdate ? post.updates[updateInd].id : post.id;
+  // CONSTANTS
+  // const idForComments = isUpdate ? post.updates[updateInd].id : post.id;
 
-  // QUERIES - this gets the comments for a
-  const { loading, error, data } = useQuery(ALL_COMMENTS_QUERY, {
-    variables: { postId: idForComments, isUpdate },
+  // QUERIES - this gets the comments for a POST
+  // this could be optimized to only retrieve comments of clicked on Post/Update
+  // right now it queries ALL comments in the Post & down stream updates
+  const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
+    variables: { id: postToQuery.id },
+    fetchPolicy: 'cache-and-network',
   });
 
+  if (error) return <Error error={error} />;
+
   const currentTime = new Date();
+
+  const post = data.singlePost || null;
 
   return (
     <SafeAreaView style={styles.container}>
       <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
-      <ScrollView style={styles.scrollView}>
-        <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} showAll={!isUpdate} />
-        <View style={styles.commentsView}>
-          <Text style={defaultStyles.defaultItalic}>No comments</Text>
-        </View>
-      </ScrollView>
-      {loading && <Loader loading={loading} full />}
+      {loading ? (
+        <Loader loading={loading} full={false} />
+      ) : (
+        <ScrollView style={styles.scrollView}>
+          <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} showAll={!isUpdate} />
+          <View style={styles.commentsView}>
+            <Text style={defaultStyles.defaultItalic}>No comments</Text>
+          </View>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };

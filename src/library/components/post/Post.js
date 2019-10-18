@@ -21,9 +21,9 @@ import Comment from 'library/components/UI/Comment';
 import Options from 'library/components/UI/Options';
 import Share from 'library/components/UI/Share';
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
+// function getRandomInt(max) {
+//   return Math.floor(Math.random() * Math.floor(max));
+// }
 
 const Post = ({ post, currentTime, navigation, editable = false, showDetails = false, showLine = false, broke = false }) => {
   // MUTATIONS - like, comment, share
@@ -31,6 +31,7 @@ const Post = ({ post, currentTime, navigation, editable = false, showDetails = f
     variables: {
       postId: post.id,
     },
+    refetchQueries: {},
     optimisticResponse: {
       __typename: 'Mutation',
       likePost: {
@@ -38,7 +39,7 @@ const Post = ({ post, currentTime, navigation, editable = false, showDetails = f
         __typename: 'Post',
         ...post,
         likedByMe: !post.likedByMe,
-        likesCount: post.likedByMe ? post.likesCount - 1 : post.likesCount + 1,
+        likesCount: post.likedByMe ? post.likesCount - 1 || null : post.likesCount + 1,
       },
     },
     onCompleted: () => {
@@ -157,19 +158,15 @@ const Post = ({ post, currentTime, navigation, editable = false, showDetails = f
             </View>
             <View style={styles.likesRow}>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-                  {post.likesCount || 0} Likes
-                </Text>
-                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-                  {post.sharesCount || 0} Shares
-                </Text>
+                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{post.likesCount} Likes</Text>
+                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{post.sharesCount} Shares</Text>
               </View>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ paddingLeft: 15 }}>
-                  <Comment onPress={() => null} />
+                  <Comment onPress={() => navigation.navigate('Comment', { post })} />
                 </View>
                 <View style={{ paddingLeft: 15 }}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => null} />
                 </View>
                 <View style={{ paddingLeft: 15 }}>
                   <Share onPress={() => null} />
@@ -180,20 +177,16 @@ const Post = ({ post, currentTime, navigation, editable = false, showDetails = f
         ) : (
           <View style={[{ ...styles.buttons }, showUpdateButton && { paddingBottom: 10 }]}>
             <View style={styles.button}>
-              <Comment onPress={() => null} />
-              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>}
+              <Comment onPress={() => navigation.navigate('Comment', { post })} />
+              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>}
             </View>
             <View style={styles.button}>
               <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
-              {!showDetails && (
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
-                  {post.likesCount < 1 ? getRandomInt(100) : post.likesCount}
-                </Text>
-              )}
+              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>}
             </View>
             <View style={styles.button}>
               <Share onPress={() => null} />
-              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>}
+              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>}
             </View>
           </View>
         )}

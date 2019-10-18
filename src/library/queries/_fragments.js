@@ -152,6 +152,31 @@ export const DetailPost = gql`
         likedByMe
       }
     }
+    updates {
+      comments {
+        id
+        createdAt
+        owner {
+          ...MinimalUser
+        }
+        content
+        image
+        likesCount
+        likedByMe
+        commentsCount
+        comments {
+          id
+          createdAt
+          owner {
+            ...MinimalUser
+          }
+          content
+          image
+          likesCount
+          likedByMe
+        }
+      }
+    }
   }
   ${ListPosts}
   ${MinimalUser}

@@ -21,6 +21,8 @@ const PostGroupTL = ({
 }) => {
   // const [showAll, setShowMore] = useState(false);
 
+  // if (post.id === 'ck0zm1lcv40ka0b40x4qk2ol2') console.log(post);
+
   const hasUpdates = post.updates.length > 0;
 
   // if there are no updates
@@ -76,7 +78,6 @@ const PostGroupTL = ({
   }
 
   // if there are multiple updates
-
   const renderUpdates = () => {
     if (showAll) {
       return post.updates.map((update, i) => {
