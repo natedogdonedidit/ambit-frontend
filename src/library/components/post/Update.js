@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, StatusBar, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, StatusBar, TouchableOpacity, Alert } from 'react-native';
 import { format } from 'date-fns';
+import { useMutation } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
-import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
+import LIKE_UPDATE_MUTATION from 'library/mutations/LIKE_UPDATE_MUTATION';
 import TextButton from 'library/components/UI/TextButton';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -14,46 +15,45 @@ import Heart from 'library/components/UI/Heart';
 import Comment from 'library/components/UI/Comment';
 import Share from 'library/components/UI/Share';
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
 const Update = ({
   post,
   update,
   currentTime,
   navigation,
-  setModalVisibleEditPost,
-  setPostToEdit,
+  // setModalVisibleEditPost,
+  // setPostToEdit,
   editable = false,
   showDetails = false,
   showLine = false,
+  hideButtons = false,
+  isStandalone = false,
 }) => {
-  // MUTATIONS - like, comment, share
-  // const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
-  //   variables: {
-  //     postId: post.id,
-  //   },
-  //   optimisticResponse: {
-  //     __typename: 'Mutation',
-  //     likePost: {
-  //       id: post.id,
-  //       __typename: 'Post',
-  //       ...post,
-  //       likedByMe: !post.likedByMe,
-  //       likesCount: post.likedByMe ? post.likesCount - 1 : post.likesCount + 1,
-  //     },
-  //   },
-  //   onCompleted: () => {
-  //     // closeModal();
-  //   },
-  //   onError: error => {
-  //     console.log(error);
-  //     Alert.alert('Oh no!', 'An error occured when trying to like this post. Try again later!', [
-  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
-  //     ]);
-  //   },
-  // });
+  // MUTATIONS - like, share
+  const [likeUpdate, { loading: loadingLike }] = useMutation(LIKE_UPDATE_MUTATION, {
+    variables: {
+      updateId: update.id,
+    },
+    refetchQueries: {},
+    optimisticResponse: {
+      __typename: 'Mutation',
+      likeUpdate: {
+        id: update.id,
+        __typename: 'Update',
+        ...update,
+        likedByMe: !update.likedByMe,
+        likesCount: update.likedByMe ? update.likesCount - 1 || null : update.likesCount + 1,
+      },
+    },
+    onCompleted: () => {
+      // closeModal();
+    },
+    onError: error => {
+      console.log(error);
+      Alert.alert('Oh no!', 'An error occured when trying to like this update. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
+  });
 
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;
@@ -65,33 +65,21 @@ const Update = ({
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
   const formatedDate = format(createdAt, 'M/d/yy h:mm a');
 
-  // for goal remaining time
-  // const lastUpdated = !isUpdate ? new Date(post.lastUpdated) : null;
-  // const { timeRemaining, period: per } = timeDifferenceGoal(currentTime, lastUpdated);
-
   // for potential updates
 
   const handleLike = () => {
-    // if (!loadingLike) likePost();
+    if (!loadingLike) likeUpdate();
   };
-
-  // const renderTags = () => {
-  //   return post.tags.map((tag, i) => (
-  //     <Tag key={i} onPress={() => null}>
-  //       {tag}
-  //     </Tag>
-  //   ));
-  // };
 
   // const renderMedia = () => {};
 
   return (
-    <View style={styles.post}>
+    <View style={[styles.update, isStandalone && { paddingTop: 12, marginTop: 5 }]}>
       <View style={styles.leftColumn}>
         <ProfilePic navigation={navigation} user={post.owner} size={30} disableVideo />
         {showLine && <View style={styles.threadLine} />}
       </View>
-      <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 0 }]}>
+      <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
         <View style={styles.topRow}>
           <View style={styles.leftSide}>
             <TouchableOpacity
@@ -115,17 +103,6 @@ const Update = ({
         <View style={styles.content}>
           <Text style={defaultStyles.defaultText}>{update.content}</Text>
         </View>
-
-        {/* {post.tags.length > 0 && <View style={styles.tags}>{renderTags()}</View>} */}
-        {/* {containsMedia && <View style={styles.media}>{renderMedia()}</View>} */}
-        {/* {isMyPost && post.isGoal && editable && (
-            <View style={styles.countdown}>
-              <Text style={{ ...defaultStyles.defaultText, opacity: 0.6, paddingRight: 15 }}>
-                This goal will expire in {timeRemaining} {per}
-              </Text>
-              <TextButton onPress={() => navigation.navigate('Post', { post, isUpdate: true })}>Update</TextButton>
-            </View>
-          )} */}
         {showDetails ? (
           <>
             <View style={styles.date}>
@@ -134,16 +111,18 @@ const Update = ({
             </View>
             <View style={styles.likesRow}>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-                  {update.likesCount || 0} Likes
-                </Text>
-                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-                  {update.sharesCount || 0} Shares
-                </Text>
+                {!!update.likesCount && (
+                  <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{update.likesCount} Likes</Text>
+                )}
+                {!!update.sharesCount && (
+                  <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
+                    {update.sharesCount} Shares
+                  </Text>
+                )}
               </View>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ paddingLeft: 15 }}>
-                  <Comment onPress={() => null} />
+                  <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true })} />
                 </View>
                 <View style={{ paddingLeft: 15 }}>
                   <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
@@ -155,24 +134,22 @@ const Update = ({
             </View>
           </>
         ) : (
-          <View style={styles.buttons}>
-            <View style={styles.button}>
-              <Comment onPress={() => null} />
-              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>}
+          !hideButtons && (
+            <View style={styles.buttons}>
+              <View style={styles.button}>
+                <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true })} />
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
+              </View>
+              <View style={styles.button}>
+                <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.likesCount}</Text>
+              </View>
+              <View style={styles.button}>
+                <Share onPress={() => null} />
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.sharesCount}</Text>
+              </View>
             </View>
-            <View style={styles.button}>
-              <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
-              {!showDetails && (
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
-                  {update.likesCount < 1 ? '' : update.likesCount}
-                </Text>
-              )}
-            </View>
-            <View style={styles.button}>
-              <Share onPress={() => null} />
-              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{getRandomInt(100)}</Text>}
-            </View>
-          </View>
+          )
         )}
       </View>
       {/* {isMyPost && editable && (
@@ -190,7 +167,7 @@ const Update = ({
 };
 
 const styles = StyleSheet.create({
-  post: {
+  update: {
     width: '100%',
     flexDirection: 'row',
     backgroundColor: 'white',
@@ -198,14 +175,14 @@ const styles = StyleSheet.create({
   },
   threadLine: {
     flex: 1,
-    width: 4,
+    width: 3,
     marginTop: 3,
-    borderTopLeftRadius: 2,
-    borderTopRightRadius: 2,
+    borderTopLeftRadius: 1.5,
+    borderTopRightRadius: 1.5,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     backgroundColor: 'black',
-    opacity: 0.15,
+    opacity: 0.12,
   },
   leftColumn: {
     alignItems: 'center',

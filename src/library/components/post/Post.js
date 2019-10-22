@@ -25,8 +25,17 @@ import Share from 'library/components/UI/Share';
 //   return Math.floor(Math.random() * Math.floor(max));
 // }
 
-const Post = ({ post, currentTime, navigation, editable = false, showDetails = false, showLine = false, broke = false }) => {
-  // MUTATIONS - like, comment, share
+const Post = ({
+  post,
+  currentTime,
+  navigation,
+  editable = false,
+  showDetails = false,
+  showLine = false,
+  broke = false,
+  hideButtons = false,
+}) => {
+  // MUTATIONS - like, share
   const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
     variables: {
       postId: post.id,
@@ -113,7 +122,7 @@ const Post = ({ post, currentTime, navigation, editable = false, showDetails = f
           <View style={[{ ...styles.threadLine }, broke && { borderBottomLeftRadius: 3, borderBottomRightRadius: 3 }]} />
         )}
       </View>
-      <View style={[{ ...styles.rightColumn }, (showLine || showUpdateButton) && { paddingBottom: 0 }]}>
+      <View style={[{ ...styles.rightColumn }, (showLine || showUpdateButton) && { paddingBottom: 20 }]}>
         <View style={styles.topRow}>
           <View style={styles.leftSide}>
             <TouchableOpacity
@@ -148,7 +157,6 @@ const Post = ({ post, currentTime, navigation, editable = false, showDetails = f
           <Text style={defaultStyles.defaultText}>{post.content}</Text>
         </View>
 
-        {/* {post.tags.length > 0 && <View style={styles.tags}>{renderTags()}</View>} */}
         {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
         {showDetails ? (
           <>
@@ -158,38 +166,45 @@ const Post = ({ post, currentTime, navigation, editable = false, showDetails = f
             </View>
             <View style={styles.likesRow}>
               <View style={{ flexDirection: 'row' }}>
-                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{post.likesCount} Likes</Text>
-                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{post.sharesCount} Shares</Text>
+                {!!post.likesCount && (
+                  <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{post.likesCount} Likes</Text>
+                )}
+                {!!post.sharesCount && (
+                  <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{post.sharesCount} Shares</Text>
+                )}
               </View>
               <View style={{ flexDirection: 'row' }}>
-                <View style={{ paddingLeft: 15 }}>
-                  <Comment onPress={() => navigation.navigate('Comment', { post })} />
+                <View style={{ paddingLeft: 20 }}>
+                  <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
                 </View>
-                <View style={{ paddingLeft: 15 }}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => null} />
+                <View style={{ paddingLeft: 20 }}>
+                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
                 </View>
-                <View style={{ paddingLeft: 15 }}>
+                <View style={{ paddingLeft: 20 }}>
                   <Share onPress={() => null} />
                 </View>
               </View>
             </View>
           </>
         ) : (
-          <View style={[{ ...styles.buttons }, showUpdateButton && { paddingBottom: 10 }]}>
-            <View style={styles.button}>
-              <Comment onPress={() => navigation.navigate('Comment', { post })} />
-              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>}
+          !hideButtons && (
+            <View style={[{ ...styles.buttons }, showUpdateButton && { paddingBottom: 10 }]}>
+              <View style={styles.button}>
+                <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
+              </View>
+              <View style={styles.button}>
+                <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
+              </View>
+              <View style={styles.button}>
+                <Share onPress={() => null} />
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
+              </View>
             </View>
-            <View style={styles.button}>
-              <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
-              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>}
-            </View>
-            <View style={styles.button}>
-              <Share onPress={() => null} />
-              {!showDetails && <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>}
-            </View>
-          </View>
+          )
         )}
+
         {showUpdateButton && (
           <View style={styles.countdown}>
             <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
@@ -219,25 +234,20 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     paddingTop: 12,
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
     backgroundColor: 'white',
-    marginTop: 3,
-    // marginHorizontal: 6,
+    marginTop: 5,
     borderRadius: 3,
   },
   threadLine: {
     flex: 1,
-    width: 4,
+    width: 3,
     marginTop: 5,
-    borderTopLeftRadius: 2,
-    borderTopRightRadius: 2,
+    borderTopLeftRadius: 1.5,
+    borderTopRightRadius: 1.5,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     backgroundColor: 'black',
-    opacity: 0.15,
+    opacity: 0.12,
   },
   leftColumn: {
     alignItems: 'center',
@@ -249,8 +259,6 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingRight: 15,
     paddingBottom: 10,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
   },
   topRow: {
     flexDirection: 'row',
@@ -259,7 +267,6 @@ const styles = StyleSheet.create({
   },
   leftSide: {},
   rightSide: {
-    // flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
   },
@@ -306,8 +313,6 @@ const styles = StyleSheet.create({
 
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderBlack,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
   },
   date: {
     flexDirection: 'row',
@@ -316,8 +321,6 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     paddingRight: 15,
 
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
   },
@@ -328,11 +331,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 15,
-
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
   },
 });
 

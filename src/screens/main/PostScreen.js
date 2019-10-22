@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Text, TextInput, Alert, ScrollView } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text, TextInput, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
@@ -9,6 +9,9 @@ import PostGroupTL from 'library/components/post/PostGroupTL';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
+import Comment from 'library/components/post/Comment';
+import Post from 'library/components/post/Post';
+import Update from 'library/components/post/Update';
 
 const PostScreen = ({ navigation }) => {
   // PARAMS
@@ -24,14 +27,93 @@ const PostScreen = ({ navigation }) => {
   // right now it queries ALL comments in the Post & down stream updates
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
     variables: { id: postToQuery.id },
-    fetchPolicy: 'cache-and-network',
   });
 
   if (error) return <Error error={error} />;
-
   const currentTime = new Date();
-
   const post = data.singlePost || null;
+  // console.log(post);
+
+  // CUSTOM FUNCTIONS
+  const renderPost = () => {
+    // if its just a stand-alone Post
+    if (!isUpdate) {
+      return (
+        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
+          <Post post={post} currentTime={currentTime} navigation={navigation} showDetails />
+        </TouchableOpacity>
+      );
+    }
+
+    // if showing an update
+    return <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} showDetails />;
+  };
+
+  const renderUpdates = () => {
+    if (isUpdate || post.updates.length < 1) return null;
+
+    return (
+      <>
+        <View style={{ height: 30, justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
+          <Text style={defaultStyles.largeLight}>{post.updates.length} Updates</Text>
+        </View>
+        {post.updates.map((update, i) => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: 0 })}
+            >
+              <Update post={post} update={update} currentTime={currentTime} navigation={navigation} isStandalone />
+            </TouchableOpacity>
+          );
+        })}
+      </>
+    );
+  };
+
+  const renderComments = () => {
+    // decide to show Update or Post comments
+    const comments = isUpdate ? post.updates[updateInd].comments : post.comments;
+
+    if (comments.length < 1)
+      return (
+        <View style={{ height: 30, justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
+          <Text style={defaultStyles.largeLight}>No Comments</Text>
+        </View>
+      );
+
+    return (
+      <>
+        <View style={{ height: 30, justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
+          <Text style={defaultStyles.largeLight}>{comments.length} Comments</Text>
+        </View>
+        {comments.map((comment, i) => {
+          if (!comment.parentComment) {
+            if (comment.comments.length > 0) {
+              return (
+                <>
+                  <Comment key={comment.id} comment={comment} navigation={navigation} currentTime={currentTime} showLine />
+                  {comment.comments.map((subComment, k) => (
+                    <Comment
+                      key={subComment.id}
+                      comment={subComment}
+                      navigation={navigation}
+                      currentTime={currentTime}
+                      isSubComment
+                      showLine={comment.comments.length - 1 !== k}
+                    />
+                  ))}
+                </>
+              );
+            }
+
+            return <Comment key={comment.id} comment={comment} navigation={navigation} currentTime={currentTime} />;
+          }
+          return null;
+        })}
+      </>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -40,10 +122,10 @@ const PostScreen = ({ navigation }) => {
         <Loader loading={loading} full={false} />
       ) : (
         <ScrollView style={styles.scrollView}>
-          <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} showAll={!isUpdate} />
-          <View style={styles.commentsView}>
-            <Text style={defaultStyles.defaultItalic}>No comments</Text>
-          </View>
+          {/* <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} showAll={!isUpdate} /> */}
+          {!loading && renderPost()}
+          {!loading && renderUpdates()}
+          {!loading && <View style={styles.commentsView}>{renderComments()}</View>}
         </ScrollView>
       )}
     </SafeAreaView>
@@ -58,37 +140,8 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: colors.lightGray,
   },
-  update: {
-    flexDirection: 'row',
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
-    backgroundColor: 'white',
-    marginTop: 3,
-    // marginHorizontal: 6,
-    borderRadius: 3,
-  },
-  leftColumn: {
-    alignItems: 'center',
-    width: 64,
-  },
-  rightColumn: {
-    flex: 1,
-    alignItems: 'stretch',
-    paddingRight: 15,
-  },
-  updateInput: {
-    width: '100%',
-  },
   commentsView: {
     width: '100%',
-    marginTop: 10,
-    height: 500,
-    paddingTop: 40,
-    alignItems: 'center',
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
   },
 });
 

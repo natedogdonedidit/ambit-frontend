@@ -1,13 +1,13 @@
 import gql from 'graphql-tag';
-import { DetailPost } from 'library/queries/_fragments';
+import { CommentFragment } from 'library/queries/_fragments';
 
 const CREATE_COMMENT_MUTATION = gql`
   mutation CREATE_COMMENT_MUTATION($comment: CommentCreateInput!) {
     createComment(comment: $comment) {
-      ...DetailPost
+      ...CommentFragment
     }
   }
-  ${DetailPost}
+  ${CommentFragment}
 `;
 
 export default CREATE_COMMENT_MUTATION;

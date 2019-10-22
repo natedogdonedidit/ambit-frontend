@@ -63,6 +63,23 @@ export const FullEducation = gql`
   }
 `;
 
+// UPDATE FRAGMENTS
+export const UpdateFragment = gql`
+  fragment UpdateFragment on Update {
+    id
+    createdAt
+    content
+    image
+    likesCount
+    likedByMe
+    commentsCount
+    sharesCount
+    parentPost {
+      id
+    }
+  }
+`;
+
 // POSTS FRAGMENTS
 export const ListPosts = gql`
   fragment ListPosts on Post {
@@ -86,25 +103,28 @@ export const ListPosts = gql`
     commentsCount
     sharesCount
     updates {
-      id
-      createdAt
-      content
-      image
-      likesCount
-      likedByMe
-      commentsCount
-      sharesCount
+      ...UpdateFragment
     }
   }
   ${MinimalUser}
+  ${UpdateFragment}
 `;
 
-export const AllComments = gql`
-  fragment AllComments on Post {
+export const CommentFragment = gql`
+  fragment CommentFragment on Comment {
     id
     createdAt
     owner {
       ...MinimalUser
+    }
+    parentPost {
+      id
+    }
+    parentComment {
+      id
+    }
+    parentUpdate {
+      id
     }
     content
     image
@@ -117,10 +137,23 @@ export const AllComments = gql`
       owner {
         ...MinimalUser
       }
+      parentPost {
+        id
+      }
+      parentComment {
+        id
+      }
+      parentUpdate {
+        id
+      }
       content
       image
       likesCount
       likedByMe
+      commentsCount
+      comments {
+        id
+      }
     }
   }
   ${MinimalUser}
@@ -130,56 +163,17 @@ export const DetailPost = gql`
   fragment DetailPost on Post {
     ...ListPosts
     comments {
-      id
-      createdAt
-      owner {
-        ...MinimalUser
-      }
-      content
-      image
-      likesCount
-      likedByMe
-      commentsCount
-      comments {
-        id
-        createdAt
-        owner {
-          ...MinimalUser
-        }
-        content
-        image
-        likesCount
-        likedByMe
-      }
+      ...CommentFragment
     }
     updates {
       comments {
-        id
-        createdAt
-        owner {
-          ...MinimalUser
-        }
-        content
-        image
-        likesCount
-        likedByMe
-        commentsCount
-        comments {
-          id
-          createdAt
-          owner {
-            ...MinimalUser
-          }
-          content
-          image
-          likesCount
-          likedByMe
-        }
+        ...CommentFragment
       }
     }
   }
   ${ListPosts}
   ${MinimalUser}
+  ${CommentFragment}
 `;
 
 // export const DetailUpdate = gql`

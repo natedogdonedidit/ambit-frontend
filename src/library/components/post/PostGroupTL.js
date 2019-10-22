@@ -16,8 +16,10 @@ const PostGroupTL = ({
   lastOne,
   showLastLine = false,
   editable = false,
+  hideButtons = false,
   setModalVisibleEditPost,
   setPostToEdit,
+  showDetails = false,
 }) => {
   // const [showAll, setShowMore] = useState(false);
 
@@ -29,7 +31,7 @@ const PostGroupTL = ({
   if (!hasUpdates) {
     return (
       <View>
-        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post, isUpdate: false })}>
           <Post
             post={post}
             currentTime={currentTime}
@@ -38,6 +40,7 @@ const PostGroupTL = ({
             showLine={showLastLine}
             setModalVisibleEditPost={setModalVisibleEditPost}
             setPostToEdit={setPostToEdit}
+            hideButtons={hideButtons}
           />
         </TouchableOpacity>
       </View>
@@ -52,7 +55,7 @@ const PostGroupTL = ({
   if (!multipleUpdates) {
     return (
       <>
-        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post, isUpdate: false })}>
           <Post
             post={post}
             currentTime={currentTime}
@@ -61,16 +64,19 @@ const PostGroupTL = ({
             setModalVisibleEditPost={setModalVisibleEditPost}
             setPostToEdit={setPostToEdit}
             editable={editable}
+            hideButtons={hideButtons}
           />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: 0 })}>
-          <ThreadLine />
+          {/* <ThreadLine /> */}
           <Update
             post={post}
             update={post.updates[0]}
             currentTime={currentTime}
             navigation={navigation}
             showLine={showLastLine}
+            hideButtons={hideButtons}
+            showDetails={showDetails}
           />
         </TouchableOpacity>
       </>
@@ -87,13 +93,14 @@ const PostGroupTL = ({
             activeOpacity={0.7}
             onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: i })}
           >
-            <ThreadLine />
+            {/* <ThreadLine /> */}
             <Update
               post={post}
               update={update}
               currentTime={currentTime}
               navigation={navigation}
               showLine={i !== numUpdates - 1 || showLastLine}
+              hideButtons={hideButtons}
             />
           </TouchableOpacity>
         );
@@ -110,8 +117,16 @@ const PostGroupTL = ({
               activeOpacity={0.7}
               onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: i })}
             >
-              <ThreadLine />
-              <Update post={post} update={update} currentTime={currentTime} navigation={navigation} showLine={i !== lastOne} />
+              {/* <ThreadLine /> */}
+              <Update
+                post={post}
+                update={update}
+                currentTime={currentTime}
+                navigation={navigation}
+                showLine={i !== lastOne}
+                hideButtons={hideButtons}
+                showDetails={i === lastOne}
+              />
             </TouchableOpacity>
           );
         }
@@ -126,8 +141,14 @@ const PostGroupTL = ({
           activeOpacity={0.7}
           onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: numUpdates - 1 })}
         >
-          <ThreadLine broke />
-          <Update post={post} update={post.updates[numUpdates - 1]} currentTime={currentTime} navigation={navigation} />
+          {/* <ThreadLine broke /> */}
+          <Update
+            post={post}
+            update={post.updates[numUpdates - 1]}
+            currentTime={currentTime}
+            navigation={navigation}
+            hideButtons={hideButtons}
+          />
         </TouchableOpacity>
       </>
     );
@@ -136,7 +157,7 @@ const PostGroupTL = ({
   // if there are multiple updates
   return (
     <>
-      <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
+      <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post, isUpdate: false })}>
         <Post
           post={post}
           currentTime={currentTime}
@@ -146,6 +167,7 @@ const PostGroupTL = ({
           setModalVisibleEditPost={setModalVisibleEditPost}
           setPostToEdit={setPostToEdit}
           editable={editable}
+          hideButtons={hideButtons}
         />
       </TouchableOpacity>
       {renderUpdates()}

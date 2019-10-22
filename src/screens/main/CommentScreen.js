@@ -25,7 +25,9 @@ import Error from 'library/components/UI/Error';
 import ThreadLine from 'library/components/UI/ThreadLine';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { imageUpload } from 'library/utils';
-import SINGLE_POST_QUERY from '../../library/queries/SINGLE_POST_QUERY';
+import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
+import Post from 'library/components/post/Post';
+import Comment from 'library/components/post/Comment';
 
 const CommentScreen = ({ navigation }) => {
   // state declaration\
@@ -33,14 +35,31 @@ const CommentScreen = ({ navigation }) => {
   const [commentImage, setCommentImage] = useState('');
   const [uploading, setUploading] = useState(false);
 
-  // constants
-  const post = navigation.getParam('post', null); // all the data from parent post down to updates
-  const isUpdate = navigation.getParam('isUpdate', false);
+  // params
+  const clicked = navigation.getParam('clicked', null); // the content that was clicked (post, update, or comment)
   const updateInd = navigation.getParam('updateInd', null);
+  const isUpdate = navigation.getParam('isUpdate', false); // if commenting on an Update
+  const isComment = navigation.getParam('isComment', false); // if commenting on a Comment
 
-  // QUERIES - this gets the comments for a
+  // / constants
+  const parentPost = isUpdate || isComment ? clicked.parentPost : clicked;
+  const parentUpdate = isUpdate ? { connect: { id: clicked.id } } : null;
+  const hasParentComment = isComment ? !!clicked.parentComment : null;
+
+  let parentComment = null;
+  if (isComment && hasParentComment) parentComment = { connect: { id: clicked.parentComment.id } };
+  if (isComment && !hasParentComment) parentComment = { connect: { id: clicked.id } };
+
+  // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   const { userLoggedIn } = dataUser;
+
+  const { loading: loadingPost, error: errorPost, data: dataPost } = useQuery(SINGLE_POST_QUERY, {
+    variables: { id: parentPost.id },
+  });
+  const { singlePost: post } = dataPost;
+
+  const parentPostObject = isUpdate ? null : { connect: { id: parentPost.id } }; // dont want to attach comment to a parentPost if it has a parentUpdate
 
   // MUTATIONS
   const [createComment, { loading: loadingCreate }] = useMutation(CREATE_COMMENT_MUTATION, {
@@ -51,19 +70,12 @@ const CommentScreen = ({ navigation }) => {
         owner: {
           connect: { id: userLoggedIn.id },
         },
-        parentPost: {
-          connect: { id: post.id },
-        },
+        parentPost: parentPostObject,
+        parentUpdate,
+        parentComment,
       },
     },
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: SINGLE_POST_QUERY,
-        data: {
-          singlePost: dataReturned.createComment,
-        },
-      });
-    },
+    refetchQueries: () => [{ query: SINGLE_POST_QUERY, variables: { id: parentPost.id } }],
     onCompleted: () => {
       navigation.goBack();
     },
@@ -118,30 +130,75 @@ const CommentScreen = ({ navigation }) => {
     return null;
   };
 
-  const loading = uploading || loadingCreate;
+  const renderPost = () => {
+    // if its just a stand-alone Post
+    if (!isUpdate) {
+      return (
+        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
+          <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons showLine />
+        </TouchableOpacity>
+      );
+    }
+
+    // if showing an update
+    return (
+      <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} hideButtons showLastLine />
+    );
+  };
+
+  const renderComments = () => {
+    // if the clicked comment is a stand-alone comment
+    if (!hasParentComment) {
+      return <Comment comment={clicked} navigation={navigation} currentTime={currentTime} isSubComment showLine hideButtons />;
+    }
+
+    // // if the clicked comment is a a sub-comment, show all comments
+    const parComment = post.comments.find(comment => comment.id === clicked.parentComment.id);
+
+    return (
+      <>
+        <Comment
+          key={parComment.id}
+          comment={parComment}
+          navigation={navigation}
+          currentTime={currentTime}
+          isSubComment
+          showLine
+          hideButtons
+        />
+        {parComment.comments.map((subComment, k) => (
+          <Comment
+            key={subComment.id}
+            comment={subComment}
+            navigation={navigation}
+            currentTime={currentTime}
+            isSubComment
+            showLine
+            hideButtons
+          />
+        ))}
+      </>
+    );
+  };
+
+  const loading = loadingUser || loadingPost;
+  const loadingSubmit = uploading || loadingCreate;
 
   if (errorUser) return <Error error={errorUser} />;
 
   return (
     <SafeAreaView style={styles.container}>
       <HeaderWhite handleLeft={navigation.goBack} handleRight={handleSubmit} textLeft="Back" textRight="Reply" title="Comment" />
-      {loadingUser ? (
-        <Loader loading={loadingUser} />
+      {loading ? (
+        <Loader loading={loading} />
       ) : (
         <KeyboardAvoidingView style={{ flex: 1, justifyContent: 'space-between' }} behavior="padding" enabled>
           <ScrollView style={styles.scrollView}>
-            <PostGroupTL
-              post={post}
-              currentTime={currentTime}
-              navigation={navigation}
-              lastOne={updateInd}
-              showAll={!isUpdate}
-              showLastLine
-            />
-            <ThreadLine />
-            <View style={styles.comment}>
+            {renderPost()}
+            {isComment && renderComments()}
+            <View style={styles.commentInput}>
               <View style={styles.leftColumn}>
-                <ProfilePic navigation={navigation} user={userLoggedIn} intro={userLoggedIn.intro} />
+                <ProfilePic size={30} navigation={navigation} user={userLoggedIn} />
               </View>
               <View style={styles.rightColumn}>
                 <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
@@ -180,7 +237,7 @@ const CommentScreen = ({ navigation }) => {
         </KeyboardAvoidingView>
       )}
 
-      {loading && <Loader loading={loading} />}
+      {loadingSubmit && <Loader loading={loadingSubmit} />}
     </SafeAreaView>
   );
 };
@@ -195,10 +252,10 @@ const styles = StyleSheet.create({
   },
 
   // copied in
-  comment: {
+  commentInput: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    paddingTop: 3,
+    paddingTop: 5,
     borderRadius: 3,
   },
   leftColumn: {
