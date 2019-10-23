@@ -69,8 +69,7 @@ const UpdatePostScreen = ({ navigation }) => {
       />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView>
-          <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} showAll showLastLine />
-          <ThreadLine />
+          <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} hideButtons showAll showLastLine />
 
           <View style={styles.update}>
             <View style={styles.leftColumn}>

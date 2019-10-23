@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -42,6 +42,7 @@ const CommentScreen = ({ navigation }) => {
   const isComment = navigation.getParam('isComment', false); // if commenting on a Comment
 
   // / constants
+  const currentTime = new Date();
   const parentPost = isUpdate || isComment ? clicked.parentPost : clicked;
   const parentUpdate = isUpdate ? { connect: { id: clicked.id } } : null;
   const hasParentComment = isComment ? !!clicked.parentComment : null;
@@ -87,7 +88,18 @@ const CommentScreen = ({ navigation }) => {
     },
   });
 
-  const currentTime = new Date();
+  // EFFECTS
+  useEffect(() => {
+    if (content === '' && isComment) {
+      setContent(`@${clicked.owner.name}@@ `);
+    }
+  }, [content]);
+
+  const onChangeText = val => {
+    setContent(val);
+
+    // setContent(`<Text style={{ color: 'pink' }}>${val}</Text>`);
+  };
 
   // CUSTOM FUNCTIONS
   const handleSubmit = async () => {
@@ -207,7 +219,7 @@ const CommentScreen = ({ navigation }) => {
                 <View style={{ paddingTop: 2, paddingBottom: 10 }}>
                   <TextInput
                     style={{ flex: 1, marginRight: 35, ...defaultStyles.defaultText }}
-                    onChangeText={val => setContent(val)}
+                    onChangeText={onChangeText}
                     value={content}
                     autoFocus
                     autoCompleteType="off"

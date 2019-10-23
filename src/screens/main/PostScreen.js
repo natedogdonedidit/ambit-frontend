@@ -55,7 +55,9 @@ const PostScreen = ({ navigation }) => {
     return (
       <>
         <View style={{ height: 30, justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
-          <Text style={defaultStyles.largeLight}>{post.updates.length} Updates</Text>
+          <Text style={defaultStyles.largeLight}>
+            {post.updates.length} Update{post.updates.length > 1 ? 's' : ''}
+          </Text>
         </View>
         {post.updates.map((update, i) => {
           return (
@@ -85,7 +87,9 @@ const PostScreen = ({ navigation }) => {
     return (
       <>
         <View style={{ height: 30, justifyContent: 'center', alignItems: 'center', paddingTop: 5 }}>
-          <Text style={defaultStyles.largeLight}>{comments.length} Comments</Text>
+          <Text style={defaultStyles.largeLight}>
+            {comments.length} Comment{comments.length > 1 ? 's' : ''}
+          </Text>
         </View>
         {comments.map((comment, i) => {
           if (!comment.parentComment) {
@@ -117,7 +121,13 @@ const PostScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
+      <HeaderWhite
+        handleLeft={() => navigation.goBack()}
+        handleRight={() => null}
+        textLeft="Back"
+        textRight=""
+        title={isUpdate ? 'Update' : 'Post'}
+      />
       {loading ? (
         <Loader loading={loading} full={false} />
       ) : (

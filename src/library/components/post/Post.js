@@ -174,13 +174,13 @@ const Post = ({
                 )}
               </View>
               <View style={{ flexDirection: 'row' }}>
-                <View style={{ paddingLeft: 20 }}>
+                <View style={{ paddingLeft: 25 }}>
                   <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
                 </View>
-                <View style={{ paddingLeft: 20 }}>
+                <View style={{ paddingLeft: 25 }}>
                   <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
                 </View>
-                <View style={{ paddingLeft: 20 }}>
+                <View style={{ paddingLeft: 25 }}>
                   <Share onPress={() => null} />
                 </View>
               </View>

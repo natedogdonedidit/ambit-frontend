@@ -121,13 +121,13 @@ const Update = ({
                 )}
               </View>
               <View style={{ flexDirection: 'row' }}>
-                <View style={{ paddingLeft: 15 }}>
+                <View style={{ paddingLeft: 25 }}>
                   <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true })} />
                 </View>
-                <View style={{ paddingLeft: 15 }}>
+                <View style={{ paddingLeft: 25 }}>
                   <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
                 </View>
-                <View style={{ paddingLeft: 15 }}>
+                <View style={{ paddingLeft: 25 }}>
                   <Share onPress={() => null} />
                 </View>
               </View>
