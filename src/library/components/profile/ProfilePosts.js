@@ -57,7 +57,11 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
   }
 
   if (posts.length < 1) {
-    return <Loader loading={loading} full={false} />;
+    return (
+      <View style={{ height: 100, width: '100%', marginTop: 10 }}>
+        <Loader loading={loading} full={false} />
+      </View>
+    );
   }
 
   return (
@@ -84,7 +88,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
-    marginTop: 10,
+    marginTop: 5,
   },
 });
 

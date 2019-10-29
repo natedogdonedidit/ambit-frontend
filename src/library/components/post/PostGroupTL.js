@@ -77,6 +77,7 @@ const PostGroupTL = ({
             showLine={showLastLine}
             hideButtons={hideButtons}
             showDetails={showDetails}
+            updateInd={0}
           />
         </TouchableOpacity>
       </>
@@ -101,6 +102,7 @@ const PostGroupTL = ({
               navigation={navigation}
               showLine={i !== numUpdates - 1 || showLastLine}
               hideButtons={hideButtons}
+              updateInd={i}
             />
           </TouchableOpacity>
         );
@@ -126,6 +128,7 @@ const PostGroupTL = ({
                 showLine={i !== lastOne}
                 hideButtons={hideButtons}
                 showDetails={i === lastOne}
+                updateInd={i}
               />
             </TouchableOpacity>
           );
@@ -148,6 +151,7 @@ const PostGroupTL = ({
             currentTime={currentTime}
             navigation={navigation}
             hideButtons={hideButtons}
+            updateInd={numUpdates - 1}
           />
         </TouchableOpacity>
       </>

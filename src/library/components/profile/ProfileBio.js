@@ -22,7 +22,7 @@ const ProfileBio = ({
     <View style={styles.content}>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader }}>
-          <Text style={{ ...defaultStyles.hugeMedium }}>Bio</Text>
+          <Text style={{ ...defaultStyles.hugeMedium }}>About</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditBioModal', { user })}>
               Edit

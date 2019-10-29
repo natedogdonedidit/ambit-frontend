@@ -7,7 +7,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const ProfileTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['About', 'Goals & Posts', 'Network'];
+  const tabNames = ['Bio', 'Posts', 'Media'];
 
   const renderTabs = () => {
     return tabNames.map((tabName, i) => {
@@ -56,12 +56,12 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   tabText: {
-    ...defaultStyles.defaultSemibold,
+    ...defaultStyles.largeMedium,
     color: 'black',
     opacity: 0.4,
   },
   tabSelectedText: {
-    ...defaultStyles.defaultBold,
+    ...defaultStyles.largeSemibold,
     color: colors.purp,
   },
 });

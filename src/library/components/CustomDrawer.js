@@ -46,6 +46,11 @@ const CustomDrawer = ({ navigation }) => {
               <Text style={styles.buttonText}>My Profile</Text>
             </View>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Record Intro</Text>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => handleLogout()}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Logout</Text>

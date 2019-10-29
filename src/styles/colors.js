@@ -16,7 +16,7 @@ const colors = {
   darkGray: '#0C090A',
   darkGrayO: 'rgba(72, 74, 83, 0.3)',
   // darkGrayO2: 'rgba(72, 74, 83, 0.6)',
-  lightGray: 'rgba(233, 237, 246, 0.8)',
+  lightGray: 'rgba(233, 237, 246, 0.6)',
   lightLightGray: '#FCFCFC',
   iosBlue: '#126CFC',
   borderBlack: 'rgba(0, 0, 0, 0.5)',

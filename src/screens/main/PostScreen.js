@@ -63,9 +63,9 @@ const PostScreen = ({ navigation }) => {
           return (
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: 0 })}
+              onPress={() => navigation.navigate('Post', { post, isUpdate: true, updateInd: i })}
             >
-              <Update post={post} update={update} currentTime={currentTime} navigation={navigation} isStandalone />
+              <Update post={post} update={update} currentTime={currentTime} navigation={navigation} updateInd={i} isStandalone />
             </TouchableOpacity>
           );
         })}
@@ -95,8 +95,8 @@ const PostScreen = ({ navigation }) => {
           if (!comment.parentComment) {
             if (comment.comments.length > 0) {
               return (
-                <>
-                  <Comment key={comment.id} comment={comment} navigation={navigation} currentTime={currentTime} showLine />
+                <View key={comment.id}>
+                  <Comment comment={comment} navigation={navigation} currentTime={currentTime} />
                   {comment.comments.map((subComment, k) => (
                     <Comment
                       key={subComment.id}
@@ -104,10 +104,10 @@ const PostScreen = ({ navigation }) => {
                       navigation={navigation}
                       currentTime={currentTime}
                       isSubComment
-                      showLine={comment.comments.length - 1 !== k}
+                      // showLine={comment.comments.length - 1 !== k}
                     />
                   ))}
-                </>
+                </View>
               );
             }
 

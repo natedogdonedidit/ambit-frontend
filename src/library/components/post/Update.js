@@ -27,6 +27,7 @@ const Update = ({
   showLine = false,
   hideButtons = false,
   isStandalone = false,
+  updateInd,
 }) => {
   // MUTATIONS - like, share
   const [likeUpdate, { loading: loadingLike }] = useMutation(LIKE_UPDATE_MUTATION, {
@@ -122,7 +123,7 @@ const Update = ({
               </View>
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ paddingLeft: 25 }}>
-                  <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true })} />
+                  <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
                 </View>
                 <View style={{ paddingLeft: 25 }}>
                   <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
@@ -137,7 +138,7 @@ const Update = ({
           !hideButtons && (
             <View style={styles.buttons}>
               <View style={styles.button}>
-                <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true })} />
+                <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
                 <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
               </View>
               <View style={styles.button}>

@@ -29,7 +29,7 @@ const Comment = ({
   hideButtons = false,
   isSubComment = false,
 }) => {
-  console.log(comment);
+  // console.log(comment);
   // MUTATIONS - like, comment, share
   const [likeComment, { loading: loadingLike }] = useMutation(LIKE_COMMENT_MUTATION, {
     variables: {
@@ -89,7 +89,7 @@ const Comment = ({
 
   return (
     <View style={[styles.comment, isSubComment && { paddingTop: 5, marginTop: 0 }]}>
-      <View style={styles.leftColumn}>
+      <View style={[styles.leftColumn, isSubComment && styles.leftColumnSub]}>
         <ProfilePic user={comment.owner} size={30} intro={comment.owner.intro} navigation={navigation} />
         {showLine && <View style={[{ ...styles.threadLine }]} />}
       </View>
@@ -176,6 +176,11 @@ const styles = StyleSheet.create({
   leftColumn: {
     alignItems: 'center',
     width: 64,
+  },
+  leftColumnSub: {
+    alignItems: 'flex-start',
+    paddingLeft: 48,
+    width: 96,
   },
   rightColumn: {
     flex: 1,

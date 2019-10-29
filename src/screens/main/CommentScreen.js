@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,8 +10,10 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
+  InputAccessoryView,
 } from 'react-native';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
+import Editor, { displayTextWithMentions } from 'react-native-mentions-editor';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -19,6 +21,7 @@ import HeaderWhite from 'library/components/headers/HeaderWhite';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import ALL_USERS_QUERY from 'library/queries/ALL_USERS_QUERY';
 import CREATE_COMMENT_MUTATION from 'library/mutations/CREATE_COMMENT_MUTATION';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
@@ -30,10 +33,8 @@ import Post from 'library/components/post/Post';
 import Comment from 'library/components/post/Comment';
 
 const CommentScreen = ({ navigation }) => {
-  // state declaration\
-  const [content, setContent] = useState('');
-  const [commentImage, setCommentImage] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const scrollViewRef = useRef(null);
+  // const inputRef = useRef(null);
 
   // params
   const clicked = navigation.getParam('clicked', null); // the content that was clicked (post, update, or comment)
@@ -41,7 +42,16 @@ const CommentScreen = ({ navigation }) => {
   const isUpdate = navigation.getParam('isUpdate', false); // if commenting on an Update
   const isComment = navigation.getParam('isComment', false); // if commenting on a Comment
 
-  // / constants
+  // state declaration\
+  // const [comment, setComment] = useState(isComment ? `@[${clicked.owner.name}](${clicked.owner.id}) ` : '');
+  const [comment, setComment] = useState('');
+  const [commentImage, setCommentImage] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [mentions, setMentions] = useState([]);
+  const [selection, setSelection] = useState({ start: 0, end: 0 });
+  const [showMentionList, setShowMentionList] = useState(false);
+
+  // constants
   const currentTime = new Date();
   const parentPost = isUpdate || isComment ? clicked.parentPost : clicked;
   const parentUpdate = isUpdate ? { connect: { id: clicked.id } } : null;
@@ -60,13 +70,16 @@ const CommentScreen = ({ navigation }) => {
   });
   const { singlePost: post } = dataPost;
 
-  const parentPostObject = isUpdate ? null : { connect: { id: parentPost.id } }; // dont want to attach comment to a parentPost if it has a parentUpdate
+  const [getPossibleMentions, { loading: loadingMentions, error: errorMentions, data: dataMentions }] = useLazyQuery(
+    ALL_USERS_QUERY
+  );
 
+  const parentPostObject = isUpdate ? null : { connect: { id: parentPost.id } }; // dont want to attach comment to a parentPost if it has a parentUpdate
   // MUTATIONS
   const [createComment, { loading: loadingCreate }] = useMutation(CREATE_COMMENT_MUTATION, {
     variables: {
       comment: {
-        content,
+        content: comment,
         image: commentImage,
         owner: {
           connect: { id: userLoggedIn.id },
@@ -90,15 +103,144 @@ const CommentScreen = ({ navigation }) => {
 
   // EFFECTS
   useEffect(() => {
-    if (content === '' && isComment) {
-      setContent(`@${clicked.owner.name}@@ `);
-    }
-  }, [content]);
+    // scrollViewRef.current.scrollResponderScrollToEnd();    // give me errors sometimes
+  }, [showMentionList]);
+
+  // Mentions stuff
+
+  const mentionAttemptFunction = (input, cursorSelection) => {
+    const whiteRegEx = /\s/g;
+    const mentionRegEx = /\s@\w*$/g; // ends with 'whitespace-@-zeroormorecharacters'
+    const { start, end } = cursorSelection;
+    const singleCursor = start === end;
+    const stringBefore = input.slice(0, start); // slice off everything after the cursor
+    const isMention = mentionRegEx.test(stringBefore);
+    const nextCharacter = input[start];
+    const nextIsWhite = whiteRegEx.test(nextCharacter) || nextCharacter === undefined; // check if next character is white or undefined (end of line)
+    return !!(singleCursor && nextIsWhite && isMention);
+  };
+
+  const mentionCompare = (a, b) => {
+    const aa = a.start;
+    const bb = b.start;
+    if (aa < bb) return -1;
+    return 1;
+  };
+
+  const handleMentionSelect = user => {
+    // know cursor position //selection.start
+    const cursor = selection.start;
+
+    // get position of @
+    const beforeCursor = comment.slice(0, cursor);
+    const atSymbolLocation = beforeCursor.lastIndexOf('@');
+
+    // remove everthing back to the @ symbol
+    const beforeMention = comment.slice(0, atSymbolLocation);
+    const afterMention = comment.slice(cursor, comment.length);
+
+    // insert name into the comment
+    const trimmedName = user.name.trim();
+    const newComment = beforeMention.concat(trimmedName, afterMention, ' ');
+
+    // log mention into mention logs
+    const newMention = {
+      start: atSymbolLocation,
+      end: atSymbolLocation + trimmedName.length - 1,
+      length: trimmedName.length,
+      name: trimmedName,
+      id: user.id,
+    };
+
+    const newMentions = [...mentions, newMention];
+    const sortedMentions = newMentions.sort(mentionCompare);
+    console.log(sortedMentions);
+
+    // save mention data into array
+    setMentions(sortedMentions);
+
+    // convert to formattedComment, save to state
+    setComment(newComment);
+  };
+
+  const formatText = rawText => {
+    if (mentions.length < 1) return rawText;
+
+    const subStrings = [];
+
+    mentions.forEach((mention, i) => {
+      const isLast = mentions.length === i + 1;
+
+      // make substrings of new formatted text w/ mentions
+      if (i === 0) {
+        // before mention
+        subStrings.push(rawText.substring(0, mention.start));
+        // mention
+        subStrings.push(`@[${mention.name}](${mention.id})`);
+        // after mention
+        // if last mention...go to end. If another mention...go to start of that one.
+        subStrings.push(rawText.substring(mention.end, isLast ? rawText.length : mentions[i + 1].start));
+      } else {
+        // mention
+        subStrings.push(`@[${mention.name}](${mention.id})`);
+        // after mention
+        // if last mention...go to end. If another mention...go to start of that one.
+        subStrings.push(rawText.substring(mention.end, isLast ? rawText.length : mentions[i + 1].start));
+      }
+
+      // concat together substrings
+      const formattedText = subStrings.toString();
+      console.log(formattedText);
+    });
+  };
 
   const onChangeText = val => {
-    setContent(val);
+    console.log('selection state', selection);
+    console.log(val);
+    console.log(mentions);
 
-    // setContent(`<Text style={{ color: 'pink' }}>${val}</Text>`);
+    const isMentionAttempt = mentionAttemptFunction(val, selection);
+
+    if (isMentionAttempt) {
+      setShowMentionList(true);
+      getPossibleMentions();
+    } else {
+      setShowMentionList(false);
+    }
+
+    // convert to formattedComment, save to state
+
+    setComment(val);
+  };
+
+  const renderFormatedText = () => {
+    // convert formatedComment to displayComment
+
+    const mentionRegEx = /(@\[\w[\w\s]+\]\(\w{25}\))/g;
+    const mentionRegExName = /@\[(\w[\w\s]+)\]\(\w{25}\)/g;
+
+    // split the comment into slices of Text & Mentions
+    const commentSplit = comment.split(mentionRegEx);
+
+    return commentSplit.map((segment, i) => {
+      // check if segment is a mention
+      const isMention = mentionRegEx.test(segment);
+
+      if (isMention) {
+        const name = mentionRegExName.exec(segment);
+        return (
+          <Text key={i} style={{ ...defaultStyles.defaultMedium, color: colors.iosBlue }}>
+            {name[1]}
+          </Text>
+        );
+      }
+
+      return (
+        <Text key={i} style={defaultStyles.defaultText}>
+          {segment}
+        </Text>
+      );
+    });
   };
 
   // CUSTOM FUNCTIONS
@@ -138,7 +280,7 @@ const CommentScreen = ({ navigation }) => {
   };
 
   const validateInputs = () => {
-    if (!content && !commentImage) return 'Oops';
+    if (!comment && !commentImage) return 'Oops';
     return null;
   };
 
@@ -161,11 +303,12 @@ const CommentScreen = ({ navigation }) => {
   const renderComments = () => {
     // if the clicked comment is a stand-alone comment
     if (!hasParentComment) {
-      return <Comment comment={clicked} navigation={navigation} currentTime={currentTime} isSubComment showLine hideButtons />;
+      return <Comment comment={clicked} navigation={navigation} currentTime={currentTime} hideButtons />;
     }
 
     // // if the clicked comment is a a sub-comment, show all comments
-    const parComment = post.comments.find(comment => comment.id === clicked.parentComment.id);
+    const parComment = post.comments.find(com => com.id === clicked.parentComment.id);
+    const subCommentIndex = parComment.comments.findIndex(element => element.id === clicked.id);
 
     return (
       <>
@@ -174,21 +317,26 @@ const CommentScreen = ({ navigation }) => {
           comment={parComment}
           navigation={navigation}
           currentTime={currentTime}
-          isSubComment
-          showLine
+          // isSubComment
+          // showLine
           hideButtons
         />
-        {parComment.comments.map((subComment, k) => (
-          <Comment
-            key={subComment.id}
-            comment={subComment}
-            navigation={navigation}
-            currentTime={currentTime}
-            isSubComment
-            showLine
-            hideButtons
-          />
-        ))}
+        {parComment.comments.map((subComment, k) => {
+          if (k <= subCommentIndex) {
+            return (
+              <Comment
+                key={subComment.id}
+                comment={subComment}
+                navigation={navigation}
+                currentTime={currentTime}
+                isSubComment
+                // showLine
+                hideButtons
+              />
+            );
+          }
+          return null;
+        })}
       </>
     );
   };
@@ -198,54 +346,104 @@ const CommentScreen = ({ navigation }) => {
 
   if (errorUser) return <Error error={errorUser} />;
 
+  const renderPossibleMentions = () => {
+    if (loadingMentions) return <Loader loading={loadingMentions} full={false} />;
+
+    if (dataMentions && dataMentions.users) {
+      const possibleMentions = dataMentions.users;
+
+      return possibleMentions.map(user => {
+        return (
+          <TouchableOpacity key={user.id} onPress={() => handleMentionSelect(user)}>
+            <View style={styles.mentionListItem}>
+              <View style={styles.mentionListItemPic}>
+                <ProfilePic size={30} navigation={navigation} user={user} />
+              </View>
+              <View style={styles.mentionListItemDetails}>
+                <Text style={defaultStyles.largeMedium}>{user.name}</Text>
+                <Text style={defaultStyles.defaultText}>{user.location}</Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        );
+      });
+    }
+
+    return (
+      <View>
+        <Text>No matching users</Text>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <HeaderWhite handleLeft={navigation.goBack} handleRight={handleSubmit} textLeft="Back" textRight="Reply" title="Comment" />
       {loading ? (
         <Loader loading={loading} />
       ) : (
-        <KeyboardAvoidingView style={{ flex: 1, justifyContent: 'space-between' }} behavior="padding" enabled>
-          <ScrollView style={styles.scrollView}>
-            {renderPost()}
-            {isComment && renderComments()}
-            <View style={styles.commentInput}>
-              <View style={styles.leftColumn}>
-                <ProfilePic size={30} navigation={navigation} user={userLoggedIn} />
-              </View>
-              <View style={styles.rightColumn}>
-                <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
-                  {userLoggedIn.name}
-                </Text>
-                <View style={{ paddingTop: 2, paddingBottom: 10 }}>
-                  <TextInput
-                    style={{ flex: 1, marginRight: 35, ...defaultStyles.defaultText }}
-                    onChangeText={onChangeText}
-                    value={content}
-                    autoFocus
-                    autoCompleteType="off"
-                    autoCorrect={false}
-                    multiline
-                    scrollEnabled={false}
-                    textAlignVertical="top"
-                    placeholder="Start your comment"
-                  />
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+          <View style={{ flex: 1 }}>
+            <ScrollView ref={scrollViewRef} style={{ flex: 1 }}>
+              {renderPost()}
+              {isComment && renderComments()}
+
+              <View style={styles.commentInput}>
+                <View style={[styles.leftColumn, isComment && styles.leftColumnSub]}>
+                  <ProfilePic size={30} navigation={navigation} user={userLoggedIn} intro={userLoggedIn.intro} />
                 </View>
-                {!!commentImage && (
-                  <View style={styles.media}>
-                    <Image style={{ width: '100%', height: 160 }} source={{ uri: commentImage }} resizeMode="cover" />
+                <View style={styles.rightColumn}>
+                  <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
+                    {userLoggedIn.name}
+                  </Text>
+                  <View style={{ paddingTop: 2, paddingBottom: 10 }}>
+                    <TextInput
+                      style={{ flex: 1, marginRight: 35, ...defaultStyles.defaultText }}
+                      onChangeText={onChangeText}
+                      autoFocus
+                      autoCompleteType="off"
+                      autoCorrect={false}
+                      multiline
+                      scrollEnabled={false}
+                      textAlignVertical="top"
+                      placeholder="Start your comment"
+                      onSelectionChange={event => setSelection(event.nativeEvent.selection)}
+                      inputAccessoryViewID="1"
+                      // onBlur={() => setShowMentionList(false)}
+                    >
+                      {renderFormatedText()}
+                    </TextInput>
                   </View>
-                )}
+                  {!!commentImage && (
+                    <View style={styles.media}>
+                      <Image style={{ width: '100%', height: 160 }} source={{ uri: commentImage }} resizeMode="cover" />
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-          </ScrollView>
-          <View style={styles.aboveKeyboard}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('RollModal', { handleMediaSelect, assetType: 'Photos' })}
-              hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-            >
-              <Icon name="image" size={24} color={colors.purp} style={{ paddingRight: 7 }} />
-            </TouchableOpacity>
+            </ScrollView>
           </View>
+
+          {showMentionList && (
+            <>
+              <View style={{ width: '100%', height: 10, backgroundColor: colors.lightGray }} />
+              <View style={{ flex: 2 }}>
+                <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
+                  <View style={styles.mentionsList}>{renderPossibleMentions()}</View>
+                </ScrollView>
+              </View>
+            </>
+          )}
+          <InputAccessoryView nativeID="1">
+            <View style={styles.aboveKeyboard}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('RollModal', { handleMediaSelect, assetType: 'Photos' })}
+                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+              >
+                <Icon name="image" size={24} color={colors.purp} style={{ paddingRight: 10 }} />
+              </TouchableOpacity>
+            </View>
+          </InputAccessoryView>
         </KeyboardAvoidingView>
       )}
 
@@ -259,10 +457,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  scrollView: {
-    // backgroundColor: colors.lightGray,
-  },
-
   // copied in
   commentInput: {
     flexDirection: 'row',
@@ -273,6 +467,11 @@ const styles = StyleSheet.create({
   leftColumn: {
     alignItems: 'center',
     width: 64,
+  },
+  leftColumnSub: {
+    alignItems: 'flex-start',
+    paddingLeft: 48,
+    width: 96,
   },
   rightColumn: {
     flex: 1,
@@ -296,6 +495,26 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(0, 0, 0, 0.2)',
+  },
+  mentionsList: {
+    width: '100%',
+    minHeight: 200,
+  },
+  mentionListItem: {
+    flexDirection: 'row',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
+  },
+  mentionListItemPic: {
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mentionListItemDetails: {
+    flexGrow: 1,
+    height: 60,
+    justifyContent: 'center',
   },
 });
 
