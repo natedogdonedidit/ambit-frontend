@@ -158,9 +158,7 @@ const ProfileComponent = ({
           }}
         >
           <Text style={{ ...defaultStyles.largeHeavy, color: 'white' }}>{user.name}</Text>
-          <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
-            {user.jobTitle || 'Job title'} | {user.location || 'Location'}
-          </Text>
+          {user.headline && <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>{user.headline}</Text>}
         </Animated.View>
       </Animated.View>
 
@@ -198,10 +196,10 @@ const ProfileComponent = ({
               }),
             },
           ],
-          ...defaultStyles.shadow3,
+          // ...defaultStyles.shadow3,
         }}
       >
-        <ProfilePic user={user} intro={user.intro} navigation={navigation} size={70} border />
+        <ProfilePic user={user} intro={user.intro} navigation={navigation} size={70} border borderWidth={2.4} />
       </Animated.View>
       {/* back button */}
       {showBack && (

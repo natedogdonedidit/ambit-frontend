@@ -22,14 +22,14 @@ const ProfileBio = ({
     <View style={styles.content}>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader }}>
-          <Text style={{ ...defaultStyles.hugeMedium }}>About</Text>
+          <Text style={{ ...defaultStyles.hugeMedium, paddingBottom: 10 }}>About</Text>
           {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditBioModal', { user })}>
+            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditAboutModal', { user })}>
               Edit
             </TextButton>
           )}
         </View>
-        <Text style={{ ...defaultStyles.defaultText }}>{user.bio}</Text>
+        <Text style={{ ...defaultStyles.defaultText }}>{user.about}</Text>
       </View>
       <View style={{ ...styles.projectsSection }}>
         <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   content: {
-    padding: 10,
+    paddingVertical: 10, // change to padding, if want gray showing on sides
     backgroundColor: colors.lightGray,
   },
   contentSection: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     backgroundColor: 'white',
-    borderRadius: 5,
+    // borderRadius: 5,
     marginBottom: 10,
   },
   contentHeader: {

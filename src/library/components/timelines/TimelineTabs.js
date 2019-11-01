@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
 
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Animated, ScrollView } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const TimelineTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['Global', 'Local', 'Following', 'Trending'];
+  const tabNames = ['Global', 'Local', 'Following', 'Trending', 'Custom'];
 
   const [widthAnim] = useState(new Animated.Value(0));
 
@@ -40,7 +40,7 @@ const TimelineTabs = ({ tabState, setTabState }) => {
                   position: 'absolute',
                   bottom: 0,
                   left: 0,
-                  height: 2,
+                  height: 2.5,
                   width: '100%',
                   alignItems: 'center',
                 }}
@@ -63,7 +63,11 @@ const TimelineTabs = ({ tabState, setTabState }) => {
     });
   };
 
-  return <View style={styles.tabs}>{renderTabs()}</View>;
+  return (
+    <ScrollView contentContainerStyle={styles.tabs} horizontal showsHorizontalScrollIndicator={false}>
+      {renderTabs()}
+    </ScrollView>
+  );
 };
 
 export default TimelineTabs;
@@ -71,27 +75,25 @@ export default TimelineTabs;
 const styles = StyleSheet.create({
   tabs: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%',
-    height: 42,
-    paddingHorizontal: 20,
+    justifyContent: 'flex-start',
+    // width: '100%',
+    // height: 42,
+    // paddingHorizontal: 20,
     backgroundColor: colors.lightLightGray,
-    borderBottomColor: colors.borderBlack,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   tab: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 13,
-    height: '100%',
+    paddingHorizontal: 20,
+    height: 42,
   },
   tabText: {
     ...defaultStyles.defaultSemibold,
     color: 'black',
-    opacity: 0.6,
+    opacity: 0.4,
   },
   tabSelectedText: {
-    ...defaultStyles.defaultSemibold,
+    ...defaultStyles.defaultBold,
     color: colors.purp,
   },
 });

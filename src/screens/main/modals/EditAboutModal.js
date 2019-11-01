@@ -11,16 +11,16 @@ import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
-const EditBioModal = ({ navigation }) => {
+const EditAboutModal = ({ navigation }) => {
   const user = navigation.getParam('user');
 
-  const [bio, setBio] = useState(user.bio);
+  const [about, setAbout] = useState(user.about);
 
-  const [editBio, { loading, error, data }] = useMutation(EDIT_BIO_MUTATION, {
+  const [editAbout, { loading, error, data }] = useMutation(EDIT_BIO_MUTATION, {
     variables: {
       id: user.id,
       data: {
-        bio,
+        about,
       },
     },
     update: (proxy, { data: dataReturned }) => {
@@ -42,14 +42,14 @@ const EditBioModal = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <HeaderWhite handleLeft={navigation.goBack} handleRight={editBio} textLeft="Cancel" textRight="Save" title="Edit About" />
+      <HeaderWhite handleLeft={navigation.goBack} handleRight={editAbout} textLeft="Cancel" textRight="Save" title="Edit About" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView>
           <TextInput
             style={{ ...styles.multilineInput, ...defaultStyles.defaultText }}
-            onChangeText={val => setBio(val)}
-            value={bio}
-            placeholder="Start your bio.."
+            onChangeText={val => setAbout(val)}
+            value={about}
+            placeholder="Tell us about yourself.."
             multiline
             textAlignVertical="top"
             scrollEnabled={false}
@@ -63,7 +63,7 @@ const EditBioModal = ({ navigation }) => {
   );
 };
 
-export default EditBioModal;
+export default EditAboutModal;
 
 const styles = StyleSheet.create({
   multilineInput: {

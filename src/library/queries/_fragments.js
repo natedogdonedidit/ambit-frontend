@@ -18,6 +18,7 @@ export const LoggedInUser = gql`
     name
     firstName
     lastName
+    headline
     email
     profilePic
     location
@@ -221,11 +222,18 @@ export const DetailedUser = gql`
   fragment DetailedUser on User {
     ...LoggedInUser
     bannerPic
-    jobTitle
-    profession
     industry
     website
     bio
+    about
+    isMentor
+    isFreelancer
+    isAgency
+    isInvestor
+    mentorFields
+    freelanceFields
+    investorFields
+    agencyFields
     skills {
       ...FullSkills
     }

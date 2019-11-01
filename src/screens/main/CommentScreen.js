@@ -317,6 +317,7 @@ const CommentScreen = ({ navigation }) => {
           comment={parComment}
           navigation={navigation}
           currentTime={currentTime}
+          hideTopMargin
           // isSubComment
           // showLine
           hideButtons

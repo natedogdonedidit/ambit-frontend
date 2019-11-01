@@ -2,10 +2,10 @@ import { StyleSheet } from 'react-native';
 
 import colors from 'styles/colors';
 
-const small = 11;
-const reg = 13;
-const large = 15;
-const huge = 17;
+const small = 12;
+const reg = 14;
+const large = 16;
+const huge = 18;
 
 const styles = StyleSheet.create({
   // SMALL
@@ -160,6 +160,11 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontSize: huge,
     fontFamily: 'SFProText-Medium',
+  },
+  hugeMediumDisplay: {
+    color: colors.darkGray,
+    fontSize: huge,
+    fontFamily: 'SFProDisplay-Medium',
   },
   hugeSemibold: {
     color: colors.darkGray,

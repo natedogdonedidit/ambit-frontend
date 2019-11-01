@@ -17,7 +17,7 @@ import SettingsScreen from './SettingsScreen';
 import HomeScreen from './HomeScreen';
 import SuggestionsScreen from './SuggestionsScreen';
 import MessagesScreen from './MessagesScreen';
-import NetworkScreen from './NetworkScreen';
+import JobsScreen from './JobsScreen';
 import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
 import CommentScreen from './CommentScreen';
@@ -34,9 +34,15 @@ import EditLocationRadiusModal from './modals/EditLocationRadiusModal';
 import EditNameModal from './modals/EditNameModal';
 import EditProfessionModal from './modals/EditProfessionModal';
 import EditBioModal from './modals/EditBioModal';
+import EditAboutModal from './modals/EditAboutModal';
 import EditExperienceModal from './modals/EditExperienceModal';
 import EditEducationModal from './modals/EditEducationModal';
 import EditSkillsModal from './modals/EditSkillsModal';
+import SelectIndustryModal from './modals/SelectIndustryModal';
+import SelectFreelanceModal from './modals/SelectFreelanceModal';
+import SelectInvestorModal from './modals/SelectInvestorModal';
+import SelectMentorModal from './modals/SelectMentorModal';
+
 // popups
 import EditSkillsPopup from './modals/EditSkillsPopup';
 import EditPostPopup from './modals/EditPostPopup';
@@ -66,6 +72,24 @@ const HomeStack = createStackNavigator(
   },
   {
     initialRouteName: 'Home',
+    defaultNavigationOptions: ({ navigation }) => ({
+      headerShown: false,
+    }),
+  }
+);
+
+const JobsStack = createStackNavigator(
+  {
+    Jobs: JobsScreen,
+    Profile: {
+      screen: ProfileScreen,
+    },
+    Post: {
+      screen: PostScreen,
+    },
+  },
+  {
+    initialRouteName: 'Jobs',
     defaultNavigationOptions: ({ navigation }) => ({
       headerShown: false,
     }),
@@ -109,30 +133,12 @@ const InboxStack = createStackNavigator(
   }
 );
 
-const NetworkStack = createStackNavigator(
-  {
-    Network: NetworkScreen,
-    Profile: {
-      screen: ProfileScreen,
-    },
-    Post: {
-      screen: PostScreen,
-    },
-  },
-  {
-    initialRouteName: 'Network',
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerShown: false,
-    }),
-  }
-);
-
 const TabNavigator = createBottomTabNavigator(
   {
     Home: HomeStack,
+    Jobs: JobsStack,
     People: PeopleStack,
     Inbox: InboxStack,
-    Network: NetworkStack,
   },
   {
     initialRouteName: 'Home',
@@ -148,8 +154,8 @@ const TabNavigator = createBottomTabNavigator(
           iconName = `account-search`;
         } else if (routeName === 'Inbox') {
           iconName = `email-outline`;
-        } else if (routeName === 'Network') {
-          iconName = `gamepad-circle`;
+        } else if (routeName === 'Jobs') {
+          iconName = `briefcase-search-outline`;
         }
 
         // You can return any component that you like here!
@@ -251,6 +257,12 @@ const MainNavWithModal = createStackNavigator(
     EditLocationModal: {
       screen: EditLocationModal,
     },
+    EditLocationModalRight: {
+      screen: EditLocationModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      },
+    },
     EditLocationRadiusModal: {
       screen: EditLocationRadiusModal,
     },
@@ -259,9 +271,15 @@ const MainNavWithModal = createStackNavigator(
     },
     EditProfessionModal: {
       screen: EditProfessionModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      },
     },
     EditBioModal: {
       screen: EditBioModal,
+    },
+    EditAboutModal: {
+      screen: EditAboutModal,
     },
     EditSkillsModal: {
       screen: EditSkillsModal,
@@ -283,6 +301,30 @@ const MainNavWithModal = createStackNavigator(
     },
     EditEducationModal: {
       screen: EditEducationModal,
+    },
+    SelectIndustryModal: {
+      screen: SelectIndustryModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      },
+    },
+    SelectFreelanceModal: {
+      screen: SelectFreelanceModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      },
+    },
+    SelectInvestorModal: {
+      screen: SelectInvestorModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      },
+    },
+    SelectMentorModal: {
+      screen: SelectMentorModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      },
     },
     YearModal: {
       screen: YearModal,

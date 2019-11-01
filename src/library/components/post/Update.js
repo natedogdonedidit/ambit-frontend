@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: 55,
+    width: 60,
     flexDirection: 'row',
     alignItems: 'center',
   },

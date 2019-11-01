@@ -28,6 +28,7 @@ const Comment = ({
   // broke = false,
   hideButtons = false,
   isSubComment = false,
+  hideTopMargin = false,
 }) => {
   // console.log(comment);
   // MUTATIONS - like, comment, share
@@ -88,7 +89,7 @@ const Comment = ({
   };
 
   return (
-    <View style={[styles.comment, isSubComment && { paddingTop: 5, marginTop: 0 }]}>
+    <View style={[styles.comment, (isSubComment || hideTopMargin) && { paddingTop: 5, marginTop: 0 }]}>
       <View style={[styles.leftColumn, isSubComment && styles.leftColumnSub]}>
         <ProfilePic user={comment.owner} size={30} intro={comment.owner.intro} navigation={navigation} />
         {showLine && <View style={[{ ...styles.threadLine }]} />}

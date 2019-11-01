@@ -16,7 +16,8 @@ const ProfilePic = ({
   disableVideo = false,
   disableClick = false,
   border = false,
-  borderWidth = 2,
+  borderWidth = 1.6,
+  extraBorder = 0, // adds a white ring around outside
 }) => {
   // sizes
   // small = 30
@@ -26,8 +27,9 @@ const ProfilePic = ({
   const hasPitch = !!pitch;
   const hasIntro = intro.length > 0;
 
-  const whiteBorder = size + 2 * borderWidth;
-  const colorBorder = size + 4 * borderWidth - 1;
+  const whiteWidth = size + 2 * borderWidth;
+  const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
+  // const colorWidth = size + 4 * borderWidth;
 
   const styles = StyleSheet.create({
     noBorder: {
@@ -38,12 +40,16 @@ const ProfilePic = ({
       backgroundColor: 'white',
     },
     whiteBorder: {
-      width: whiteBorder,
-      height: whiteBorder,
-      borderRadius: whiteBorder / 2,
+      justifyContent: 'center',
+      alignItems: 'center',
+
+      width: whiteWidth,
+      height: whiteWidth,
+      overflow: 'hidden',
+
+      borderRadius: whiteWidth / 2,
       borderWidth,
       borderColor: 'white',
-      overflow: 'hidden',
     },
     profilePic: {
       width: '100%',
@@ -54,13 +60,16 @@ const ProfilePic = ({
       height: '100%',
     },
     outterCircle: {
-      width: colorBorder,
-      height: colorBorder,
-      borderRadius: colorBorder / 2,
-      overflow: 'hidden',
-      backgroundColor: 'white',
+      backgroundColor: colors.purp,
       justifyContent: 'center',
       alignItems: 'center',
+
+      width: colorWidth,
+      height: colorWidth,
+
+      borderRadius: colorWidth / 2,
+      borderWidth: extraBorder,
+      borderColor: 'white',
     },
     linearGradient: {
       position: 'absolute',
@@ -108,14 +117,7 @@ const ProfilePic = ({
     return (
       <TouchableOpacity onPress={() => navigation.navigate('StoryModal', { user, contentType: 'Intro' })}>
         <View style={styles.outterCircle}>
-          <LinearGradient
-            start={{ x: 0.4, y: 0.4 }}
-            end={{ x: 1, y: 1 }}
-            colors={[colors.purp, colors.purple]}
-            style={styles.linearGradient}
-          />
-
-          <View style={styles.whiteBorder}>
+          <View style={[styles.whiteBorder]}>
             <Image
               style={styles.profilePic}
               resizeMode="cover"

@@ -39,7 +39,9 @@ const HomeScreen = ({ navigation }) => {
         handleRight={() => navigation.navigate('CustomSearch')}
         navigation={navigation}
       />
-      <TimelineTabs tabState={activeTimeline} setTabState={setActiveTimeline} />
+      <View style={{ borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }}>
+        <TimelineTabs tabState={activeTimeline} setTabState={setActiveTimeline} />
+      </View>
 
       <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {activeTimeline === 0 && (

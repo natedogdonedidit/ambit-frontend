@@ -8,7 +8,7 @@ const ProfileNetwork = () => {
   return (
     <View style={styles.content}>
       <Text style={{ ...defaultStyles.defaultMute, fontSize: 16, textAlign: 'center', paddingTop: 30 }}>
-        Network analytics will live here
+        Pictures & videos grid
       </Text>
     </View>
   );

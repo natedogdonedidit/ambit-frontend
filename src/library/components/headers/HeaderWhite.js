@@ -36,13 +36,13 @@ const styles = StyleSheet.create({
   closeButtonText: {
     width: 60,
     textAlign: 'left',
-    ...defaultStyles.defaultMedium,
+    ...defaultStyles.largeRegular,
     color: colors.iosBlue,
   },
   saveButtonText: {
     width: 60,
     textAlign: 'right',
-    ...defaultStyles.defaultMedium,
+    ...defaultStyles.largeRegular,
     color: colors.iosBlue,
   },
   headerTitle: {

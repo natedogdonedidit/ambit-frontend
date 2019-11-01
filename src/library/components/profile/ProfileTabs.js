@@ -56,12 +56,12 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   tabText: {
-    ...defaultStyles.largeMedium,
+    ...defaultStyles.defaultSemibold,
     color: 'black',
     opacity: 0.4,
   },
   tabSelectedText: {
-    ...defaultStyles.largeSemibold,
+    ...defaultStyles.defaultBold,
     color: colors.purp,
   },
 });

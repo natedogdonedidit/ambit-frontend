@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, SafeAreaView, Text, Animated } from 'react-native';
 
-const NetworkScreen = props => {
+const JobsScreen = props => {
   // navigation
   const { navigation } = props;
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>NetworkScreen</Text>
+      <Text style={{ textAlign: 'center' }}>Jobs Screen</Text>
     </SafeAreaView>
   );
 };
@@ -15,8 +15,8 @@ const NetworkScreen = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'tomato',
   },
 });
 
-export default NetworkScreen;
+export default JobsScreen;
