@@ -8,6 +8,7 @@ import WhiteButton from 'library/components/UI/WhiteButton';
 import FollowButton from 'library/components/UI/FollowButton';
 import ConnectButton from 'library/components/UI/ConnectButton';
 import TextButton from 'library/components/UI/TextButton';
+import ThreeDotsButton from 'library/components/UI/ThreeDotsButton';
 
 const NameBox = ({ user, navigation, isMyProfile }) => {
   // custom functions
@@ -56,7 +57,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   return (
     <View style={{ ...styles.profileBox }}>
       <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
-      <Text style={{ ...defaultStyles.defaultText, ...styles.headline }}>{user.headline}</Text>
+      {user.headline && <Text style={{ ...defaultStyles.defaultText, ...styles.headline }}>{user.headline}</Text>}
       {renderStats()}
       <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>
       {(useOpenToBox || !!user.website) && (
@@ -70,6 +71,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       <View style={styles.whiteButtons}>
         <FollowButton />
         <ConnectButton buttonStyle={{ marginLeft: 15 }} />
+        <ThreeDotsButton buttonStyle={{ marginLeft: 15 }} />
       </View>
       {isMyProfile && (
         <View style={styles.editProfileButton}>
@@ -101,10 +103,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   detailsBox: {
-    marginBottom: 20,
+    marginBottom: 15,
   },
   whiteButtons: {
     flexDirection: 'row',
+    marginTop: 5,
     marginBottom: 15,
   },
   stats: {
