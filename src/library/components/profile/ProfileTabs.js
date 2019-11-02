@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   tabs: {
     flexDirection: 'row',
     width: '100%',
+    backgroundColor: 'white',
   },
   tab: {
     justifyContent: 'center',
@@ -39,7 +40,6 @@ const styles = StyleSheet.create({
     height: 42,
     borderBottomColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    backgroundColor: 'white',
   },
   tabSelected: {
     flexBasis: 0,
@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     height: 42,
     borderBottomColor: colors.purp,
     borderBottomWidth: 3,
-    backgroundColor: 'white',
   },
   touchable: {
     justifyContent: 'center',

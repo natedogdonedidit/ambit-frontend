@@ -23,7 +23,6 @@ const SuggestionsScreen = ({ navigation }) => {
   const [profileId, setProfileId] = useState('ck0tsen1lpd600b09xfi09b14');
   const [scrollY] = useState(new Animated.Value(0));
   const insets = useSafeArea();
-  const OUTSIDE_HEADER_SCROLL = OUTSIDE_HEADER_HEIGHT - insets.top;
   const { currentUserId } = useContext(UserContext);
 
   // QUERIES
@@ -60,7 +59,7 @@ const SuggestionsScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {loadingUser ? (
         <Loader loading={loadingUser} />
       ) : (
@@ -68,12 +67,10 @@ const SuggestionsScreen = ({ navigation }) => {
           navigation={navigation}
           profileId={profileId || users[0].id}
           scrollY={scrollY}
-          OUTSIDE_HEADER_HEIGHT={OUTSIDE_HEADER_HEIGHT}
-          OUTSIDE_HEADER_SCROLL={OUTSIDE_HEADER_SCROLL}
           loading={loadingUser}
           user={user}
           showBack={false}
-          showOptions={false}
+          OUTSIDE_HEADER_HEIGHT={OUTSIDE_HEADER_HEIGHT}
         />
       )}
 
@@ -117,7 +114,7 @@ const SuggestionsScreen = ({ navigation }) => {
           right: 0,
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

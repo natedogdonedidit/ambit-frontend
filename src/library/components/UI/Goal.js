@@ -18,7 +18,7 @@ const Goal = ({ goal, onPress }) => {
   const selectText = () => {
     if (invest.includes(goal)) return { color: colors.green };
     if (hire.includes(goal)) return { color: colors.blue };
-    if (connect.includes(goal)) return { color: colors.purple };
+    if (connect.includes(goal)) return { color: colors.darkPurp };
 
     return null;
   };

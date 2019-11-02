@@ -7,8 +7,10 @@ import defaultStyles from 'styles/defaultStyles';
 import WhiteButton from 'library/components/UI/WhiteButton';
 import FollowButton from 'library/components/UI/FollowButton';
 import ConnectButton from 'library/components/UI/ConnectButton';
-import TextButton from 'library/components/UI/TextButton';
 import ThreeDotsButton from 'library/components/UI/ThreeDotsButton';
+import MessageButton from 'library/components/UI/MessageButton';
+import SmallGrayButton from 'library/components/UI/SmallGrayButton';
+import ProfilePic from 'library/components/UI/ProfilePic';
 
 const NameBox = ({ user, navigation, isMyProfile }) => {
   // custom functions
@@ -69,17 +71,42 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       )}
 
       <View style={styles.whiteButtons}>
-        <FollowButton />
-        <ConnectButton buttonStyle={{ marginLeft: 15 }} />
-        <ThreeDotsButton buttonStyle={{ marginLeft: 15 }} />
+        <View style={{ flex: 1 }}>
+          <FollowButton buttonStyle={{ width: '100%' }} />
+        </View>
+
+        <View style={{ flex: 1, marginLeft: 15 }}>
+          <ConnectButton buttonStyle={{ width: '100%' }} />
+        </View>
+        <View style={{ marginLeft: 15 }}>
+          <ThreeDotsButton buttonStyle={{}} />
+        </View>
       </View>
-      {isMyProfile && (
+
+      {/* absolute */}
+      <View style={styles.topRowButtons}>
+        {isMyProfile ? (
+          <SmallGrayButton onPress={() => navigation.navigate('EditNameModal', { user })}>Edit Profile</SmallGrayButton>
+        ) : (
+          <>
+            <SmallGrayButton onPress={() => null} buttonStyle={{ marginRight: 10 }}>
+              Meet
+            </SmallGrayButton>
+            <MessageButton />
+          </>
+        )}
+      </View>
+      <View style={styles.profilePicView}>
+        <ProfilePic user={user} intro={user.intro} navigation={navigation} size={70} border borderWidth={2.4} />
+      </View>
+
+      {/* {isMyProfile && (
         <View style={styles.editProfileButton}>
           <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditNameModal', { user })}>
             Edit
           </TextButton>
         </View>
-      )}
+      )} */}
     </View>
   );
 };
@@ -89,9 +116,21 @@ export default NameBox;
 const styles = StyleSheet.create({
   profileBox: {
     width: '100%',
-    paddingTop: 70,
+    paddingTop: 50, // to make white space for Profile Pic & Buttons
     paddingHorizontal: 20,
     backgroundColor: 'white',
+  },
+  profilePicView: {
+    position: 'absolute',
+    top: -35,
+    left: 20,
+  },
+  topRowButtons: {
+    position: 'absolute',
+    top: 10,
+    right: 20,
+
+    flexDirection: 'row',
   },
   name: {
     marginBottom: 1,

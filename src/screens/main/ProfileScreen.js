@@ -19,7 +19,7 @@ const ProfileScreen = ({ navigation }) => {
   const profileId = navigation.getParam('profileId', 'NO-ID');
 
   // QUERIES
-  const { loading, error, data } = useQuery(SINGLE_USER_BIO, {
+  const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
     variables: { id: profileId },
   });
 
@@ -40,6 +40,7 @@ const ProfileScreen = ({ navigation }) => {
           OUTSIDE_HEADER_SCROLL={OUTSIDE_HEADER_SCROLL}
           loading={loading}
           user={user}
+          refetch={refetch}
         />
       )}
     </View>

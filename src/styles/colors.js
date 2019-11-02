@@ -1,5 +1,5 @@
 const colors = {
-  // purp: '#5A50CC',  // original purp
+  darkPurp: '#5A50CC', // original purp
   purp: '#126CFC', // #4E6EF4 (78,110,244), or #126CFC
   purpGradient: 'rgba(78,110,244, 0.2)',
   blue: '#3476E2',
@@ -18,7 +18,8 @@ const colors = {
   darkGrayO: 'rgba(72, 74, 83, 0.3)',
   // darkGrayO2: 'rgba(72, 74, 83, 0.6)',
   lightGray: 'rgba(233, 237, 246, 0.4)',
-  grayButton: '#EAEAEA',
+  // grayButton: '#EAEAEA',
+  grayButton: 'rgba(233, 237, 246, 1)',
   lightLightGray: '#FCFCFC',
   iosBlue: '#126CFC',
   borderBlack: 'rgba(0, 0, 0, 0.4)',
