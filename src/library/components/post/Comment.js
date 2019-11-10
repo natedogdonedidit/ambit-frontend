@@ -18,6 +18,7 @@ import Options from 'library/components/UI/Options';
 import Share from 'library/components/UI/Share';
 import CommentIcon from 'library/components/UI/Comment';
 import Loader from 'library/components/UI/Loader';
+import Ellipsis from 'library/components/UI/Ellipsis';
 
 const Comment = ({
   comment,
@@ -89,9 +90,9 @@ const Comment = ({
   };
 
   return (
-    <View style={[styles.comment, (isSubComment || hideTopMargin) && { paddingTop: 5, marginTop: 0 }]}>
+    <View style={[styles.comment, (isSubComment || hideTopMargin) && { paddingTop: 10, marginTop: 0 }]}>
       <View style={[styles.leftColumn, isSubComment && styles.leftColumnSub]}>
-        <ProfilePic user={comment.owner} size={30} intro={comment.owner.intro} navigation={navigation} />
+        <ProfilePic user={comment.owner} size={30} intro={comment.owner.intro} navigation={navigation} disableVideo />
         {showLine && <View style={[{ ...styles.threadLine }]} />}
       </View>
       <View style={[styles.rightColumn, showLine && { paddingBottom: 24 }]}>
@@ -128,29 +129,28 @@ const Comment = ({
 
         {!hideButtons && (
           <View style={[{ ...styles.buttons }]}>
-            <View style={styles.button}>
-              <CommentIcon onPress={() => navigation.navigate('Comment', { clicked: comment, isComment: true })} />
-              <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount}</Text>
+            <View style={styles.buttonGroup}>
+              <View style={styles.button}>
+                <CommentIcon onPress={() => navigation.navigate('Comment', { clicked: comment, isComment: true })} />
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount}</Text>
+              </View>
+              <View style={styles.button}>
+                <Heart color={comment.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.likesCount}</Text>
+              </View>
             </View>
-            <View style={styles.button}>
-              <Heart color={comment.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
-              <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.likesCount}</Text>
-            </View>
+            {isMyPost && (
+              <View style={styles.buttonGroup}>
+                <Ellipsis
+                  onPress={() =>
+                    navigation.navigate('EditPostPopup', { post: comment, isMyPost, deletePost: deleteComment, isComment: true })
+                  }
+                />
+              </View>
+            )}
           </View>
         )}
       </View>
-      {isMyPost && (
-        <View style={{ position: 'absolute', top: 30, right: 15 }}>
-          <Options
-            onPress={() => {
-              // navigation.navigate('EditPostPopup', { deletePost });
-              // setPostToEdit({ id: comment.id, owner: comment.owner.id });
-              // setModalVisibleEditPost(true);
-              deleteComment();
-            }}
-          />
-        </View>
-      )}
     </View>
   );
 };
@@ -211,12 +211,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     overflow: 'hidden',
   },
+  // buttons: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
+  // button: {
+  //   width: 55,
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
+
   buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  buttonGroup: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   button: {
-    width: 55,
+    width: 60,
     flexDirection: 'row',
     alignItems: 'center',
   },

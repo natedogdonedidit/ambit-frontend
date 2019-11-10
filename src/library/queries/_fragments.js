@@ -6,6 +6,7 @@ export const MinimalUser = gql`
     id
     name
     profilePic
+    headline
     location
     intro
   }
@@ -92,6 +93,7 @@ export const ListPosts = gql`
     }
     isGoal
     goal
+    field
     location
     content
     tags

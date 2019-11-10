@@ -144,17 +144,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: 50,
-    // paddingHorizontal: 20,
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
   },
   circleNumber: {
     height: '100%',
-    // width: 30,
-    // borderRadius: 15,
-    // backgroundColor: colors.grayButton,
     justifyContent: 'center',
-    // alignItems: 'center',
   },
   // items
   itemRow: {

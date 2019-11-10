@@ -7,7 +7,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const TimelineTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['Global', 'Local', 'Following', 'Trending', 'Custom'];
+  const tabNames = ['Global', 'Local', 'Following', 'Trending', 'My Industry', '+'];
 
   const [widthAnim] = useState(new Animated.Value(0));
 

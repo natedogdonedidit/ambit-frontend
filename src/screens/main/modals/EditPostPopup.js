@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
@@ -7,7 +7,9 @@ import defaultStyles from 'styles/defaultStyles';
 import GrayButton from 'library/components/UI/GrayButton';
 
 const EditPostPopup = ({ navigation }) => {
-  // const postToEdit = navigation.getParam('postToEdit');
+  const post = navigation.getParam('post');
+  const isMyPost = navigation.getParam('isMyPost');
+  const isComment = navigation.getParam('isComment', false);
   const deletePost = navigation.getParam('deletePost');
 
   return (
@@ -19,27 +21,40 @@ const EditPostPopup = ({ navigation }) => {
       >
         <View style={styles.transparentSection} />
       </TouchableWithoutFeedback>
-      <View style={styles.modalView}>
+      <SafeAreaView style={styles.modalView}>
         <View style={styles.handleView}>
           <View style={styles.handle} />
         </View>
-        <TouchableOpacity
-          onPress={() => {
-            deletePost();
-            navigation.goBack();
-          }}
-        >
-          <View style={styles.row}>
-            <View style={styles.rowIcon}>
-              <Icon name="star" size={20} color={colors.darkGray} solid />
+        <View style={styles.modalContent}>
+          {post.isGoal && isMyPost && (
+            <TouchableOpacity onPress={() => navigation.navigate('UpdatePost', { post })}>
+              <View style={styles.row}>
+                <View style={styles.rowIcon}>
+                  <Icon name="edit" size={20} color={colors.darkGray} solid />
+                </View>
+                <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Add an update</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            onPress={() => {
+              deletePost();
+              navigation.goBack();
+            }}
+          >
+            <View style={styles.row}>
+              <View style={styles.rowIcon}>
+                <Icon name="star" size={20} color={colors.darkGray} solid />
+              </View>
+              <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Delete {isComment ? 'Comment' : 'Post'}</Text>
             </View>
-            <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Delete Post</Text>
-          </View>
-        </TouchableOpacity>
-        <View style={{ paddingHorizontal: 20, paddingTop: 10 }}>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.modalFooter}>
           <GrayButton onPress={() => navigation.goBack()}>Close</GrayButton>
         </View>
-      </View>
+      </SafeAreaView>
     </View>
   );
 };
@@ -55,10 +70,13 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '100%',
-    height: 400,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    paddingBottom: 10,
   },
   handleView: {
     alignItems: 'center',
@@ -84,5 +102,13 @@ const styles = StyleSheet.create({
   rowText: {
     flexGrow: 1,
     paddingRight: 20,
+  },
+  modalContent: {
+    flexGrow: 1,
+    width: '100%',
+    paddingVertical: 15,
+  },
+  modalFooter: {
+    paddingHorizontal: 20,
   },
 });

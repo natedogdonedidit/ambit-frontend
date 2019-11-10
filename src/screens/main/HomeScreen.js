@@ -74,11 +74,19 @@ const HomeScreen = ({ navigation }) => {
         )}
       </ScrollView>
 
-      <TouchableOpacity onPress={() => navigation.navigate('NewPostModal', { userLoggedIn })}>
-        <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
-          <Icon name="pen" size={18} color="white" />
-        </View>
-      </TouchableOpacity>
+      <View style={styles.newPostButtonAbsolute}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => {
+            console.log('here');
+            navigation.navigate('NewPostModal', { userLoggedIn });
+          }}
+        >
+          <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
+            <Icon name="pen" size={18} color="white" />
+          </View>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -94,16 +102,22 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: colors.lightGray,
   },
-  newPostButton: {
+  newPostButtonAbsolute: {
     position: 'absolute',
     bottom: 15,
     right: 15,
+    backgroundColor: 'white',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+  },
+  newPostButton: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.purp,
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
   },
 });
 

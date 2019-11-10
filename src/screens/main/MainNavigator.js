@@ -20,6 +20,7 @@ import MessagesScreen from './MessagesScreen';
 import JobsScreen from './JobsScreen';
 import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
+import UpdateScreen from './UpdateScreen';
 import CommentScreen from './CommentScreen';
 import UpdatePostScreen from './UpdatePostScreen';
 import RequestsScreen from './RequestsScreen';
@@ -28,6 +29,7 @@ import CustomSearchScreen from './CustomSearchScreen';
 import StoryModal from './modals/StoryModal';
 import NewPostModal from './modals/NewPostModal';
 import SelectGoalModal from './modals/SelectGoalModal';
+import SelectGoalFieldModal from './modals/SelectGoalFieldModal';
 import RollModal from './modals/RollModal';
 import EditLocationModal from './modals/EditLocationModal';
 import EditLocationRadiusModal from './modals/EditLocationRadiusModal';
@@ -60,6 +62,9 @@ const HomeStack = createStackNavigator(
     Post: {
       screen: PostScreen,
     },
+    Update: {
+      screen: UpdateScreen,
+    },
     UpdatePost: {
       screen: UpdatePostScreen,
     },
@@ -87,6 +92,9 @@ const JobsStack = createStackNavigator(
     Post: {
       screen: PostScreen,
     },
+    Update: {
+      screen: UpdateScreen,
+    },
   },
   {
     initialRouteName: 'Jobs',
@@ -104,6 +112,9 @@ const PeopleStack = createStackNavigator(
     },
     Post: {
       screen: PostScreen,
+    },
+    Update: {
+      screen: UpdateScreen,
     },
   },
   {
@@ -123,6 +134,9 @@ const InboxStack = createStackNavigator(
     },
     Post: {
       screen: PostScreen,
+    },
+    Update: {
+      screen: UpdateScreen,
     },
   },
   {
@@ -250,6 +264,15 @@ const MainNavWithModal = createStackNavigator(
     },
     SelectGoalModal: {
       screen: SelectGoalModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      },
+    },
+    SelectGoalFieldModal: {
+      screen: SelectGoalFieldModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      },
     },
     RollModal: {
       screen: RollModal,

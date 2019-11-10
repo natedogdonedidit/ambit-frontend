@@ -12,9 +12,10 @@ import Comment from 'library/components/post/Comment';
 import Post from 'library/components/post/Post';
 import Update from 'library/components/post/Update';
 
-const PostScreen = ({ navigation }) => {
+const UpdateScreen = ({ navigation }) => {
   // PARAMS
   const postToQuery = navigation.getParam('post', null); // all the data from parent post down to updates
+  const updateInd = navigation.getParam('updateInd', 0);
 
   // CONSTANTS
 
@@ -28,53 +29,22 @@ const PostScreen = ({ navigation }) => {
   if (error) return <Error error={error} />;
   const currentTime = new Date();
   const post = data.singlePost || null;
-  // console.log(post);
+  const update = post ? post.updates[updateInd] : null;
 
   // CUSTOM FUNCTIONS
-  const renderPost = () => {
-    return (
-      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
-        <Post post={post} currentTime={currentTime} navigation={navigation} showDetails />
-      </TouchableOpacity>
-    );
-  };
-
-  const renderUpdates = () => {
-    if (post.updates.length < 1) return null;
-
+  const renderUpdate = () => {
     return (
       <>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            paddingVertical: 12,
-            paddingHorizontal: 15,
-            backgroundColor: 'white',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderBottomColor: colors.borderBlack,
-          }}
-        >
-          <Text style={defaultStyles.headerTitle}>Updates</Text>
-        </View>
-        {post.updates.map((update, i) => {
-          return (
-            <TouchableOpacity
-              key={update.id}
-              activeOpacity={1}
-              onPress={() => navigation.navigate('Update', { post, updateInd: i })}
-            >
-              <Update post={post} update={update} currentTime={currentTime} navigation={navigation} updateInd={i} isStandalone />
-            </TouchableOpacity>
-          );
-        })}
+        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+          <Post post={post} currentTime={currentTime} navigation={navigation} showLine hideButtons />
+        </TouchableOpacity>
+        <Update post={post} update={update} updateInd={updateInd} currentTime={currentTime} navigation={navigation} showDetails />
       </>
     );
   };
 
   const renderComments = () => {
-    // const comments = isUpdate ? post.updates[updateInd].comments : post.comments;
-    const { comments } = post;
+    const { comments } = update;
 
     if (comments.length < 1) {
       return (
@@ -114,7 +84,7 @@ const PostScreen = ({ navigation }) => {
         >
           <Text style={defaultStyles.headerTitle}>Comments</Text>
         </View>
-        {comments.map((comment, i) => {
+        {comments.map(comment => {
           if (!comment.parentComment) {
             if (comment.comments.length > 0) {
               return (
@@ -127,7 +97,6 @@ const PostScreen = ({ navigation }) => {
                       navigation={navigation}
                       currentTime={currentTime}
                       isSubComment
-                      // showLine={comment.comments.length - 1 !== k}
                     />
                   ))}
                 </View>
@@ -144,13 +113,12 @@ const PostScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
+      <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Update" />
       {loading ? (
         <Loader loading={loading} full={false} />
       ) : (
         <ScrollView style={styles.scrollView}>
-          {!loading && renderPost()}
-          {!loading && renderUpdates()}
+          {!loading && renderUpdate()}
           {!loading && <View style={styles.commentsView}>{renderComments()}</View>}
         </ScrollView>
       )}
@@ -171,8 +139,4 @@ const styles = StyleSheet.create({
   },
 });
 
-PostScreen.navigationOptions = {
-  title: 'Post',
-};
-
-export default PostScreen;
+export default UpdateScreen;

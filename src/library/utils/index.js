@@ -1,6 +1,9 @@
+import React from 'react';
 import { PermissionsAndroid } from 'react-native';
 import { differenceInSeconds, differenceInDays, differenceInHours } from 'date-fns';
 import { cloud_name } from 'library/config';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import colors from '../../styles/colors';
 
 export const monthToFloat = month => {
   if (month === 'Jan') return 0.01;
@@ -139,4 +142,135 @@ export const timeDifferenceGoal = (laterDate, earlierDate) => {
   // timeDiff = Math.round(timeDiff);
 
   return { timeRemaining, period };
+};
+
+export const pickFieldPrefix = (goal = '') => {
+  switch (goal) {
+    case '':
+      return null;
+    case 'Find investors':
+      return 'Market';
+    case 'Find freelancers':
+      return 'Niche';
+    case 'Find agencies':
+      return 'Niche';
+    case 'Find business partners':
+      return 'Industry';
+    case 'Find a mentor':
+      return 'Industry';
+    case 'Network':
+      return 'Industry';
+    case 'Get advice':
+      return null;
+    case 'Get feedback':
+      return null;
+    default:
+      return null;
+  }
+};
+
+export const pickFieldButtonText = (goal = '') => {
+  switch (goal) {
+    case '':
+      return null;
+    case 'Find investors':
+      return 'Select a market';
+    case 'Find freelancers':
+      return 'Select a niche';
+    case 'Find agencies':
+      return 'Select a niche';
+    case 'Find business partners':
+      return 'Select an industry';
+    case 'Find a mentor':
+      return 'Select an industry';
+    case 'Network':
+      return 'Select an industry';
+    case 'Get advice':
+      return null;
+    case 'Get feedback':
+      return null;
+    default:
+      return null;
+  }
+};
+
+export const getPrimaryColor = (goal = '') => {
+  switch (goal) {
+    case '':
+      return colors.darkGray;
+    case 'Find investors':
+      return colors.green;
+    case 'Find freelancers':
+      return colors.peach;
+    case 'Find agencies':
+      return colors.peach;
+    case 'Find business partners':
+      return colors.blue;
+    case 'Find a mentor':
+      return colors.blue;
+    case 'Network':
+      return colors.blue;
+    case 'Get advice':
+      return colors.blue;
+    case 'Get feedback':
+      return colors.blue;
+    default:
+      return colors.darkGray;
+  }
+};
+
+export const getBackgroundColor = (goal = '') => {
+  switch (goal) {
+    case '':
+      return colors.goalGray;
+    case 'Find investors':
+      return colors.goalGreen;
+    case 'Find freelancers':
+      return colors.goalPeach;
+    case 'Find agencies':
+      return colors.goalPeach;
+    case 'Find business partners':
+      return colors.goalBlue;
+    case 'Find a mentor':
+      return colors.goalBlue;
+    case 'Network':
+      return colors.goalBlue;
+    case 'Get advice':
+      return colors.goalBlue; // was purple
+    case 'Get feedback':
+      return colors.goalBlue; // was purple
+    default:
+      return colors.goalGray;
+  }
+};
+
+export const getIcon = (goal = '', size = 15) => {
+  switch (goal) {
+    case '':
+      return null;
+    //  money
+    case 'Find investors':
+      return <Icon name="comment-dollar" solid size={size} color={colors.green} />;
+    // help
+    case 'Find freelancers':
+      return <Icon name="briefcase" solid size={size} color={colors.peach} />;
+    case 'Find agencies':
+      return <Icon name="briefcase" solid size={size} color={colors.peach} />;
+    // network
+    case 'Find business partners':
+      return <Icon name="user-friends" solid size={size} color={colors.blue} />;
+    case 'Find a mentor':
+      return <Icon name="user-friends" solid size={size} color={colors.blue} />;
+    case 'Network':
+      return <Icon name="user-friends" solid size={size} color={colors.blue} />;
+    // answers
+    case 'Get advice':
+      return <Icon name="lightbulb" solid size={size} color={colors.purple} />;
+    case 'Get feedback':
+      return <Icon name="lightbulb" solid size={size} color={colors.purple} />;
+    case 'hashtag':
+      return <Icon name="hashtag" solid size={size} color={colors.darkGray} />;
+    default:
+      return null;
+  }
 };

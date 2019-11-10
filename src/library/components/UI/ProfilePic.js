@@ -28,8 +28,8 @@ const ProfilePic = ({
   const hasIntro = intro.length > 0;
 
   const whiteWidth = size + 2 * borderWidth;
-  const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
-  // const colorWidth = size + 4 * borderWidth;
+  // const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
+  const colorWidth = whiteWidth + 2 * 1.4 + 2 * extraBorder;
 
   const styles = StyleSheet.create({
     noBorder: {
@@ -59,8 +59,20 @@ const ProfilePic = ({
       width: '100%',
       height: '100%',
     },
-    outterCircle: {
+    introBorder: {
       backgroundColor: colors.purp,
+      justifyContent: 'center',
+      alignItems: 'center',
+
+      width: colorWidth,
+      height: colorWidth,
+
+      borderRadius: colorWidth / 2,
+      borderWidth: extraBorder,
+      borderColor: 'white',
+    },
+    pitchBorder: {
+      backgroundColor: colors.purple,
       justifyContent: 'center',
       alignItems: 'center',
 
@@ -90,18 +102,11 @@ const ProfilePic = ({
 
   if (hasPitch && !disableVideo) {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('StoryModal', { user, contentType: 'Pitch', pitch })}>
-        <View style={styles.outterCircle}>
-          <LinearGradient
-            start={{ x: 0.4, y: 0.4 }}
-            end={{ x: 1, y: 1 }}
-            colors={[colors.peach, colors.peachO]}
-            style={styles.linearGradient}
-          />
-
+      <TouchableOpacity onPress={() => navigation.navigate('StoryModal', { user, ccontentType: 'Pitch', pitch })}>
+        <View style={styles.pitchBorder}>
           <View style={styles.whiteBorder}>
             <Image
-              style={{ ...styles.profilePic }}
+              style={styles.profilePic}
               resizeMode="cover"
               source={{
                 uri: user.profilePic || profilePicExample,
@@ -116,8 +121,8 @@ const ProfilePic = ({
   if (hasIntro && !disableVideo) {
     return (
       <TouchableOpacity onPress={() => navigation.navigate('StoryModal', { user, contentType: 'Intro' })}>
-        <View style={styles.outterCircle}>
-          <View style={[styles.whiteBorder]}>
+        <View style={styles.introBorder}>
+          <View style={styles.whiteBorder}>
             <Image
               style={styles.profilePic}
               resizeMode="cover"

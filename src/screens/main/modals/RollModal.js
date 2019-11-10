@@ -22,7 +22,7 @@ const { width } = Dimensions.get('window');
 
 const RollModal = ({ navigation }) => {
   // make sure these params get passed in!!
-  const assetTypeRequested = navigation.getParam('assetType', 'All'); // All, Photos
+  const assetTypeRequested = navigation.getParam('assetType', 'All'); // All, Photos, Videos
   const handleMediaSelect = navigation.getParam('handleMediaSelect');
 
   const [assetType, setAssetType] = useState(assetTypeRequested === 'All' ? 'Photos' : assetTypeRequested);

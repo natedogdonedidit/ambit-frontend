@@ -12,13 +12,19 @@ const styles = StyleSheet.create({
   smallThinMute: {
     color: colors.darkGray,
     fontSize: small,
-    opacity: 0.8,
     fontFamily: 'SFProText-Light',
+    opacity: 0.9,
   },
   smallMute: {
     color: colors.darkGray,
     fontSize: small,
     opacity: 0.6,
+    fontFamily: 'SFProText-Regular',
+  },
+  smallMutey: {
+    color: colors.darkGray,
+    fontSize: small,
+    opacity: 0.8,
     fontFamily: 'SFProText-Regular',
   },
   smallThin: {
@@ -41,6 +47,12 @@ const styles = StyleSheet.create({
     fontSize: small,
     fontFamily: 'SFProText-Medium',
   },
+  // smallMediumMute: {
+  //   color: colors.darkGray,
+  //   fontSize: small,
+  //   fontFamily: 'SFProText-Light',
+  //   opacity: 0.9,
+  // },
   smallSemibold: {
     color: colors.darkGray,
     fontSize: small,
@@ -191,24 +203,33 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   // SHADOWS
-  shadowGoal: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+  // shadowGoal: {
+  //   shadowColor: '#000',
+  //   shadowOffset: {
+  //     width: 0,
+  //     height: 1,
+  //   },
+  //   shadowOpacity: 0.1,
+  //   shadowRadius: 2,
 
-    // elevation: 3,
-  },
+  //   // elevation: 3,
+  // },
   shadowButton: {
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  shadowGoal: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
     shadowRadius: 2,
   },
 

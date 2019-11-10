@@ -14,15 +14,13 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import Heart from 'library/components/UI/Heart';
 import Comment from 'library/components/UI/Comment';
 import Share from 'library/components/UI/Share';
+import Ellipsis from 'library/components/UI/Ellipsis';
 
 const Update = ({
   post,
   update,
   currentTime,
   navigation,
-  // setModalVisibleEditPost,
-  // setPostToEdit,
-  editable = false,
   showDetails = false,
   showLine = false,
   hideButtons = false,
@@ -137,32 +135,27 @@ const Update = ({
         ) : (
           !hideButtons && (
             <View style={styles.buttons}>
-              <View style={styles.button}>
-                <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
+              <View style={styles.buttonGroup}>
+                <View style={styles.button}>
+                  <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
+                </View>
+                <View style={styles.button}>
+                  <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.likesCount}</Text>
+                </View>
+                <View style={styles.button}>
+                  <Share onPress={() => null} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.sharesCount}</Text>
+                </View>
               </View>
-              <View style={styles.button}>
-                <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.likesCount}</Text>
-              </View>
-              <View style={styles.button}>
-                <Share onPress={() => null} />
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.sharesCount}</Text>
+              <View style={styles.buttonGroup}>
+                <Ellipsis onPress={() => null} />
               </View>
             </View>
           )
         )}
       </View>
-      {/* {isMyPost && editable && (
-        <View style={{ position: 'absolute', top: 30, right: 10 }}>
-          <Options
-            onPress={() => {
-              setPostToEdit({ id: post.id, owner: post.owner.id });
-              setModalVisibleEditPost(true);
-            }}
-          />
-        </View>
-      )} */}
     </View>
   );
 };
@@ -196,6 +189,10 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingBottom: 10,
   },
+  updateNumber: {
+    alignSelf: 'flex-start',
+    paddingBottom: 2,
+  },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -224,7 +221,11 @@ const styles = StyleSheet.create({
   },
   buttons: {
     flexDirection: 'row',
-    // paddingBottom: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  buttonGroup: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
   button: {

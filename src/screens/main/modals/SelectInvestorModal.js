@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
-import { investorList } from 'library/utils/lists';
+import { investmentMarkets } from 'library/utils/lists';
 
 const SelectInvestorModal = ({ navigation }) => {
   const saveInvestorFields = navigation.getParam('saveInvestorFields');
@@ -44,7 +44,7 @@ const SelectInvestorModal = ({ navigation }) => {
   const clearOut = () => setFieldsSelected([]);
 
   const renderList = () => {
-    return investorList.map(listItem => {
+    return investmentMarkets.map(listItem => {
       const isSelected = fieldsSelected.includes(listItem);
 
       return (

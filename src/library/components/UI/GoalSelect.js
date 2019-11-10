@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import { invest, hire, connect } from 'library/utils/lists';
+import { peopleGoals, answersGoals, hireGoals } from 'library/utils/lists';
 
 const GoalSelect = ({ goal, activeGoal, showIcon = true, fill = true, onPress }) => {
   let white = false;
@@ -13,21 +13,21 @@ const GoalSelect = ({ goal, activeGoal, showIcon = true, fill = true, onPress })
 
   const selectBackground = () => {
     if (white) return { backgroundColor: 'white', borderWidth: StyleSheet.hairlineWidth, borderColor: colors.borderBlack };
-    if (invest.includes(goal)) return { backgroundColor: colors.greenO };
-    if (hire.includes(goal)) return { backgroundColor: colors.blueO };
-    if (connect.includes(goal)) return { backgroundColor: colors.purpO };
+    if (peopleGoals.includes(goal)) return { backgroundColor: colors.greenO };
+    if (answersGoals.includes(goal)) return { backgroundColor: colors.blueO };
+    if (hireGoals.includes(goal)) return { backgroundColor: colors.purpO };
     return colors.lightGray;
   };
 
   const selectText = () => {
     if (white) {
-      if (invest.includes(goal)) return { color: colors.green, fontWeight: '300' };
-      if (hire.includes(goal)) return { color: colors.blue, fontWeight: '300' };
-      if (connect.includes(goal)) return { color: colors.purp, fontWeight: '300' };
+      if (peopleGoals.includes(goal)) return { color: colors.green, fontWeight: '300' };
+      if (answersGoals.includes(goal)) return { color: colors.blue, fontWeight: '300' };
+      if (hireGoals.includes(goal)) return { color: colors.purp, fontWeight: '300' };
     } else {
-      if (invest.includes(goal)) return { color: colors.green };
-      if (hire.includes(goal)) return { color: colors.blue };
-      if (connect.includes(goal)) return { color: colors.purp };
+      if (peopleGoals.includes(goal)) return { color: colors.green };
+      if (answersGoals.includes(goal)) return { color: colors.blue };
+      if (hireGoals.includes(goal)) return { color: colors.purp };
     }
 
     return null;
@@ -35,9 +35,12 @@ const GoalSelect = ({ goal, activeGoal, showIcon = true, fill = true, onPress })
 
   const selectIcon = () => {
     if (showIcon) {
-      if (invest.includes(goal)) return <Image style={styles.imageIcon} source={require('library/assets/images/invest.png')} />;
-      if (hire.includes(goal)) return <Icon name="briefcase" solid size={15} color={colors.blue} style={{ paddingRight: 8 }} />;
-      if (connect.includes(goal)) return <Image style={styles.imageIcon} source={require('library/assets/images/connect.png')} />;
+      if (peopleGoals.includes(goal))
+        return <Image style={styles.imageIcon} source={require('library/assets/images/invest.png')} />;
+      if (answersGoals.includes(goal))
+        return <Icon name="briefcase" solid size={15} color={colors.blue} style={{ paddingRight: 8 }} />;
+      if (hireGoals.includes(goal))
+        return <Image style={styles.imageIcon} source={require('library/assets/images/connect.png')} />;
     }
 
     return null;

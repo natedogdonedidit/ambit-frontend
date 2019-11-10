@@ -15,7 +15,6 @@ import TextButton from 'library/components/UI/TextButton';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Goal from 'library/components/UI/Goal';
-import GoalField from 'library/components/UI/GoalField';
 import Heart from 'library/components/UI/Heart';
 import Comment from 'library/components/UI/Comment';
 import Ellipsis from 'library/components/UI/Ellipsis';
@@ -92,40 +91,32 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
       </View>
       <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 10 }]}>
         <View style={styles.topRow}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
-            hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={defaultStyles.largeMedium} numberOfLines={1}>
+          <View style={styles.leftSide}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
+              hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
+            >
+              <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
                 {post.owner.name}
+                {'   '}
+                <Text style={{ ...defaultStyles.smallThinMute }}>
+                  <Icon name="map-marker-alt" solid size={10} color={colors.darkGray} style={{ opacity: 0.3 }} /> {post.location}
+                </Text>
               </Text>
-              <Icon name="circle" solid size={4} color={colors.darkGray} style={{ opacity: 0.6, paddingHorizontal: 6 }} />
-              <Text style={{ ...defaultStyles.smallThinMute }}>{post.location}</Text>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            <View>{post.isGoal && <Text style={defaultStyles.smallThinMute}>is looking to:</Text>}</View>
+          </View>
 
-          <Text style={defaultStyles.smallThinMute}>
-            {timeDiff} {period}
-          </Text>
+          <View style={styles.rightSide}>
+            <Text style={defaultStyles.smallThinMute}>
+              {timeDiff} {period}
+            </Text>
+          </View>
         </View>
-
-        <View style={styles.headlineRow}>
-          <Text style={defaultStyles.smallThinMute}>{post.owner.headline}</Text>
-          {/* {post.isGoal && <Text style={defaultStyles.smallThinMute}>I am looking to:</Text>} */}
-        </View>
-
         {post.isGoal && (
-          <View style={styles.goalView}>
-            <Text style={{ ...defaultStyles.smallThinMute, paddingBottom: 5, paddingLeft: 0 }}>I am looking to:</Text>
-
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ marginRight: 6 }}>
-                <Goal goal={post.goal} />
-              </View>
-              {/* {!!post.field && <GoalField goalField={post.field} />} */}
-            </View>
+          <View style={styles.goal}>
+            <Goal goal={post.goal} />
           </View>
         )}
 
@@ -226,23 +217,20 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    // paddingBottom: 1,
+    paddingBottom: 4,
   },
-  headlineRow: {
-    paddingBottom: 12,
+  leftSide: {},
+  rightSide: {
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
-  // topRowLeft: {},
-  // topRowRight: {
-  //   justifyContent: 'space-between',
-  //   alignItems: 'flex-end',
-  // },
-  goalView: {
+  goal: {
     alignSelf: 'flex-start',
-    paddingBottom: 12,
+    paddingTop: 8,
+    paddingBottom: 10,
   },
   content: {
-    paddingBottom: 12,
+    paddingBottom: 10,
   },
   media: {
     width: '100%',
@@ -250,7 +238,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
-    marginBottom: 12,
+    marginBottom: 10,
     overflow: 'hidden',
   },
   tags: {

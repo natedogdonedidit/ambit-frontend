@@ -295,15 +295,13 @@ const CommentScreen = ({ navigation }) => {
     }
 
     // if showing an update
-    return (
-      <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} lastOne={updateInd} hideButtons showLastLine />
-    );
+    return <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} updateInd={updateInd} hideButtons />;
   };
 
   const renderComments = () => {
     // if the clicked comment is a stand-alone comment
     if (!hasParentComment) {
-      return <Comment comment={clicked} navigation={navigation} currentTime={currentTime} hideButtons />;
+      return <Comment comment={clicked} navigation={navigation} currentTime={currentTime} hideButtons hideTopMargin />;
     }
 
     // // if the clicked comment is a a sub-comment, show all comments
@@ -381,7 +379,7 @@ const CommentScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <HeaderWhite handleLeft={navigation.goBack} handleRight={handleSubmit} textLeft="Back" textRight="Reply" title="Comment" />
       {loading ? (
-        <Loader loading={loading} />
+        <Loader loading={loading} full={false} />
       ) : (
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
           <View style={{ flex: 1 }}>
@@ -391,7 +389,7 @@ const CommentScreen = ({ navigation }) => {
 
               <View style={styles.commentInput}>
                 <View style={[styles.leftColumn, isComment && styles.leftColumnSub]}>
-                  <ProfilePic size={30} navigation={navigation} user={userLoggedIn} intro={userLoggedIn.intro} />
+                  <ProfilePic size={30} navigation={navigation} user={userLoggedIn} disableVideo />
                 </View>
                 <View style={styles.rightColumn}>
                   <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
