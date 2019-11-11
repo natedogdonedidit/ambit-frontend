@@ -83,7 +83,7 @@ const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefr
       return (
         <View
           key={i}
-          style={[{ ...styles.dot }, slideIndex === i ? { backgroundColor: colors.purp } : { backgroundColor: colors.darkGrayO }]}
+          style={[{ ...styles.dot }, slideIndex === i ? { backgroundColor: colors.purp } : { backgroundColor: colors.iconGray }]}
         />
       );
     });
@@ -108,7 +108,7 @@ const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefr
 
           <View style={styles.xOut}>
             <TouchableOpacity onPress={() => setShowTasks(false)}>
-              <Icon name="times" size={15} color={colors.darkGrayO} />
+              <Icon name="times" size={15} color={colors.iconGray} />
             </TouchableOpacity>
           </View>
         </View>
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 14,
     fontFamily: 'SFProDisplay-Light',
-    color: colors.darkGray,
+    color: 'black',
     // marginTop: 2,
     width: '100%',
     textAlign: 'center',

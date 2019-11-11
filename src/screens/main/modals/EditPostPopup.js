@@ -30,7 +30,7 @@ const EditPostPopup = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate('UpdatePost', { post })}>
               <View style={styles.row}>
                 <View style={styles.rowIcon}>
-                  <Icon name="edit" size={20} color={colors.darkGray} solid />
+                  <Icon name="edit" size={20} color={colors.iconGray} solid />
                 </View>
                 <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Add an update</Text>
               </View>
@@ -44,7 +44,7 @@ const EditPostPopup = ({ navigation }) => {
           >
             <View style={styles.row}>
               <View style={styles.rowIcon}>
-                <Icon name="star" size={20} color={colors.darkGray} solid />
+                <Icon name="star" size={20} color={colors.iconGray} solid />
               </View>
               <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Delete {isComment ? 'Comment' : 'Post'}</Text>
             </View>
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.darkGray,
+    backgroundColor: colors.darkGray1,
     marginTop: 8,
   },
   row: {

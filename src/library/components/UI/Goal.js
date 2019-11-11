@@ -9,37 +9,6 @@ import { moneyGoals, helpGoals, networkGoals, answersGoals, hireGoals } from 'li
 import { getPrimaryColor, getBackgroundColor, getIcon } from 'library/utils';
 
 const Goal = ({ goal, onPress }) => {
-  // const selectBackgroundColor = () => {
-  //   // if (moneyGoals.includes(goal)) return { backgroundColor: colors.goalGreen };
-  //   if (helpGoals.includes(goal)) return { backgroundColor: colors.goalPeach };
-  //   if (networkGoals.includes(goal)) return { backgroundColor: colors.goalBlue };
-  //   if (answersGoals.includes(goal)) return { backgroundColor: colors.goalPurp };
-  //   // if (hireGoals.includes(goal)) return { backgroundColor: colors.goalPurp };
-  //   return colors.lightGray;
-  // };
-
-  // const selectText = () => {
-  //   // if (moneyGoals.includes(goal)) return { color: colors.green };
-  //   if (helpGoals.includes(goal)) return { color: colors.peach };
-  //   if (networkGoals.includes(goal)) return { color: colors.blue };
-  //   if (answersGoals.includes(goal)) return { color: colors.darkPurp };
-  //   // if (hireGoals.includes(goal)) return { color: colors.darkPurp };
-
-  //   return null;
-  // };
-
-  // const selectIcon = () => {
-  //   if (moneyGoals.includes(goal)) return <Image style={styles.imageIcon} source={require('library/assets/images/invest.png')} />;
-  //   if (helpGoals.includes(goal))
-  //     return <Icon name="briefcase" solid size={15} color={colors.peach} style={{ paddingRight: 8 }} />;
-  //   if (networkGoals.includes(goal))
-  //     return <Icon name="user-friends" solid size={15} color={colors.blue} style={{ paddingRight: 8 }} />;
-  //   if (answersGoals.includes(goal))
-  //     return <Icon name="lightbulb" solid size={15} color={colors.darkPurp} style={{ paddingRight: 8 }} />;
-  //   // if (hireGoals.includes(goal))
-  //   //   return <Icon name="briefcase" solid size={15} color={colors.darkPurp} style={{ paddingRight: 8 }} />;
-  // };
-
   return (
     // solid w/ white text
     // <TouchableOpacity onPress={onPress} activeOpacity={0.6}>

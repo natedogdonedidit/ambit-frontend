@@ -18,7 +18,7 @@ const EditPostModal = ({ handleDeletePost }) => {
         <TouchableOpacity onPress={() => null}>
           <View style={styles.settingRow}>
             <View style={styles.settingIcon}>
-              <Icon name="edit" solid size={18} color={colors.darkGray} style={{ opacity: 0.3 }} />
+              <Icon name="edit" solid size={18} color={colors.iconGray} />
             </View>
             <View style={styles.settingText}>
               <Text style={defaultStyles.hugeLight}>Add an Update</Text>
@@ -28,7 +28,7 @@ const EditPostModal = ({ handleDeletePost }) => {
         <TouchableOpacity onPress={() => handleDeletePost()}>
           <View style={styles.settingRow}>
             <View style={styles.settingIcon}>
-              <Icon name="trash-alt" solid size={18} color={colors.darkGray} style={{ opacity: 0.3 }} />
+              <Icon name="trash-alt" solid size={18} color={colors.iconGray} />
             </View>
             <View style={styles.settingText}>
               <Text style={{ ...defaultStyles.hugeLight }}>Delete Post</Text>
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.darkGray,
+    backgroundColor: colors.darkGray1,
     marginTop: 8,
   },
   settingRow: {

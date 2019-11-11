@@ -97,28 +97,32 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
             onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
             hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
               <Text style={defaultStyles.largeMedium} numberOfLines={1}>
                 {post.owner.name}
               </Text>
-              <Icon name="circle" solid size={4} color={colors.darkGray} style={{ opacity: 0.6, paddingHorizontal: 6 }} />
-              <Text style={{ ...defaultStyles.smallThinMute }}>{post.location}</Text>
+              <Icon
+                name="circle"
+                solid
+                size={3}
+                color={colors.blueGray}
+                style={{ paddingHorizontal: 7, opacity: 0.8, alignSelf: 'center' }}
+              />
+              <Text style={{ ...defaultStyles.smallMute, paddingBottom: 2 }}>{post.location}</Text>
             </View>
           </TouchableOpacity>
-
-          <Text style={defaultStyles.smallThinMute}>
+          <Text style={defaultStyles.smallMute}>
             {timeDiff} {period}
           </Text>
         </View>
 
         <View style={styles.headlineRow}>
-          <Text style={defaultStyles.smallThinMute}>{post.owner.headline}</Text>
-          {/* {post.isGoal && <Text style={defaultStyles.smallThinMute}>I am looking to:</Text>} */}
+          <Text style={defaultStyles.smallMute}>{post.owner.headline}</Text>
         </View>
 
         {post.isGoal && (
           <View style={styles.goalView}>
-            <Text style={{ ...defaultStyles.smallThinMute, paddingBottom: 5, paddingLeft: 0 }}>I am looking to:</Text>
+            <Text style={{ ...defaultStyles.smallMute, paddingBottom: 5, paddingLeft: 0 }}>I am looking to:</Text>
 
             <View style={{ flexDirection: 'row' }}>
               <View style={{ marginRight: 6 }}>
@@ -137,16 +141,16 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
         {showDetails ? (
           <>
             <View style={styles.date}>
-              <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{formatedDate}</Text>
+              <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{formatedDate}</Text>
               {/* <TextButton onPress={() => null}>Tags</TextButton> */}
             </View>
             <View style={styles.likesRow}>
               <View style={{ flexDirection: 'row' }}>
                 {!!post.likesCount && (
-                  <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{post.likesCount} Likes</Text>
+                  <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{post.likesCount} Likes</Text>
                 )}
                 {!!post.sharesCount && (
-                  <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{post.sharesCount} Shares</Text>
+                  <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{post.sharesCount} Shares</Text>
                 )}
               </View>
               <View style={{ flexDirection: 'row' }}>
@@ -154,7 +158,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                   <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
                 </View>
                 <View style={{ paddingLeft: 30 }}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                 </View>
                 <View style={{ paddingLeft: 30 }}>
                   <Share onPress={() => null} />
@@ -171,7 +175,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
                 </View>
                 <View style={styles.button}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
                 </View>
                 <View style={styles.button}>
@@ -209,8 +213,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 1.5,
     borderBottomLeftRadius: 1.5,
     borderBottomRightRadius: 1.5,
-    backgroundColor: 'black',
-    opacity: 0.12,
+    backgroundColor: colors.systemGray5,
   },
   leftColumn: {
     alignItems: 'center',
@@ -232,14 +235,10 @@ const styles = StyleSheet.create({
   headlineRow: {
     paddingBottom: 12,
   },
-  // topRowLeft: {},
-  // topRowRight: {
-  //   justifyContent: 'space-between',
-  //   alignItems: 'flex-end',
-  // },
   goalView: {
+    width: '100%',
     alignSelf: 'flex-start',
-    paddingBottom: 12,
+    paddingBottom: 6,
   },
   content: {
     paddingBottom: 12,
@@ -273,22 +272,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  countdown: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 6,
-    paddingBottom: 6,
-    // marginBottom: 10,
-
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.borderBlack,
-  },
   date: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 10,
-    paddingBottom: 5,
+    paddingBottom: 6,
     paddingRight: 15,
 
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -298,8 +286,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 6,
+    paddingBottom: 6,
     paddingRight: 15,
   },
 });

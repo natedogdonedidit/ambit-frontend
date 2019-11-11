@@ -71,7 +71,7 @@ const CustomSearchScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <Text style={{ ...defaultStyles.largeLight, flex: 1 }}>Show goals</Text>
           <Switch
-            trackColor={{ false: colors.darkGrayO, true: colors.purp }}
+            trackColor={{ false: colors.iconGray, true: colors.purp }}
             onValueChange={val => setSwitch1(val)}
             value={switch1}
           />
@@ -79,7 +79,7 @@ const CustomSearchScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <Text style={{ ...defaultStyles.largeLight, flex: 1 }}>Show posts</Text>
           <Switch
-            trackColor={{ false: colors.darkGrayO, true: colors.purp }}
+            trackColor={{ false: colors.iconGray, true: colors.purp }}
             onValueChange={val => setSwitch2(val)}
             value={switch2}
           />
@@ -87,7 +87,7 @@ const CustomSearchScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <Text style={{ ...defaultStyles.largeLight, flex: 1 }}>Show meeting updates</Text>
           <Switch
-            trackColor={{ false: colors.darkGrayO, true: colors.purp }}
+            trackColor={{ false: colors.iconGray, true: colors.purp }}
             onValueChange={val => setSwitch3(val)}
             value={switch3}
           />
@@ -95,7 +95,7 @@ const CustomSearchScreen = ({ navigation }) => {
         <View style={styles.switchRow}>
           <Text style={{ ...defaultStyles.largeLight, flex: 1 }}>Show new connections</Text>
           <Switch
-            trackColor={{ false: colors.darkGrayO, true: colors.purp }}
+            trackColor={{ false: colors.iconGray, true: colors.purp }}
             onValueChange={val => setSwitch4(val)}
             value={switch4}
           />

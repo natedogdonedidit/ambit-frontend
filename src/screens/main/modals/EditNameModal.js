@@ -346,7 +346,7 @@ const EditNameModal = ({ navigation }) => {
                   ) : (
                     <Text style={{ ...defaultStyles.defaultMute }}>Select your location</Text>
                   )}
-                  {/* <Icon name="angle-right" size={15} color={colors.darkGray} style={{}} /> */}
+                  {/* <Icon name="angle-right" size={15} color={colors.iconGray} style={{}} /> */}
                 </TouchableOpacity>
               </View>
             </View>
@@ -378,7 +378,7 @@ const EditNameModal = ({ navigation }) => {
                 autoCompleteType="off"
               />
               <View style={{ height: '100%', justifyContent: 'center' }}>
-                <Icon name="plus" size={15} color={colors.darkGray} style={{ paddingRight: 5 }} />
+                <Icon name="plus" size={15} color={colors.iconGray} style={{ paddingRight: 5 }} />
               </View>
             </View>
             <View style={{ ...styles.rowMultiline, borderBottomWidth: 0.2, borderBottomColor: colors.borderBlack }}>
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     width: '100%',
     paddingBottom: 15,
-    color: colors.darkGray,
+    color: 'black',
   },
   row: {
     flexDirection: 'row',

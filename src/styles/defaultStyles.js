@@ -3,194 +3,180 @@ import { StyleSheet } from 'react-native';
 import colors from 'styles/colors';
 
 const small = 12;
-const reg = 14;
-const large = 16;
+const reg = 13;
+const large = 15;
 const huge = 18;
 
 const styles = StyleSheet.create({
   // SMALL
-  smallThinMute: {
-    color: colors.darkGray,
+  smallMute: {
+    color: colors.blueGray,
     fontSize: small,
     fontFamily: 'SFProText-Light',
-    opacity: 0.9,
-  },
-  smallMute: {
-    color: colors.darkGray,
-    fontSize: small,
-    opacity: 0.6,
-    fontFamily: 'SFProText-Regular',
-  },
-  smallMutey: {
-    color: colors.darkGray,
-    fontSize: small,
-    opacity: 0.8,
-    fontFamily: 'SFProText-Regular',
   },
   smallThin: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: small,
     fontFamily: 'SFProText-Thin',
   },
   smallLight: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: small,
     fontFamily: 'SFProText-Light',
   },
   smallRegular: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: small,
     fontFamily: 'SFProText-Regular',
   },
   smallMedium: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: small,
     fontFamily: 'SFProText-Medium',
   },
-  // smallMediumMute: {
-  //   color: colors.darkGray,
-  //   fontSize: small,
-  //   fontFamily: 'SFProText-Light',
-  //   opacity: 0.9,
-  // },
   smallSemibold: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: small,
     fontFamily: 'SFProText-Semibold',
   },
   smallBold: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: small,
     fontFamily: 'SFProText-Bold',
   },
 
   // DEFAULT
   defaultItalic: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-LightItalic',
   },
   defaultMediumItalic: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-MediumItalic',
   },
   defaultMute: {
-    color: colors.darkGray,
+    color: colors.blueGray,
     fontSize: reg,
-    opacity: 0.6,
     fontFamily: 'SFProText-Light',
   },
+  defaultRegularMute: {
+    color: colors.blueGray,
+    fontSize: reg,
+    fontFamily: 'SFProText-Regular',
+  },
   defaultThin: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-Thin',
   },
   defaultText: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-Light',
+    lineHeight: 17,
   },
   defaultRegular: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-Regular',
   },
   defaultMedium: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-Medium',
   },
   defaultSemibold: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-Semibold',
   },
   defaultBold: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-Bold',
   },
   // LARGE, 15px
   largeThin: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: large,
     fontFamily: 'SFProText-Thin',
   },
   largeLight: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: large,
     fontFamily: 'SFProText-Light',
   },
   largeRegular: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: large,
     fontFamily: 'SFProText-Regular',
   },
   largeMedium: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: large,
     fontFamily: 'SFProText-Medium',
   },
   largeSemibold: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: large,
     fontFamily: 'SFProText-Semibold',
   },
   largeBold: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: large,
     fontFamily: 'SFProText-Bold',
   },
   largeHeavy: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: large,
     fontFamily: 'SFProText-Heavy',
   },
   largeDisplay: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: large,
     fontFamily: 'SFProDisplay-Light',
   },
   // HUGE, 17px
   hugeThin: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProText-Thin',
   },
   hugeLight: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProText-Light',
   },
   hugeRegular: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProText-Regular',
   },
   hugeMedium: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProText-Medium',
   },
   hugeMediumDisplay: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProDisplay-Medium',
   },
   hugeSemibold: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProText-Semibold',
   },
   hugeBold: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProText-Bold',
   },
 
   headerTitle: {
-    color: colors.darkGray,
+    color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProText-Bold',
   },

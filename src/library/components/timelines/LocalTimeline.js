@@ -68,11 +68,11 @@ const LocalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefre
     <>
       <View style={styles.locationSelect}>
         <View style={styles.leftColumn}>
-          <Icon name="map-marker-alt" size={15} color={colors.darkGray} style={{ opacity: 0.3 }} />
+          <Icon name="map-marker-alt" size={15} color={colors.iconGray} style={{ opacity: 0.3 }} />
         </View>
         <View style={styles.rightColumn}>
           <Text style={defaultStyles.defaultMedium}>{location}</Text>
-          <Text style={defaultStyles.smallThinMute}>within {radius} mile radius</Text>
+          <Text style={defaultStyles.smallMute}>within {radius} mile radius</Text>
         </View>
         <View style={styles.editButton}>
           <TextButton

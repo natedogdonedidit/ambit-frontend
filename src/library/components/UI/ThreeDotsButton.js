@@ -11,7 +11,7 @@ const ThreeDotsButton = ({ onPress, buttonStyle }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
       <View style={{ ...styles.button, ...buttonStyle }}>
-        <Icon name="ellipsis-h" size={15} color={colors.darkGray} style={{ opacity: 0.7 }} />
+        <Icon name="ellipsis-h" size={15} color={colors.iconDark} />
       </View>
     </TouchableOpacity>
   );

@@ -14,7 +14,9 @@ import {
 } from 'react-native';
 import CameraRoll from '@react-native-community/cameraroll';
 import { requestCameraRollPermission } from 'library/utils';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
+import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
@@ -24,6 +26,7 @@ const RollModal = ({ navigation }) => {
   // make sure these params get passed in!!
   const assetTypeRequested = navigation.getParam('assetType', 'All'); // All, Photos, Videos
   const handleMediaSelect = navigation.getParam('handleMediaSelect');
+  const selected = navigation.getParam('selected', []);
 
   const [assetType, setAssetType] = useState(assetTypeRequested === 'All' ? 'Photos' : assetTypeRequested);
   const [cameraRoll, setCameraRoll] = useState([]);
@@ -87,13 +90,34 @@ const RollModal = ({ navigation }) => {
         numColumns={3}
         data={cameraRoll}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.picView}>
-            <TouchableOpacity onPress={() => handleSelect(item.uri, item.type)}>
-              <Image style={styles.pic} resizeMode="cover" source={{ uri: item.uri }} />
-            </TouchableOpacity>
-          </View>
-        )}
+        renderItem={({ item }) => {
+          const isSelected = selected.includes(item.uri);
+          return (
+            <View style={styles.picView}>
+              <TouchableOpacity onPress={() => handleSelect(item.uri, item.type)}>
+                <Image style={styles.pic} resizeMode="cover" source={{ uri: item.uri }} />
+                {isSelected && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 1,
+                      right: 1,
+                      left: 1,
+                      bottom: 1,
+                      backgroundColor: 'rgba(0,0,0,0.3)',
+                      borderWidth: 4,
+                      borderColor: colors.brightGreen,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Icon name="check-circle" solid size={30} color={colors.brightGreen} />
+                  </View>
+                )}
+              </TouchableOpacity>
+            </View>
+          );
+        }}
       />
     );
   };

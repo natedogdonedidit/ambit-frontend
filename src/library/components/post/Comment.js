@@ -106,8 +106,8 @@ const Comment = ({
               <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
                 {comment.owner.name}
                 {'   '}
-                <Text style={{ ...defaultStyles.smallThinMute }}>
-                  <Icon name="map-marker-alt" solid size={10} color={colors.darkGray} style={{ opacity: 0.3 }} />{' '}
+                <Text style={{ ...defaultStyles.smallMute }}>
+                  <Icon name="map-marker-alt" solid size={10} color={colors.iconGray} style={{ opacity: 0.3 }} />{' '}
                   {comment.owner.location}
                 </Text>
               </Text>
@@ -115,7 +115,7 @@ const Comment = ({
           </View>
 
           <View style={styles.rightSide}>
-            <Text style={defaultStyles.smallThinMute}>
+            <Text style={defaultStyles.smallMute}>
               {timeDiff} {period}
             </Text>
           </View>
@@ -135,7 +135,7 @@ const Comment = ({
                 <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount}</Text>
               </View>
               <View style={styles.button}>
-                <Heart color={comment.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                <Heart color={comment.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                 <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.likesCount}</Text>
               </View>
             </View>

@@ -16,16 +16,10 @@ const OnboardingScreen3 = props => {
         <Text>Onboarding #3</Text>
 
         <View style={styles.nextBack}>
-          <ButtonDefault
-            buttonStyle={styles.buttonStyle}
-            onPress={() => navigation.navigate('Onboarding2')}
-          >
+          <ButtonDefault buttonStyle={styles.buttonStyle} onPress={() => navigation.navigate('Onboarding2')}>
             Back
           </ButtonDefault>
-          <ButtonDefault
-            buttonStyle={styles.buttonStyle}
-            onPress={() => navigation.navigate('Main')}
-          >
+          <ButtonDefault buttonStyle={styles.buttonStyle} onPress={() => navigation.navigate('Main')}>
             Let's Go!
           </ButtonDefault>
         </View>
@@ -56,7 +50,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: colors.darkGray,
+    borderColor: colors.darkGray1,
     margin: 5,
   },
   circleFilled: {
@@ -64,8 +58,8 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: colors.darkGray,
-    backgroundColor: colors.darkGray,
+    borderColor: colors.darkGray1,
+    backgroundColor: colors.darkGray1,
     margin: 5,
   },
   nextBack: {

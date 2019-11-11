@@ -55,12 +55,11 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   tabText: {
-    ...defaultStyles.defaultSemibold,
-    color: 'black',
-    opacity: 0.4,
+    ...defaultStyles.largeMedium,
+    color: colors.blueGray,
   },
   tabSelectedText: {
-    ...defaultStyles.defaultBold,
+    ...defaultStyles.largeMedium,
     color: colors.purp,
   },
 });

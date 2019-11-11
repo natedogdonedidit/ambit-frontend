@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: colors.darkGray,
+    borderColor: colors.darkGray1,
     margin: 5,
   },
   circleFilled: {
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: colors.darkGray,
-    backgroundColor: colors.darkGray,
+    borderColor: colors.darkGray1,
+    backgroundColor: colors.darkGray1,
     margin: 5,
   },
 });

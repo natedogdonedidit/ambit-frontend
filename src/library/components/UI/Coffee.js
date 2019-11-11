@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 
-const Coffee = ({ onPress, size = 13, color = colors.darkGrayO }) => {
+const Coffee = ({ onPress, size = 13, color = colors.iconGray }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
       <Icon name="coffee" solid size={size} color={color} />

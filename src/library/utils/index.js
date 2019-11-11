@@ -197,7 +197,7 @@ export const pickFieldButtonText = (goal = '') => {
 export const getPrimaryColor = (goal = '') => {
   switch (goal) {
     case '':
-      return colors.darkGray;
+      return colors.darkGray1;
     case 'Find investors':
       return colors.green;
     case 'Find freelancers':
@@ -215,14 +215,14 @@ export const getPrimaryColor = (goal = '') => {
     case 'Get feedback':
       return colors.blue;
     default:
-      return colors.darkGray;
+      return colors.darkGray1;
   }
 };
 
 export const getBackgroundColor = (goal = '') => {
   switch (goal) {
     case '':
-      return colors.goalGray;
+      return colors.systemGray3;
     case 'Find investors':
       return colors.goalGreen;
     case 'Find freelancers':
@@ -240,7 +240,7 @@ export const getBackgroundColor = (goal = '') => {
     case 'Get feedback':
       return colors.goalBlue; // was purple
     default:
-      return colors.goalGray;
+      return colors.systemGray3;
   }
 };
 
@@ -269,7 +269,7 @@ export const getIcon = (goal = '', size = 15) => {
     case 'Get feedback':
       return <Icon name="lightbulb" solid size={size} color={colors.purple} />;
     case 'hashtag':
-      return <Icon name="hashtag" solid size={size} color={colors.darkGray} />;
+      return <Icon name="hashtag" solid size={size} color={colors.iconGray} />;
     default:
       return null;
   }

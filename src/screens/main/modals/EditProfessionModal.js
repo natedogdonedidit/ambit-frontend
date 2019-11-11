@@ -102,7 +102,7 @@ const EditProfessionModal = ({ navigation }) => {
                 ) : (
                   <Text style={{ ...defaultStyles.defaultMute }}>Select your profession</Text>
                 )}
-                <Icon name="angle-down" size={15} color={colors.darkGray} style={{}} />
+                <Icon name="angle-down" size={15} color={colors.darkGray1} style={{}} />
               </TouchableOpacity>
             </View>
           </View>
@@ -117,7 +117,7 @@ const EditProfessionModal = ({ navigation }) => {
                 ) : (
                   <Text style={{ ...defaultStyles.defaultMute }}>Select your industry</Text>
                 )}
-                <Icon name="angle-down" size={15} color={colors.darkGray} style={{}} />
+                <Icon name="angle-down" size={15} color={colors.darkGray1} style={{}} />
               </TouchableOpacity>
             </View>
           </View>

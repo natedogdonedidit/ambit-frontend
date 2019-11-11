@@ -168,7 +168,7 @@ const ProfileComponent = ({
           alignItems: 'center',
           width: '100%',
           height: HEADER_HEIGHT + insets.top,
-          backgroundColor: colors.darkGray,
+          backgroundColor: colors.darkGray2,
           paddingTop: insets.top,
           opacity: scrollY.interpolate({
             inputRange: [0, 100],
@@ -208,11 +208,11 @@ const ProfileComponent = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.lightGray,
   },
   scrollView: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: colors.lightGray,
+    // backgroundColor: colors.lightGray,
   },
 });
 

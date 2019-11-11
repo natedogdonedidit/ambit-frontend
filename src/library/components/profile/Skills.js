@@ -62,7 +62,7 @@ const Skills = ({ navigation, skills, setSkills, height = 44, editable = false }
             }}
           >
             <View style={styles.editButton}>
-              <Icon name="dots-horizontal" size={25} color={colors.darkGray} />
+              <Icon name="dots-horizontal" size={25} color={colors.iconGray} />
             </View>
           </TouchableOpacity>
         )}

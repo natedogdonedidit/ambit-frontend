@@ -93,7 +93,7 @@ const Update = ({
           </View>
 
           <View style={styles.rightSide}>
-            <Text style={defaultStyles.smallThinMute}>
+            <Text style={defaultStyles.smallMute}>
               {timeDiff} {period}
             </Text>
           </View>
@@ -124,7 +124,7 @@ const Update = ({
                   <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
                 </View>
                 <View style={{ paddingLeft: 25 }}>
-                  <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                 </View>
                 <View style={{ paddingLeft: 25 }}>
                   <Share onPress={() => null} />
@@ -141,7 +141,7 @@ const Update = ({
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
                 </View>
                 <View style={styles.button}>
-                  <Heart color={update.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.likesCount}</Text>
                 </View>
                 <View style={styles.button}>

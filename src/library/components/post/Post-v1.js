@@ -100,16 +100,16 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
               <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
                 {post.owner.name}
                 {'   '}
-                <Text style={{ ...defaultStyles.smallThinMute }}>
-                  <Icon name="map-marker-alt" solid size={10} color={colors.darkGray} style={{ opacity: 0.3 }} /> {post.location}
+                <Text style={{ ...defaultStyles.smallMute }}>
+                  <Icon name="map-marker-alt" solid size={10} color={colors.iconGray} style={{ opacity: 0.3 }} /> {post.location}
                 </Text>
               </Text>
             </TouchableOpacity>
-            <View>{post.isGoal && <Text style={defaultStyles.smallThinMute}>is looking to:</Text>}</View>
+            <View>{post.isGoal && <Text style={defaultStyles.smallMute}>is looking to:</Text>}</View>
           </View>
 
           <View style={styles.rightSide}>
-            <Text style={defaultStyles.smallThinMute}>
+            <Text style={defaultStyles.smallMute}>
               {timeDiff} {period}
             </Text>
           </View>
@@ -145,7 +145,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                   <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
                 </View>
                 <View style={{ paddingLeft: 30 }}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                 </View>
                 <View style={{ paddingLeft: 30 }}>
                   <Share onPress={() => null} />
@@ -162,7 +162,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
                 </View>
                 <View style={styles.button}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.darkGrayO} onPress={() => handleLike()} />
+                  <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
                 </View>
                 <View style={styles.button}>

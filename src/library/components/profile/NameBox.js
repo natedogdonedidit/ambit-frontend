@@ -47,10 +47,10 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   const renderStats = () => {
     return (
       <View style={styles.stats}>
-        <Text style={{ ...defaultStyles.defaultRegular, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>372</Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>372</Text>
         <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Followers</Text>
 
-        <Text style={{ ...defaultStyles.defaultRegular, marginRight: 5, color: colors.iosBlue }}>32</Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, color: colors.iosBlue }}>32</Text>
         <Text style={{ ...defaultStyles.defaultMute, marginRight: 20 }}>Connections</Text>
       </View>
     );
@@ -59,7 +59,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   return (
     <View style={{ ...styles.profileBox }}>
       <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
-      {user.headline && <Text style={{ ...defaultStyles.defaultText, ...styles.headline }}>{user.headline}</Text>}
+      {user.headline && <Text style={{ ...defaultStyles.defaultMute, ...styles.headline }}>{user.headline}</Text>}
       {renderStats()}
       <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>
       {(useOpenToBox || !!user.website) && (
@@ -119,6 +119,8 @@ const styles = StyleSheet.create({
     paddingTop: 50, // to make white space for Profile Pic & Buttons
     paddingHorizontal: 20,
     backgroundColor: 'white',
+    // borderTopLeftRadius: 10,
+    // borderTopRightRadius: 10,
   },
   profilePicView: {
     position: 'absolute',

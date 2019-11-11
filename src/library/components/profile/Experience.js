@@ -22,7 +22,7 @@ const Experience = ({ isMyProfile, experience, navigation }) => {
     return experienceSorted.map((exp, i) => (
       <View key={i} style={i === experience.length - 1 ? { ...styles.experienceNoBorder } : { ...styles.experience }}>
         <View style={styles.iconView}>
-          <IconF name="building" size={22} solid color={colors.darkGray} style={{ opacity: 0.5 }} />
+          <IconF name="building" size={22} solid color={colors.iconGray} />
         </View>
         <View style={styles.infoView}>
           <Text numberOfLines={2} ellipsizeMode="tail" style={{ ...defaultStyles.defaultMedium, ...styles.nameText }}>
@@ -44,7 +44,7 @@ const Experience = ({ isMyProfile, experience, navigation }) => {
               onPress={() => navigation.navigate('EditExperienceModal', { experience: exp })}
             >
               <View style={styles.editButton}>
-                <Icon name="dots-horizontal" size={25} color={colors.darkGray} />
+                <Icon name="dots-horizontal" size={25} color={colors.iconGray} />
               </View>
             </TouchableOpacity>
           </View>

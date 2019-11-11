@@ -15,7 +15,7 @@ const Tag = ({ onPress, children }) => {
 
 const styles = StyleSheet.create({
   text: {
-    color: colors.tagBlue,
+    color: colors.blue,
     fontSize: 11,
     fontWeight: '600',
     paddingRight: 6,

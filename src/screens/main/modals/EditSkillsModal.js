@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
     height: 40,
     paddingHorizontal: 20,
     alignItems: 'center',
-    borderBottomColor: colors.darkGray,
-    borderBottomWidth: 0.2,
+    borderBottomColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   closeButtonText: {
     width: 60,

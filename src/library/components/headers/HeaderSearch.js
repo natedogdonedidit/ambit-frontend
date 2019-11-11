@@ -16,12 +16,12 @@ const HeaderPic = ({ handleLeft, handleRight, textRight, title, user }) => {
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={() => null}>
         <View style={styles.searchBar}>
-          <Icon name="search" size={15} color={colors.darkGray} />
+          <Icon name="search" size={15} color={colors.iconGray} />
           <Text style={{ ...defaultStyles.defaultText, paddingLeft: 35 }}>Search for people</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.rightSide} onPres={() => null}>
-        <Icon name="cog" size={20} color={colors.darkGray} />
+        <Icon name="cog" size={20} color={colors.iconGray} />
       </TouchableOpacity>
     </SafeAreaView>
   );

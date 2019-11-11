@@ -32,7 +32,7 @@ const EditSkillsPopup = ({ navigation }) => {
         >
           <View style={styles.row}>
             <View style={styles.rowIcon}>
-              <Icon name="star" size={20} color={colors.darkGray} solid />
+              <Icon name="star" size={20} color={colors.iconGray} solid />
             </View>
             <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>I'm an expert</Text>
           </View>
@@ -45,7 +45,7 @@ const EditSkillsPopup = ({ navigation }) => {
         >
           <View style={styles.row}>
             <View style={styles.rowIcon}>
-              <Icon name="caret-up" size={20} color={colors.darkGray} />
+              <Icon name="caret-up" size={20} color={colors.iconGray} />
             </View>
             <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Move up</Text>
           </View>
@@ -58,7 +58,7 @@ const EditSkillsPopup = ({ navigation }) => {
         >
           <View style={styles.row}>
             <View style={styles.rowIcon}>
-              <Icon name="caret-down" size={20} color={colors.darkGray} />
+              <Icon name="caret-down" size={20} color={colors.iconGray} />
             </View>
             <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Move down</Text>
           </View>
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 4,
     borderRadius: 2,
-    backgroundColor: colors.darkGray,
+    backgroundColor: colors.darkGray1,
     marginTop: 8,
   },
   row: {

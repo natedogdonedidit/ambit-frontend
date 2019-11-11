@@ -32,7 +32,7 @@ const UserSlider = ({ users, navigation, handleUserChange, profileId }) => {
   return (
     <View style={{ ...styles.container }}>
       <View style={styles.note}>
-        <Text style={defaultStyles.smallThinMute}>Your suggested connections</Text>
+        <Text style={defaultStyles.smallMute}>Your suggested connections</Text>
       </View>
       <ScrollView contentContainerStyle={styles.users} horizontal showsHorizontalScrollIndicator={false}>
         {renderUsers()}

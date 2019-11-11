@@ -11,7 +11,7 @@ const MessageButton = ({ onPress, buttonStyle }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
       <View style={{ ...styles.button, ...buttonStyle }}>
-        <Icon name="envelope" solid size={16} color={colors.darkGray} />
+        <Icon name="envelope" solid size={16} color={colors.black} />
       </View>
     </TouchableOpacity>
   );

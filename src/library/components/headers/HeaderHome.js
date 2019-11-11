@@ -16,7 +16,7 @@ const HeaderHome = ({ navigation, handleMiddle, handleRight, user }) => {
         <Text style={{ ...defaultStyles.ambitLogo }}>Ambit</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.rightSide} onPress={handleRight}>
-        <Icon name="search" size={18} color={colors.darkGray} style={{ opacity: 0.6 }} />
+        <Icon name="search" size={18} color={colors.iconDark} />
       </TouchableOpacity>
     </SafeAreaView>
   );

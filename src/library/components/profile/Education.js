@@ -21,7 +21,7 @@ const Education = ({ isMyProfile, education, navigation }) => {
     return educationSorted.map((exp, i) => (
       <View key={i} style={i === education.length - 1 ? { ...styles.experienceNoBorder } : { ...styles.experience }}>
         <View style={styles.iconView}>
-          <IconF name="graduation-cap" size={20} color={colors.darkGray} style={{ opacity: 0.5 }} />
+          <IconF name="graduation-cap" size={20} color={colors.iconGray} />
         </View>
         <View style={styles.infoView}>
           <Text numberOfLines={2} ellipsizeMode="tail" style={{ ...defaultStyles.defaultMedium, ...styles.nameText }}>
@@ -35,7 +35,7 @@ const Education = ({ isMyProfile, education, navigation }) => {
             {exp.currentRole ? 'Present' : `${exp.endDateMonth}${exp.endDateMonth && ' '}${exp.endDateYear}`}
           </Text>
           <View style={styles.locationView}>
-            <Icon name="map-marker" size={15} color={colors.darkGray} style={{ opacity: 0.5 }} />
+            <Icon name="map-marker" size={15} color={colors.iconGray} />
             <Text style={{ ...defaultStyles.smallMute, ...styles.locationText }}>{exp.location}</Text>
           </View>
         </View>
@@ -46,7 +46,7 @@ const Education = ({ isMyProfile, education, navigation }) => {
               onPress={() => navigation.navigate('EditEducationModal', { education: exp })}
             >
               <View style={styles.editButton}>
-                <Icon name="dots-horizontal" size={25} color={colors.darkGray} />
+                <Icon name="dots-horizontal" size={25} color={colors.iconGray} />
               </View>
             </TouchableOpacity>
           </View>

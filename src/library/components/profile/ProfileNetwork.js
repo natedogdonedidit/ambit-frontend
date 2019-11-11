@@ -17,6 +17,7 @@ const ProfileNetwork = () => {
 const styles = StyleSheet.create({
   content: {
     height: 650,
+    backgroundColor: colors.lightGray,
   },
 });
 

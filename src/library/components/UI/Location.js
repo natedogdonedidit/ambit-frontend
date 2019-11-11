@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 const Location = ({ location }) => {
   return (
     <View style={styles.locationView}>
-      <Icon name="map-marker" size={15} color={colors.darkGray} style={{ opacity: 0.5 }} />
+      <Icon name="map-marker" size={15} color={colors.iconGray} />
       <Text numberOfLines={1} ellipsizeMode="tail" style={{ ...defaultStyles.smallMute, ...styles.locationText }}>
         {location}
       </Text>

@@ -29,7 +29,7 @@ const SelectGoalModal = ({ navigation }) => {
       return (
         <TouchableOpacity key={listItem} activeOpacity={0.8} onPress={() => handleGoalSelect(listItem)}>
           <View style={{ ...styles.itemRow, borderColor: getPrimaryColor(listItem) }}>
-            <Text style={{ ...defaultStyles.largeLight, color: getPrimaryColor(listItem) }}>{listItem}</Text>
+            <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(listItem) }}>{listItem}</Text>
             {isSelected && (
               <View style={{ height: 40, justifyContent: 'center', paddingRight: 10, position: 'absolute', top: 0, right: 0 }}>
                 <Icon name="check" size={20} color={colors.purp} />
@@ -46,46 +46,45 @@ const SelectGoalModal = ({ navigation }) => {
       <View style={styles.container}>
         <HeaderWhite handleLeft={navigation.goBack} handleRight={null} textLeft="Back" textRight="" title="" />
         <ScrollView style={{ flex: 1 }}>
-          <View style={{ width: '100%', paddingHorizontal: 40, paddingBottom: 20, alignItems: 'center' }}>
+          <View style={{ width: '100%', paddingHorizontal: 20, paddingBottom: 30 }}>
             {/* <Icon name="briefcase" size={40} color={colors.purp} /> */}
             <Text
               style={{
-                ...defaultStyles.hugeSemibold,
+                ...defaultStyles.hugeBold,
+                fontSize: 20,
                 // color: colors.purp,
-                textAlign: 'center',
+                // textAlign: 'center',
                 paddingTop: 20,
               }}
             >
-              What are you trying to accomplish?
+              What goal are you trying to accomplish?
             </Text>
 
-            <Text style={{ ...defaultStyles.defaultText, textAlign: 'center', paddingTop: 15, opacity: 0.8 }}>
-              Select a goal and Ambit will suggest
+            <Text style={{ ...defaultStyles.defaultMute, paddingTop: 15 }}>
+              Select a goal so Ambit can suggest people to help
             </Text>
-            <Text style={{ ...defaultStyles.defaultText, textAlign: 'center', paddingBottom: 0, opacity: 0.8 }}>
-              people to help
-            </Text>
+            {/* <Text style={{ ...defaultStyles.defaultMute, paddingBottom: 0 }}>people to help</Text> */}
           </View>
           {/* <View style={styles.sectionHeader}>
             <Icon name="comment-dollar" solid size={24} color={colors.green} style={{ paddingRight: 10 }} />
             {/* <Text style={{ ...defaultStyles.largeLight, color: colors.purp }}>Looking for people</Text>
           </View> */}
-          <View style={{ paddingHorizontal: 15 }}>{renderList(moneyGoals)}</View>
+          <View style={{ paddingHorizontal: 20 }}>{renderList(moneyGoals)}</View>
           {/* <View style={styles.sectionHeader}>
             <Icon name="briefcase" solid size={24} color={colors.peach} style={{ paddingRight: 10 }} />
-            <Text style={{ ...defaultStyles.largeLight, color: colors.darkGray }}>Hired help</Text>
+            <Text style={{ ...defaultStyles.largeLight, color: colors.iconGray }}>Hired help</Text>
           </View> */}
-          <View style={{ paddingHorizontal: 15 }}>{renderList(helpGoals)}</View>
+          <View style={{ paddingHorizontal: 20 }}>{renderList(helpGoals)}</View>
           {/* <View style={styles.sectionHeader}>
             <Icon name="user-friends" solid size={24} color={colors.blue} style={{ paddingRight: 10 }} />
-            <Text style={{ ...defaultStyles.largeLight, color: colors.darkGray }}>Networking</Text>
+            <Text style={{ ...defaultStyles.largeLight, color: colors.iconGray }}>Networking</Text>
           </View> */}
-          <View style={{ paddingHorizontal: 15 }}>{renderList(networkGoals)}</View>
+          <View style={{ paddingHorizontal: 20 }}>{renderList(networkGoals)}</View>
           {/* <View style={styles.sectionHeader}>
             <Icon name="lightbulb" solid size={24} color={colors.purple} style={{ paddingRight: 10 }} />
-            <Text style={{ ...defaultStyles.largeLight, color: colors.darkGray }}>Looking for answers</Text>
+            <Text style={{ ...defaultStyles.largeLight, color: colors.iconGray }}>Looking for answers</Text>
           </View> */}
-          <View style={{ paddingHorizontal: 15 }}>{renderList(answersGoals)}</View>
+          <View style={{ paddingHorizontal: 20 }}>{renderList(answersGoals)}</View>
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -110,6 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 20,
+    // backgroundColor: colors.grayButton,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
     marginBottom: 15,

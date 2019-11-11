@@ -127,7 +127,7 @@ const EditLocationModal = ({ navigation }) => {
           autoFocus
         />
         <TouchableOpacity onPress={() => setLocationInput('')} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
-          <Icon name="times-circle" solid size={15} color={colors.darkGray} />
+          <Icon name="times-circle" solid size={15} color={colors.iconGray} />
         </TouchableOpacity>
       </View>
       <View style={styles.grayBox} />
