@@ -101,5 +101,9 @@
 	<string>To select a profile picture from camera roll</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>To select a profile picture from camera roll</string>
+	<key>NSCameraUsageDescription</key>
+	<string>To take pictures</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To record videos</string>
 </dict>
 </plist>
