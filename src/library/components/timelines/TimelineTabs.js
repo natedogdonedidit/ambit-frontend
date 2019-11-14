@@ -7,7 +7,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const TimelineTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['Global', 'Local', 'Following', 'Software & Tech', 'New'];
+  const tabNames = ['Home', 'Local', 'Trending', 'Software & Tech', 'New'];
 
   const [widthAnim] = useState(new Animated.Value(0));
 
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   tabs: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
+    backgroundColor: colors.lightLightGray,
   },
   tab: {
     justifyContent: 'center',
@@ -85,11 +85,11 @@ const styles = StyleSheet.create({
     height: 42,
   },
   tabText: {
-    ...defaultStyles.largeMedium,
+    ...defaultStyles.defaultSemibold,
     color: colors.blueGray,
   },
   tabSelectedText: {
-    ...defaultStyles.largeMedium,
+    ...defaultStyles.defaultBold,
     color: colors.purp,
   },
 });

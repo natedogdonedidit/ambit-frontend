@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   input: {
     paddingVertical: 10,
     borderBottomColor: colors.borderBlack,
-    borderBottomWidth: 0.2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 10,
   },
   dateView: {
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingVertical: 10,
     borderBottomColor: colors.borderBlack,
-    borderBottomWidth: 0.2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 10,
   },
   switchRow: {

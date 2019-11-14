@@ -32,7 +32,7 @@ const EditPostPopup = ({ navigation }) => {
                 <View style={styles.rowIcon}>
                   <Icon name="edit" size={20} color={colors.iconGray} solid />
                 </View>
-                <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Add an update</Text>
+                <Text style={{ ...defaultStyles.hugeLight, ...styles.rowText }}>Add an update</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -44,9 +44,11 @@ const EditPostPopup = ({ navigation }) => {
           >
             <View style={styles.row}>
               <View style={styles.rowIcon}>
-                <Icon name="star" size={20} color={colors.iconGray} solid />
+                <Icon name="trash-alt" size={20} color={colors.peach} solid />
               </View>
-              <Text style={{ ...defaultStyles.largeThin, ...styles.rowText }}>Delete {isComment ? 'Comment' : 'Post'}</Text>
+              <Text style={{ ...defaultStyles.hugeLight, ...styles.rowText, color: colors.peach }}>
+                Delete {isComment ? 'Comment' : 'Post'}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -102,6 +104,7 @@ const styles = StyleSheet.create({
   rowText: {
     flexGrow: 1,
     paddingRight: 20,
+    color: colors.blueGray,
   },
   modalContent: {
     flexGrow: 1,
@@ -110,5 +113,6 @@ const styles = StyleSheet.create({
   },
   modalFooter: {
     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
 });

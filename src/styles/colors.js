@@ -6,38 +6,29 @@ const colors = {
   salmon: '#F27373',
   brightGreen: '#34C759',
 
-  // grays
+  // text black & gray
+  black: 'rgb(20,23,26)', // twitter
   // black: 'rgb(0,0,0)',
-  black: 'rgba(11, 24, 38, 1)',
+  // black: 'rgba(11, 24, 38, 1)',
+  blueGray: 'rgb(101,119,134)', // twitter
   // blueGray: '#455A64', // from Material
-  blueGray: 'rgba(16, 36, 56, 0.75)', // from Truebill website
-  gray100: 'rgba(60,60,67,1)',
-  gray90: 'rgba(60,60,67,0.9)',
-  gray80: 'rgba(60,60,67,0.8)',
-  gray60: 'rgba(60,60,67,0.6)',
-  gray30: 'rgba(60,60,67,0.3)',
+  // blueGray: 'rgba(16, 36, 56, 0.75)', // from Truebill website
+
+  // backgrounds used
   lightGray: 'rgba(239,239,244,1)', // systemBackgroundSecondary: used for app background
   lightLightGray: '#FCFCFC',
   borderBlack: 'rgba(0, 0, 0, 0.4)',
-  iconGray: 'rgb(174,174,178)', // systemGray2
-  iconDark: 'rgb(44,44,46)', // darkGray2
+
+  // icon colors
+  iconGray: 'rgba(101,119,134, 0.6)', // twitter
+  // iconGray: 'rgb(174,174,178)', // systemGray2
+  iconDark: 'rgba(101,119,134, 1)', // twitter
+  // iconDark: 'rgb(44,44,46)', // darkGray2
+
+  // button colors
   grayButton: 'rgb(242,242,247)', // systemGray6
 
-  // rgba(23, 48, 73, 0.6)
-  // #173049
-
-  // system grays
-  systemGray1: 'rgb(142,142,147)',
-  systemGray2: 'rgb(174,174,178)',
-  systemGray3: 'rgb(199,199,204)',
-  systemGray5: 'rgb(229,229,234)',
-  systemGray6: 'rgb(242,242,247)',
-  // system backgrounds
-  systemBackgroundSecondary: 'rgba(239,239,244,1)', // light background
-  darkGray1: 'rgb(28,28,30)',
-  darkGray2: 'rgb(44,44,46)',
-
-  // goals
+  // goal text
   blue: 'rgba(14,57,237,1)', // ios
   purple: 'rgba(65,63,193,1)', // ios
   peach: 'rgba(252,27,15,1)', // ios
@@ -48,6 +39,25 @@ const colors = {
   goalPurp: 'rgba(94,92,230,0.15)', // ios
   goalPeach: 'rgba(255,69,58,0.15)', // ios
   goalGreen: 'rgba(50,215,75,0.15)', // ios
+
+  // system grays
+  systemGray1: 'rgb(142,142,147)',
+  systemGray2: 'rgb(174,174,178)',
+  systemGray3: 'rgb(199,199,204)',
+  systemGray5: 'rgb(229,229,234)',
+  systemGray6: 'rgb(242,242,247)',
+
+  // system gray texts
+  gray100: 'rgba(60,60,67,1)',
+  gray90: 'rgba(60,60,67,0.9)',
+  gray80: 'rgba(60,60,67,0.8)',
+  gray60: 'rgba(60,60,67,0.6)',
+  gray30: 'rgba(60,60,67,0.3)',
+
+  // system backgrounds
+  systemBackgroundSecondary: 'rgba(239,239,244,1)', // light background
+  darkGray1: 'rgb(28,28,30)',
+  darkGray2: 'rgb(44,44,46)',
 
   // ------------------ //
   // --- old colors --- //

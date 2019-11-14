@@ -401,7 +401,7 @@ const EditNameModal = ({ navigation }) => {
             <TouchableOpacity onPress={() => handleInvestorClick()}>
               <View style={{ ...styles.hatRow }}>
                 <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.largeLight, color: colors.iosBlue }}>I'm open to invest</Text>
+                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>I'm open to invest</Text>
                 </View>
 
                 <View style={styles.hatButton}>
@@ -418,7 +418,7 @@ const EditNameModal = ({ navigation }) => {
             <TouchableOpacity onPress={() => handleFreelanceClick()}>
               <View style={{ ...styles.hatRow }}>
                 <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.largeLight, color: colors.iosBlue }}>I'm open to freelance</Text>
+                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>I'm open to freelance</Text>
                 </View>
 
                 <View style={styles.hatButton}>
@@ -436,7 +436,7 @@ const EditNameModal = ({ navigation }) => {
             <TouchableOpacity onPress={() => handleMentorClick()}>
               <View style={{ ...styles.hatRow }}>
                 <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.largeLight, color: colors.iosBlue }}>I'm open to mentor others</Text>
+                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>I'm open to mentor others</Text>
                 </View>
 
                 <View style={styles.hatButton}>
@@ -485,6 +485,7 @@ const styles = StyleSheet.create({
   section: {
     paddingHorizontal: 20,
     marginTop: -5,
+    paddingBottom: 30,
   },
   sectionTitle: {
     width: '100%',
@@ -523,7 +524,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     height: '100%',
-    borderBottomWidth: 0.2,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
   },
   rowMultiline: {

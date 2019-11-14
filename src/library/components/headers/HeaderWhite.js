@@ -31,18 +31,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
-    backgroundColor: colors.lightLightGray,
+    backgroundColor: 'white',
   },
   closeButtonText: {
     width: 60,
     textAlign: 'left',
-    ...defaultStyles.largeRegular,
+    ...defaultStyles.largeMedium,
     color: colors.iosBlue,
   },
   saveButtonText: {
     width: 60,
     textAlign: 'right',
-    ...defaultStyles.largeRegular,
+    ...defaultStyles.largeMedium,
     color: colors.iosBlue,
   },
   headerTitle: {

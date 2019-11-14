@@ -44,47 +44,48 @@ const SelectGoalModal = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
-        <HeaderWhite handleLeft={navigation.goBack} handleRight={null} textLeft="Back" textRight="" title="" />
-        <ScrollView style={{ flex: 1 }}>
-          <View style={{ width: '100%', paddingHorizontal: 20, paddingBottom: 30 }}>
-            {/* <Icon name="briefcase" size={40} color={colors.purp} /> */}
-            <Text
-              style={{
-                ...defaultStyles.hugeBold,
-                fontSize: 20,
-                // color: colors.purp,
-                // textAlign: 'center',
-                paddingTop: 20,
-              }}
-            >
-              What goal are you trying to accomplish?
-            </Text>
+        <View
+          style={{
+            height: 46,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: 'white',
+            paddingHorizontal: 20,
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => navigation.goBack()}
+            hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
+          >
+            <Icon name="chevron-left" size={22} color={colors.iconDark} />
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.9} onPress={() => null} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
+            <Icon name="question-circle" size={22} color={colors.iconDark} />
+          </TouchableOpacity>
+        </View>
+        <ScrollView style={{ flex: 1, paddingHorizontal: 15, paddingBottom: 20 }}>
+          <View style={{ width: '100%' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text
+                style={{
+                  ...defaultStyles.headerLarge,
+                }}
+              >
+                Select a goal
+              </Text>
+            </View>
 
-            <Text style={{ ...defaultStyles.defaultMute, paddingTop: 15 }}>
-              Select a goal so Ambit can suggest people to help
+            <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>Goals tell other people what you're working on.</Text>
+            <Text style={{ ...defaultStyles.defaultMute, paddingTop: 1, paddingBottom: 20 }}>
+              Ambit will also suggest people to help!
             </Text>
-            {/* <Text style={{ ...defaultStyles.defaultMute, paddingBottom: 0 }}>people to help</Text> */}
           </View>
-          {/* <View style={styles.sectionHeader}>
-            <Icon name="comment-dollar" solid size={24} color={colors.green} style={{ paddingRight: 10 }} />
-            {/* <Text style={{ ...defaultStyles.largeLight, color: colors.purp }}>Looking for people</Text>
-          </View> */}
-          <View style={{ paddingHorizontal: 20 }}>{renderList(moneyGoals)}</View>
-          {/* <View style={styles.sectionHeader}>
-            <Icon name="briefcase" solid size={24} color={colors.peach} style={{ paddingRight: 10 }} />
-            <Text style={{ ...defaultStyles.largeLight, color: colors.iconGray }}>Hired help</Text>
-          </View> */}
-          <View style={{ paddingHorizontal: 20 }}>{renderList(helpGoals)}</View>
-          {/* <View style={styles.sectionHeader}>
-            <Icon name="user-friends" solid size={24} color={colors.blue} style={{ paddingRight: 10 }} />
-            <Text style={{ ...defaultStyles.largeLight, color: colors.iconGray }}>Networking</Text>
-          </View> */}
-          <View style={{ paddingHorizontal: 20 }}>{renderList(networkGoals)}</View>
-          {/* <View style={styles.sectionHeader}>
-            <Icon name="lightbulb" solid size={24} color={colors.purple} style={{ paddingRight: 10 }} />
-            <Text style={{ ...defaultStyles.largeLight, color: colors.iconGray }}>Looking for answers</Text>
-          </View> */}
-          <View style={{ paddingHorizontal: 20 }}>{renderList(answersGoals)}</View>
+          <View>{renderList(moneyGoals)}</View>
+          <View>{renderList(helpGoals)}</View>
+          <View>{renderList(networkGoals)}</View>
+          <View>{renderList(answersGoals)}</View>
         </ScrollView>
       </View>
     </SafeAreaView>

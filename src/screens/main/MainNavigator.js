@@ -150,8 +150,8 @@ const InboxStack = createStackNavigator(
 const TabNavigator = createBottomTabNavigator(
   {
     Home: HomeStack,
-    Jobs: JobsStack,
     People: PeopleStack,
+    Jobs: JobsStack,
     Inbox: InboxStack,
   },
   {

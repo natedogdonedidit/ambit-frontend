@@ -93,12 +93,12 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
       <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 10 }]}>
         <View style={styles.topRow}>
           <TouchableOpacity
-            activeOpacity={0.7}
+            activeOpacity={0.8}
             onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
             hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
-              <Text style={defaultStyles.largeMedium} numberOfLines={1}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 1 }}>
+              <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
                 {post.owner.name}
               </Text>
               <Icon
@@ -106,14 +106,14 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                 solid
                 size={3}
                 color={colors.blueGray}
-                style={{ paddingHorizontal: 7, opacity: 0.8, alignSelf: 'center' }}
+                style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 1, opacity: 0.6, alignSelf: 'center' }}
               />
-              <Text style={{ ...defaultStyles.smallMute, paddingBottom: 2 }}>{post.location}</Text>
+              <Text style={{ ...defaultStyles.smallMute }}>{post.location}</Text>
             </View>
           </TouchableOpacity>
-          <Text style={defaultStyles.smallMute}>
-            {timeDiff} {period}
-          </Text>
+          <View style={{ position: 'absolute', top: -4, right: 0 }}>
+            <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />
+          </View>
         </View>
 
         <View style={styles.headlineRow}>
@@ -122,7 +122,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
         {post.isGoal && (
           <View style={styles.goalView}>
-            <Text style={{ ...defaultStyles.smallMute, paddingBottom: 5, paddingLeft: 0 }}>I am looking to:</Text>
+            {/* <Text style={{ ...defaultStyles.smallMute, paddingBottom: 5, paddingLeft: 0 }}>I am looking to:</Text> */}
 
             <View style={{ flexDirection: 'row' }}>
               <View style={{ marginRight: 6 }}>
@@ -184,7 +184,10 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                 </View>
               </View>
               <View style={styles.buttonGroup}>
-                <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />
+                {/* <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} /> */}
+                <Text style={{ ...defaultStyles.smallMute }}>
+                  {timeDiff} {period} ago
+                </Text>
               </View>
             </View>
           )
@@ -229,8 +232,7 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    // paddingBottom: 1,
+    alignItems: 'flex-end',
   },
   headlineRow: {
     paddingBottom: 12,

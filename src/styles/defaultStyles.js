@@ -2,17 +2,17 @@ import { StyleSheet } from 'react-native';
 
 import colors from 'styles/colors';
 
-const small = 12;
+const small = 11;
 const reg = 13;
 const large = 15;
-const huge = 18;
+const huge = 17;
 
 const styles = StyleSheet.create({
   // SMALL
   smallMute: {
     color: colors.blueGray,
     fontSize: small,
-    fontFamily: 'SFProText-Light',
+    fontFamily: 'SFProText-Regular',
   },
   smallThin: {
     color: colors.black,
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   defaultMute: {
     color: colors.blueGray,
     fontSize: reg,
-    fontFamily: 'SFProText-Light',
+    fontFamily: 'SFProText-Regular',
   },
   defaultRegularMute: {
     color: colors.blueGray,
@@ -74,13 +74,8 @@ const styles = StyleSheet.create({
   defaultText: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-Light',
-    lineHeight: 17,
-  },
-  defaultRegular: {
-    color: colors.black,
-    fontSize: reg,
     fontFamily: 'SFProText-Regular',
+    lineHeight: 17,
   },
   defaultMedium: {
     color: colors.black,
@@ -179,6 +174,21 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: huge,
     fontFamily: 'SFProText-Bold',
+  },
+  headerSmall: {
+    color: colors.black,
+    fontSize: 20,
+    fontFamily: 'SFProDisplay-Bold',
+  },
+  headerMedium: {
+    color: colors.black,
+    fontSize: 24,
+    fontFamily: 'SFProDisplay-Bold',
+  },
+  headerLarge: {
+    color: colors.black,
+    fontSize: 30,
+    fontFamily: 'SFProDisplay-Bold',
   },
   ambitLogo: {
     color: colors.purp,

@@ -168,7 +168,7 @@ const ProfileComponent = ({
           alignItems: 'center',
           width: '100%',
           height: HEADER_HEIGHT + insets.top,
-          backgroundColor: colors.darkGray2,
+          backgroundColor: colors.blueGray,
           paddingTop: insets.top,
           opacity: scrollY.interpolate({
             inputRange: [0, 100],

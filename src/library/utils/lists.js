@@ -65,7 +65,7 @@ export const years = [
 
 export const moneyGoals = ['Find investors'];
 export const helpGoals = ['Find freelancers', 'Find agencies'];
-export const networkGoals = ['Find business partners', 'Find a mentor', 'Network'];
+export const networkGoals = ['Network', 'Get coffee', 'Find a mentor', 'Find business partners'];
 export const answersGoals = ['Get advice', 'Get feedback'];
 export const hireGoals = ['Hire employees', 'Hire for startup'];
 

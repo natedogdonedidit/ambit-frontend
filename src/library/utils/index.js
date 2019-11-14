@@ -160,6 +160,8 @@ export const pickFieldPrefix = (goal = '') => {
       return 'Industry';
     case 'Network':
       return 'Industry';
+    case 'Get coffee':
+      return 'Industry';
     case 'Get advice':
       return null;
     case 'Get feedback':
@@ -184,6 +186,8 @@ export const pickFieldButtonText = (goal = '') => {
     case 'Find a mentor':
       return 'Select an industry';
     case 'Network':
+      return 'Select an industry';
+    case 'Get coffee':
       return 'Select an industry';
     case 'Get advice':
       return null;
@@ -210,6 +214,8 @@ export const getPrimaryColor = (goal = '') => {
       return colors.blue;
     case 'Network':
       return colors.blue;
+    case 'Get coffee':
+      return colors.blue;
     case 'Get advice':
       return colors.blue;
     case 'Get feedback':
@@ -234,6 +240,8 @@ export const getBackgroundColor = (goal = '') => {
     case 'Find a mentor':
       return colors.goalBlue;
     case 'Network':
+      return colors.goalBlue;
+    case 'Get coffee':
       return colors.goalBlue;
     case 'Get advice':
       return colors.goalBlue; // was purple
@@ -262,6 +270,8 @@ export const getIcon = (goal = '', size = 15) => {
     case 'Find a mentor':
       return <Icon name="user-friends" solid size={size} color={colors.blue} />;
     case 'Network':
+      return <Icon name="user-friends" solid size={size} color={colors.blue} />;
+    case 'Get coffee':
       return <Icon name="user-friends" solid size={size} color={colors.blue} />;
     // answers
     case 'Get advice':

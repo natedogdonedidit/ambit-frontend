@@ -274,14 +274,14 @@ const NewPostModal = ({ navigation }) => {
               // borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           >
-            <Text style={{ ...defaultStyles.defaultMute, paddingLeft: 5, paddingBottom: 6 }}>Goal:</Text>
+            <Text style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingLeft: 5, paddingBottom: 6 }}>Goal:</Text>
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setField })}>
                   <View style={styles.whiteBack}>
                     <View style={{ ...styles.goalRow, backgroundColor: getBackgroundColor(goal) }}>
-                      <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(goal) }}>{goal}</Text>
+                      <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{goal}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -291,18 +291,22 @@ const NewPostModal = ({ navigation }) => {
                 name="times"
                 size={15}
                 color={colors.iconGray}
-                style={{ paddingLeft: 20, paddingRight: 5, opacity: 0.6 }}
+                style={{ paddingLeft: 20, paddingRight: 5 }}
                 onPress={() => clearGoal()}
               />
             </View>
 
-            <Text style={{ ...defaultStyles.defaultMute, paddingTop: 12, paddingLeft: 5, paddingBottom: 6 }}>{fieldPrefix}:</Text>
+            <Text
+              style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingTop: 12, paddingLeft: 5, paddingBottom: 6 }}
+            >
+              {fieldPrefix}:
+            </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={{ flex: 1 }}>
                 <TouchableOpacity onPress={() => navigation.navigate('SelectGoalFieldModal', { goal, field, setField })}>
                   <View style={styles.whiteBack}>
                     <View style={{ ...styles.goalRow, backgroundColor: getBackgroundColor(goal) }}>
-                      <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(goal) }}>{field}</Text>
+                      <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{field}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -312,7 +316,7 @@ const NewPostModal = ({ navigation }) => {
                 name="times"
                 size={15}
                 color={colors.iconGray}
-                style={{ paddingLeft: 20, paddingRight: 5, opacity: 0.6 }}
+                style={{ paddingLeft: 20, paddingRight: 5 }}
                 onPress={() => clearField()}
               />
             </View>
@@ -327,7 +331,7 @@ const NewPostModal = ({ navigation }) => {
             marginBottom: 30,
           }}
         >
-          <Text style={{ ...defaultStyles.defaultMute, paddingLeft: 5, paddingBottom: 6 }}>Goal:</Text>
+          <Text style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingLeft: 5, paddingBottom: 6 }}>Goal:</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ flex: 1 }}>
               <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setField })}>
@@ -336,11 +340,9 @@ const NewPostModal = ({ navigation }) => {
                     style={{
                       ...styles.goalRow,
                       backgroundColor: getBackgroundColor(goal),
-                      // borderColor: getPrimaryColor(goal),
-                      // borderWidth: StyleSheet.hairlineWidth,
                     }}
                   >
-                    <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(goal) }}>{goal}</Text>
+                    <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{goal}</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -350,21 +352,23 @@ const NewPostModal = ({ navigation }) => {
               name="times"
               size={15}
               color={colors.iconGray}
-              style={{ paddingLeft: 20, paddingRight: 5, opacity: 0.6 }}
+              style={{ paddingLeft: 20, paddingRight: 5 }}
               onPress={() => clearGoal()}
             />
           </View>
 
           {pickFieldButtonText(goal) && (
             <>
-              <Text style={{ ...defaultStyles.defaultMute, paddingLeft: 5, paddingTop: 12, paddingBottom: 6 }}>
+              <Text
+                style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingLeft: 5, paddingTop: 12, paddingBottom: 6 }}
+              >
                 {fieldPrefix}:
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1 }}>
                   <TouchableOpacity onPress={() => navigation.navigate('SelectGoalFieldModal', { goal, field, setField })}>
                     <View style={styles.wideButton}>
-                      <Text style={defaultStyles.largeLight}>{fieldButtonText}</Text>
+                      <Text style={defaultStyles.largeRegular}>{fieldButtonText}</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -372,8 +376,8 @@ const NewPostModal = ({ navigation }) => {
                 <Icon
                   name="times"
                   size={15}
-                  color="white"
-                  style={{ paddingLeft: 20, paddingRight: 5, opacity: 0.6 }}
+                  color={colors.iconGray}
+                  style={{ paddingLeft: 20, paddingRight: 5 }}
                   onPress={() => clearGoal()}
                 />
               </View>
@@ -393,7 +397,7 @@ const NewPostModal = ({ navigation }) => {
       >
         <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setField })}>
           <View style={styles.wideButton}>
-            <Text style={defaultStyles.largeLight}>Add a goal</Text>
+            <Text style={defaultStyles.largeRegular}>Add a goal</Text>
           </View>
         </TouchableOpacity>
         {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -426,7 +430,7 @@ const NewPostModal = ({ navigation }) => {
               </View>
               <View style={styles.rightSide}>
                 <TextInput
-                  style={{ flex: 1, paddingTop: 10, paddingRight: 15, ...defaultStyles.largeLight }}
+                  style={{ flex: 1, paddingTop: 10, paddingRight: 15, ...defaultStyles.largeRegular }}
                   onChangeText={val => setContent(val)}
                   value={content}
                   autoFocus
@@ -465,7 +469,12 @@ const NewPostModal = ({ navigation }) => {
             <View style={styles.aboveKeyboardRight}>
               <TouchableOpacity onPress={() => setIsPrivate(!isPrivate)} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                 <View style={styles.aboveKeyboardRight}>
-                  <Icon name="globe" size={12} color={colors.iconGray} style={{ paddingRight: 7 }} />
+                  <Icon
+                    name={isPrivate ? 'user-lock' : 'globe-americas'}
+                    size={12}
+                    color={colors.iconDark}
+                    style={{ paddingRight: 7 }}
+                  />
                   <Text style={{ ...defaultStyles.smallMedium }}>{isPrivate ? 'Network Only' : 'Public'}</Text>
                 </View>
               </TouchableOpacity>

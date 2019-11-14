@@ -58,9 +58,12 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
 
   if (posts.length < 1) {
     return (
-      <View style={{ height: 100, width: '100%', marginTop: 10 }}>
-        <Loader loading={loading} full={false} />
-      </View>
+      <>
+        <View style={{ height: 100, width: '100%', marginTop: 10 }}>
+          <Loader loading={loading} full={false} />
+        </View>
+        <View style={{ width: '100%', height: 700 }} />
+      </>
     );
   }
 

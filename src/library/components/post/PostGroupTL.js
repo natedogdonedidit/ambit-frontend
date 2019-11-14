@@ -80,7 +80,7 @@ const PostGroupTL = ({
           <ProfilePic user={post.owner} navigation={navigation} disableVideo size={30} />
         </View>
         <View style={styles.rightColumn}>
-          <Text style={{ ...defaultStyles.largeLight, color: colors.iosBlue }}>Show latest updates</Text>
+          <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Show latest updates</Text>
         </View>
       </View>
     </TouchableOpacity>

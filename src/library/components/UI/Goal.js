@@ -44,7 +44,7 @@ const Goal = ({ goal, onPress }) => {
         >
           <View style={{ paddingRight: 10 }}>{getIcon(goal)}</View>
           {/* <Text style={{ ...defaultStyles.defaultRegular, color: colors.darkGray }}>{goal}</Text> */}
-          <Text style={{ ...defaultStyles.defaultRegular, color: getPrimaryColor(goal) }}>{goal}</Text>
+          <Text style={{ ...defaultStyles.defaultMedium, color: getPrimaryColor(goal) }}>{goal}</Text>
         </View>
       </View>
     </TouchableOpacity>

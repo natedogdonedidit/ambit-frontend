@@ -39,8 +39,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.purp,
     borderRadius: 5,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
     height: 32,
     width: 150,
   },

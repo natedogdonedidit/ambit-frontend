@@ -49,11 +49,11 @@ const SelectFreelanceModal = ({ navigation }) => {
 
       return (
         <TouchableOpacity key={listItem} activeOpacity={0.8} onPress={() => selectField(listItem)}>
-          <View style={styles.itemRow}>
-            <Text style={defaultStyles.defaultText}>{listItem}</Text>
+          <View style={{ ...styles.itemRow, borderColor: colors.blue }}>
+            <Text style={{ ...defaultStyles.largeRegular, color: colors.blue }}>{listItem}</Text>
             {isSelected && (
               <View style={{ height: 40, justifyContent: 'center', paddingRight: 10, position: 'absolute', top: 0, right: 0 }}>
-                <Icon name="check" size={20} color={colors.purp} />
+                <Icon name="check" size={20} color={colors.blue} />
               </View>
             )}
           </View>
@@ -81,10 +81,11 @@ const SelectFreelanceModal = ({ navigation }) => {
         >
           <View style={styles.categoryRow}>
             <Icon name={item.logo} size={20} color={colors.purp} style={{ paddingRight: 15 }} />
-            <Text style={{ ...defaultStyles.largeLight, flex: 1 }}>{item.category}</Text>
+            <Text style={{ ...defaultStyles.largeRegular }}>{item.category}</Text>
             {count > 0 && (
-              <View style={styles.circleNumber}>
-                <Text style={{ ...defaultStyles.defaultMute }}>{`${count} selected`}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', height: '100%' }}>
+                <Icon name="circle" solid size={3} color={colors.blueGray} style={{ paddingHorizontal: 8 }} />
+                <Text style={{ ...defaultStyles.smallMute }}>{`${count} selected`}</Text>
               </View>
             )}
           </View>
@@ -97,30 +98,88 @@ const SelectFreelanceModal = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
-        <HeaderWhite
-          handleLeft={clearOut}
-          handleRight={handleDone}
-          textLeft="Clear"
-          textRight="Done"
-          title={fieldsSelected.length > 0 && `${fieldsSelected.length} selected`}
-        />
-        <ScrollView style={{ flex: 1 }}>
-          <View style={{ width: '100%', paddingHorizontal: 40, paddingTop: 30, alignItems: 'center' }}>
-            <Icon name="comment-dollar" size={40} color={colors.purp} />
-            <Text
-              style={{
-                ...defaultStyles.hugeSemibold,
-                color: colors.purp,
-                textAlign: 'center',
-                paddingBottom: 20,
-                paddingTop: 20,
-              }}
-            >
-              Select your freelance niche(s):
+        <View
+          style={{
+            height: 46,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            backgroundColor: 'white',
+            paddingHorizontal: 20,
+          }}
+        >
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {fieldsSelected.length > 0 && <Text style={defaultStyles.smallMute}>{fieldsSelected.length} selected</Text>}
+          </View>
+          <TouchableOpacity activeOpacity={0.9} onPress={handleDone} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
+            <Icon name="chevron-left" size={22} color={colors.iconDark} />
+          </TouchableOpacity>
+          {fieldsSelected.length > 0 && (
+            <TouchableOpacity onPress={handleDone}>
+              <View
+                style={{
+                  backgroundColor: colors.goalBlue,
+                  height: 36,
+                  borderRadius: 18,
+                  paddingHorizontal: 15,
+                  justifyContent: 'center',
+                }}
+              >
+                <Text style={defaultStyles.largeMedium}>Done</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        </View>
+        <ScrollView style={{ flex: 1, paddingHorizontal: 20, paddingBottom: 20 }}>
+          <View
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 50,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: colors.goalBlue,
+              marginTop: 10,
+              marginBottom: 15,
+            }}
+          >
+            <Icon name="briefcase" size={40} color={colors.blue} />
+          </View>
+          <View style={{ width: '100%' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text
+                style={{
+                  ...defaultStyles.headerMedium,
+                }}
+              >
+                Select your{`\n`}freelance niches
+              </Text>
+              {/* <Icon name="question-circle" size={22} color={colors.iconDark} /> */}
+            </View>
+
+            <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>
+              We will recommend you when people search for freelancers in these niches
             </Text>
           </View>
+          <View style={{ flexDirection: 'row', width: '100%', height: 20, justifyContent: 'flex-end', alignItems: 'center' }}>
+            {fieldsSelected.length > 0 && (
+              <TouchableOpacity activeOpacity={0.9} onPress={clearOut} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
+                <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Clear</Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
-          <View style={{ padding: 15 }}>{renderCategories()}</View>
+          <View style={{ paddingBottom: 20 }}>{renderCategories()}</View>
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -145,10 +204,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
   },
-  circleNumber: {
-    height: '100%',
-    justifyContent: 'center',
-  },
   // items
   itemRow: {
     width: '100%',
@@ -156,7 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 20,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
     marginBottom: 15,
