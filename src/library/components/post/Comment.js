@@ -163,9 +163,11 @@ const Comment = ({
           </View>
         </View> */}
 
-          <View style={styles.content}>
-            <Text style={defaultStyles.defaultText}>{comment.content}</Text>
-          </View>
+          {!!comment.content && (
+            <View style={styles.content}>
+              <Text style={defaultStyles.defaultText}>{comment.content}</Text>
+            </View>
+          )}
 
           {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
 

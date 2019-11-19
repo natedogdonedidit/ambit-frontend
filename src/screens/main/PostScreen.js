@@ -93,7 +93,7 @@ const PostScreen = ({ navigation }) => {
             }}
           >
             <Text style={defaultStyles.headerSmall}>Comments</Text>
-            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 5, paddingLeft: 2 }}>No comments yet</Text>
+            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2 }}>No comments yet</Text>
           </View>
         </>
       );

@@ -15,7 +15,8 @@ import {
 import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
 // import Editor, { displayTextWithMentions } from 'react-native-mentions-editor';
 import ImagePicker from 'react-native-image-crop-picker';
-import Image from 'react-native-scalable-image';
+// import Image from 'react-native-scalable-image';
+import FitImage from 'react-native-fit-image';
 import { postPicUpload, imageUpload } from 'library/utils';
 
 import colors from 'styles/colors';
@@ -449,9 +450,9 @@ const CommentScreen = ({ navigation }) => {
                     {/* </TextInput> */}
                   </View>
                   {!!commentImage && (
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingBottom: 0 }}>
-                      <View style={{ ...styles.image }}>
-                        <Image source={{ uri: commentImage }} width={200} />
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingRight: 10 }}>
+                      <View style={{ ...styles.image, width: '100%' }}>
+                        <FitImage source={{ uri: commentImage }} />
                         <View style={styles.removeImageButton}>
                           <Icon name="times" solid size={15} color="white" onPress={() => setCommentImage('')} />
                         </View>

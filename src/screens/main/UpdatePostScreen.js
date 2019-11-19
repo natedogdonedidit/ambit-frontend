@@ -69,19 +69,27 @@ const UpdatePostScreen = ({ navigation }) => {
       />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView>
-          <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} hideButtons showAll showLastLine />
+          <PostGroupTL
+            post={post}
+            currentTime={currentTime}
+            navigation={navigation}
+            hideButtons
+            showAll
+            showLastLine
+            hideTopLine
+          />
 
           <View style={styles.update}>
             <View style={styles.leftColumn}>
               <ProfilePic navigation={navigation} user={post.owner} size={30} />
             </View>
             <View style={styles.rightColumn}>
-              <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
+              {/* <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
                 {post.owner.name}
-              </Text>
+              </Text> */}
               <View style={{ height: 100, paddingTop: 0 }}>
                 <TextInput
-                  style={{ flex: 1, marginRight: 35, ...defaultStyles.defaultText }}
+                  style={{ flex: 1, marginRight: 35, ...defaultStyles.largeRegular }}
                   onChangeText={val => setUpdateText(val)}
                   value={updateText}
                   autoFocus
@@ -112,16 +120,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'white',
     paddingTop: 3,
-    borderRadius: 3,
+    // borderRadius: 3,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   leftColumn: {
     alignItems: 'center',
-    width: 64,
+    width: 48,
   },
   rightColumn: {
     flex: 1,
     alignItems: 'stretch',
-    paddingRight: 15,
+    // paddingRight: 15,
+    paddingLeft: 8,
   },
   updateInput: {
     width: '100%',

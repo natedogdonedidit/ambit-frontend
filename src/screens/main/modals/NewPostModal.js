@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 import ImagePicker from 'react-native-image-crop-picker';
 import Image from 'react-native-scalable-image';
+import FitImage from 'react-native-fit-image';
 
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
 import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
@@ -221,8 +222,10 @@ const NewPostModal = ({ navigation }) => {
     if (images.length === 1) {
       return (
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 15 }}>
-          <View style={{ ...styles.image }}>
-            <Image source={{ uri: images[0] }} width={200} />
+          <View style={{ ...styles.image, width: '100%' }}>
+            <FitImage source={{ uri: images[0] }} />
+
+            {/* <Image source={{ uri: images[0] }} width={200} /> */}
             <View style={styles.removeImageButton}>
               <Icon name="times" solid size={15} color="white" onPress={() => setImages([])} />
             </View>
