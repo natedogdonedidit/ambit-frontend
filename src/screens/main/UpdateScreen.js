@@ -38,7 +38,15 @@ const UpdateScreen = ({ navigation }) => {
         <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
           <Post post={post} currentTime={currentTime} navigation={navigation} showLine hideButtons />
         </TouchableOpacity>
-        <Update post={post} update={update} updateInd={updateInd} currentTime={currentTime} navigation={navigation} showDetails />
+        <Update
+          post={post}
+          update={update}
+          updateInd={updateInd}
+          currentTime={currentTime}
+          navigation={navigation}
+          showDetails
+          hideTopLine
+        />
       </>
     );
   };
@@ -55,16 +63,15 @@ const UpdateScreen = ({ navigation }) => {
               alignItems: 'flex-start',
               paddingVertical: 12,
               paddingHorizontal: 15,
+              marginTop: 15,
               backgroundColor: 'white',
-              borderBottomWidth: StyleSheet.hairlineWidth,
-              borderBottomColor: colors.borderBlack,
+              // borderBottomWidth: StyleSheet.hairlineWidth,
+              // borderBottomColor: colors.borderBlack,
             }}
           >
-            <Text style={defaultStyles.headerTitle}>Comments</Text>
+            <Text style={defaultStyles.headerSmall}>Comments</Text>
+            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 5, paddingLeft: 2 }}>No comments yet</Text>
           </View>
-          {/* <View>
-            <Text>Make the first comment</Text>
-          </View> */}
         </>
       );
     }
@@ -77,12 +84,13 @@ const UpdateScreen = ({ navigation }) => {
             alignItems: 'flex-start',
             paddingVertical: 12,
             paddingHorizontal: 15,
+            marginTop: 15,
             backgroundColor: 'white',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderBottomColor: colors.borderBlack,
+            // borderBottomWidth: StyleSheet.hairlineWidth,
+            // borderBottomColor: colors.borderBlack,
           }}
         >
-          <Text style={defaultStyles.headerTitle}>Comments</Text>
+          <Text style={defaultStyles.headerSmall}>Comments</Text>
         </View>
         {comments.map(comment => {
           if (!comment.parentComment) {

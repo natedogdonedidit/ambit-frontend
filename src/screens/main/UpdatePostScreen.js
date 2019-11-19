@@ -76,10 +76,10 @@ const UpdatePostScreen = ({ navigation }) => {
               <ProfilePic navigation={navigation} user={post.owner} size={30} />
             </View>
             <View style={styles.rightColumn}>
-              <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
+              <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
                 {post.owner.name}
               </Text>
-              <View style={{ height: 100, paddingTop: 2 }}>
+              <View style={{ height: 100, paddingTop: 0 }}>
                 <TextInput
                   style={{ flex: 1, marginRight: 35, ...defaultStyles.defaultText }}
                   onChangeText={val => setUpdateText(val)}

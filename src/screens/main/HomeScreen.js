@@ -78,7 +78,6 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            console.log('here');
             navigation.navigate('NewPostModal', { userLoggedIn });
           }}
         >

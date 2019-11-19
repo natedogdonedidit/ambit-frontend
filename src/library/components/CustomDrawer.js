@@ -46,7 +46,7 @@ const CustomDrawer = ({ navigation }) => {
               <Text style={styles.buttonText}>My Profile</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
+          <TouchableOpacity onPress={() => navigation.navigate('CreateIntroModal')}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Record Intro</Text>
             </View>

@@ -17,11 +17,12 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
 import LinearGradient from 'react-native-linear-gradient';
+import ImagePicker from 'react-native-image-crop-picker';
 
 import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import { imageUpload, sortExperiences } from 'library/utils';
+import { profilePicUpload, sortExperiences } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -36,7 +37,6 @@ const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/
 
 const EditNameModal = ({ navigation }) => {
   const user = navigation.getParam('user');
-  console.log;
 
   // headline
   const experienceSorted = user.experience.sort(sortExperiences);
@@ -62,6 +62,8 @@ const EditNameModal = ({ navigation }) => {
   const [isMentor, setIsMentor] = useState(user.isMentor);
   const [mentorFields, setMentorFields] = useState(user.mentorFields);
   const [uploading, setUploading] = useState(false);
+
+  // temp pics
 
   const [editBio, { loading: loadingEdit, error, data }] = useMutation(EDIT_BIO_MUTATION, {
     variables: {
@@ -125,11 +127,11 @@ const EditNameModal = ({ navigation }) => {
   };
 
   // must pass this to camera roll modal
-  const handleProfilePicSelect = (uri, type) => {
-    if (type === 'image') {
-      setProfilePic(uri);
-    }
-  };
+  // const handleProfilePicSelect = (uri, type) => {
+  //   if (type === 'image') {
+  //     setProfilePic(uri);
+  //   }
+  // };
 
   // must pass this to camera roll modal
   const handleBannerSelect = (uri, type) => {
@@ -138,13 +140,23 @@ const EditNameModal = ({ navigation }) => {
     }
   };
 
+  const handleEditPicButton = () => {
+    ImagePicker.openPicker({
+      multiple: false,
+      waitAnimationEnd: false,
+      includeExif: true,
+      cropping: true,
+    })
+      .then(img => setProfilePic(img.path))
+      .catch(e => alert(e));
+  };
+
   const uploadImage = async () => {
     setUploading(true);
     try {
-      const urls = await imageUpload(user.id, [profilePic]);
+      const url = await profilePicUpload(user, profilePic);
       setUploading(false);
-      console.log(urls);
-      setProfilePic(urls[0]);
+      setProfilePic(url);
     } catch (e) {
       setUploading(false);
       Alert.alert('Oh no!', 'We could not upload your new profile picture at this time. Try again later!', [
@@ -269,12 +281,7 @@ const EditNameModal = ({ navigation }) => {
 
             <View style={styles.profilePicView}>
               <ProfilePicBasic pic={profilePic} size={70} border borderWidth={3} />
-              <TextButton
-                textStyle={styles.editButton}
-                onPress={() =>
-                  navigation.navigate('RollModal', { handleMediaSelect: handleProfilePicSelect, assetType: 'Photos' })
-                }
-              >
+              <TextButton textStyle={styles.editButton} onPress={() => handleEditPicButton()}>
                 Edit Image
               </TextButton>
             </View>

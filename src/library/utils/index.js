@@ -63,23 +63,22 @@ export async function requestCameraRollPermission() {
   }
 }
 
-export const imageUpload = async (user, media) => {
+export const profilePicUpload = async (userId, uri) => {
   // create tags
-  const tags = `${user.id}`;
-  // create context
-  const context = `user=${user.id}`;
-  // create file object
+  const tags = `${userId}, profilepic, image`;
+
+  // create file object (all fields required)
   const photo = {
-    uri: media[0],
+    uri,
     type: 'image',
-    name: `${user.id}-${media[0]}`,
+    name: `${userId}_profilepic`,
   };
   // create body
   const uploadData = new FormData();
   uploadData.append('file', photo);
   uploadData.append('upload_preset', 'ambit-profilepic-preset');
   uploadData.append('tags', tags);
-  uploadData.append('context', context);
+  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
@@ -87,12 +86,84 @@ export const imageUpload = async (user, media) => {
       body: uploadData,
     });
     const resJson = await res.json();
+    // console.log('resJson', resJson);
 
-    // return an array of URLs
-    return [resJson.url];
+    // return the image url
+    // return resJson.url
+    return { uri: resJson.url, width: resJson.width, height: resJson.height };
   } catch (error) {
     console.log('an error occured trying to upload your photo');
-    console.error(error);
+    // console.error(error);
+    return error;
+  }
+};
+
+export const postPicUpload = async (userId, uri) => {
+  // create tags
+  const tags = `${userId}, post, image`;
+
+  // create file object (all fields required)
+  const photo = {
+    uri,
+    type: 'image',
+    name: uri,
+  };
+  // create body
+  const uploadData = new FormData();
+  uploadData.append('file', photo);
+  uploadData.append('upload_preset', 'ambit-postpic-preset');
+  uploadData.append('tags', tags);
+  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+      method: 'POST',
+      body: uploadData,
+    });
+    const resJson = await res.json();
+    console.log('resJson', resJson);
+
+    // return the image url
+    return resJson.url;
+  } catch (error) {
+    console.log('fail2');
+    console.log('an error occured trying to upload your photo');
+    // console.error(error);
+    return error;
+  }
+};
+
+export const introVideoUpload = async (userId, media) => {
+  // create tags
+  const tags = `${userId}, intro, video`;
+
+  // create file object (all fields required)
+  const video = {
+    uri,
+    type: 'video',
+    name: uri,
+  };
+  // create body
+  const uploadData = new FormData();
+  uploadData.append('file', video);
+  uploadData.append('upload_preset', 'ambit-postpic-preset');
+  uploadData.append('tags', tags);
+  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
+      method: 'POST',
+      body: uploadData,
+    });
+    const resJson = await res.json();
+    console.log('resJson', resJson);
+
+    // return the image url
+    return resJson.url;
+  } catch (error) {
+    console.log('fail2');
+    console.log('an error occured trying to upload your photo');
+    // console.error(error);
     return error;
   }
 };

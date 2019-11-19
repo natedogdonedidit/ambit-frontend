@@ -14,12 +14,55 @@ const PostGroupTL = ({
   post,
   showLastLine = false,
   hideButtons = false,
+  hideTopLine = false,
   showDetails = false,
   updateInd = null,
+  showAll = false,
 }) => {
   const hasUpdates = post.updates.length > 0;
 
-  // if an updateInd is provided (probably means were on the create comment screen)
+  const renderAllUpdates = () => {
+    return post.updates.map((update, i) => {
+      let showLine = false;
+      if (i !== post.updates.length - 1) showLine = true;
+      if (i === post.updates.length - 1 && showLastLine) showLine = true;
+      return (
+        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+          <Update
+            post={post}
+            update={update}
+            updateInd={i}
+            currentTime={currentTime}
+            navigation={navigation}
+            hideButtons={hideButtons}
+            showLine={showLine}
+            hideTopLine={hideTopLine}
+          />
+        </TouchableOpacity>
+      );
+    });
+  };
+
+  // if the showAll prop was passed in as True
+  if (showAll) {
+    return (
+      <>
+        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+          <Post
+            post={post}
+            currentTime={currentTime}
+            navigation={navigation}
+            showLine
+            hideButtons={hideButtons}
+            showDetails={showDetails}
+          />
+        </TouchableOpacity>
+        {post.updates.length > 0 && renderAllUpdates()}
+      </>
+    );
+  }
+
+  // if an updateInd is provided (probably means we're on the create comment screen)
   if (updateInd === 0 || updateInd) {
     return (
       <>
@@ -41,6 +84,7 @@ const PostGroupTL = ({
             currentTime={currentTime}
             navigation={navigation}
             hideButtons={hideButtons}
+            hideTopLine={hideTopLine}
             showLine
           />
         </TouchableOpacity>

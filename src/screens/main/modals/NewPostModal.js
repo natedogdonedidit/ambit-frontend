@@ -10,19 +10,21 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   SafeAreaView,
-  Image,
+  // Image,
   InputAccessoryView,
 } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
+import ImagePicker from 'react-native-image-crop-picker';
+import Image from 'react-native-scalable-image';
 
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
 import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
-import { imageUpload, pickFieldPrefix, pickFieldButtonText, getPrimaryColor, getBackgroundColor, getIcon } from 'library/utils';
+import { postPicUpload, pickFieldPrefix, pickFieldButtonText, getPrimaryColor, getBackgroundColor, getIcon } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -110,7 +112,7 @@ const NewPostModal = ({ navigation }) => {
       return;
     }
     if (images.length > 0) {
-      await uploadImage();
+      await uploadImages();
     }
     createPost();
   };
@@ -124,15 +126,25 @@ const NewPostModal = ({ navigation }) => {
     setField('');
   };
 
-  const uploadImage = async () => {
+  const attemptUploads = () => {
+    const uploadImagesPromises = images.map(image => {
+      const imageObject = postPicUpload(userLoggedIn, image);
+      return imageObject;
+    });
+
+    return Promise.all([...uploadImagesPromises]);
+  };
+
+  const uploadImages = async () => {
     setUploading(true);
+
     try {
-      const urls = await imageUpload(userLoggedIn, images);
+      const uploadedImages = await attemptUploads();
       setUploading(false);
-      setImages([...urls]);
+      setImages(uploadedImages);
     } catch (e) {
       setUploading(false);
-      Alert.alert('Oh no!', 'We could not upload your new profile picture at this time. Try again later!', [
+      Alert.alert('Oh no!', 'We could not upload one of your pictures. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]);
     }
@@ -144,25 +156,55 @@ const NewPostModal = ({ navigation }) => {
   };
 
   // must pass this to camera roll modal
-  const handleMediaSelect = (uri, type) => {
-    if (type === 'image') {
-      // if image already exists...delete it
-      if (images.includes(uri)) {
-        // find index
-        const newArray = [...images];
-        const indexToDelete = newArray.findIndex(element => element === uri);
-        // remove
-        newArray.splice(indexToDelete, 1);
+  // const handleMediaSelect = (uri, type) => {
+  //   if (type === 'image') {
+  //     // if image already exists...delete it
+  //     if (images.includes(uri)) {
+  //       // find index
+  //       const newArray = [...images];
+  //       const indexToDelete = newArray.findIndex(element => element === uri);
+  //       // remove
+  //       newArray.splice(indexToDelete, 1);
+  //       setImages([...newArray]);
+  //     } else {
+  //       // if image doesnt already exist...add it
+  //       setImages([...images, uri]);
+  //     }
+  //   }
+  //   if (type === 'video') {
+  //     // need to creat the upload video to cloudinary function
+  //     // setVideo(uri);
+  //   }
+  // };
+
+  // images & video stuff
+
+  const handleCameraIconPress = () => {
+    ImagePicker.openPicker({
+      multiple: true,
+      waitAnimationEnd: false,
+      includeExif: true,
+    })
+      .then(imgs => {
+        const newArray = imgs.map(img => {
+          // console.log('received image', img);
+          // return { uri: img.path, width: img.width, height: img.height };
+          return img.path;
+        });
+
         setImages([...newArray]);
-      } else {
-        // if image doesnt already exist...add it
-        setImages([...images, uri]);
-      }
-    }
-    if (type === 'video') {
-      // need to creat the upload video to cloudinary function
-      // setVideo(uri);
-    }
+      })
+      .catch(e => alert(e));
+  };
+
+  const cleanupImages = () => {
+    ImagePicker.clean()
+      .then(() => {
+        console.log('removed tmp images from tmp directory');
+      })
+      .catch(e => {
+        alert(e);
+      });
   };
 
   // must pass this to location modal
@@ -178,9 +220,9 @@ const NewPostModal = ({ navigation }) => {
     if (images.length < 1) return null;
     if (images.length === 1) {
       return (
-        <View style={{ flexDirection: 'row', width: '100%', height: 200, paddingTop: 15 }}>
-          <View style={{ width: '100%', ...styles.image, paddingRight: 0 }}>
-            <Image style={{ width: '100%', height: '100%' }} source={{ uri: images[0] }} resizeMode="cover" />
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 15 }}>
+          <View style={{ ...styles.image }}>
+            <Image source={{ uri: images[0] }} width={200} />
             <View style={styles.removeImageButton}>
               <Icon name="times" solid size={15} color="white" onPress={() => setImages([])} />
             </View>
@@ -192,11 +234,13 @@ const NewPostModal = ({ navigation }) => {
       return (
         <ScrollView
           horizontal
+          keyboardShouldPersistTaps="always"
           showsHorizontalScrollIndicator={false}
-          style={{ flexDirection: 'row', width: '100%', height: 200, paddingTop: 15 }}
+          style={{ width: '100%' }}
+          contentContainerStyle={{ flexDirection: 'row', paddingTop: 15, alignItems: 'flex-start' }}
         >
-          <View style={{ width: 160, ...styles.image }}>
-            <Image style={{ width: '100%', height: '100%' }} source={{ uri: images[0] }} resizeMode="cover" />
+          <View style={{ ...styles.image, marginRight: 15 }}>
+            <Image source={{ uri: images[0] }} height={200} />
             <View style={styles.removeImageButton}>
               <Icon
                 name="times"
@@ -211,8 +255,8 @@ const NewPostModal = ({ navigation }) => {
               />
             </View>
           </View>
-          <View style={{ width: 160, ...styles.image }}>
-            <Image style={{ width: '100%', height: '100%' }} source={{ uri: images[1] }} resizeMode="cover" />
+          <View style={{ ...styles.image }}>
+            <Image source={{ uri: images[1] }} height={200} />
             <View style={styles.removeImageButton}>
               <Icon
                 name="times"
@@ -235,13 +279,15 @@ const NewPostModal = ({ navigation }) => {
     return (
       <ScrollView
         horizontal
+        keyboardShouldPersistTaps="always"
         showsHorizontalScrollIndicator={false}
-        style={{ flexDirection: 'row', width: '100%', height: 200, paddingTop: 15 }}
+        style={{ width: '100%' }}
+        contentContainerStyle={{ flexDirection: 'row', paddingTop: 15, alignItems: 'flex-start' }}
       >
         {images.map((image, i) => {
           return (
-            <View style={{ width: 160, ...styles.image }}>
-              <Image style={{ width: '100%', height: '100%' }} source={{ uri: images[i] }} resizeMode="cover" />
+            <View key={image} style={{ ...styles.image, marginRight: 15 }}>
+              <Image source={{ uri: images[i] }} height={200} />
               <View style={styles.removeImageButton}>
                 <Icon
                   name="times"
@@ -451,7 +497,8 @@ const NewPostModal = ({ navigation }) => {
           <View style={styles.aboveKeyboard}>
             <View style={styles.aboveKeyboardLeft}>
               <TouchableOpacity
-                onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
+                onPress={handleCameraIconPress}
+                // onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
                 hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
               >
                 <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.6 }} />
@@ -491,7 +538,7 @@ export default NewPostModal;
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     height: '100%',
   },
   content: {
@@ -567,12 +614,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   image: {
-    height: '100%',
     borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
     overflow: 'hidden',
-    marginRight: 10,
+    // marginRight: 10,
   },
   removeImageButton: {
     position: 'absolute',

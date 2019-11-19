@@ -29,7 +29,7 @@ const Comment = ({
   // broke = false,
   hideButtons = false,
   isSubComment = false,
-  hideTopMargin = false,
+  hideTopLine = false,
 }) => {
   // console.log(comment);
   // MUTATIONS - like, comment, share
@@ -90,13 +90,55 @@ const Comment = ({
   };
 
   return (
-    <View style={[styles.comment, (isSubComment || hideTopMargin) && { paddingTop: 10, marginTop: 0 }]}>
-      <View style={[styles.leftColumn, isSubComment && styles.leftColumnSub]}>
-        <ProfilePic user={comment.owner} size={30} intro={comment.owner.intro} navigation={navigation} disableVideo />
-        {showLine && <View style={[{ ...styles.threadLine }]} />}
-      </View>
-      <View style={[styles.rightColumn, showLine && { paddingBottom: 24 }]}>
-        <View style={styles.topRow}>
+    <View
+      style={[
+        { width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 10 },
+        isSubComment && { paddingLeft: 48 },
+      ]}
+    >
+      <View
+        style={[
+          styles.comment,
+          !isSubComment &&
+            !hideTopLine && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderBlack, paddingTop: 12 },
+        ]}
+      >
+        <View style={[styles.leftColumn]}>
+          <ProfilePic user={comment.owner} size={30} intro={comment.owner.intro} navigation={navigation} />
+          {showLine && <View style={[{ ...styles.threadLine }]} />}
+        </View>
+        <View style={[styles.rightColumn, showLine && { paddingBottom: 24 }]}>
+          <View style={styles.topRow}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('Profile', { profileId: comment.owner.id })}
+              hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
+            >
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 1 }}>
+                <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
+                  {comment.owner.name}
+                </Text>
+                <Icon
+                  name="circle"
+                  solid
+                  size={3}
+                  color={colors.blueGray}
+                  style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 1, opacity: 0.6, alignSelf: 'center' }}
+                />
+                <Text style={{ ...defaultStyles.smallMute }}>{comment.owner.location}</Text>
+              </View>
+            </TouchableOpacity>
+
+            <Text style={defaultStyles.smallMute}>
+              {timeDiff} {period}
+            </Text>
+          </View>
+
+          <View style={styles.headlineRow}>
+            <Text style={defaultStyles.smallMute}>{comment.owner.headline}</Text>
+          </View>
+
+          {/* <View style={styles.topRow}>
           <View style={styles.leftSide}>
             <TouchableOpacity
               activeOpacity={0.7}
@@ -119,37 +161,43 @@ const Comment = ({
               {timeDiff} {period}
             </Text>
           </View>
-        </View>
+        </View> */}
 
-        <View style={styles.content}>
-          <Text style={defaultStyles.defaultText}>{comment.content}</Text>
-        </View>
-
-        {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
-
-        {!hideButtons && (
-          <View style={[{ ...styles.buttons }]}>
-            <View style={styles.buttonGroup}>
-              <View style={styles.button}>
-                <CommentIcon onPress={() => navigation.navigate('Comment', { clicked: comment, isComment: true })} />
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount}</Text>
-              </View>
-              <View style={styles.button}>
-                <Heart color={comment.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.likesCount}</Text>
-              </View>
-            </View>
-            {isMyPost && (
-              <View style={styles.buttonGroup}>
-                <Ellipsis
-                  onPress={() =>
-                    navigation.navigate('EditPostPopup', { post: comment, isMyPost, deletePost: deleteComment, isComment: true })
-                  }
-                />
-              </View>
-            )}
+          <View style={styles.content}>
+            <Text style={defaultStyles.defaultText}>{comment.content}</Text>
           </View>
-        )}
+
+          {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
+
+          {!hideButtons && (
+            <View style={[{ ...styles.buttons }]}>
+              <View style={styles.buttonGroup}>
+                <View style={styles.button}>
+                  <CommentIcon onPress={() => navigation.navigate('Comment', { clicked: comment, isComment: true })} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount}</Text>
+                </View>
+                <View style={styles.button}>
+                  <Heart color={comment.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.likesCount}</Text>
+                </View>
+              </View>
+              {isMyPost && (
+                <View style={styles.buttonGroup}>
+                  <Ellipsis
+                    onPress={() =>
+                      navigation.navigate('EditPostPopup', {
+                        post: comment,
+                        isMyPost,
+                        deletePost: deleteComment,
+                        isComment: true,
+                      })
+                    }
+                  />
+                </View>
+              )}
+            </View>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -159,9 +207,10 @@ const styles = StyleSheet.create({
   comment: {
     width: '100%',
     flexDirection: 'row',
-    paddingTop: 12,
+    paddingTop: 5,
+    marginTop: 0,
     backgroundColor: 'white',
-    marginTop: 5,
+    // marginTop: 5,
   },
   threadLine: {
     flex: 1,
@@ -176,23 +225,27 @@ const styles = StyleSheet.create({
   },
   leftColumn: {
     alignItems: 'center',
-    width: 64,
+    width: 48,
   },
-  leftColumnSub: {
-    alignItems: 'flex-start',
-    paddingLeft: 48,
-    width: 96,
-  },
+  // leftColumnSub: {
+  //   alignItems: 'flex-start',
+  //   paddingLeft: 48,
+  //   width: 96,
+  // },
   rightColumn: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    paddingRight: 15,
+    // paddingRight: 15,
     paddingBottom: 10,
+    paddingLeft: 8,
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headlineRow: {
     paddingBottom: 4,
   },
   leftSide: {},
@@ -201,7 +254,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   content: {
-    paddingBottom: 6,
+    paddingBottom: 4,
   },
   media: {
     width: '100%',

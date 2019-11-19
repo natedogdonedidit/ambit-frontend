@@ -50,12 +50,13 @@ const PostScreen = ({ navigation }) => {
             alignItems: 'flex-start',
             paddingVertical: 12,
             paddingHorizontal: 15,
+            marginTop: 15,
             backgroundColor: 'white',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderBottomColor: colors.borderBlack,
+            // borderBottomWidth: StyleSheet.hairlineWidth,
+            // borderBottomColor: colors.borderBlack,
           }}
         >
-          <Text style={defaultStyles.headerTitle}>Updates</Text>
+          <Text style={defaultStyles.headerSmall}>Updates</Text>
         </View>
         {post.updates.map((update, i) => {
           return (
@@ -85,16 +86,15 @@ const PostScreen = ({ navigation }) => {
               alignItems: 'flex-start',
               paddingVertical: 12,
               paddingHorizontal: 15,
+              marginTop: 15,
               backgroundColor: 'white',
-              borderBottomWidth: StyleSheet.hairlineWidth,
-              borderBottomColor: colors.borderBlack,
+              // borderBottomWidth: StyleSheet.hairlineWidth,
+              // borderBottomColor: colors.borderBlack,
             }}
           >
-            <Text style={defaultStyles.headerTitle}>Comments</Text>
+            <Text style={defaultStyles.headerSmall}>Comments</Text>
+            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 5, paddingLeft: 2 }}>No comments yet</Text>
           </View>
-          {/* <View>
-            <Text>Make the first comment</Text>
-          </View> */}
         </>
       );
     }
@@ -107,19 +107,22 @@ const PostScreen = ({ navigation }) => {
             alignItems: 'flex-start',
             paddingVertical: 12,
             paddingHorizontal: 15,
+            marginTop: 15,
             backgroundColor: 'white',
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderBottomColor: colors.borderBlack,
+            // borderBottomWidth: StyleSheet.hairlineWidth,
+            // borderBottomColor: colors.borderBlack,
           }}
         >
-          <Text style={defaultStyles.headerTitle}>Comments</Text>
+          <Text style={defaultStyles.headerSmall}>Comments</Text>
         </View>
         {comments.map((comment, i) => {
-          if (!comment.parentComment) {
+          // if its a direct comment on the post
+          if (!comment.parentComment && !comment.parentUpdate) {
+            // if there are subComments
             if (comment.comments.length > 0) {
               return (
                 <View key={comment.id}>
-                  <Comment comment={comment} navigation={navigation} currentTime={currentTime} />
+                  <Comment comment={comment} navigation={navigation} currentTime={currentTime} hideTopMargin />
                   {comment.comments.map((subComment, k) => (
                     <Comment
                       key={subComment.id}
@@ -127,14 +130,15 @@ const PostScreen = ({ navigation }) => {
                       navigation={navigation}
                       currentTime={currentTime}
                       isSubComment
-                      // showLine={comment.comments.length - 1 !== k}
+                      showLine={comment.comments.length - 1 !== k}
                     />
                   ))}
                 </View>
               );
             }
 
-            return <Comment key={comment.id} comment={comment} navigation={navigation} currentTime={currentTime} />;
+            // if there are no sub comments
+            return <Comment key={comment.id} comment={comment} navigation={navigation} currentTime={currentTime} hideTopMargin />;
           }
           return null;
         })}
@@ -168,6 +172,7 @@ const styles = StyleSheet.create({
   },
   commentsView: {
     width: '100%',
+    marginBottom: 15,
   },
 });
 

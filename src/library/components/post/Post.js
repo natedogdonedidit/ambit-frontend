@@ -85,113 +85,120 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
   };
 
   return (
-    <View style={styles.post}>
-      <View style={styles.leftColumn}>
-        <ProfilePic user={post.owner} intro={post.owner.intro} pitch={post.pitch} navigation={navigation} />
-        {showLine && <View style={styles.threadLine} />}
-      </View>
-      <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 10 }]}>
-        <View style={styles.topRow}>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
-            hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 1 }}>
-              <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
-                {post.owner.name}
-              </Text>
-              <Icon
-                name="circle"
-                solid
-                size={3}
-                color={colors.blueGray}
-                style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 1, opacity: 0.6, alignSelf: 'center' }}
-              />
-              <Text style={{ ...defaultStyles.smallMute }}>{post.location}</Text>
-            </View>
-          </TouchableOpacity>
-          <View style={{ position: 'absolute', top: -4, right: 0 }}>
-            <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />
-          </View>
+    <View style={{ width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 10, marginTop: 5 }}>
+      <View style={styles.post}>
+        <View style={styles.leftColumn}>
+          <ProfilePic user={post.owner} intro={post.owner.intro} pitch={post.pitch} navigation={navigation} />
+          {showLine && <View style={styles.threadLine} />}
         </View>
-
-        <View style={styles.headlineRow}>
-          <Text style={defaultStyles.smallMute}>{post.owner.headline}</Text>
-        </View>
-
-        {post.isGoal && (
-          <View style={styles.goalView}>
-            {/* <Text style={{ ...defaultStyles.smallMute, paddingBottom: 5, paddingLeft: 0 }}>I am looking to:</Text> */}
-
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ marginRight: 6 }}>
-                <Goal goal={post.goal} />
-              </View>
-              {/* {!!post.field && <GoalField goalField={post.field} />} */}
-            </View>
-          </View>
-        )}
-
-        <View style={styles.content}>
-          <Text style={defaultStyles.defaultText}>{post.content}</Text>
-        </View>
-
-        {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
-        {showDetails ? (
-          <>
-            <View style={styles.date}>
-              <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{formatedDate}</Text>
-              {/* <TextButton onPress={() => null}>Tags</TextButton> */}
-            </View>
-            <View style={styles.likesRow}>
-              <View style={{ flexDirection: 'row' }}>
-                {!!post.likesCount && (
-                  <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{post.likesCount} Likes</Text>
-                )}
-                {!!post.sharesCount && (
-                  <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{post.sharesCount} Shares</Text>
-                )}
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ paddingLeft: 30 }}>
-                  <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
-                </View>
-                <View style={{ paddingLeft: 30 }}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                </View>
-                <View style={{ paddingLeft: 30 }}>
-                  <Share onPress={() => null} />
-                </View>
-              </View>
-            </View>
-          </>
-        ) : (
-          !hideButtons && (
-            <View style={styles.buttons}>
-              <View style={styles.buttonGroup}>
-                <View style={styles.button}>
-                  <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
-                </View>
-                <View style={styles.button}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
-                </View>
-                <View style={styles.button}>
-                  <Share onPress={() => null} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
-                </View>
-              </View>
-              <View style={styles.buttonGroup}>
-                {/* <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} /> */}
-                <Text style={{ ...defaultStyles.smallMute }}>
-                  {timeDiff} {period} ago
+        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 10 }]}>
+          <View style={styles.topRow}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
+              hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 1 }}>
+                <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
+                  {post.owner.name}
                 </Text>
+                <Icon
+                  name="circle"
+                  solid
+                  size={3}
+                  color={colors.blueGray}
+                  style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 1, opacity: 0.6, alignSelf: 'center' }}
+                />
+                <Text style={{ ...defaultStyles.smallMute }}>{post.location}</Text>
+              </View>
+            </TouchableOpacity>
+            <Text style={{ ...defaultStyles.smallMute }}>
+              {timeDiff} {period}
+            </Text>
+            {/* {!hideButtons && (
+            <View style={{ position: 'absolute', top: -4, right: 0 }}>
+              <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />
+            </View>
+          )} */}
+          </View>
+
+          <View style={styles.headlineRow}>
+            <Text style={defaultStyles.smallMute}>{post.owner.headline}</Text>
+          </View>
+
+          {post.isGoal && (
+            <View style={styles.goalView}>
+              {/* <Text style={{ ...defaultStyles.smallMute, paddingBottom: 5, paddingLeft: 0 }}>I am looking to:</Text> */}
+
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ marginRight: 6 }}>
+                  <Goal goal={post.goal} />
+                </View>
+                {/* {!!post.field && <GoalField goalField={post.field} />} */}
               </View>
             </View>
-          )
-        )}
+          )}
+
+          <View style={styles.content}>
+            <Text style={defaultStyles.defaultText}>{post.content}</Text>
+          </View>
+
+          {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
+          {showDetails ? (
+            <>
+              <View style={styles.date}>
+                <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{formatedDate}</Text>
+                {/* <TextButton onPress={() => null}>Tags</TextButton> */}
+              </View>
+              <View style={styles.likesRow}>
+                <View style={{ flexDirection: 'row' }}>
+                  {!!post.likesCount && (
+                    <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{post.likesCount} Likes</Text>
+                  )}
+                  {!!post.sharesCount && (
+                    <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{post.sharesCount} Shares</Text>
+                  )}
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={{ paddingLeft: 30 }}>
+                    <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
+                  </View>
+                  <View style={{ paddingLeft: 30 }}>
+                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                  </View>
+                  <View style={{ paddingLeft: 30 }}>
+                    <Share onPress={() => null} />
+                  </View>
+                </View>
+              </View>
+            </>
+          ) : (
+            !hideButtons && (
+              <View style={styles.buttons}>
+                <View style={styles.buttonGroup}>
+                  <View style={styles.button}>
+                    <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
+                  </View>
+                  <View style={styles.button}>
+                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
+                  </View>
+                  <View style={styles.button}>
+                    <Share onPress={() => null} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
+                  </View>
+                </View>
+                <View style={styles.buttonGroup}>
+                  <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />
+                  {/* <Text style={{ ...defaultStyles.smallMute }}>
+                  {timeDiff} {period} ago
+                </Text> */}
+                </View>
+              </View>
+            )
+          )}
+        </View>
       </View>
     </View>
   );
@@ -203,8 +210,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 12,
     backgroundColor: 'white',
-    marginTop: 5,
-    borderRadius: 3,
+    // borderRadius: 3,
     // borderBottomWidth: StyleSheet.hairlineWidth,
     // borderBottomColor: colors.borderBlack,
   },
@@ -220,19 +226,20 @@ const styles = StyleSheet.create({
   },
   leftColumn: {
     alignItems: 'center',
-    width: 64,
+    width: 48,
   },
   rightColumn: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    paddingRight: 15,
+    // paddingRight: 15,
+    paddingLeft: 8,
     paddingBottom: 10,
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   headlineRow: {
     paddingBottom: 12,

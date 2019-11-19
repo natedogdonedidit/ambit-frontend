@@ -17,7 +17,7 @@ const colors = {
   // backgrounds used
   lightGray: 'rgba(239,239,244,1)', // systemBackgroundSecondary: used for app background
   lightLightGray: '#FCFCFC',
-  borderBlack: 'rgba(0, 0, 0, 0.4)',
+  borderBlack: 'rgba(0, 0, 0, 0.2)',
 
   // icon colors
   iconGray: 'rgba(101,119,134, 0.6)', // twitter

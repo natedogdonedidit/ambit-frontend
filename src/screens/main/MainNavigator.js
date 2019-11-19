@@ -27,6 +27,7 @@ import RequestsScreen from './RequestsScreen';
 import CustomSearchScreen from './CustomSearchScreen';
 // modals
 import StoryModal from './modals/StoryModal';
+import CreateIntroModal from './modals/CreateIntroModal';
 import NewPostModal from './modals/NewPostModal';
 import SelectGoalModal from './modals/SelectGoalModal';
 import SelectGoalFieldModal from './modals/SelectGoalFieldModal';
@@ -258,6 +259,9 @@ const MainNavWithModal = createStackNavigator(
     },
     StoryModal: {
       screen: StoryModal,
+    },
+    CreateIntroModal: {
+      screen: CreateIntroModal,
     },
     NewPostModal: {
       screen: NewPostModal,

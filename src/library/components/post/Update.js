@@ -24,6 +24,7 @@ const Update = ({
   showDetails = false,
   showLine = false,
   hideButtons = false,
+  hideTopLine = false,
   isStandalone = false,
   updateInd,
 }) => {
@@ -73,88 +74,96 @@ const Update = ({
   // const renderMedia = () => {};
 
   return (
-    <View style={[styles.update, isStandalone && { paddingTop: 12, marginTop: 5 }]}>
-      <View style={styles.leftColumn}>
-        <ProfilePic navigation={navigation} user={post.owner} size={30} disableVideo />
-        {showLine && <View style={styles.threadLine} />}
-      </View>
-      <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
-        <View style={styles.topRow}>
-          <View style={styles.leftSide}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
-              hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
-            >
-              <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
-                {post.owner.name}
+    // <View style={[styles.update, isStandalone && { paddingTop: 12, marginTop: 5 }]}>
+    <View style={{ width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 10 }}>
+      <View style={hideTopLine ? styles.updateNoLine : styles.update}>
+        <View style={styles.leftColumn}>
+          <ProfilePic navigation={navigation} user={post.owner} size={30} disableVideo />
+          {showLine && <View style={styles.threadLine} />}
+        </View>
+        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
+          <View style={styles.topRow}>
+            <View style={styles.leftSide}>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
+                hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
+              >
+                <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
+                  {post.owner.name}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.rightSide}>
+              <Text style={defaultStyles.smallMute}>
+                {timeDiff} {period}
               </Text>
-            </TouchableOpacity>
+            </View>
           </View>
 
-          <View style={styles.rightSide}>
-            <Text style={defaultStyles.smallMute}>
-              {timeDiff} {period}
-            </Text>
+          <View style={styles.headlineRow}>
+            <Text style={defaultStyles.smallMute}>Update #{updateInd + 1}</Text>
           </View>
-        </View>
 
-        <View style={styles.content}>
-          <Text style={defaultStyles.defaultText}>{update.content}</Text>
+          <View style={styles.content}>
+            <Text style={defaultStyles.defaultText}>{update.content}</Text>
+          </View>
+          {showDetails ? (
+            <>
+              <View style={styles.date}>
+                <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{formatedDate}</Text>
+              </View>
+              <View style={styles.likesRow}>
+                <View style={{ flexDirection: 'row' }}>
+                  {!!update.likesCount && (
+                    <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
+                      {update.likesCount} Likes
+                    </Text>
+                  )}
+                  {!!update.sharesCount && (
+                    <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
+                      {update.sharesCount} Shares
+                    </Text>
+                  )}
+                </View>
+                <View style={{ flexDirection: 'row' }}>
+                  <View style={{ paddingLeft: 25 }}>
+                    <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
+                  </View>
+                  <View style={{ paddingLeft: 25 }}>
+                    <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                  </View>
+                  <View style={{ paddingLeft: 25 }}>
+                    <Share onPress={() => null} />
+                  </View>
+                </View>
+              </View>
+            </>
+          ) : (
+            !hideButtons && (
+              <View style={styles.buttons}>
+                <View style={styles.buttonGroup}>
+                  <View style={styles.button}>
+                    <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
+                  </View>
+                  <View style={styles.button}>
+                    <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.likesCount}</Text>
+                  </View>
+                  <View style={styles.button}>
+                    <Share onPress={() => null} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.sharesCount}</Text>
+                  </View>
+                </View>
+                <View style={styles.buttonGroup}>
+                  <Ellipsis onPress={() => null} />
+                </View>
+              </View>
+            )
+          )}
         </View>
-        {showDetails ? (
-          <>
-            <View style={styles.date}>
-              <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{formatedDate}</Text>
-              <TextButton onPress={() => null}>Tags</TextButton>
-            </View>
-            <View style={styles.likesRow}>
-              <View style={{ flexDirection: 'row' }}>
-                {!!update.likesCount && (
-                  <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>{update.likesCount} Likes</Text>
-                )}
-                {!!update.sharesCount && (
-                  <Text style={{ ...defaultStyles.smallRegular, opacity: 0.6, paddingRight: 15 }}>
-                    {update.sharesCount} Shares
-                  </Text>
-                )}
-              </View>
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ paddingLeft: 25 }}>
-                  <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
-                </View>
-                <View style={{ paddingLeft: 25 }}>
-                  <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                </View>
-                <View style={{ paddingLeft: 25 }}>
-                  <Share onPress={() => null} />
-                </View>
-              </View>
-            </View>
-          </>
-        ) : (
-          !hideButtons && (
-            <View style={styles.buttons}>
-              <View style={styles.buttonGroup}>
-                <View style={styles.button}>
-                  <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
-                </View>
-                <View style={styles.button}>
-                  <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.likesCount}</Text>
-                </View>
-                <View style={styles.button}>
-                  <Share onPress={() => null} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.sharesCount}</Text>
-                </View>
-              </View>
-              <View style={styles.buttonGroup}>
-                <Ellipsis onPress={() => null} />
-              </View>
-            </View>
-          )
-        )}
       </View>
     </View>
   );
@@ -165,29 +174,38 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     backgroundColor: 'white',
-    paddingTop: 3,
+    paddingTop: 12,
+
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+  },
+  updateNoLine: {
+    width: '100%',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    paddingTop: 5,
   },
   threadLine: {
     flex: 1,
     width: 3,
-    marginTop: 3,
+    marginTop: 5,
     borderTopLeftRadius: 1.5,
     borderTopRightRadius: 1.5,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    backgroundColor: 'black',
-    opacity: 0.12,
+    borderBottomLeftRadius: 1.5,
+    borderBottomRightRadius: 1.5,
+    backgroundColor: colors.systemGray5,
   },
   leftColumn: {
     alignItems: 'center',
-    width: 64,
+    width: 48,
   },
   rightColumn: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    paddingRight: 15,
+    // paddingRight: 15,
     paddingBottom: 10,
+    paddingLeft: 8,
   },
   updateNumber: {
     alignSelf: 'flex-start',
@@ -196,6 +214,9 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    // paddingBottom: 4,
+  },
+  headlineRow: {
     paddingBottom: 4,
   },
   leftSide: {},
