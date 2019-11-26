@@ -10,7 +10,7 @@ const ButtonDefault = ({ onPress, buttonStyle, textStyle, children }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <View style={{ ...styles.button, ...buttonStyle }}>
-        <Text style={{ ...defaultStyles.hugeLight, ...textStyle }}>{children}</Text>
+        <Text style={{ ...defaultStyles.hugeMedium, ...textStyle }}>{children}</Text>
       </View>
     </TouchableOpacity>
   );

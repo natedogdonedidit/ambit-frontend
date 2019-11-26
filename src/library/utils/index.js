@@ -121,19 +121,52 @@ export const postPicUpload = async (userId, uri) => {
       body: uploadData,
     });
     const resJson = await res.json();
-    console.log('resJson', resJson);
+    // console.log('resJson', resJson);
 
     // return the image url
     return resJson.url;
   } catch (error) {
-    console.log('fail2');
     console.log('an error occured trying to upload your photo');
     // console.error(error);
     return error;
   }
 };
 
-export const introVideoUpload = async (userId, media) => {
+export const introPicUpload = async (userId, uri) => {
+  // create tags
+  const tags = `${userId}, intro, image`;
+
+  // create file object (all fields required)
+  const photo = {
+    uri,
+    type: 'image',
+    name: uri,
+  };
+  // create body
+  const uploadData = new FormData();
+  uploadData.append('file', photo);
+  uploadData.append('upload_preset', 'ambit-postpic-preset');
+  uploadData.append('tags', tags);
+  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+      method: 'POST',
+      body: uploadData,
+    });
+    const resJson = await res.json();
+    // console.log('resJson', resJson);
+
+    // return the image url
+    return resJson.url;
+  } catch (error) {
+    console.log('an error occured trying to upload your photo');
+    // console.error(error);
+    return error;
+  }
+};
+
+export const introVideoUpload = async (userId, uri) => {
   // create tags
   const tags = `${userId}, intro, video`;
 
@@ -146,7 +179,7 @@ export const introVideoUpload = async (userId, media) => {
   // create body
   const uploadData = new FormData();
   uploadData.append('file', video);
-  uploadData.append('upload_preset', 'ambit-postpic-preset');
+  uploadData.append('upload_preset', 'ambit-intro-video-preset');
   uploadData.append('tags', tags);
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
@@ -156,10 +189,10 @@ export const introVideoUpload = async (userId, media) => {
       body: uploadData,
     });
     const resJson = await res.json();
-    console.log('resJson', resJson);
+    // console.log('resJson', resJson);
 
-    // return the image url
-    return resJson.url;
+    // return the image url and duration
+    return { url: resJson.url, duration: resJson.duration };
   } catch (error) {
     console.log('fail2');
     console.log('an error occured trying to upload your photo');

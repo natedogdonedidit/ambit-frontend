@@ -51,8 +51,9 @@ import EditSkillsPopup from './modals/EditSkillsPopup';
 import EditPostPopup from './modals/EditPostPopup';
 import YearModal from './modals/YearModal';
 import MonthModal from './modals/MonthModal';
+import EditStoryItemPopup from './modals/EditStoryItemPopup';
 
-const { cond, interpolate } = Animated;
+// const { cond, interpolate } = Animated;
 
 const HomeStack = createStackNavigator(
   {
@@ -319,6 +320,12 @@ const MainNavWithModal = createStackNavigator(
     },
     EditPostPopup: {
       screen: EditPostPopup,
+      navigationOptions: {
+        cardStyleInterpolator: forVerticalIOSCustom,
+      },
+    },
+    EditStoryItemPopup: {
+      screen: EditStoryItemPopup,
       navigationOptions: {
         cardStyleInterpolator: forVerticalIOSCustom,
       },

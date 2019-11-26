@@ -129,7 +129,7 @@ const NewPostModal = ({ navigation }) => {
 
   const attemptUploads = () => {
     const uploadImagesPromises = images.map(image => {
-      const imageObject = postPicUpload(userLoggedIn, image);
+      const imageObject = postPicUpload(userLoggedIn.id, image);
       return imageObject;
     });
 

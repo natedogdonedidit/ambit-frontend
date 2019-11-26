@@ -25,7 +25,7 @@ const ProfilePic = ({
   // large = 70
 
   const hasPitch = !!pitch;
-  const hasIntro = intro.length > 0;
+  const hasIntro = !!intro;
 
   const whiteWidth = size + 2 * borderWidth;
   // const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
@@ -120,7 +120,15 @@ const ProfilePic = ({
 
   if (hasIntro && !disableVideo) {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('StoryModal', { user, contentType: 'Intro' })}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('StoryModal', {
+            owner: user,
+            isPreview: true,
+            story: user.intro,
+          })
+        }
+      >
         <View style={styles.introBorder}>
           <View style={styles.whiteBorder}>
             <Image

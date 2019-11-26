@@ -46,9 +46,14 @@ const CustomDrawer = ({ navigation }) => {
               <Text style={styles.buttonText}>My Profile</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('CreateIntroModal')}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('CreateIntroModal', { userLoggedIn });
+              navigation.closeDrawer();
+            }}
+          >
             <View style={styles.button}>
-              <Text style={styles.buttonText}>Record Intro</Text>
+              <Text style={styles.buttonText}>Create Your Intro</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handleLogout()}>

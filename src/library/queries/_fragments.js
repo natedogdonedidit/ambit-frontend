@@ -8,7 +8,18 @@ export const MinimalUser = gql`
     profilePic
     headline
     location
-    intro
+    intro {
+      id
+      title
+      items {
+        id
+        type
+        url
+        link
+        text
+        duration
+      }
+    }
   }
 `;
 
@@ -25,7 +36,18 @@ export const LoggedInUser = gql`
     location
     locationLat
     locationLon
-    intro
+    intro {
+      id
+      title
+      items {
+        id
+        type
+        url
+        link
+        text
+        duration
+      }
+    }
   }
 `;
 
