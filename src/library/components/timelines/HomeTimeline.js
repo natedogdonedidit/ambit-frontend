@@ -22,7 +22,7 @@ import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
 import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
-const GlobalTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing, navigation }) => {
+const HomeTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing, navigation }) => {
   const taskRef = useRef(null);
   const [slideIndex, setSlideIndex] = useState(0);
   const [showTasks, setShowTasks] = useState(false); // set to true to show
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GlobalTimeline;
+export default HomeTimeline;
 
 // {/* <View style={{ height: BANNER_HEIGHT, paddingHorizontal: 20, paddingVertical: 15, backgroundColor: 'white' }}>
 //   {/* {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>} */}

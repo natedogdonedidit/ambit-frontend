@@ -40,13 +40,14 @@ const CreateIntroModal = ({ navigation }) => {
   // ////////////////////////////////////////
   // STATE
   // ////////////////////////////////////////
-  const [storyTitle, setStoryTitle] = useState(user.intro.title || 'My Intro');
+  const [storyTitle, setStoryTitle] = useState('My Intro');
   const [storyItems, setStoryItems] = useState(currentIntroItems || []);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(true);
   const [uploading, setUploading] = useState(false);
 
   const videoRef = useRef(null);
+  const isEmpty = storyItems.length < 1;
 
   // ////////////////////////////////////////
   // MUTAION
@@ -66,8 +67,24 @@ const CreateIntroModal = ({ navigation }) => {
       ]),
   });
 
+  const handleBack = () => {
+    Alert.alert('Are you sure you want to leave?', 'All changes will be lost', [
+      {
+        text: 'Yes',
+        onPress: () => {
+          cleanupStuff();
+          navigation.goBack();
+        },
+      },
+      { text: 'Cancel', onPress: () => console.log('Cancel pressed'), style: 'cancel' },
+    ]);
+  };
+
   const handleSave = () => {
-    editIntro();
+    Alert.alert('Are you sure you want to save this intro?', 'Your previous intro will be overwritten', [
+      { text: 'Yes', onPress: () => editIntro() },
+      { text: 'Cancel', onPress: () => console.log('Cancel pressed'), style: 'cancel' },
+    ]);
   };
 
   const cleanupStuff = () => {
@@ -170,7 +187,7 @@ const CreateIntroModal = ({ navigation }) => {
   // RENDER FUNCTIONS
   // ////////////////////////////////////////
   const renderStoryItems = () => {
-    if (storyItems.length < 1) return null;
+    if (isEmpty) return null;
     return storyItems.map((item, i) => {
       if (item.type === 'photo') {
         return (
@@ -201,7 +218,14 @@ const CreateIntroModal = ({ navigation }) => {
   };
 
   const renderStory = () => {
-    if (storyItems.length < 1) return null;
+    if (storyItems.length < 1)
+      return (
+        <View style={{ ...StyleSheet.absoluteFillObject, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ ...defaultStyles.defaultMedium, color: 'white', padding: 15, textAlign: 'center' }}>
+            Add a picture or video to create your intro
+          </Text>
+        </View>
+      );
     const activeItem = storyItems[activeIndex];
     if (activeItem.type === 'photo') {
       return <Image source={{ uri: activeItem.url }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />;
@@ -233,14 +257,7 @@ const CreateIntroModal = ({ navigation }) => {
           paddingHorizontal: 15,
         }}
       >
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={() => {
-            cleanupStuff();
-            navigation.goBack();
-          }}
-          hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
-        >
+        <TouchableOpacity activeOpacity={0.9} onPress={handleBack} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Icon name="chevron-left" size={22} color={colors.blueGray} />
             {/* <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingLeft: 5 }}>Cancel</Text> */}
@@ -271,18 +288,20 @@ const CreateIntroModal = ({ navigation }) => {
           >
             My Intro
           </Text>
-          <TouchableOpacity
-            onPress={() => {
-              cleanupStuff();
-              navigation.navigate('StoryModal', {
-                owner: user,
-                isPreview: true,
-                story: { title: storyTitle, items: storyItems },
-              });
-            }}
-          >
-            <Text style={{ ...defaultStyles.hugeMedium, color: colors.purp, paddingLeft: 20 }}>Preview</Text>
-          </TouchableOpacity>
+          {!isEmpty && (
+            <TouchableOpacity
+              onPress={() => {
+                cleanupStuff();
+                navigation.navigate('StoryModal', {
+                  owner: user,
+                  isPreview: true,
+                  story: { title: storyTitle, items: storyItems },
+                });
+              }}
+            >
+              <Text style={{ ...defaultStyles.hugeMedium, color: colors.purp, paddingLeft: 20 }}>Preview</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>
@@ -305,42 +324,54 @@ const CreateIntroModal = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={{ alignSelf: 'stretch', width: 40, alignItems: 'center' }}>
-          <View>
-            <TouchableOpacity style={{ paddingBottom: 15 }} onPress={null} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
-              <Icon name="font" size={20} color={colors.blueGray} solid />
-            </TouchableOpacity>
-            <TouchableOpacity style={{ paddingBottom: 15 }} onPress={null} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
-              <Icon name="link" size={20} color={colors.blueGray} solid />
-            </TouchableOpacity>
+        {!isEmpty && (
+          <View style={{ alignSelf: 'stretch', width: 40, alignItems: 'center' }}>
+            <View>
+              <TouchableOpacity
+                style={{ paddingBottom: 15 }}
+                onPress={null}
+                hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
+              >
+                <Icon name="font" size={20} color={colors.blueGray} solid />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ paddingBottom: 15 }}
+                onPress={null}
+                hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
+              >
+                <Icon name="link" size={20} color={colors.blueGray} solid />
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity
+                style={{ paddingBottom: 15 }}
+                onPress={() => changeOrder('up')}
+                hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
+              >
+                <Icon name="arrow-left" size={20} color={colors.blueGray} solid />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ paddingBottom: 15 }}
+                onPress={() => changeOrder('down')}
+                hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
+              >
+                <Icon name="arrow-right" size={20} color={colors.blueGray} solid />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ paddingBottom: 15 }}
+                onPress={removeStoryItem}
+                hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
+              >
+                <Icon name="trash-alt" size={20} color={colors.peach} solid />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View>
-            <TouchableOpacity
-              style={{ paddingBottom: 15 }}
-              onPress={() => changeOrder('up')}
-              hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
-            >
-              <Icon name="arrow-left" size={20} color={colors.blueGray} solid />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ paddingBottom: 15 }}
-              onPress={() => changeOrder('down')}
-              hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
-            >
-              <Icon name="arrow-right" size={20} color={colors.blueGray} solid />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ paddingBottom: 15 }}
-              onPress={removeStoryItem}
-              hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
-            >
-              <Icon name="trash-alt" size={20} color={colors.peach} solid />
-            </TouchableOpacity>
-          </View>
-        </View>
+        )}
       </View>
 
-      <Text style={{ ...defaultStyles.largeRegular, paddingLeft: 15, paddingTop: 30 }}>Select an item to edit:</Text>
+      {!isEmpty && (
+        <Text style={{ ...defaultStyles.largeRegular, paddingLeft: 15, paddingTop: 30 }}>Select an item to edit:</Text>
+      )}
 
       <ScrollView
         horizontal

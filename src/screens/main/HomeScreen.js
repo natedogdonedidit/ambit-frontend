@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import HeaderHome from 'library/components/headers/HeaderHome';
 import Error from 'library/components/UI/Error';
 import PersonalTimeline from 'library/components/timelines/PersonalTimeline';
-import GlobalTimeline from 'library/components/timelines/GlobalTimeline';
+import HomeTimeline from 'library/components/timelines/HomeTimeline';
 import LocalTimeline from 'library/components/timelines/LocalTimeline';
 import TimelineTabs from 'library/components/timelines/TimelineTabs';
 
@@ -45,7 +45,7 @@ const HomeScreen = ({ navigation }) => {
 
       <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {activeTimeline === 0 && (
-          <GlobalTimeline
+          <HomeTimeline
             requestRefresh={requestRefresh}
             setRequestRefresh={setRequestRefresh}
             refreshing={refreshing}

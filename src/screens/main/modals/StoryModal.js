@@ -25,6 +25,8 @@ const StoryModal = ({ navigation }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
 
+  const isEmpty = items.length < 1;
+
   // ////////////////////////////////////////
   // EFFECTS
   // ////////////////////////////////////////
@@ -35,16 +37,15 @@ const StoryModal = ({ navigation }) => {
   // }, [activeIndex]);
 
   useEffect(() => {
+    if (isEmpty) return () => null;
     // reached the end of photo timelimit
     if (items[activeIndex].type === 'photo' && currentTime >= IMAGE_DURATION) {
       incrementIndex();
     }
-    // if (items[activeIndex].type === 'video' && currentTime >= items[activeIndex].duration) {
-    //   incrementIndex();
-    // }
   }, [currentTime]);
 
   useEffect(() => {
+    if (isEmpty) return () => null;
     // if the activeIndex changes always reset the current time to zero
     setCurrentTime(0);
 
@@ -102,14 +103,14 @@ const StoryModal = ({ navigation }) => {
 
   const incrementIndex = () => {
     if (activeIndex < items.length - 1) {
+      setCurrentTime(0);
       setActiveIndex(prevState => prevState + 1);
     }
 
+    // if it was the last item
     if (activeIndex === items.length - 1) {
       navigation.goBack();
     }
-
-    setCurrentTime(0);
   };
 
   const decrementIndex = () => {
@@ -125,6 +126,7 @@ const StoryModal = ({ navigation }) => {
   // ////////////////////////////////////////
 
   const renderProgressBars = () => {
+    if (isEmpty) return null;
     return items.map((item, i) => {
       const length = Math.max(item.duration || IMAGE_DURATION, 10); // minimum of 10. ex: if dur of video is 2s, dur = 10
       const ratio = length / storyLength;
@@ -206,6 +208,7 @@ const StoryModal = ({ navigation }) => {
   };
 
   const renderStory = () => {
+    if (isEmpty) return null;
     const activeItem = items[activeIndex];
     if (activeItem.type === 'photo') {
       return <Image source={{ uri: activeItem.url }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />;
@@ -238,28 +241,43 @@ const StoryModal = ({ navigation }) => {
     );
   }
 
+  if (isEmpty) {
+    return (
+      <View style={styles.coverView}>
+        <Text>Oops...theres nothing to show here</Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" />
       <View style={StyleSheet.absoluteFill}>{renderStory()}</View>
 
       <SafeAreaView style={styles.overlay}>
-        <View style={styles.absoluteBottom}>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: owner.id })}>
-            <View style={styles.viewProfile}>
-              <Text>View Profile</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
         <View style={{ ...StyleSheet.absoluteFillObject, flexDirection: 'row', alignItems: 'stretch' }}>
           <TouchableOpacity onPress={decrementIndex} style={{ flex: 1 }} />
           <TouchableOpacity onPress={incrementIndex} style={{ flex: 1 }} />
         </View>
+        {!isPreview && (
+          <View style={styles.absoluteBottom}>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: owner.id })}>
+              <View style={styles.viewProfile}>
+                <Text>View Profile</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={styles.absoluteTop}>
           <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', paddingLeft: 10, paddingTop: 5 }}>
             {renderProgressBars()}
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: owner.id })}>
+          <TouchableOpacity
+            onPress={() => {
+              if (!isPreview) navigation.navigate('Profile', { profileId: owner.id });
+            }}
+          >
             <View style={styles.header}>
               <ProfilePic user={owner} navigation={navigation} disableVideo size={40} />
               <View>

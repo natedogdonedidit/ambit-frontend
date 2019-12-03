@@ -11,8 +11,8 @@ const ProfilePic = ({
   navigation, // required
   size = 40,
   user, // required
-  intro = [],
-  pitch = null,
+  // intro = [],
+  // pitch = null,
   disableVideo = false,
   disableClick = false,
   border = false,
@@ -24,8 +24,13 @@ const ProfilePic = ({
   // medium = 40
   // large = 70
 
-  const hasPitch = !!pitch;
-  const hasIntro = !!intro;
+  // const hasPitch = !!pitch;
+  let hasIntro = false;
+  if (user.intro) {
+    if (user.intro.items.length > 0) {
+      hasIntro = true;
+    }
+  }
 
   const whiteWidth = size + 2 * borderWidth;
   // const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
@@ -100,23 +105,23 @@ const ProfilePic = ({
     );
   }
 
-  if (hasPitch && !disableVideo) {
-    return (
-      <TouchableOpacity onPress={() => navigation.navigate('StoryModal', { user, ccontentType: 'Pitch', pitch })}>
-        <View style={styles.pitchBorder}>
-          <View style={styles.whiteBorder}>
-            <Image
-              style={styles.profilePic}
-              resizeMode="cover"
-              source={{
-                uri: user.profilePic || profilePicExample,
-              }}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  }
+  // if (hasPitch && !disableVideo) {
+  //   return (
+  //     <TouchableOpacity onPress={() => navigation.navigate('StoryModal', { user, ccontentType: 'Pitch', pitch })}>
+  //       <View style={styles.pitchBorder}>
+  //         <View style={styles.whiteBorder}>
+  //           <Image
+  //             style={styles.profilePic}
+  //             resizeMode="cover"
+  //             source={{
+  //               uri: user.profilePic || profilePicExample,
+  //             }}
+  //           />
+  //         </View>
+  //       </View>
+  //     </TouchableOpacity>
+  //   );
+  // }
 
   if (hasIntro && !disableVideo) {
     return (
@@ -124,7 +129,6 @@ const ProfilePic = ({
         onPress={() =>
           navigation.navigate('StoryModal', {
             owner: user,
-            isPreview: true,
             story: user.intro,
           })
         }

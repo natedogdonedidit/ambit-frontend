@@ -88,7 +88,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
     <View style={{ width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 10, marginTop: 5 }}>
       <View style={styles.post}>
         <View style={styles.leftColumn}>
-          <ProfilePic user={post.owner} intro={post.owner.intro} pitch={post.pitch} navigation={navigation} />
+          <ProfilePic user={post.owner} navigation={navigation} />
           {showLine && <View style={styles.threadLine} />}
         </View>
         <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 10 }]}>
