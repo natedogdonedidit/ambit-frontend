@@ -1,14 +1,17 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, Text, TouchableOpacity, Animated, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const HeaderHome = ({ navigation, handleMiddle, handleRight, user }) => {
+const HeaderHome = ({ navigation, handleMiddle, handleRight, user, height = 44 }) => {
+  const insets = useSafeArea();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ ...styles.container, height, paddingTop: insets.top }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
         <ProfilePic user={user} size={30} disableVideo disableClick />
       </TouchableOpacity>
@@ -18,13 +21,12 @@ const HeaderHome = ({ navigation, handleMiddle, handleRight, user }) => {
       <TouchableOpacity style={styles.rightSide} onPress={handleRight}>
         <Icon name="search" size={18} color={colors.iconDark} />
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 44,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',

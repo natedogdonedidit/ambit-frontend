@@ -1,51 +1,39 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  ScrollView,
-  StatusBar,
-  FlatList,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, View, Text, Animated, RefreshControl, FlatList, Image } from 'react-native';
 import { useQuery } from 'react-apollo';
-import Carousel from 'react-native-snap-carousel';
-import LinearGradient from 'react-native-linear-gradient';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+// import Carousel from 'react-native-snap-carousel';
+// import LinearGradient from 'react-native-linear-gradient';
+// import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
+import ProfilePic from 'library/components/UI/ProfilePic';
 
-import Loader from 'library/components/UI/Loader';
+// import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
-const HomeTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefreshing, navigation }) => {
-  const taskRef = useRef(null);
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [showTasks, setShowTasks] = useState(false); // set to true to show
-  useEffect(() => {
-    if (requestRefresh) {
-      refetch();
-      setRequestRefresh(false);
-    }
-  }, [requestRefresh]);
-
-  // QUERIES
-  const { loading, error, data, refetch } = useQuery(GLOBAL_POSTS_QUERY, {
-    fetchPolicy: 'cache-and-network',
-  });
+const HomeTimeline = ({ navigation, scrollY, tabsHeight }) => {
+  // useEffect(() => {
+  //   if (requestRefresh) {
+  //     // refetch();
+  //     setRequestRefresh(false);
+  //   }
+  // }, [requestRefresh]);
 
   const currentTime = new Date();
 
-  if (loading) {
-    setRefreshing(true);
-  }
-  if (!loading && !requestRefresh && refreshing) {
-    setRefreshing(false);
-  }
+  // QUERIES
+  const { loading, error, data, refetch } = useQuery(GLOBAL_POSTS_QUERY, {
+    // fetchPolicy: 'cache-and-network',
+  });
+
+  // if (loading) {
+  //   // setRefreshing(true);
+  // }
+  // if (!loading && !requestRefresh && refreshing) {
+  //   setRefreshing(false);
+  // }
 
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
@@ -57,79 +45,50 @@ const HomeTimeline = ({ requestRefresh, setRequestRefresh, refreshing, setRefres
   }
 
   const posts = data.postsGlobal || [];
+  // const posts = [];
 
-  const tasks = [{ title: 'Learn how to use Ambit!' }, { title: 'Setup your profile' }, { title: 'View suggested connections' }];
-  const sliderWidth = Dimensions.get('window').width;
+  // ======================
+  // CUSTOME FUNCTIONS
+  // ======================
 
-  const renderTask = ({ item, index }) => {
-    return (
-      <TouchableOpacity onPress={() => null}>
-        <View style={{ ...styles.task, ...defaultStyles.shadow6 }}>
-          <LinearGradient
-            start={{ x: 0.2, y: 0.2 }}
-            end={{ x: 1, y: 6 }}
-            colors={[colors.purp, colors.purpGradient]}
-            style={{ ...styles.linearGradient }}
-          />
-
-          <Text style={{ ...defaultStyles.largeSemibold, color: 'white', width: '100%', textAlign: 'center' }}>{item.title}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+  const onRefresh = () => {
+    refetch();
   };
 
-  const renderDots = () => {
-    return tasks.map((task, i) => {
-      return (
-        <View
-          key={i}
-          style={[{ ...styles.dot }, slideIndex === i ? { backgroundColor: colors.purp } : { backgroundColor: colors.iconGray }]}
-        />
-      );
-    });
-  };
+  // deleted the slider educational stuff...look back at old git rev to see what it was
 
   return (
-    <>
-      {showTasks && (
-        <View style={styles.tasks}>
-          <Text style={styles.welcomeText}>Get started in 3 simple steps.</Text>
-          <Carousel
-            contentContainerCustomStyle={{ paddingTop: 10, paddingBottom: 15 }}
-            ref={taskRef}
-            data={tasks}
-            renderItem={renderTask}
-            sliderWidth={sliderWidth}
-            itemWidth={sliderWidth - 60}
-            layout="default"
-            onSnapToItem={ind => setSlideIndex(ind)}
-          />
-          <View style={styles.slideIndicator}>{renderDots()}</View>
-
-          <View style={styles.xOut}>
-            <TouchableOpacity onPress={() => setShowTasks(false)}>
-              <Icon name="times" size={15} color={colors.iconGray} />
-            </TouchableOpacity>
-          </View>
-        </View>
+    <Animated.FlatList
+      // refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} tintColor="blue" />}
+      // onRefresh={onRefresh}
+      // refreshing={loading}
+      initialNumToRender={5} // speeds up load time
+      contentContainerStyle={{ paddingTop: tabsHeight + 2.5, paddingBottom: 20 }}
+      style={styles.timeline}
+      onScroll={Animated.event(
+        [
+          {
+            nativeEvent: {
+              contentOffset: {
+                y: scrollY,
+              },
+            },
+          },
+        ],
+        { useNativeDriver: true }
       )}
-
-      <FlatList
-        style={styles.timeline}
-        data={posts}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => {
-          return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
-        }}
-      />
-    </>
+      data={posts}
+      keyExtractor={(item, index) => item + index}
+      renderItem={({ item }) => {
+        return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
+      }}
+    />
   );
 };
 
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
-    marginTop: 10,
   },
   tasks: {
     marginTop: 15,
