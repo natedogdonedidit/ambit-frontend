@@ -1,15 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  ScrollView,
-  StatusBar,
-  TouchableOpacity,
-  RefreshControl,
-  Animated,
-} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, RefreshControl, Animated, Dimensions } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -20,33 +10,70 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import HeaderHome from 'library/components/headers/HeaderHome';
 import Error from 'library/components/UI/Error';
-import PersonalTimeline from 'library/components/timelines/PersonalTimeline';
+
 import HomeTimeline from 'library/components/timelines/HomeTimeline';
 import LocalTimeline from 'library/components/timelines/LocalTimeline';
-import TimelineTabs from 'library/components/timelines/TimelineTabs';
+import TopicsTimeline from 'library/components/timelines/TopicsTimeline';
 
-const AMBIT_HEADER_HEIGHT = 44;
+import TimelineTabs from 'library/components/timelines/TimelineTabs';
+import TopicsSelector from 'library/components/timelines/TopicsSelector';
+
+const HEADER_HEIGHT = 44;
+const BANNER_HEIGHT = 0;
 
 const HomeScreen = ({ navigation }) => {
   const [activeTimeline, setActiveTimeline] = useState(0);
-  // const [newPostModalVisible, setNewPostModalVisible] = useState(false);
+  const [scrollY] = useState(new Animated.Value(0));
+  const [scrollX] = useState(new Animated.Value(0));
   // const [refreshing, setRefreshing] = useState(false);
   // const [requestRefresh, setRequestRefresh] = useState(false);
-  const [scrollY] = useState(new Animated.Value(0));
+
+  // ///////////////////////////
+  // REFS & CONTEXT
+  // ///////////////////////////
   const insets = useSafeArea();
+  const { height, width } = Dimensions.get('window');
+  const horizontalScrollRef = useRef();
 
+  scrollX.addListener(({ value }) => {
+    if (value === 0) setActiveTimeline(0);
+    if (value === width * 1) setActiveTimeline(1);
+    if (value === width * 2) setActiveTimeline(2);
+  });
+
+  // ///////////////////////////
   // CONSTANTS
-
+  // ///////////////////////////
   const tabs1Height = 42;
   let tabs2Height = 0;
-  if (activeTimeline === 2) tabs2Height = 42;
+  if (activeTimeline === 2) tabs2Height = 46;
   const tabsHeight = tabs1Height + tabs2Height;
-  const paddingTop = tabsHeight + insets.top;
 
+  const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
+
+  // ///////////////////////////
   // QUERIES
+  // ///////////////////////////
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   if (errorUser) return <Error error={errorUser} />;
   const { userLoggedIn } = dataUser;
+
+  // ///////////////////////////
+  // CUSTOM FUNCTIONS
+  // ///////////////////////////
+
+  const onScrollHorizontal = Animated.event(
+    [
+      {
+        nativeEvent: {
+          contentOffset: {
+            x: scrollX,
+          },
+        },
+      },
+    ],
+    { useNativeDriver: true }
+  );
 
   // const onRefresh = () => {
   //   setRequestRefresh(true);
@@ -54,52 +81,51 @@ const HomeScreen = ({ navigation }) => {
   // };
 
   return (
-    <View style={styles.container}>
-      {/* <View style={{ height: 20, width: '100%', backgroundColor: colors.lightLightGray, zIndex: 100 }}>
-        <StatusBar barStyle="dark-content" />
-      </View> */}
+    <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
 
-      {/* <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}> */}
-      <View style={{ flex: 1, paddingTop }}>
-        {activeTimeline === 0 && (
-          // <View style={{ width: '100%', height: 500, backgroundColor: 'green' }} />
-          <HomeTimeline
-            // requestRefresh={requestRefresh}
-            // setRequestRefresh={setRequestRefresh}
-            // refreshing={refreshing}
-            // setRefreshing={setRefreshing}
-            navigation={navigation}
-            scrollY={scrollY}
-            tabsHeight={tabsHeight}
-          />
-        )}
-        {activeTimeline === 1 && (
-          // <View style={{ width: '100%', height: 500, backgroundColor: 'red' }} />
+      <Animated.ScrollView
+        // horizontal scrollView
+        ref={horizontalScrollRef}
+        style={{ flex: 1 }}
+        horizontal
+        snapToAlignment="start"
+        snapToInterval={width}
+        decelerationRate="fast"
+        showsHorizontalScrollIndicator={false}
+        scrollEventThrottle={100}
+        onScroll={onScrollHorizontal}
+      >
+        <View
+          style={{
+            width,
+            borderLeftWidth: StyleSheet.hairlineWidth,
+            borderLeftColor: colors.borderBlack,
+            borderRightWidth: StyleSheet.hairlineWidth,
+            borderRightColor: colors.borderBlack,
+          }}
+        >
+          <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT + tabsHeight} />
+        </View>
+        <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
           <LocalTimeline
-            // requestRefresh={requestRefresh}
-            // setRequestRefresh={setRequestRefresh}
-            // refreshing={refreshing}
-            // setRefreshing={setRefreshing}
             userLoggedIn={userLoggedIn}
             navigation={navigation}
             scrollY={scrollY}
-            tabsHeight={tabsHeight}
+            paddingTop={SLIDE_HEIGHT + tabsHeight}
           />
-        )}
-        {/* {activeTimeline === 2 && (
-          <PersonalTimeline
-            requestRefresh={requestRefresh}
-            setRequestRefresh={setRequestRefresh}
-            refreshing={refreshing}
-            setRefreshing={setRefreshing}
+        </View>
+        <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
+          <TopicsTimeline
+            userLoggedIn={userLoggedIn}
             navigation={navigation}
+            scrollY={scrollY}
+            paddingTop={SLIDE_HEIGHT + tabsHeight}
           />
-        )} */}
-      </View>
+        </View>
+      </Animated.ScrollView>
 
       {/* Absolute positioned stoff */}
-
       <View style={styles.newPostButtonAbsolute}>
         <TouchableOpacity
           activeOpacity={0.8}
@@ -114,6 +140,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       <Animated.View
+        // this contains the Header, Banner, and Tabs. They all slide up together clamped at SLIDE_HEIGHT
         style={{
           position: 'absolute',
           top: 0,
@@ -124,8 +151,8 @@ const HomeScreen = ({ navigation }) => {
           transform: [
             {
               translateY: scrollY.interpolate({
-                inputRange: [0, AMBIT_HEADER_HEIGHT],
-                outputRange: [0, -AMBIT_HEADER_HEIGHT],
+                inputRange: [0, SLIDE_HEIGHT],
+                outputRange: [0, -SLIDE_HEIGHT],
                 extrapolate: 'clamp',
               }),
             },
@@ -134,11 +161,7 @@ const HomeScreen = ({ navigation }) => {
       >
         <Animated.View
           style={{
-            opacity: scrollY.interpolate({
-              inputRange: [0, AMBIT_HEADER_HEIGHT],
-              outputRange: [1, 0],
-              extrapolate: 'clamp',
-            }),
+            paddingTop: insets.top,
           }}
         >
           <HeaderHome
@@ -146,7 +169,11 @@ const HomeScreen = ({ navigation }) => {
             handleMiddle={() => null}
             handleRight={() => navigation.navigate('CustomSearch')}
             navigation={navigation}
-            height={AMBIT_HEADER_HEIGHT + insets.top}
+            height={HEADER_HEIGHT}
+          />
+          <View
+            // custom banner (optional)
+            style={{ width: '100%', height: BANNER_HEIGHT, backgroundColor: 'tomato' }}
           />
         </Animated.View>
 
@@ -157,11 +184,39 @@ const HomeScreen = ({ navigation }) => {
             borderBottomWidth: StyleSheet.hairlineWidth,
           }}
         >
-          <TimelineTabs tabState={activeTimeline} setTabState={setActiveTimeline} height={tabs1Height} />
-          <TimelineTabs tabState={activeTimeline} setTabState={setActiveTimeline} height={tabs2Height} />
+          <TimelineTabs
+            activeTimeline={activeTimeline}
+            setActiveTimeline={setActiveTimeline}
+            height={tabs1Height}
+            scrollX={scrollX}
+            width={width}
+            horizontalScrollRef={horizontalScrollRef}
+          />
+        </View>
+        <View
+          style={{
+            backgroundColor: colors.lightLightGray,
+            borderBottomColor: colors.borderBlack,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+          }}
+        >
+          <TopicsSelector tabState={activeTimeline} setTabState={setActiveTimeline} height={tabs2Height} />
         </View>
       </Animated.View>
-    </View>
+
+      {/* Gives a solid background to the StatusBar */}
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          width: '100%',
+          height: insets.top,
+          backgroundColor: colors.lightLightGray,
+        }}
+      />
+    </SafeAreaView>
   );
 };
 

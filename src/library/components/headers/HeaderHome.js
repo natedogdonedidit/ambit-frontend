@@ -1,17 +1,17 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, Text, TouchableOpacity, Animated, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useSafeArea } from 'react-native-safe-area-context';
+// import { useSafeArea } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
 const HeaderHome = ({ navigation, handleMiddle, handleRight, user, height = 44 }) => {
-  const insets = useSafeArea();
+  // const insets = useSafeArea();
 
   return (
-    <View style={{ ...styles.container, height, paddingTop: insets.top }}>
+    <View style={{ ...styles.container, height }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
         <ProfilePic user={user} size={30} disableVideo disableClick />
       </TouchableOpacity>
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     backgroundColor: colors.lightLightGray,
+    // backgroundColor: 'gray',
   },
   leftSide: {
     width: 60,

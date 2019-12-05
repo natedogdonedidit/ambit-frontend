@@ -6,11 +6,10 @@ import { StyleSheet, View, Text, TouchableOpacity, Animated, ScrollView } from '
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const TimelineTabs = ({ tabState, setTabState, height }) => {
+const TimelineTabs = ({ activeTimeline, setActiveTimeline, height, scrollX, horizontalScrollRef, width }) => {
   const tabNames = ['Home', 'Local', 'Topics'];
 
   // const [widthAnim] = useState(new Animated.Value(0));
-
   const UNDERLINE_HEIGHT = 2.5;
 
   // useEffect(() => {
@@ -28,56 +27,76 @@ const TimelineTabs = ({ tabState, setTabState, height }) => {
   //   ]).start();
   // }, [tabState]);
 
-  const renderTabs = () => {
-    return tabNames.map((tabName, i) => {
-      return (
-        <TouchableOpacity key={i} onPress={() => setTabState(i)}>
-          <View style={{ justifyContent: 'center' }}>
-            <View style={{ ...styles.tab, height }}>
-              <Text style={tabState === i ? styles.tabSelectedText : styles.tabText}>{tabName}</Text>
-            </View>
-            {tabState === i && (
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  height: UNDERLINE_HEIGHT,
-                  width: '100%',
-                  alignItems: 'center',
-                }}
-              >
-                {/* <Animated.View
-                  style={{
-                    height: '100%',
-                    width: widthAnim.interpolate({
-                      inputRange: [0, 100],
-                      outputRange: ['0%', '100%'],
-                    }),
-                    backgroundColor: colors.purp,
-                  }}
-                /> */}
-                <View
-                  style={{
-                    height: '100%',
-                    width: '100%',
-                    backgroundColor: colors.purp,
-                  }}
-                />
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
-      );
-    });
-  };
+  console.log(horizontalScrollRef);
+
+  // const renderTabs = () => {
+  //   return tabNames.map((tabName, i) => {
+  //     return (
+  //       <TouchableOpacity key={i} onPress={() => horizontalScrollRef.current.getNode().scrollTo({ x: i * width })}>
+  //         <View style={{ justifyContent: 'center' }}>
+  //           <View style={{ ...styles.tab, height }}>
+  //             <Text style={activeTimeline === i ? styles.tabSelectedText : styles.tabText}>{tabName}</Text>
+  //           </View>
+  //           {activeTimeline === i && (
+  //             <View
+  //               style={{
+  //                 position: 'absolute',
+  //                 bottom: 0,
+  //                 left: 0,
+  //                 height: UNDERLINE_HEIGHT,
+  //                 width: '100%',
+  //                 alignItems: 'center',
+  //               }}
+  //             >
+  //               {/* <Animated.View
+  //                 style={{
+  //                   height: '100%',
+  //                   width: widthAnim.interpolate({
+  //                     inputRange: [0, 100],
+  //                     outputRange: ['0%', '100%'],
+  //                   }),
+  //                   backgroundColor: colors.purp,
+  //                 }}
+  //               /> */}
+  //               <View
+  //                 style={{
+  //                   height: '100%',
+  //                   width: '100%',
+  //                   backgroundColor: colors.purp,
+  //                 }}
+  //               />
+  //             </View>
+  //           )}
+  //         </View>
+  //       </TouchableOpacity>
+  //     );
+  //   });
+  // };
 
   return (
-    <ScrollView contentContainerStyle={{ ...styles.tabs, height }} horizontal showsHorizontalScrollIndicator={false}>
-      {renderTabs()}
-    </ScrollView>
+    <View style={{ ...styles.tabs, height }}>
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => horizontalScrollRef.current.getNode().scrollTo({ x: 0 * width })}>
+        <View style={{ ...styles.tab }}>
+          <Text style={activeTimeline === 0 ? styles.tabSelectedText : styles.tabText}>Home</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => horizontalScrollRef.current.getNode().scrollTo({ x: 1 * width })}>
+        <View style={{ ...styles.tab }}>
+          <Text style={activeTimeline === 1 ? styles.tabSelectedText : styles.tabText}>Local</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => horizontalScrollRef.current.getNode().scrollTo({ x: 2 * width })}>
+        <View style={{ ...styles.tab }}>
+          <Text style={activeTimeline === 2 ? styles.tabSelectedText : styles.tabText}>Topics</Text>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
+
+// <ScrollView contentContainerStyle={{ ...styles.tabs, height }} horizontal showsHorizontalScrollIndicator={false}>
+//   {renderTabs()}
+// </ScrollView>
 
 export default TimelineTabs;
 
@@ -90,16 +109,18 @@ const styles = StyleSheet.create({
     // backgroundColor: 'pink',
   },
   tab: {
+    flex: 1,
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 15,
+    // paddingHorizontal: 15,
   },
   tabText: {
-    ...defaultStyles.defaultSemibold,
+    ...defaultStyles.largeRegular,
     color: colors.blueGray,
   },
   tabSelectedText: {
-    ...defaultStyles.defaultBold,
+    ...defaultStyles.largeSemibold,
     color: colors.purp,
   },
 });

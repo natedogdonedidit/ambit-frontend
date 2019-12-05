@@ -18,7 +18,7 @@ const LocalTimeline = ({
   userLoggedIn,
   navigation,
   scrollY,
-  tabsHeight,
+  paddingTop,
 }) => {
   const [locationLat, setLocationLat] = useState(userLoggedIn.locationLat || 37.77713);
   const [locationLon, setLocationLon] = useState(userLoggedIn.locationLon || -122.41964);
@@ -76,7 +76,7 @@ const LocalTimeline = ({
   return (
     <Animated.FlatList
       initialNumToRender={5} // speeds up load time
-      contentContainerStyle={{ paddingTop: tabsHeight, paddingBottom: 20 }}
+      contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
       ListHeaderComponent={
         <View style={{ ...styles.locationSelect }}>
           <View style={styles.leftColumn}>

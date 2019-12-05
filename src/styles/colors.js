@@ -16,7 +16,7 @@ const colors = {
 
   // backgrounds used
   lightGray: 'rgba(239,239,244,1)', // systemBackgroundSecondary: used for app background
-  lightLightGray: '#FCFCFC',
+  lightLightGray: '#F9F9F9',
   borderBlack: 'rgba(0, 0, 0, 0.2)',
 
   // icon colors

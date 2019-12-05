@@ -9,7 +9,7 @@ import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
 // import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
-const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
+const TopicsTimeline = ({ navigation, scrollY, paddingTop }) => {
   // useEffect(() => {
   //   if (requestRefresh) {
   //     // refetch();
@@ -144,26 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeTimeline;
-
-// {/* <View style={{ height: BANNER_HEIGHT, paddingHorizontal: 20, paddingVertical: 15, backgroundColor: 'white' }}>
-//   {/* {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>} */}
-//   <Text style={styles.welcomeText}>Get started in 3 simple steps.</Text>
-//   <TouchableOpacity onPress={() => null}>
-//     <View style={{ ...styles.taskView, ...defaultStyles.shadowButton }}>
-//       <LinearGradient
-//         start={{ x: 0.2, y: 0.2 }}
-//         end={{ x: 1, y: 6 }}
-//         colors={[colors.purp, colors.purpGradient]}
-//         style={{ ...styles.linearGradient }}
-//       />
-//       <View>
-//         <Text style={{ ...defaultStyles.largeBold, color: 'white' }}>Learn how to use{'\n'}Ambit!</Text>
-//       </View>
-
-//       <View>
-//         <Text style={{ ...defaultStyles.defaultMedium, color: 'white', textAlign: 'center' }}>Step{'\n'}1/3</Text>
-//       </View>
-//     </View>
-//   </TouchableOpacity>
-// </View>; */}
+export default TopicsTimeline;
