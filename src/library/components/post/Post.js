@@ -21,6 +21,8 @@ import Comment from 'library/components/UI/Comment';
 import Ellipsis from 'library/components/UI/Ellipsis';
 import Options from 'library/components/UI/Options';
 import Share from 'library/components/UI/Share';
+import Dots from 'library/components/UI/Dots';
+import Topic from 'library/components/post/Topic';
 
 const Post = ({ post, currentTime, navigation, showDetails = false, showLine = false, hideButtons = false }) => {
   // MUTATIONS - like, share
@@ -65,8 +67,8 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;
-
   const containsMedia = post.video || post.images.length > 0;
+  const containsTopics = !!post.topic || !!post.subTopic || !!post.location;
 
   // for dates
   const createdAt = new Date(post.createdAt);
@@ -85,7 +87,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
   };
 
   return (
-    <View style={{ width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 10, marginTop: 5 }}>
+    <View style={{ width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 12, marginTop: 5 }}>
       <View style={styles.post}>
         <View style={styles.leftColumn}>
           <ProfilePic user={post.owner} navigation={navigation} />
@@ -102,19 +104,22 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                 <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
                   {post.owner.name}
                 </Text>
-                <Icon
+                {/* <Icon
                   name="circle"
                   solid
                   size={3}
                   color={colors.blueGray}
                   style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 1, opacity: 0.6, alignSelf: 'center' }}
-                />
-                <Text style={{ ...defaultStyles.smallMute }}>{post.location}</Text>
+                /> */}
+                {/* <Text style={{ ...defaultStyles.smallMute }}>{post.location}</Text> */}
               </View>
             </TouchableOpacity>
-            <Text style={{ ...defaultStyles.smallMute }}>
+
+            {!hideButtons && <Dots onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />}
+            {/* <Icon name="circle" solid size={3} color={colors.blueGray} style={{ opacity: 0.6, alignSelf: 'center' }} /> */}
+            {/* <Text style={{ ...defaultStyles.smallMute }}>
               {timeDiff} {period}
-            </Text>
+            </Text> */}
             {/* {!hideButtons && (
             <View style={{ position: 'absolute', top: -4, right: 0 }}>
               <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />
@@ -123,7 +128,17 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
           </View>
 
           <View style={styles.headlineRow}>
-            <Text style={defaultStyles.smallMute}>{post.owner.headline}</Text>
+            <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{post.owner.headline}</Text>
+            <Icon
+              name="circle"
+              solid
+              size={3}
+              color={colors.blueGray}
+              style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
+            />
+            <Text style={{ ...defaultStyles.smallMute }}>
+              {timeDiff} {period}
+            </Text>
           </View>
 
           {post.isGoal && (
@@ -142,6 +157,14 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
           <View style={styles.content}>
             <Text style={defaultStyles.defaultText}>{post.content}</Text>
           </View>
+
+          {containsTopics && (
+            <View style={styles.topics}>
+              {!!post.topic && <Topic>{post.topic}</Topic>}
+              {!!post.subTopic && <Topic>{post.subTopic}</Topic>}
+              {!!post.location && <Topic>{post.location}</Topic>}
+            </View>
+          )}
 
           {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
           {showDetails ? (
@@ -190,7 +213,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                   </View>
                 </View>
                 <View style={styles.buttonGroup}>
-                  <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />
+                  {/* <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} /> */}
                   {/* <Text style={{ ...defaultStyles.smallMute }}>
                   {timeDiff} {period} ago
                 </Text> */}
@@ -233,6 +256,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'stretch',
     // paddingRight: 15,
+    paddingTop: 4,
     paddingLeft: 8,
     paddingBottom: 10,
   },
@@ -242,14 +266,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headlineRow: {
+    flexDirection: 'row',
     paddingBottom: 12,
   },
   goalView: {
     width: '100%',
     alignSelf: 'flex-start',
-    paddingBottom: 6,
+    paddingBottom: 12,
   },
   content: {
+    paddingBottom: 12,
+  },
+  topics: {
+    flexDirection: 'row',
     paddingBottom: 12,
   },
   media: {
@@ -271,13 +300,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    // marginTop: 6,
   },
   buttonGroup: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   button: {
-    width: 60,
+    width: 70,
     flexDirection: 'row',
     alignItems: 'center',
   },

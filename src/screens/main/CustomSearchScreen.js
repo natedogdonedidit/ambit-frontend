@@ -23,7 +23,7 @@ const CustomSearchScreen = ({ navigation }) => {
         title="Custom Search"
       />
       <ScrollView style={{ flex: 1, width: '100%' }}>
-        <View style={styles.header}>
+        {/* <View style={styles.header}>
           <Text
             style={{
               ...defaultStyles.largeDisplay,
@@ -35,7 +35,7 @@ const CustomSearchScreen = ({ navigation }) => {
           >
             Build custom searches for your timeline
           </Text>
-        </View>
+        </View> */}
         <View style={styles.searchSection}>
           <View style={styles.searchRow}>
             <View style={styles.searchBar}>
@@ -44,10 +44,18 @@ const CustomSearchScreen = ({ navigation }) => {
             <Icon name="plus-circle" size={30} color={colors.purp} />
           </View>
         </View>
-        <View style={styles.searchSection}>
+        {/* <View style={styles.searchSection}>
           <View style={styles.searchRow}>
             <View style={styles.searchBar}>
               <Text style={{ ...defaultStyles.defaultMute, paddingLeft: 15 }}>Add keywords</Text>
+            </View>
+            <Icon name="plus-circle" size={30} color={colors.purp} />
+          </View>
+        </View> */}
+        <View style={styles.searchSection}>
+          <View style={styles.searchRow}>
+            <View style={styles.searchBar}>
+              <Text style={{ ...defaultStyles.defaultMute, paddingLeft: 15 }}>Add topics</Text>
             </View>
             <Icon name="plus-circle" size={30} color={colors.purp} />
           </View>
@@ -60,15 +68,7 @@ const CustomSearchScreen = ({ navigation }) => {
             <Icon name="plus-circle" size={30} color={colors.purp} />
           </View>
         </View>
-        <View style={styles.searchSection}>
-          <View style={styles.searchRow}>
-            <View style={styles.searchBar}>
-              <Text style={{ ...defaultStyles.defaultMute, paddingLeft: 15 }}>Add industries</Text>
-            </View>
-            <Icon name="plus-circle" size={30} color={colors.purp} />
-          </View>
-        </View>
-        <View style={styles.switchRow}>
+        {/* <View style={styles.switchRow}>
           <Text style={{ ...defaultStyles.largeLight, flex: 1 }}>Show goals</Text>
           <Switch
             trackColor={{ false: colors.iconGray, true: colors.purp }}
@@ -102,7 +102,7 @@ const CustomSearchScreen = ({ navigation }) => {
         </View>
         <View style={{ padding: 15, paddingTop: 30 }}>
           <BigButton buttonStyle={{ width: '100%' }}>Save</BigButton>
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );

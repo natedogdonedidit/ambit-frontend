@@ -32,8 +32,8 @@ import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
-import Goal from 'library/components/UI/Goal';
-import GoalField from 'library/components/UI/GoalField';
+// import Goal from 'library/components/UI/Goal';
+// import GoalField from 'library/components/UI/GoalField';
 
 const NewPostModal = ({ navigation }) => {
   const userLoggedIn = navigation.getParam('userLoggedIn');
@@ -41,7 +41,8 @@ const NewPostModal = ({ navigation }) => {
   // initialize state
   // const [isGoal, setIsGoal] = useState(false);
   const [goal, setGoal] = useState('');
-  const [field, setField] = useState('');
+  const [topic, setTopic] = useState('');
+  const [subTopic, setSubTopic] = useState('');
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState('');
@@ -63,7 +64,7 @@ const NewPostModal = ({ navigation }) => {
       post: {
         isGoal: !!goal,
         goal,
-        field,
+        topic,
         location,
         locationLat,
         locationLon,
@@ -120,11 +121,11 @@ const NewPostModal = ({ navigation }) => {
 
   const clearGoal = () => {
     setGoal('');
-    setField('');
+    setTopic('');
   };
 
   const clearField = () => {
-    setField('');
+    setTopic('');
   };
 
   const attemptUploads = () => {
@@ -313,7 +314,7 @@ const NewPostModal = ({ navigation }) => {
 
   const renderGoalView = () => {
     if (goal) {
-      if (field) {
+      if (topic) {
         // if a Goal AND a Field are both selected
         return (
           <View
@@ -327,7 +328,7 @@ const NewPostModal = ({ navigation }) => {
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={{ flex: 1 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setField })}>
+                <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setTopic })}>
                   <View style={styles.whiteBack}>
                     <View style={{ ...styles.goalRow, backgroundColor: getBackgroundColor(goal) }}>
                       <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{goal}</Text>
@@ -352,10 +353,10 @@ const NewPostModal = ({ navigation }) => {
             </Text>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <View style={{ flex: 1 }}>
-                <TouchableOpacity onPress={() => navigation.navigate('SelectGoalFieldModal', { goal, field, setField })}>
+                <TouchableOpacity onPress={() => navigation.navigate('SelectGoalFieldModal', { goal, topic, setTopic })}>
                   <View style={styles.whiteBack}>
                     <View style={{ ...styles.goalRow, backgroundColor: getBackgroundColor(goal) }}>
-                      <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{field}</Text>
+                      <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{topic}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -383,7 +384,7 @@ const NewPostModal = ({ navigation }) => {
           <Text style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingLeft: 5, paddingBottom: 6 }}>Goal:</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ flex: 1 }}>
-              <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setField })}>
+              <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setTopic })}>
                 <View style={styles.whiteBack}>
                   <View
                     style={{
@@ -415,20 +416,14 @@ const NewPostModal = ({ navigation }) => {
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View style={{ flex: 1 }}>
-                  <TouchableOpacity onPress={() => navigation.navigate('SelectGoalFieldModal', { goal, field, setField })}>
+                  <TouchableOpacity onPress={() => navigation.navigate('SelectGoalFieldModal', { goal, topic, setTopic })}>
                     <View style={styles.wideButton}>
                       <Text style={defaultStyles.largeRegular}>{fieldButtonText}</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
 
-                <Icon
-                  name="times"
-                  size={15}
-                  color={colors.iconGray}
-                  style={{ paddingLeft: 20, paddingRight: 5 }}
-                  onPress={() => clearGoal()}
-                />
+                <Icon name="times" size={15} color="white" style={{ paddingLeft: 20, paddingRight: 5 }} onPress={() => null} />
               </View>
             </>
           )}
@@ -444,7 +439,7 @@ const NewPostModal = ({ navigation }) => {
           paddingBottom: 20,
         }}
       >
-        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setField })}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setTopic })}>
           <View style={styles.wideButton}>
             <Text style={defaultStyles.largeRegular}>Add a goal</Text>
           </View>
@@ -484,7 +479,7 @@ const NewPostModal = ({ navigation }) => {
                   value={content}
                   autoFocus
                   autoCompleteType="off"
-                  autoCorrect={false}
+                  // autoCorrect={false}
                   multiline
                   maxLength={320}
                   textAlignVertical="top"
@@ -509,15 +504,29 @@ const NewPostModal = ({ navigation }) => {
               <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                 <IconM name="camera-outline" size={22} color={colors.purp} style={{ paddingRight: 32, opacity: 0.6 }} />
               </TouchableOpacity>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
                 hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
               >
                 <Icon name="map-marker-alt" size={18} color={colors.purp} style={{ paddingRight: 0, opacity: 0.6 }} />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
             <View style={styles.aboveKeyboardRight}>
-              <TouchableOpacity onPress={() => setIsPrivate(!isPrivate)} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
+                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Icon
+                    name="map-marker-alt"
+                    size={15}
+                    color={colors.purp}
+                    style={{ paddingRight: 5, paddingBottom: 2, opacity: 0.6 }}
+                  />
+                  <Text style={{ ...defaultStyles.defaultMute }}>{location}</Text>
+                </View>
+              </TouchableOpacity>
+              {/* <TouchableOpacity onPress={() => setIsPrivate(!isPrivate)} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                 <View style={styles.aboveKeyboardRight}>
                   <Icon
                     name={isPrivate ? 'user-lock' : 'globe-americas'}
@@ -527,7 +536,7 @@ const NewPostModal = ({ navigation }) => {
                   />
                   <Text style={{ ...defaultStyles.smallMedium }}>{isPrivate ? 'Network Only' : 'Public'}</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
         </InputAccessoryView>

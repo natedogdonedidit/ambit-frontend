@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { industryList, freelanceList, investmentMarkets } from 'library/utils/lists';
+import { topicsList, freelanceList, investmentMarkets } from 'library/utils/lists';
 import { getPrimaryColor, getBackgroundColor, getIcon } from 'library/utils';
 
 import HeaderWhite from 'library/components/headers/HeaderWhite';
@@ -13,8 +13,13 @@ import HeaderWhite from 'library/components/headers/HeaderWhite';
 
 const SelectGoalModal = ({ navigation }) => {
   const goal = navigation.getParam('goal');
-  const field = navigation.getParam('field');
-  const setField = navigation.getParam('setField');
+
+  const topicSelected = navigation.getParam('topic');
+  const setTopic = navigation.getParam('setTopic');
+
+  const subTopicSelected = navigation.getParam('subTopic');
+  const setSubTopic = navigation.getParam('setSubTopic');
+
   const [selectedCategory, setSelectedCategory] = useState('');
 
   const pickHeadingText = () => {
@@ -36,9 +41,9 @@ const SelectGoalModal = ({ navigation }) => {
       case 'Get coffee':
         return 'Which industry are you looking to network in?';
       case 'Get advice':
-        return null;
+        return 'Which topic do you need advice about?';
       case 'Get feedback':
-        return null;
+        return 'Which topic best fits your project?';
       default:
         return null;
     }
@@ -46,20 +51,27 @@ const SelectGoalModal = ({ navigation }) => {
 
   const headerText = pickHeadingText(goal);
 
-  const handleFieldSelect = fieldText => {
-    setField(fieldText);
+  const handleTopicSelect = topicText => {
+    setTopic(topicText);
     navigation.goBack();
   };
 
   const renderList = () => {
-    if (goal === 'Find business partners' || goal === 'Find a mentor' || goal === 'Network' || goal === 'Get coffee') {
-      return industryList.map(listItem => {
-        const isSelected = listItem === field;
+    if (
+      goal === 'Find business partners' ||
+      goal === 'Find a mentor' ||
+      goal === 'Network' ||
+      goal === 'Get coffee' ||
+      goal === 'Get advice' ||
+      goal === 'Get feedback'
+    ) {
+      return topicsList.map(({ topic, subTopics }) => {
+        const isSelected = topic === topicSelected;
 
         return (
-          <TouchableOpacity key={listItem} activeOpacity={0.8} onPress={() => handleFieldSelect(listItem)}>
+          <TouchableOpacity key={topic} activeOpacity={0.8} onPress={() => handleTopicSelect(topic)}>
             <View style={{ ...styles.itemRow, borderColor: getPrimaryColor(goal) }}>
-              <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(goal) }}>{listItem}</Text>
+              <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(goal) }}>{topic}</Text>
               {isSelected && (
                 <View style={{ height: 40, justifyContent: 'center', paddingRight: 10, position: 'absolute', top: 0, right: 0 }}>
                   <Icon name="check" size={20} color={getPrimaryColor(goal)} />
@@ -73,10 +85,10 @@ const SelectGoalModal = ({ navigation }) => {
 
     if (goal === 'Find investors') {
       return investmentMarkets.map(listItem => {
-        const isSelected = listItem === field;
+        const isSelected = listItem === topicSelected;
 
         return (
-          <TouchableOpacity key={listItem} activeOpacity={0.8} onPress={() => handleFieldSelect(listItem)}>
+          <TouchableOpacity key={listItem} activeOpacity={0.8} onPress={() => handleTopicSelect(listItem)}>
             <View style={{ ...styles.itemRow, borderColor: getPrimaryColor(goal) }}>
               <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(goal) }}>{listItem}</Text>
               {isSelected && (
@@ -113,10 +125,10 @@ const SelectGoalModal = ({ navigation }) => {
 
   const renderFreelanceItem = item => {
     return item.list.map(listItem => {
-      const isSelected = listItem === field;
+      const isSelected = listItem === topicSelected;
 
       return (
-        <TouchableOpacity key={listItem} activeOpacity={0.8} onPress={() => handleFieldSelect(listItem)}>
+        <TouchableOpacity key={listItem} activeOpacity={0.8} onPress={() => handleTopicSelect(listItem)}>
           <View style={{ ...styles.itemRow, borderColor: getPrimaryColor(goal) }}>
             <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(goal) }}>{listItem}</Text>
             {isSelected && (

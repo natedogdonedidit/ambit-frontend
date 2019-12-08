@@ -58,6 +58,7 @@ const colors = {
   systemBackgroundSecondary: 'rgba(239,239,244,1)', // light background
   darkGray1: 'rgb(28,28,30)',
   darkGray2: 'rgb(44,44,46)',
+  white: 'white',
 
   // ------------------ //
   // --- old colors --- //

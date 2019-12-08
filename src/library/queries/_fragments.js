@@ -115,10 +115,10 @@ export const ListPosts = gql`
     }
     isGoal
     goal
-    field
+    topic
+    subTopic
     location
     content
-    tags
     images
     video
     pitch

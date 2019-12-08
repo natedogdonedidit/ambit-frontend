@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 8,
     backgroundColor: 'white',
-    marginTop: 8,
+    marginTop: 5,
   },
   leftColumn: {
     flexDirection: 'column',

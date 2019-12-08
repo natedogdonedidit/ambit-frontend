@@ -2,33 +2,27 @@
 
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Animated, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { topicsList } from 'library/utils/lists';
 
-const TopicsSelector = ({ height }) => {
+const GoalsSelector = ({ height }) => {
+  const topics = [
+    'Trending',
+    'Find Mentors',
+    'Find Business Partners',
+    'Find Investors',
+    'Find Freelancers',
+    'Find Agencies',
+    'Network',
+    'Get Coffee',
+    'Get Advice',
+    'Get Feedback',
+  ];
   const [activeTopic, setActiveTopic] = useState('Trending');
 
-  const renderTrendingTab = () => {
-    const topic = 'Trending';
-
-    return (
-      <TouchableOpacity activeOpacity={1} onPress={() => setActiveTopic(topic)}>
-        <View style={{ justifyContent: 'center' }}>
-          <View style={[activeTopic === topic ? { ...styles.topicSelected } : { ...styles.topic }]}>
-            <Text style={activeTopic === topic ? styles.topicSelectedText : styles.topicText}>{topic}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   const renderTabs = () => {
-    return topicsList.map((item, i) => {
-      const { topic } = item;
-
+    return topics.map((topic, i) => {
       return (
         <TouchableOpacity activeOpacity={1} key={i} onPress={() => setActiveTopic(topic)}>
           <View style={{ justifyContent: 'center' }}>
@@ -43,58 +37,48 @@ const TopicsSelector = ({ height }) => {
 
   return (
     <ScrollView contentContainerStyle={{ ...styles.topics, height }} horizontal showsHorizontalScrollIndicator={false}>
-      <View style={styles.selectIcon}>
-        <Icon name="angle-down" solid size={16} color={colors.blueGray} style={{ paddingTop: 2 }} />
-      </View>
-      {renderTrendingTab()}
       {renderTabs()}
     </ScrollView>
   );
 };
 
-export default TopicsSelector;
+export default GoalsSelector;
 
 const styles = StyleSheet.create({
-  selectIcon: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 28,
-    width: 28,
-    borderRadius: 14,
-    borderWidth: 0.5,
-    borderColor: colors.blueGray,
-    backgroundColor: colors.white,
-    // paddingHorizontal: 12,
-    marginRight: 8,
-  },
   topics: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: colors.lightLightGray,
+    // backgroundColor: 'rgba(0,0,0,.02)',
     paddingHorizontal: 10,
+    // backgroundColor: 'pink',
   },
   topic: {
     justifyContent: 'center',
     alignItems: 'center',
     height: 28,
-    borderRadius: 14,
+    borderRadius: 6,
     borderWidth: 0.5,
     borderColor: colors.blueGray,
+    // backgroundColor: colors.lightGray,
     backgroundColor: 'white',
-    paddingHorizontal: 12,
-    marginRight: 8,
+    paddingHorizontal: 10,
+    marginRight: 10,
   },
   topicSelected: {
     justifyContent: 'center',
     alignItems: 'center',
     height: 28,
-    borderRadius: 14,
+    borderRadius: 6,
     borderWidth: 0.5,
     borderColor: colors.purp,
+    // backgroundColor: colors.lightGray,
+    // backgroundColor: 'white',
     backgroundColor: colors.purp,
-    paddingHorizontal: 12,
-    marginRight: 8,
+    // backgroundColor: colors.blueGray,
+    paddingHorizontal: 10,
+    marginRight: 10,
   },
   topicText: {
     ...defaultStyles.defaultMedium,
@@ -102,6 +86,7 @@ const styles = StyleSheet.create({
   },
   topicSelectedText: {
     ...defaultStyles.defaultBold,
+    // color: colors.purp,
     color: 'white',
   },
 });

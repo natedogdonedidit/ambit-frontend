@@ -17,6 +17,7 @@ import TopicsTimeline from 'library/components/timelines/TopicsTimeline';
 
 import TimelineTabs from 'library/components/timelines/TimelineTabs';
 import TopicsSelector from 'library/components/timelines/TopicsSelector';
+// import GoalsSelector from 'library/components/timelines/GoalsSelector';
 
 const HEADER_HEIGHT = 44;
 const BANNER_HEIGHT = 0;
@@ -39,6 +40,7 @@ const HomeScreen = ({ navigation }) => {
     if (value === 0) setActiveTimeline(0);
     if (value === width * 1) setActiveTimeline(1);
     if (value === width * 2) setActiveTimeline(2);
+    // if (value === width * 3) setActiveTimeline(3);
   });
 
   // ///////////////////////////
@@ -47,6 +49,7 @@ const HomeScreen = ({ navigation }) => {
   const tabs1Height = 42;
   let tabs2Height = 0;
   if (activeTimeline === 2) tabs2Height = 46;
+  // if (activeTimeline === 3) tabs2Height = 46;
   const tabsHeight = tabs1Height + tabs2Height;
 
   const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
@@ -123,6 +126,14 @@ const HomeScreen = ({ navigation }) => {
             paddingTop={SLIDE_HEIGHT + tabsHeight}
           />
         </View>
+        {/* <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
+          <TopicsTimeline
+            userLoggedIn={userLoggedIn}
+            navigation={navigation}
+            scrollY={scrollY}
+            paddingTop={SLIDE_HEIGHT + tabsHeight}
+          />
+        </View> */}
       </Animated.ScrollView>
 
       {/* Absolute positioned stoff */}
@@ -193,15 +204,28 @@ const HomeScreen = ({ navigation }) => {
             horizontalScrollRef={horizontalScrollRef}
           />
         </View>
-        <View
-          style={{
-            backgroundColor: colors.lightLightGray,
-            borderBottomColor: colors.borderBlack,
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
-        >
-          <TopicsSelector tabState={activeTimeline} setTabState={setActiveTimeline} height={tabs2Height} />
-        </View>
+        {activeTimeline === 2 && (
+          <View
+            style={{
+              backgroundColor: colors.lightLightGray,
+              borderBottomColor: colors.borderBlack,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          >
+            <TopicsSelector tabState={activeTimeline} setTabState={setActiveTimeline} height={tabs2Height} />
+          </View>
+        )}
+        {/* {activeTimeline === 3 && (
+          <View
+            style={{
+              backgroundColor: colors.lightLightGray,
+              borderBottomColor: colors.borderBlack,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          >
+            <GoalsSelector tabState={activeTimeline} setTabState={setActiveTimeline} height={tabs2Height} />
+          </View>
+        )} */}
       </Animated.View>
 
       {/* Gives a solid background to the StatusBar */}

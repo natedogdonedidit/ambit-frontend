@@ -158,7 +158,142 @@ export const freelanceList = [
 
 export const investmentMarkets = ['Any', 'Startup', 'Venture Capital', 'Real Estate', 'Hedge Fund'];
 
-const industries = [
+export const topicsList = [
+  {
+    topic: 'Technology',
+    subTopics: ['Software', 'Hardware', 'Semiconductors'],
+  },
+  {
+    topic: 'Science & Research',
+    subTopics: [],
+  },
+  {
+    topic: 'Automotive',
+    subTopics: [],
+  },
+  {
+    topic: 'Gaming',
+    subTopics: [],
+  },
+  {
+    topic: 'Sports',
+    subTopics: [],
+  },
+  {
+    topic: 'Real Estate',
+    subTopics: [],
+  },
+  {
+    topic: 'Photography',
+    subTopics: [],
+  },
+  {
+    topic: 'Videography',
+    subTopics: [],
+  },
+  {
+    topic: 'Music',
+    subTopics: [],
+  },
+  {
+    topic: 'Art & Design',
+    subTopics: ['Graphic Design'],
+  },
+  {
+    topic: 'Media & Journalism',
+    subTopics: [],
+  },
+  {
+    topic: 'Writing',
+    subTopics: [],
+  },
+  {
+    topic: 'Entertainment',
+    subTopics: ['Acting'],
+  },
+  {
+    topic: 'Entrepreneurship',
+    subTopics: [],
+  },
+  {
+    topic: 'Small Business',
+    subTopics: [],
+  },
+  {
+    topic: 'Startups',
+    subTopics: [],
+  },
+  {
+    topic: 'Finance & Markets',
+    subTopics: [],
+  },
+  {
+    topic: 'Marketing',
+    subTopics: [],
+  },
+  {
+    topic: 'HR',
+    subTopics: [],
+  },
+  {
+    topic: 'Manufacturing',
+    subTopics: ['Automation'],
+  },
+  {
+    topic: 'E-commerce & Retail',
+    subTopics: [],
+  },
+  {
+    topic: 'Food & Beverage',
+    subTopics: [],
+  },
+  {
+    topic: 'Health & Wellness',
+    subTopics: [],
+  },
+  {
+    topic: 'Medicine',
+    subTopics: [],
+  },
+  {
+    topic: 'Construction',
+    subTopics: [],
+  },
+  {
+    topic: 'Politics',
+    subTopics: [],
+  },
+  {
+    topic: 'Law & Policy',
+    subTopics: [],
+  },
+  {
+    topic: 'Education',
+    subTopics: [],
+  },
+  {
+    topic: 'Non-profit',
+    subTopics: [],
+  },
+  {
+    topic: 'Apparel & Fashion',
+    subTopics: [],
+  },
+  {
+    topic: 'Makeup & Beauty',
+    subTopics: [],
+  },
+  {
+    topic: 'Travel & Hospitality',
+    subTopics: [],
+  },
+  {
+    topic: 'Misc',
+    subTopics: [],
+  },
+];
+
+const industriesOld = [
   // 'Tech',
   // 'Arts',
   'Entertainment',
@@ -340,4 +475,5 @@ const industries = [
   // 'Wireless',
   'Writing and Editing',
 ];
-export const industryList = industries.sort();
+
+// export const industryList = industries.sort();

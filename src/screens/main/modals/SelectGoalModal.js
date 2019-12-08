@@ -14,11 +14,11 @@ import HeaderWhite from 'library/components/headers/HeaderWhite';
 const SelectGoalModal = ({ navigation }) => {
   const goal = navigation.getParam('goal');
   const setGoal = navigation.getParam('setGoal');
-  const setField = navigation.getParam('setField');
+  const setTopic = navigation.getParam('setTopic');
 
   const handleGoalSelect = goalText => {
     setGoal(goalText);
-    setField('');
+    setTopic('');
     navigation.goBack();
   };
 
@@ -32,7 +32,7 @@ const SelectGoalModal = ({ navigation }) => {
             <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(listItem) }}>{listItem}</Text>
             {isSelected && (
               <View style={{ height: 40, justifyContent: 'center', paddingRight: 10, position: 'absolute', top: 0, right: 0 }}>
-                <Icon name="check" size={20} color={colors.purp} />
+                <Icon name="check" size={20} color={getPrimaryColor(listItem)} />
               </View>
             )}
           </View>
@@ -79,7 +79,7 @@ const SelectGoalModal = ({ navigation }) => {
 
             <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>Goals tell other people what you're working on.</Text>
             <Text style={{ ...defaultStyles.defaultMute, paddingTop: 1, paddingBottom: 20 }}>
-              Ambit will also suggest people to help!
+              Then Ambit will suggest people to help!
             </Text>
           </View>
           <View>{renderList(moneyGoals)}</View>

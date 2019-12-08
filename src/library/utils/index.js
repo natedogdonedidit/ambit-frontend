@@ -255,9 +255,9 @@ export const pickFieldPrefix = (goal = '') => {
     case 'Find investors':
       return 'Market';
     case 'Find freelancers':
-      return 'Niche';
+      return 'Specialty';
     case 'Find agencies':
-      return 'Niche';
+      return 'Specialty';
     case 'Find business partners':
       return 'Industry';
     case 'Find a mentor':
@@ -267,9 +267,9 @@ export const pickFieldPrefix = (goal = '') => {
     case 'Get coffee':
       return 'Industry';
     case 'Get advice':
-      return null;
+      return 'Topic';
     case 'Get feedback':
-      return null;
+      return 'Topic';
     default:
       return null;
   }
@@ -282,9 +282,9 @@ export const pickFieldButtonText = (goal = '') => {
     case 'Find investors':
       return 'Select a market';
     case 'Find freelancers':
-      return 'Select a niche';
+      return 'Select a specialty';
     case 'Find agencies':
-      return 'Select a niche';
+      return 'Select a specialty';
     case 'Find business partners':
       return 'Select an industry';
     case 'Find a mentor':
@@ -294,9 +294,9 @@ export const pickFieldButtonText = (goal = '') => {
     case 'Get coffee':
       return 'Select an industry';
     case 'Get advice':
-      return null;
+      return 'Select a topic';
     case 'Get feedback':
-      return null;
+      return 'Select a topic';
     default:
       return null;
   }

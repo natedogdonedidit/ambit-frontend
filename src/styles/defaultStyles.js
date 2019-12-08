@@ -228,10 +228,12 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 3,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+
+    // elevation: 3,
   },
 
   shadowSlider: {
