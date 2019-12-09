@@ -24,6 +24,7 @@ const BANNER_HEIGHT = 0;
 
 const HomeScreen = ({ navigation }) => {
   const [activeTimeline, setActiveTimeline] = useState(0);
+  const [activeTopic, setActiveTopic] = useState('Trending');
   const [scrollY] = useState(new Animated.Value(0));
   const [scrollX] = useState(new Animated.Value(0));
   // const [refreshing, setRefreshing] = useState(false);
@@ -86,55 +87,50 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
-
-      <Animated.ScrollView
-        // horizontal scrollView
-        ref={horizontalScrollRef}
-        style={{ flex: 1 }}
-        horizontal
-        snapToAlignment="start"
-        snapToInterval={width}
-        decelerationRate="fast"
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={100}
-        onScroll={onScrollHorizontal}
-      >
-        <View
-          style={{
-            width,
-            borderLeftWidth: StyleSheet.hairlineWidth,
-            borderLeftColor: colors.borderBlack,
-            borderRightWidth: StyleSheet.hairlineWidth,
-            borderRightColor: colors.borderBlack,
-          }}
+      <View style={{ flex: 1 }}>
+        <Animated.ScrollView
+          // horizontal scrollView
+          ref={horizontalScrollRef}
+          style={{ flex: 1 }} // must give a fixed height here of the onEndReached doesnt work in FlatLists
+          // contentContainerStyle={{ height: '100%' }}
+          horizontal
+          snapToAlignment="start"
+          snapToInterval={width}
+          decelerationRate="fast"
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={100}
+          onScroll={onScrollHorizontal}
         >
-          <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT + tabsHeight} />
-        </View>
-        <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
-          <LocalTimeline
-            userLoggedIn={userLoggedIn}
-            navigation={navigation}
-            scrollY={scrollY}
-            paddingTop={SLIDE_HEIGHT + tabsHeight}
-          />
-        </View>
-        <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
-          <TopicsTimeline
-            userLoggedIn={userLoggedIn}
-            navigation={navigation}
-            scrollY={scrollY}
-            paddingTop={SLIDE_HEIGHT + tabsHeight}
-          />
-        </View>
-        {/* <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
-          <TopicsTimeline
-            userLoggedIn={userLoggedIn}
-            navigation={navigation}
-            scrollY={scrollY}
-            paddingTop={SLIDE_HEIGHT + tabsHeight}
-          />
-        </View> */}
-      </Animated.ScrollView>
+          <View
+            style={{
+              width,
+              borderLeftWidth: StyleSheet.hairlineWidth,
+              borderLeftColor: colors.borderBlack,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderRightColor: colors.borderBlack,
+            }}
+          >
+            <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT + tabsHeight} />
+          </View>
+          <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
+            <LocalTimeline
+              userLoggedIn={userLoggedIn}
+              navigation={navigation}
+              scrollY={scrollY}
+              paddingTop={SLIDE_HEIGHT + tabsHeight}
+            />
+          </View>
+          <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
+            {/* <TopicsTimeline
+              activeTopic={activeTopic}
+              userLoggedIn={userLoggedIn}
+              navigation={navigation}
+              scrollY={scrollY}
+              paddingTop={SLIDE_HEIGHT + tabsHeight}
+            /> */}
+          </View>
+        </Animated.ScrollView>
+      </View>
 
       {/* Absolute positioned stoff */}
       <View style={styles.newPostButtonAbsolute}>
@@ -212,7 +208,7 @@ const HomeScreen = ({ navigation }) => {
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           >
-            <TopicsSelector tabState={activeTimeline} setTabState={setActiveTimeline} height={tabs2Height} />
+            <TopicsSelector activeTopic={activeTopic} setActiveTopic={setActiveTopic} height={tabs2Height} />
           </View>
         )}
         {/* {activeTimeline === 3 && (

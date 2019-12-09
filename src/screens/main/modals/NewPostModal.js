@@ -81,8 +81,8 @@ const NewPostModal = ({ navigation }) => {
     },
     refetchQueries: () => [
       { query: GLOBAL_POSTS_QUERY },
-      { query: LOCAL_POSTS_QUERY },
-      { query: USER_POSTS_QUERY, variables: { id: currentUserId } },
+      // { query: LOCAL_POSTS_QUERY },
+      // { query: USER_POSTS_QUERY, variables: { id: currentUserId } },
     ],
     // add update here to add post to GLOBAL, NETWORK, AND MYPOST arrays in cache
     onCompleted: () => {

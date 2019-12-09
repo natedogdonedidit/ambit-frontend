@@ -23,26 +23,24 @@ const ProfileScreen = ({ navigation }) => {
     variables: { id: profileId },
   });
 
+  if (loading) return <Loader loading={loading} />;
+
   const { user } = data;
 
   // CUSTOM FUNCTIONS
 
   return (
     <View style={styles.container}>
-      {loading ? (
-        <Loader loading={loading} />
-      ) : (
-        <ProfileComponent
-          navigation={navigation}
-          profileId={profileId}
-          scrollY={scrollY}
-          OUTSIDE_HEADER_HEIGHT={OUTSIDE_HEADER_HEIGHT}
-          OUTSIDE_HEADER_SCROLL={OUTSIDE_HEADER_SCROLL}
-          loading={loading}
-          user={user}
-          refetch={refetch}
-        />
-      )}
+      <ProfileComponent
+        navigation={navigation}
+        profileId={profileId}
+        scrollY={scrollY}
+        OUTSIDE_HEADER_HEIGHT={OUTSIDE_HEADER_HEIGHT}
+        OUTSIDE_HEADER_SCROLL={OUTSIDE_HEADER_SCROLL}
+        loading={loading}
+        user={user}
+        refetch={refetch}
+      />
     </View>
   );
 };

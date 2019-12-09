@@ -8,9 +8,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
 
-const TopicsSelector = ({ height }) => {
-  const [activeTopic, setActiveTopic] = useState('Trending');
-
+const TopicsSelector = ({ activeTopic, setActiveTopic, height }) => {
   const renderTrendingTab = () => {
     const topic = 'Trending';
 

@@ -1,35 +1,42 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, Animated, RefreshControl, FlatList, Image } from 'react-native';
+import { StyleSheet, View, Text, Animated, RefreshControl, FlatList, Image, ActivityIndicator } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
+import Loader from 'library/components/UI/Loader';
 
-// import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
-  // useEffect(() => {
-  //   if (requestRefresh) {
-  //     // refetch();
-  //     setRequestRefresh(false);
-  //   }
-  // }, [requestRefresh]);
-
   const currentTime = new Date();
 
   // QUERIES
-  const { loading, error, data, refetch } = useQuery(GLOBAL_POSTS_QUERY, {
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(GLOBAL_POSTS_QUERY, {
     // fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      // first: 10,
+    },
   });
 
-  // if (loading) {
-  //   // setRefreshing(true);
-  // }
-  // if (!loading && !requestRefresh && refreshing) {
-  //   setRefreshing(false);
-  // }
+  // networkStatus states:
+  // 1: loading
+  // 3: fetchMore
+  // 4: refetch
+  // 7: no loading, no refetch, everything OK!
+
+  // console.log('loading', loadingQuery);
+  // console.log('error', error);
+  // console.log('data', data);
+  // console.log('networkStatus', networkStatus);
+
+  // ///////////////////
+  // LOADING STATES
+  // ///////////////////
+  const refetching = networkStatus === 4;
+  // const loading = loadingQuery && !refetching;
 
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
@@ -40,51 +47,139 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     );
   }
 
-  const posts = data.postsGlobal || [];
+  if (!data) {
+    return <Loader />;
+  }
+
+  const posts = data.postsGlobal.edges || [];
+  // console.log('posts', posts);
   // const posts = [];
 
   // ////////////////////////
-  // CUSTOME FUNCTIONS
+  // CUSTOM FUNCTIONS
   // ////////////////////////
 
   const onRefresh = () => {
+    // console.log('running refetch');
     refetch();
   };
 
   // deleted the slider educational stuff...look back at old git rev to see what it was
 
   return (
-    <Animated.FlatList
-      // refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} tintColor="blue" />}
-      // onRefresh={onRefresh}
-      // refreshing={loading}
-      initialNumToRender={5} // speeds up load time
-      contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
-      style={styles.timeline}
-      onScroll={Animated.event(
-        [
-          {
-            nativeEvent: {
-              contentOffset: {
-                y: scrollY,
+    <View style={{ flex: 1 }}>
+      <Animated.FlatList
+        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
+        onRefresh={onRefresh}
+        refreshing={refetching}
+        // initialNumToRender={10} // speeds up load time
+        // contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
+        style={styles.timeline}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: scrollY,
+                },
               },
             },
-          },
-        ],
-        { useNativeDriver: true }
-      )}
-      data={posts}
-      keyExtractor={(item, index) => item + index}
-      renderItem={({ item }) => {
-        return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
-      }}
-    />
+          ],
+          { useNativeDriver: true }
+        )}
+        data={posts}
+        keyExtractor={(item, index) => item + index}
+        renderItem={({ item }) => {
+          return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
+        }}
+        onEndReachedThreshold={1.2}
+        onEndReached={info => {
+          // console.log('onEndReached triggered', info);
+          // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
+          if (data.postsGlobal.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
+            // console.log('fetching more');
+            fetchMore({
+              query: GLOBAL_POSTS_QUERY,
+              variables: {
+                cursor: data.postsGlobal.pageInfo.endCursor,
+              },
+              updateQuery: (previousResult, { fetchMoreResult }) => {
+                // console.log('prev', previousResult);
+                // console.log('fetched', fetchMoreResult);
+
+                const newEdges = fetchMoreResult.postsGlobal.edges;
+                const { pageInfo } = fetchMoreResult.postsGlobal;
+
+                return newEdges.length
+                  ? {
+                      postsGlobal: {
+                        __typename: previousResult.postsGlobal.__typename,
+                        edges: [...previousResult.postsGlobal.edges, ...newEdges],
+                        pageInfo,
+                      },
+                    }
+                  : previousResult;
+              },
+            });
+          }
+        }}
+      />
+      {/* This is the loading animation */}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: -400,
+          left: 0,
+          width: '100%',
+          height: paddingTop + 7 + 400,
+          // backgroundColor: colors.purp,
+          justifyContent: 'flex-end',
+          transform: [
+            {
+              translateY: scrollY.interpolate({
+                inputRange: [-800, 0],
+                outputRange: [800, 0],
+                extrapolate: 'clamp',
+              }),
+              // scale: scrollY.interpolate({
+              //   inputRange: [-1000, 0],
+              //   outputRange: [23, 1],
+              //   extrapolate: 'clamp',
+              // }),
+            },
+          ],
+          // opacity: scrollY.interpolate({
+          //   inputRange: [-400, 0],
+          //   outputRange: [1, 0],
+          //   extrapolate: 'clamp',
+          // }),
+        }}
+      >
+        <View style={{ width: '100%', height: 60 }}>
+          <ActivityIndicator
+            style={{
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+            }}
+            size="small"
+            color={colors.purp}
+            animating={refetching}
+          />
+        </View>
+      </Animated.View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
+    // height: '100%',
+    flex: 1,
     width: '100%',
   },
   tasks: {
@@ -145,25 +240,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeTimeline;
-
-// {/* <View style={{ height: BANNER_HEIGHT, paddingHorizontal: 20, paddingVertical: 15, backgroundColor: 'white' }}>
-//   {/* {userLoggedIn && <Text style={{ ...defaultStyles.largeLight }}>Hello, {userLoggedIn.firstName}!</Text>} */}
-//   <Text style={styles.welcomeText}>Get started in 3 simple steps.</Text>
-//   <TouchableOpacity onPress={() => null}>
-//     <View style={{ ...styles.taskView, ...defaultStyles.shadowButton }}>
-//       <LinearGradient
-//         start={{ x: 0.2, y: 0.2 }}
-//         end={{ x: 1, y: 6 }}
-//         colors={[colors.purp, colors.purpGradient]}
-//         style={{ ...styles.linearGradient }}
-//       />
-//       <View>
-//         <Text style={{ ...defaultStyles.largeBold, color: 'white' }}>Learn how to use{'\n'}Ambit!</Text>
-//       </View>
-
-//       <View>
-//         <Text style={{ ...defaultStyles.defaultMedium, color: 'white', textAlign: 'center' }}>Step{'\n'}1/3</Text>
-//       </View>
-//     </View>
-//   </TouchableOpacity>
-// </View>; */}

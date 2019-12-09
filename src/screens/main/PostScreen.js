@@ -26,6 +26,14 @@ const PostScreen = ({ navigation }) => {
   });
 
   if (error) return <Error error={error} />;
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
+        <Loader loading={loading} full={false} />
+      </SafeAreaView>
+    );
+  }
   const currentTime = new Date();
   const post = data.singlePost || null;
   // console.log(post);
