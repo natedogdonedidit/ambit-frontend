@@ -72,16 +72,16 @@ export default Goal;
 const styles = StyleSheet.create({
   whiteBack: {
     height: 32,
-    borderRadius: 16,
+    borderRadius: 5,
     backgroundColor: 'white',
-    ...defaultStyles.shadowGoal,
+    // ...defaultStyles.shadowGoal,
   },
   goalView: {
     height: 32,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 5,
     // borderWidth: 0.4,
     // borderColor: colors.darkGray,
     paddingHorizontal: 15,

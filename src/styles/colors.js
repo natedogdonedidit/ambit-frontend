@@ -29,16 +29,21 @@ const colors = {
   grayButton: 'rgb(242,242,247)', // systemGray6
 
   // goal text
-  blue: 'rgba(14,57,237,1)', // ios
+  // blue: 'rgba(14,57,237,1)',
+  blue: 'rgba(0,122,255,1)', // ios
   purple: 'rgba(65,63,193,1)', // ios
-  peach: 'rgba(252,27,15,1)', // ios
-  green: 'rgba(10,141,42,1)', // ios
+  // peach: 'rgba(252,27,15,1)',
+  peach: 'rgba(255,59,48,1)', // ios
+  // green: 'rgba(10,141,42,1)',
+  green: 'rgba(52,199,89,1)', // ios
+  orange: 'rgba(255, 149, 0, 1)', // ios
 
   // goal backgrounds
   goalBlue: 'rgba(0,35,229,0.15)', // ios
   goalPurp: 'rgba(94,92,230,0.15)', // ios
   goalPeach: 'rgba(255,69,58,0.15)', // ios
   goalGreen: 'rgba(50,215,75,0.15)', // ios
+  goalOrange: 'rgba(255, 149, 0, 0.15)', // ios
 
   // system grays
   systemGray1: 'rgb(142,142,147)',

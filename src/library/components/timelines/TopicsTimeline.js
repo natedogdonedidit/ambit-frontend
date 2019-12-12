@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, Animated, RefreshControl, FlatList, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, Animated, RefreshControl, FlatList, Image, ActivityIndicator, ScrollView } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import TOPIC_POSTS_QUERY from 'library/queries/TOPIC_POSTS_QUERY';
+import topicQueries from 'library/queries/TOPIC_POSTS_QUERY';
 import Loader from 'library/components/UI/Loader';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
@@ -12,13 +12,12 @@ import PostGroupTL from 'library/components/post/PostGroupTL';
 const TopicsTimeline = ({ activeTopic, navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
 
+  const activeQuery = topicQueries.topicToQuery(activeTopic);
+
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(TOPIC_POSTS_QUERY, {
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(activeQuery, {
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
-    variables: {
-      topic: activeTopic,
-    },
   });
 
   // networkStatus states:
@@ -36,7 +35,8 @@ const TopicsTimeline = ({ activeTopic, navigation, scrollY, paddingTop }) => {
   // LOADING STATES
   // ///////////////////
   const refetching = networkStatus === 4;
-  // const loading = loadingQuery && !refetching;
+  const loading = networkStatus === 1;
+  const ok = networkStatus === 7;
 
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
@@ -47,13 +47,13 @@ const TopicsTimeline = ({ activeTopic, navigation, scrollY, paddingTop }) => {
     );
   }
 
-  if (!data) {
-    return <Loader />;
+  if (!data || loading) {
+    return <Loader backgroundColor={colors.lightGray} />;
   }
 
   const posts = data.postsTopic.edges || [];
+  // const noPosts = posts.length < 1 && ok;
   // console.log('posts', posts);
-  // const posts = [];
 
   // ////////////////////////
   // CUSTOM FUNCTIONS
@@ -66,6 +66,10 @@ const TopicsTimeline = ({ activeTopic, navigation, scrollY, paddingTop }) => {
 
   // deleted the slider educational stuff...look back at old git rev to see what it was
 
+  // ////////////////////////
+  // RENDER
+  // ////////////////////////
+
   return (
     <View style={{ flex: 1 }}>
       <Animated.FlatList
@@ -76,6 +80,11 @@ const TopicsTimeline = ({ activeTopic, navigation, scrollY, paddingTop }) => {
         // contentContainerStyle={{ paddingBottom: 20 }}
         contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
         style={styles.timeline}
+        ListEmptyComponent={
+          <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
+            Sorry, no posts yet for this topic
+          </Text>
+        }
         onScroll={Animated.event(
           [
             {
@@ -100,7 +109,7 @@ const TopicsTimeline = ({ activeTopic, navigation, scrollY, paddingTop }) => {
           if (data.postsTopic.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
             // console.log('fetching more');
             fetchMore({
-              query: TOPIC_POSTS_QUERY,
+              query: activeQuery,
               variables: {
                 cursor: data.postsTopic.pageInfo.endCursor,
                 topic: activeTopic,

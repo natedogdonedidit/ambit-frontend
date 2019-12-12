@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -8,8 +9,9 @@ import defaultStyles from 'styles/defaultStyles';
 import TextButton from 'library/components/UI/TextButton';
 
 const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, title }) => {
+  const insets = useSafeArea();
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ ...styles.container, paddingTop: insets.top, height: 44 + insets.top }}>
       <TextButton textStyle={styles.closeButtonText} onPress={handleLeft}>
         {textLeft}
       </TextButton>
@@ -17,13 +19,13 @@ const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, title }) =>
       <TextButton textStyle={styles.saveButtonText} onPress={handleRight}>
         {textRight}
       </TextButton>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 44,
+    // height: 44,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
-    backgroundColor: 'white',
+    backgroundColor: colors.lightLightGray,
   },
   closeButtonText: {
     width: 60,

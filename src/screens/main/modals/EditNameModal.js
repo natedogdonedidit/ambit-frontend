@@ -22,7 +22,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import { profilePicUpload, sortExperiences } from 'library/utils';
+import { profilePicUpload, bannerPicUpload, sortExperiences } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -120,24 +120,14 @@ const EditNameModal = ({ navigation }) => {
   const handleSave = async () => {
     // if profile picture is different ... try uploading the image to cloudinary
     if (user.profilePic !== profilePic) {
-      await uploadImage();
+      await uploadProfilePic();
+    }
+
+    if (user.bannerPic !== bannerPic) {
+      await uploadBannerPic();
     }
 
     editBio();
-  };
-
-  // must pass this to camera roll modal
-  // const handleProfilePicSelect = (uri, type) => {
-  //   if (type === 'image') {
-  //     setProfilePic(uri);
-  //   }
-  // };
-
-  // must pass this to camera roll modal
-  const handleBannerSelect = (uri, type) => {
-    if (type === 'image') {
-      setBannerPic(uri);
-    }
   };
 
   const handleEditPicButton = () => {
@@ -151,7 +141,18 @@ const EditNameModal = ({ navigation }) => {
       .catch(e => alert(e));
   };
 
-  const uploadImage = async () => {
+  const handleEditBannerButton = () => {
+    ImagePicker.openPicker({
+      multiple: false,
+      waitAnimationEnd: false,
+      includeExif: true,
+      // cropping: true,
+    })
+      .then(img => setBannerPic(img.path))
+      .catch(e => alert(e));
+  };
+
+  const uploadProfilePic = async () => {
     setUploading(true);
     try {
       const url = await profilePicUpload(user, profilePic);
@@ -160,6 +161,20 @@ const EditNameModal = ({ navigation }) => {
     } catch (e) {
       setUploading(false);
       Alert.alert('Oh no!', 'We could not upload your new profile picture at this time. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    }
+  };
+
+  const uploadBannerPic = async () => {
+    setUploading(true);
+    try {
+      const url = await bannerPicUpload(user, bannerPic);
+      setUploading(false);
+      setBannerPic(url);
+    } catch (e) {
+      setUploading(false);
+      Alert.alert('Oh no!', 'We could not upload your new banner picture at this time. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]);
     }
@@ -287,10 +302,7 @@ const EditNameModal = ({ navigation }) => {
             </View>
 
             <View style={styles.editBannerButton}>
-              <TextButton
-                textStyle={styles.editButton}
-                onPress={() => navigation.navigate('RollModal', { handleMediaSelect: handleBannerSelect, assetType: 'Photos' })}
-              >
+              <TextButton textStyle={styles.editButton} onPress={() => handleEditBannerButton()}>
                 Edit Banner
               </TextButton>
             </View>

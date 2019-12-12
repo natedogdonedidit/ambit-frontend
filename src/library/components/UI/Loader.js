@@ -3,10 +3,10 @@ import { StyleSheet, ActivityIndicator } from 'react-native';
 
 import colors from 'styles/colors';
 
-const Loader = ({ active, size = 'large', color = colors.purp, full = true }) => {
+const Loader = ({ active, size = 'large', color = colors.purp, full = true, backgroundColor = 'white' }) => {
   return (
     <ActivityIndicator
-      style={full ? { ...styles.fullScreen } : { ...styles.fillComponent }}
+      style={full ? { ...styles.fullScreen, backgroundColor } : { ...styles.fillComponent, backgroundColor }}
       size={size}
       color={color}
       animating={active}
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     right: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     opacity: 0.8,
   },
   fillComponent: {
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
     opacity: 0.8,
   },
 });

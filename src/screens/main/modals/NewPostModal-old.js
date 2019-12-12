@@ -16,7 +16,6 @@ import {
 import { useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import Image from 'react-native-scalable-image';
 import FitImage from 'react-native-fit-image';
@@ -158,6 +157,28 @@ const NewPostModal = ({ navigation }) => {
     return null;
   };
 
+  // must pass this to camera roll modal
+  // const handleMediaSelect = (uri, type) => {
+  //   if (type === 'image') {
+  //     // if image already exists...delete it
+  //     if (images.includes(uri)) {
+  //       // find index
+  //       const newArray = [...images];
+  //       const indexToDelete = newArray.findIndex(element => element === uri);
+  //       // remove
+  //       newArray.splice(indexToDelete, 1);
+  //       setImages([...newArray]);
+  //     } else {
+  //       // if image doesnt already exist...add it
+  //       setImages([...images, uri]);
+  //     }
+  //   }
+  //   if (type === 'video') {
+  //     // need to creat the upload video to cloudinary function
+  //     // setVideo(uri);
+  //   }
+  // };
+
   // images & video stuff
 
   const handleCameraIconPress = () => {
@@ -165,7 +186,6 @@ const NewPostModal = ({ navigation }) => {
       multiple: true,
       waitAnimationEnd: false,
       includeExif: true,
-      loadingLabelText: 'Uploading files',
     })
       .then(imgs => {
         const newArray = imgs.map(img => {
@@ -202,13 +222,14 @@ const NewPostModal = ({ navigation }) => {
     if (images.length < 1) return null;
     if (images.length === 1) {
       return (
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 15, paddingLeft: 48 }}>
-          <View style={{ ...styles.image }}>
-            <Image source={{ uri: images[0] }} height={300} width={280} />
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 15 }}>
+          <View style={{ ...styles.image, width: '100%' }}>
+            <FitImage source={{ uri: images[0] }} />
+
             {/* <Image source={{ uri: images[0] }} width={200} /> */}
-            <TouchableOpacity style={styles.removeImageButton} activeOpacity={0.7} onPress={() => setImages([])}>
-              <Icon name="times" solid size={15} color="white" />
-            </TouchableOpacity>
+            <View style={styles.removeImageButton}>
+              <Icon name="times" solid size={15} color="white" onPress={() => setImages([])} />
+            </View>
           </View>
         </View>
       );
@@ -219,35 +240,40 @@ const NewPostModal = ({ navigation }) => {
           horizontal
           keyboardShouldPersistTaps="always"
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ flexDirection: 'row', paddingTop: 15, alignItems: 'flex-start', paddingLeft: 48 }}
+          style={{ width: '100%' }}
+          contentContainerStyle={{ flexDirection: 'row', paddingTop: 15, alignItems: 'flex-start' }}
         >
           <View style={{ ...styles.image, marginRight: 15 }}>
             <Image source={{ uri: images[0] }} height={200} />
-            <TouchableOpacity
-              style={styles.removeImageButton}
-              activeOpacity={0.7}
-              onPress={() => {
-                const newArray = [...images];
-                newArray.splice(0, 1);
-                setImages([...newArray]);
-              }}
-            >
-              <Icon name="times" solid size={15} color="white" />
-            </TouchableOpacity>
+            <View style={styles.removeImageButton}>
+              <Icon
+                name="times"
+                solid
+                size={15}
+                color="white"
+                onPress={() => {
+                  const newArray = [...images];
+                  newArray.splice(0, 1);
+                  setImages([...newArray]);
+                }}
+              />
+            </View>
           </View>
           <View style={{ ...styles.image }}>
             <Image source={{ uri: images[1] }} height={200} />
-            <TouchableOpacity
-              style={styles.removeImageButton}
-              activeOpacity={0.7}
-              onPress={() => {
-                const newArray = [...images];
-                newArray.splice(1, 1);
-                setImages([...newArray]);
-              }}
-            >
-              <Icon name="times" solid size={15} color="white" />
-            </TouchableOpacity>
+            <View style={styles.removeImageButton}>
+              <Icon
+                name="times"
+                solid
+                size={15}
+                color="white"
+                onPress={() => {
+                  const newArray = [...images];
+                  newArray.splice(1, 1);
+                  setImages([...newArray]);
+                }}
+              />
+            </View>
           </View>
         </ScrollView>
       );
@@ -259,23 +285,26 @@ const NewPostModal = ({ navigation }) => {
         horizontal
         keyboardShouldPersistTaps="always"
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ flexDirection: 'row', paddingTop: 15, alignItems: 'flex-start', paddingLeft: 48 }}
+        style={{ width: '100%' }}
+        contentContainerStyle={{ flexDirection: 'row', paddingTop: 15, alignItems: 'flex-start' }}
       >
         {images.map((image, i) => {
           return (
             <View key={image} style={{ ...styles.image, marginRight: 15 }}>
               <Image source={{ uri: images[i] }} height={200} />
-              <TouchableOpacity
-                style={styles.removeImageButton}
-                activeOpacity={0.7}
-                onPress={() => {
-                  const newArray = [...images];
-                  newArray.splice(i, 1);
-                  setImages([...newArray]);
-                }}
-              >
-                <Icon name="times" solid size={15} color="white" />
-              </TouchableOpacity>
+              <View style={styles.removeImageButton}>
+                <Icon
+                  name="times"
+                  solid
+                  size={15}
+                  color="white"
+                  onPress={() => {
+                    const newArray = [...images];
+                    newArray.splice(i, 1);
+                    setImages([...newArray]);
+                  }}
+                />
+              </View>
             </View>
           );
         })}
@@ -283,75 +312,149 @@ const NewPostModal = ({ navigation }) => {
     );
   };
 
-  const renderGoalText = () => {
-    if (!goal) {
+  const renderGoalView = () => {
+    if (goal) {
+      if (topic) {
+        // if a Goal AND a Field are both selected
+        return (
+          <View
+            style={{
+              marginBottom: 30,
+              // borderBottomColor: colors.borderBlack,
+              // borderBottomWidth: StyleSheet.hairlineWidth,
+            }}
+          >
+            <Text style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingLeft: 5, paddingBottom: 6 }}>Goal:</Text>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1 }}>
+                <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setTopic })}>
+                  <View style={styles.whiteBack}>
+                    <View style={{ ...styles.goalRow, backgroundColor: getBackgroundColor(goal) }}>
+                      <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{goal}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <Icon
+                name="times"
+                size={15}
+                color={colors.iconGray}
+                style={{ paddingLeft: 20, paddingRight: 5 }}
+                onPress={() => clearGoal()}
+              />
+            </View>
+
+            <Text
+              style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingTop: 12, paddingLeft: 5, paddingBottom: 6 }}
+            >
+              {fieldPrefix}:
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ flex: 1 }}>
+                <TouchableOpacity onPress={() => navigation.navigate('SelectGoalFieldModal', { goal, topic, setTopic })}>
+                  <View style={styles.whiteBack}>
+                    <View style={{ ...styles.goalRow, backgroundColor: getBackgroundColor(goal) }}>
+                      <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{topic}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <Icon
+                name="times"
+                size={15}
+                color={colors.iconGray}
+                style={{ paddingLeft: 20, paddingRight: 5 }}
+                onPress={() => clearField()}
+              />
+            </View>
+          </View>
+        );
+      }
+
+      // if a Goal is selected but no Field
       return (
-        <>
-          <View style={styles.leftSide}>
-            <Ionicons name="ios-rocket" size={22} color={colors.iconGray} />
+        <View
+          style={{
+            marginBottom: 30,
+          }}
+        >
+          <Text style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingLeft: 5, paddingBottom: 6 }}>Goal:</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setTopic })}>
+                <View style={styles.whiteBack}>
+                  <View
+                    style={{
+                      ...styles.goalRow,
+                      backgroundColor: getBackgroundColor(goal),
+                    }}
+                  >
+                    <Text style={{ ...defaultStyles.largeMedium, color: getPrimaryColor(goal) }}>{goal}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <Icon
+              name="times"
+              size={15}
+              color={colors.iconGray}
+              style={{ paddingLeft: 20, paddingRight: 5 }}
+              onPress={() => clearGoal()}
+            />
           </View>
 
-          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>Add a goal</Text>
-          <Ionicons name="ios-arrow-forward" size={22} color={colors.iconGray} style={{ paddingRight: 10 }} />
-        </>
-      );
-    }
+          {pickFieldButtonText(goal) && (
+            <>
+              <Text
+                style={{ ...defaultStyles.defaultBold, color: colors.blueGray, paddingLeft: 5, paddingTop: 12, paddingBottom: 6 }}
+              >
+                {fieldPrefix}:
+              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flex: 1 }}>
+                  <TouchableOpacity onPress={() => navigation.navigate('SelectGoalFieldModal', { goal, topic, setTopic })}>
+                    <View style={styles.wideButton}>
+                      <Text style={defaultStyles.largeRegular}>{fieldButtonText}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
 
-    if (goal.modalType === 'topic') {
-      return (
-        <>
-          <View style={styles.leftSide}>
-            <Icon name={goal.logo} solid size={20} color={goal.primaryColor} />
-          </View>
-
-          <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>{goal.name}</Text>
-          <Ionicons name="ios-arrow-forward" size={22} color={colors.iconGray} style={{ paddingRight: 10 }} />
-        </>
-      );
-    }
-
-    return (
-      <>
-        <View style={styles.leftSide}>
-          <Icon name={goal.logo} solid size={20} color={goal.primaryColor} />
+                <Icon name="times" size={15} color="white" style={{ paddingLeft: 20, paddingRight: 5 }} onPress={() => null} />
+              </View>
+            </>
+          )}
         </View>
+      );
+    }
 
-        <Text style={{ ...defaultStyles.largeMedium }}>{goal.name} </Text>
-        <Text style={{ ...defaultStyles.largeLight }}>{goal.adverb} </Text>
-        <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>{topic}</Text>
-        <Ionicons name="ios-arrow-forward" size={22} color={colors.iconGray} style={{ paddingRight: 10 }} />
-      </>
+    // if no Goal or Field is selected
+    return (
+      <View
+        style={{
+          width: '100%',
+          paddingBottom: 20,
+        }}
+      >
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, setTopic })}>
+          <View style={styles.wideButton}>
+            <Text style={defaultStyles.largeRegular}>Add a goal</Text>
+          </View>
+        </TouchableOpacity>
+        {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <GoalField goalField="Add a goal" onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal })} />
+        </View> */}
+      </View>
     );
   };
 
-  const renderTopicText = () => {
-    if (!topic) {
-      return (
-        <>
-          <View style={styles.leftSide}>
-            <Ionicons name="ios-chatbubbles" size={22} color={colors.iconGray} />
-          </View>
-
-          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>Add a topic</Text>
-          <Ionicons name="ios-arrow-forward" size={22} color={colors.iconGray} style={{ paddingRight: 10 }} />
-        </>
-      );
-    }
-
-    return (
-      <>
-        <View style={styles.leftSide}>
-          <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
-        </View>
-
-        <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>{topic}</Text>
-        <Ionicons name="ios-arrow-forward" size={22} color={colors.iconGray} style={{ paddingRight: 10 }} />
-      </>
-    );
-  };
+  const containsMedia = images.length > 0;
 
   return (
-    <View style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar barStyle="dark-content" />
       <HeaderWhite
         handleLeft={handleBack}
@@ -362,20 +465,12 @@ const NewPostModal = ({ navigation }) => {
       />
       <KeyboardAvoidingView behavior="padding" enabled>
         <View style={styles.container}>
-          <ScrollView contentContainerStyle={styles.scrollView} keyboardShouldPersistTaps="always">
-            <TouchableOpacity
-              onPress={() => navigation.navigate('SelectGoalModal', { goal, setGoal, topic, setTopic })}
-              activeOpacity={0.7}
-            >
-              <View style={styles.selectGoalView}>{renderGoalText()}</View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={null} activeOpacity={0.7}>
-              <View style={styles.selectTopicView}>{renderTopicText()}</View>
-            </TouchableOpacity>
+          <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="always">
+            <View style={styles.goalView}>{renderGoalView()}</View>
 
             <View style={styles.postInputView}>
               <View style={styles.leftSide}>
-                <ProfilePicBasic pic={userLoggedIn.profilePic} size={34} />
+                <ProfilePicBasic pic={userLoggedIn.profilePic} size={40} />
               </View>
               <View style={styles.rightSide}>
                 <TextInput
@@ -391,9 +486,9 @@ const NewPostModal = ({ navigation }) => {
                   placeholder={goal ? 'Tell us about your goal' : "What's going on?"}
                   inputAccessoryViewID="1"
                 />
+                {renderImages()}
               </View>
             </View>
-            {renderImages()}
           </ScrollView>
         </View>
         <InputAccessoryView nativeID="1">
@@ -404,20 +499,17 @@ const NewPostModal = ({ navigation }) => {
                 // onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
                 hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
               >
-                <Icon name="camera" size={18} color={colors.purp} style={{ paddingRight: 25, opacity: 0.6 }} />
+                <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.6 }} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="video" size={18} color={colors.purp} style={{ paddingRight: 27, opacity: 0.6 }} />
+                <IconM name="camera-outline" size={22} color={colors.purp} style={{ paddingRight: 32, opacity: 0.6 }} />
               </TouchableOpacity>
-              {/* <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="poll" size={20} color={colors.purp} style={{ paddingRight: 32, opacity: 0.6 }} />
+              {/* <TouchableOpacity
+                onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
+                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+              >
+                <Icon name="map-marker-alt" size={18} color={colors.purp} style={{ paddingRight: 0, opacity: 0.6 }} />
               </TouchableOpacity> */}
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 27, opacity: 0.6 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 27, opacity: 0.6 }} />
-              </TouchableOpacity>
             </View>
             <View style={styles.aboveKeyboardRight}>
               <TouchableOpacity
@@ -429,17 +521,28 @@ const NewPostModal = ({ navigation }) => {
                     name="map-marker-alt"
                     size={15}
                     color={colors.purp}
-                    style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.6 }}
+                    style={{ paddingRight: 5, paddingBottom: 2, opacity: 0.6 }}
                   />
-                  <Text style={{ ...defaultStyles.largeRegular, color: colors.blueGray }}>{location}</Text>
+                  <Text style={{ ...defaultStyles.defaultMute }}>{location}</Text>
                 </View>
               </TouchableOpacity>
+              {/* <TouchableOpacity onPress={() => setIsPrivate(!isPrivate)} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <View style={styles.aboveKeyboardRight}>
+                  <Icon
+                    name={isPrivate ? 'user-lock' : 'globe-americas'}
+                    size={12}
+                    color={colors.iconDark}
+                    style={{ paddingRight: 7 }}
+                  />
+                  <Text style={{ ...defaultStyles.smallMedium }}>{isPrivate ? 'Network Only' : 'Public'}</Text>
+                </View>
+              </TouchableOpacity> */}
             </View>
           </View>
         </InputAccessoryView>
       </KeyboardAvoidingView>
       {loading && <Loader active={loading} />}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -450,45 +553,75 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     height: '100%',
   },
-  scrollView: {
+  content: {
     backgroundColor: 'white',
-    paddingHorizontal: 10,
+    padding: 15,
+    paddingTop: 20,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
   },
-  selectGoalView: {
+  wideButton: {
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: colors.lightGray,
+    // ...defaultStyles.shadowButton,
+  },
+  itemRow: {
+    width: '100%',
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
+    marginBottom: 15,
+  },
+  goalRow: {
+    width: '100%',
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginBottom: 15,
+  },
+  whiteBack: {
+    width: '100%',
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'white',
+    // ...defaultStyles.shadowButton,
+  },
+  selectGoalButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '100%',
-    height: 46,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: 15,
+    height: 32,
+    borderRadius: 5,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
   },
-  selectTopicView: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  goalView: {
     width: '100%',
-    height: 46,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
   },
   postInputView: {
     flexDirection: 'row',
     width: '100%',
     // height: 120,
-    marginTop: 10,
+    // marginTop: 20,
   },
   leftSide: {
-    width: 50,
-    paddingRight: 5,
-    alignItems: 'center',
+    paddingRight: 10,
   },
   rightSide: {
     flex: 1,
     alignItems: 'stretch',
   },
-
   images: {
     width: '100%',
   },

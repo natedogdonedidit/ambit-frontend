@@ -89,8 +89,43 @@ export const profilePicUpload = async (userId, uri) => {
     // console.log('resJson', resJson);
 
     // return the image url
-    // return resJson.url
-    return { uri: resJson.url, width: resJson.width, height: resJson.height };
+    return resJson.url;
+    // return { uri: resJson.url, width: resJson.width, height: resJson.height };
+  } catch (error) {
+    console.log('an error occured trying to upload your photo');
+    // console.error(error);
+    return error;
+  }
+};
+
+export const bannerPicUpload = async (userId, uri) => {
+  // create tags
+  const tags = `${userId}, bannerpic, image`;
+
+  // create file object (all fields required)
+  const photo = {
+    uri,
+    type: 'image',
+    name: `${userId}_bannerpic`,
+  };
+  // create body
+  const uploadData = new FormData();
+  uploadData.append('file', photo);
+  uploadData.append('upload_preset', 'ambit-bannerpic-preset');
+  uploadData.append('tags', tags);
+  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+      method: 'POST',
+      body: uploadData,
+    });
+    const resJson = await res.json();
+    // console.log('resJson', resJson);
+
+    // return the image url
+    return resJson.url;
+    // return { uri: resJson.url, width: resJson.width, height: resJson.height };
   } catch (error) {
     console.log('an error occured trying to upload your photo');
     // console.error(error);

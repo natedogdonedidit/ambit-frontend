@@ -41,7 +41,10 @@ const HomeScreen = ({ navigation }) => {
     if (value === 0) setActiveTimeline(0);
     if (value === width * 1) setActiveTimeline(1);
     if (value === width * 2) setActiveTimeline(2);
-    // if (value === width * 3) setActiveTimeline(3);
+
+    // if (value >= 0 && value < width * 0.5 && activeTimeline !== 0) setActiveTimeline(0);
+    // if (value >= width * 0.5 && value < width * 1.5 && activeTimeline !== 1) setActiveTimeline(1);
+    // if (value >= width * 1.5 && activeTimeline !== 2) setActiveTimeline(2);
   });
 
   // ///////////////////////////
@@ -108,11 +111,19 @@ const HomeScreen = ({ navigation }) => {
               borderLeftColor: colors.borderBlack,
               borderRightWidth: StyleSheet.hairlineWidth,
               borderRightColor: colors.borderBlack,
+              // backgroundColor: 'pink',
             }}
           >
             <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT + tabsHeight} />
           </View>
-          <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
+          <View
+            style={{
+              width,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderRightColor: colors.borderBlack,
+              // backgroundColor: 'blue',
+            }}
+          >
             <LocalTimeline
               userLoggedIn={userLoggedIn}
               navigation={navigation}
@@ -120,14 +131,21 @@ const HomeScreen = ({ navigation }) => {
               paddingTop={SLIDE_HEIGHT + tabsHeight}
             />
           </View>
-          <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
-            {/* <TopicsTimeline
+          <View
+            style={{
+              width,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderRightColor: colors.borderBlack,
+              // backgroundColor: 'tomato',
+            }}
+          >
+            <TopicsTimeline
               activeTopic={activeTopic}
               userLoggedIn={userLoggedIn}
               navigation={navigation}
               scrollY={scrollY}
               paddingTop={SLIDE_HEIGHT + tabsHeight}
-            /> */}
+            />
           </View>
         </Animated.ScrollView>
       </View>
@@ -243,7 +261,7 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.lightLightGray,
+    backgroundColor: colors.lightGray,
     overflow: 'hidden',
   },
   scrollView: {

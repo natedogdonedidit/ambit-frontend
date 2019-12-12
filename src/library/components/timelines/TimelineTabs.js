@@ -7,8 +7,6 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const TimelineTabs = ({ activeTimeline, setActiveTimeline, height, scrollX, horizontalScrollRef, width }) => {
-  const tabNames = ['Home', 'Local', 'Topics'];
-
   // const [widthAnim] = useState(new Animated.Value(0));
   const UNDERLINE_WIDTH = width / 3;
   const UNDERLINE_HEIGHT = 2.5;
@@ -27,50 +25,6 @@ const TimelineTabs = ({ activeTimeline, setActiveTimeline, height, scrollX, hori
   //     }),
   //   ]).start();
   // }, [tabState]);
-
-  // const renderTabs = () => {
-  //   return tabNames.map((tabName, i) => {
-  //     return (
-  //       <TouchableOpacity key={i} onPress={() => horizontalScrollRef.current.getNode().scrollTo({ x: i * width })}>
-  //         <View style={{ justifyContent: 'center' }}>
-  //           <View style={{ ...styles.tab, height }}>
-  //             <Text style={activeTimeline === i ? styles.tabSelectedText : styles.tabText}>{tabName}</Text>
-  //           </View>
-  //           {activeTimeline === i && (
-  //             <View
-  //               style={{
-  //                 position: 'absolute',
-  //                 bottom: 0,
-  //                 left: 0,
-  //                 height: UNDERLINE_HEIGHT,
-  //                 width: '100%',
-  //                 alignItems: 'center',
-  //               }}
-  //             >
-  //               {/* <Animated.View
-  //                 style={{
-  //                   height: '100%',
-  //                   width: widthAnim.interpolate({
-  //                     inputRange: [0, 100],
-  //                     outputRange: ['0%', '100%'],
-  //                   }),
-  //                   backgroundColor: colors.purp,
-  //                 }}
-  //               /> */}
-  //               <View
-  //                 style={{
-  //                   height: '100%',
-  //                   width: '100%',
-  //                   backgroundColor: colors.purp,
-  //                 }}
-  //               />
-  //             </View>
-  //           )}
-  //         </View>
-  //       </TouchableOpacity>
-  //     );
-  //   });
-  // };
 
   return (
     <View style={{ ...styles.tabs, height }}>
@@ -107,17 +61,6 @@ const TimelineTabs = ({ activeTimeline, setActiveTimeline, height, scrollX, hori
           <Text style={activeTimeline === 2 ? styles.tabSelectedText : styles.tabText}>Topics</Text>
         </View>
       </TouchableOpacity>
-      {/* <TouchableOpacity
-        style={{ flex: 1 }}
-        onPress={() => {
-          setActiveTimeline(3);
-          horizontalScrollRef.current.getNode().scrollTo({ x: 3 * width });
-        }}
-      >
-        <View style={{ ...styles.tab }}>
-          <Text style={activeTimeline === 3 ? styles.tabSelectedText : styles.tabText}>Goals</Text>
-        </View>
-      </TouchableOpacity> */}
 
       <Animated.View
         style={{
@@ -144,10 +87,6 @@ const TimelineTabs = ({ activeTimeline, setActiveTimeline, height, scrollX, hori
   );
 };
 
-// <ScrollView contentContainerStyle={{ ...styles.tabs, height }} horizontal showsHorizontalScrollIndicator={false}>
-//   {renderTabs()}
-// </ScrollView>
-
 export default TimelineTabs;
 
 const styles = StyleSheet.create({
@@ -156,14 +95,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     backgroundColor: colors.lightLightGray,
-    // backgroundColor: 'pink',
   },
   tab: {
     flex: 1,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    // paddingHorizontal: 15,
   },
   tabText: {
     ...defaultStyles.largeRegular,

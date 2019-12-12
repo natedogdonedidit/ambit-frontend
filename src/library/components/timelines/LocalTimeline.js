@@ -43,6 +43,7 @@ const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
 
   // networkStatus states:
   // 1: loading
+  // 2: setVariables called (changed one of the variables)
   // 3: fetchMore
   // 4: refetch
   // 7: no loading, no refetch, everything OK!
@@ -56,7 +57,8 @@ const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
   // LOADING STATES
   // ///////////////////
   const refetching = networkStatus === 4;
-  // const loading = loadingQuery && !refetching;
+  const loading = networkStatus === 1 || networkStatus === 2;
+  const ok = networkStatus === 7;
 
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
@@ -67,13 +69,13 @@ const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
     );
   }
 
-  if (!data) {
-    return <Loader />;
+  if (!data || loading) {
+    return <Loader backgroundColor={colors.lightGray} />;
   }
 
   const posts = data.postsLocal.edges || [];
+  // const noPosts = posts.length < 1 && ok;
   // console.log('posts', posts);
-  // const posts = [];
 
   // ////////////////////////
   // CUSTOM FUNCTIONS
@@ -92,6 +94,10 @@ const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
       setLocationLon(locObject.locationLon);
     }
   };
+
+  // ////////////////////////
+  // RENDER
+  // ////////////////////////
 
   return (
     <View style={{ flex: 1 }}>
@@ -125,6 +131,11 @@ const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
               </TextButton>
             </View>
           </View>
+        }
+        ListEmptyComponent={
+          <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
+            Sorry, no posts yet in this area
+          </Text>
         }
         style={{ ...styles.timeline }}
         onScroll={Animated.event(

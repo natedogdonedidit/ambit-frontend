@@ -1,3 +1,5 @@
+import colors from '../../styles/colors';
+
 export const professionList = ['Engineer', 'Executive', 'Consultant', 'CEO', 'CFO', 'Sales'];
 export const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export const years = [
@@ -63,11 +65,113 @@ export const years = [
   1960,
 ];
 
-export const moneyGoals = ['Find investors'];
-export const helpGoals = ['Find freelancers', 'Find agencies'];
-export const networkGoals = ['Network', 'Get coffee', 'Find a mentor', 'Find business partners'];
-export const answersGoals = ['Get advice', 'Get feedback'];
-export const hireGoals = ['Hire employees', 'Hire for startup'];
+export const goalsList = [
+  {
+    name: 'Find investors',
+    modalType: 'invest',
+    logo: 'comment-dollar',
+    primaryColor: colors.green,
+    secondaryColor: colors.goalGreen,
+    fieldName: 'Market',
+    fieldText: 'Select a market',
+    heading: 'Which market is your investment opportunity?',
+    adverb: 'for',
+  },
+  {
+    name: 'Find freelancers',
+    modalType: 'specialist',
+    logo: 'briefcase',
+    primaryColor: colors.peach,
+    secondaryColor: colors.goalPeach,
+    fieldName: 'Specialty',
+    fieldText: 'Select a specialty',
+    heading: 'Select a freelance category',
+    adverb: 'for',
+  },
+  {
+    name: 'Find agencies',
+    modalType: 'specialist',
+    logo: 'building',
+    primaryColor: colors.peach,
+    secondaryColor: colors.goalPeach,
+    fieldName: 'Specialty',
+    fieldText: 'Select a specialty',
+    heading: 'Select an agency category',
+    adverb: 'for',
+  },
+  {
+    name: 'Get coffee',
+    modalType: 'topic',
+    logo: 'mug-hot',
+    primaryColor: colors.blue,
+    secondaryColor: colors.goalBlue,
+    fieldName: 'Topic',
+    fieldText: 'Select a topic',
+    heading: 'Which topic would you like to discuss?',
+    adverb: 'in',
+  },
+  {
+    name: 'Find business partners',
+    modalType: 'topic',
+    logo: 'users',
+    primaryColor: colors.blue,
+    secondaryColor: colors.goalBlue,
+    fieldName: 'Topic',
+    fieldText: 'Select a topic',
+    heading: 'Which topic are you looking for business partners in?',
+    adverb: 'in',
+  },
+  {
+    name: 'Find mentors',
+    modalType: 'topic',
+    logo: 'user-friends',
+    primaryColor: colors.blue,
+    secondaryColor: colors.goalBlue,
+    fieldName: 'Topic',
+    fieldText: 'Select a topic',
+    heading: 'Which topic are you looking for a mentor in?',
+    adverb: 'in',
+  },
+  {
+    name: 'Network',
+    modalType: 'topic',
+    logo: 'handshake',
+    primaryColor: colors.blue,
+    secondaryColor: colors.goalBlue,
+    fieldName: 'Topic',
+    fieldText: 'Select a topic',
+    heading: 'Which topic are you looking to network in?',
+    adverb: 'in',
+  },
+  {
+    name: 'Get advice',
+    modalType: 'topic',
+    logo: 'lightbulb',
+    primaryColor: colors.orange,
+    secondaryColor: colors.goalOrange,
+    fieldName: 'Topic',
+    fieldText: 'Select a topic',
+    heading: 'Which topic do you need advice about?',
+    adverb: 'in',
+  },
+  {
+    name: 'Get feedback',
+    modalType: 'topic',
+    logo: 'comments',
+    primaryColor: colors.orange,
+    secondaryColor: colors.goalOrange,
+    fieldName: 'Topic',
+    fieldText: 'Select a topic',
+    heading: 'Which topic best describes your question?',
+    adverb: 'in',
+  },
+];
+
+// export const moneyGoals = ['Find investors'];
+// export const helpGoals = ['Find freelancers', 'Find agencies'];
+// export const networkGoals = ['Network', 'Get coffee', 'Find a mentor', 'Find business partners'];
+// export const answersGoals = ['Get advice', 'Get feedback'];
+// export const hireGoals = ['Hire employees', 'Hire for startup'];
 
 export const freelanceList = [
   {
@@ -156,7 +260,7 @@ export const freelanceList = [
   },
 ];
 
-export const investmentMarkets = ['Any', 'Startup', 'Venture Capital', 'Real Estate', 'Hedge Fund'];
+export const investmentMarkets = ['Startup', 'Venture Capital', 'Real Estate', 'Hedge Fund', 'Other'];
 
 export const topicsList = [
   {

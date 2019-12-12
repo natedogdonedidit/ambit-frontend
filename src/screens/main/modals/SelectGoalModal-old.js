@@ -2,37 +2,39 @@ import React, { useState } from 'react';
 import { StyleSheet, Modal, View, ScrollView, StatusBar, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { goalsList } from 'library/utils/lists';
-// import { getPrimaryColor, getBackgroundColor, getIcon } from 'library/utils';
+import { moneyGoals, helpGoals, networkGoals, answersGoals } from 'library/utils/lists';
+import { getPrimaryColor, getBackgroundColor, getIcon } from 'library/utils';
 
-// import HeaderWhite from 'library/components/headers/HeaderWhite';
+import HeaderWhite from 'library/components/headers/HeaderWhite';
 // import GoalSelect from 'library/components/UI/GoalSelect';
 
 const SelectGoalModal = ({ navigation }) => {
-  // const activeGoal = navigation.getParam('goal');
+  const goal = navigation.getParam('goal');
   const setGoal = navigation.getParam('setGoal');
-  // const activeTopic = navigation.getParam('topic');
   const setTopic = navigation.getParam('setTopic');
 
-  const handleGoalSelect = goal => {
-    navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopic });
+  const handleGoalSelect = goalText => {
+    setGoal(goalText);
+    setTopic('');
+    navigation.goBack();
   };
 
-  const renderList = () => {
-    return goalsList.map(goal => {
-      return (
-        <TouchableOpacity key={goal.name} activeOpacity={0.8} onPress={() => handleGoalSelect(goal)}>
-          <View style={{ ...styles.itemRow }}>
-            <View style={{ width: 50, alignItems: 'center', paddingRight: 20 }}>
-              <Icon name={goal.logo} solid size={22} color={goal.primaryColor} style={{}} />
-            </View>
+  const renderList = list => {
+    return list.map(listItem => {
+      const isSelected = listItem === goal;
 
-            <Text style={{ ...defaultStyles.largeRegular, flex: 1 }}>{goal.name}</Text>
-            <Ionicons name="ios-arrow-forward" size={22} color={colors.iconGray} style={{}} />
+      return (
+        <TouchableOpacity key={listItem} activeOpacity={0.8} onPress={() => handleGoalSelect(listItem)}>
+          <View style={{ ...styles.itemRow, borderColor: getPrimaryColor(listItem) }}>
+            <Text style={{ ...defaultStyles.largeRegular, color: getPrimaryColor(listItem) }}>{listItem}</Text>
+            {isSelected && (
+              <View style={{ height: 40, justifyContent: 'center', paddingRight: 10, position: 'absolute', top: 0, right: 0 }}>
+                <Icon name="check" size={20} color={getPrimaryColor(listItem)} />
+              </View>
+            )}
           </View>
         </TouchableOpacity>
       );
@@ -49,24 +51,22 @@ const SelectGoalModal = ({ navigation }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
             backgroundColor: 'white',
-            paddingHorizontal: 15,
+            paddingHorizontal: 20,
           }}
         >
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => navigation.goBack()}
             hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
-            style={{ flexDirection: 'row', alignItems: 'center' }}
           >
-            <Icon name="chevron-left" size={22} color={colors.iosBlue} />
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.iosBlue, paddingLeft: 5 }}>Back</Text>
+            <Icon name="chevron-left" size={22} color={colors.iconDark} />
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.9} onPress={() => null} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
             <Icon name="question-circle" size={22} color={colors.iconDark} />
           </TouchableOpacity>
         </View>
-        <ScrollView style={{ flex: 1, paddingBottom: 20, paddingTop: 10, paddingHorizontal: 10 }}>
-          <View style={{ width: '100%', paddingHorizontal: 5 }}>
+        <ScrollView style={{ flex: 1, paddingHorizontal: 15, paddingBottom: 20, paddingTop: 10 }}>
+          <View style={{ width: '100%' }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text
                 style={{
@@ -82,7 +82,10 @@ const SelectGoalModal = ({ navigation }) => {
               Then Ambit will suggest people to help!
             </Text>
           </View>
-          {renderList()}
+          <View>{renderList(moneyGoals)}</View>
+          <View>{renderList(helpGoals)}</View>
+          <View>{renderList(networkGoals)}</View>
+          <View>{renderList(answersGoals)}</View>
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -101,13 +104,16 @@ const styles = StyleSheet.create({
   },
   // items
   itemRow: {
-    flexDirection: 'row',
     width: '100%',
-    height: 48,
+    height: 40,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    borderTopWidth: StyleSheet.hairlineWidth,
+    borderRadius: 10,
+    // backgroundColor: colors.grayButton,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
-    paddingHorizontal: 15,
+    marginBottom: 15,
   },
   sectionHeader: {
     paddingLeft: 35,

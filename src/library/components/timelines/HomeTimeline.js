@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, Animated, RefreshControl, FlatList, Image, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, Animated, RefreshControl, FlatList, Image, ActivityIndicator, ScrollView } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
@@ -16,9 +16,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(GLOBAL_POSTS_QUERY, {
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
-    variables: {
-      // first: 10,
-    },
   });
 
   // networkStatus states:
@@ -36,7 +33,8 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // LOADING STATES
   // ///////////////////
   const refetching = networkStatus === 4;
-  // const loading = loadingQuery && !refetching;
+  const loading = networkStatus === 1;
+  const ok = networkStatus === 7;
 
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
@@ -47,13 +45,13 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     );
   }
 
-  if (!data) {
-    return <Loader />;
+  if (!data || loading) {
+    return <Loader backgroundColor={colors.lightGray} />;
   }
 
   const posts = data.postsGlobal.edges || [];
+  // const noPosts = posts.length < 1 && ok;
   // console.log('posts', posts);
-  // const posts = [];
 
   // ////////////////////////
   // CUSTOM FUNCTIONS
@@ -64,7 +62,9 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     refetch();
   };
 
-  // deleted the slider educational stuff...look back at old git rev to see what it was
+  // ////////////////////////
+  // RENDER
+  // ////////////////////////
 
   return (
     <View style={{ flex: 1 }}>
@@ -76,6 +76,11 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         // contentContainerStyle={{ paddingBottom: 20 }}
         contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
         style={styles.timeline}
+        ListEmptyComponent={
+          <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
+            Sorry, no posts to display at this time
+          </Text>
+        }
         onScroll={Animated.event(
           [
             {

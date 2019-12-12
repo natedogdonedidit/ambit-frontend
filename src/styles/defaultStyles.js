@@ -98,6 +98,11 @@ const styles = StyleSheet.create({
     fontFamily: 'SFProText-Bold',
   },
   // LARGE, 15px
+  largeMuteItalic: {
+    color: colors.blueGray,
+    fontSize: large,
+    fontFamily: 'SFProText-RegularItalic',
+  },
   largeThin: {
     color: colors.black,
     fontSize: large,
@@ -117,6 +122,12 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: large,
     fontFamily: 'SFProText-Medium',
+  },
+  largeMediumMute: {
+    color: colors.blueGray,
+    fontSize: large,
+    fontFamily: 'SFProText-Regular',
+    opacity: 0.6,
   },
   largeSemibold: {
     color: colors.black,
