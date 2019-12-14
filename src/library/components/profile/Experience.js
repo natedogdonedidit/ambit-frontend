@@ -6,7 +6,7 @@ import IconF from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { sortExperiences } from 'library/utils';
-import Location from 'library/components/UI/Location';
+import Location from 'library/components/UI/icons/Location';
 
 const Experience = ({ isMyProfile, experience, navigation }) => {
   const renderExperiences = () => {

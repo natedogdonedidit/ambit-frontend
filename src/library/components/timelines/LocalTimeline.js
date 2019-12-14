@@ -17,7 +17,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
-import TextButton from 'library/components/UI/TextButton';
+import TextButton from 'library/components/UI/buttons/TextButton';
 import Loader from 'library/components/UI/Loader';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
@@ -110,7 +110,7 @@ const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
         ListHeaderComponent={
           <View style={{ ...styles.locationSelect }}>
             <View style={styles.leftColumn}>
-              <Icon name="map-marker-alt" size={15} color={colors.iconGray} style={{ opacity: 0.3 }} />
+              <Icon name="map-marker-alt" size={15} color={colors.iconGray} />
             </View>
             <View style={styles.rightColumn}>
               <Text style={defaultStyles.defaultMedium}>{location}</Text>

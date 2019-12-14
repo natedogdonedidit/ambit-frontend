@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -11,12 +10,10 @@ const ProfilePic = ({
   navigation, // required
   size = 40,
   user, // required
-  // intro = [],
-  // pitch = null,
   disableVideo = false,
   disableClick = false,
   border = false,
-  borderWidth = 1.6,
+  borderWidth = 1.4,
   extraBorder = 0, // adds a white ring around outside
 }) => {
   // sizes
@@ -33,8 +30,8 @@ const ProfilePic = ({
   }
 
   const whiteWidth = size + 2 * borderWidth;
-  // const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
-  const colorWidth = whiteWidth + 2 * 1.4 + 2 * extraBorder;
+  const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
+  // const colorWidth = whiteWidth + 2 * 1.4 + 2 * extraBorder;
 
   const styles = StyleSheet.create({
     noBorder: {
@@ -76,25 +73,6 @@ const ProfilePic = ({
       borderWidth: extraBorder,
       borderColor: 'white',
     },
-    pitchBorder: {
-      backgroundColor: colors.purple,
-      justifyContent: 'center',
-      alignItems: 'center',
-
-      width: colorWidth,
-      height: colorWidth,
-
-      borderRadius: colorWidth / 2,
-      borderWidth: extraBorder,
-      borderColor: 'white',
-    },
-    linearGradient: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      height: '100%',
-      width: '100%',
-    },
   });
 
   if (!user) {
@@ -104,24 +82,6 @@ const ProfilePic = ({
       </View>
     );
   }
-
-  // if (hasPitch && !disableVideo) {
-  //   return (
-  //     <TouchableOpacity onPress={() => navigation.navigate('StoryModal', { user, ccontentType: 'Pitch', pitch })}>
-  //       <View style={styles.pitchBorder}>
-  //         <View style={styles.whiteBorder}>
-  //           <Image
-  //             style={styles.profilePic}
-  //             resizeMode="cover"
-  //             source={{
-  //               uri: user.profilePic || profilePicExample,
-  //             }}
-  //           />
-  //         </View>
-  //       </View>
-  //     </TouchableOpacity>
-  //   );
-  // }
 
   if (hasIntro && !disableVideo) {
     return (

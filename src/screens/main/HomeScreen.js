@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, RefreshControl, Animated, Dimensions } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -17,57 +17,67 @@ import TopicsTimeline from 'library/components/timelines/TopicsTimeline';
 
 import TimelineTabs from 'library/components/timelines/TimelineTabs';
 import TopicsSelector from 'library/components/timelines/TopicsSelector';
-// import GoalsSelector from 'library/components/timelines/GoalsSelector';
 
 const HEADER_HEIGHT = 44;
 const BANNER_HEIGHT = 0;
 
 const HomeScreen = ({ navigation }) => {
+  // ////////////////////////////////////////////////////////////////
+  // ROUTE PARAMS
+
+  // const goToTimeline = navigation.getParam('goToTimeline');
+
+  // ////////////////////////////////////////////////////////////////
+  // STATE
+
   const [activeTimeline, setActiveTimeline] = useState(0);
   const [activeTopic, setActiveTopic] = useState('Trending');
   const [scrollY] = useState(new Animated.Value(0));
   const [scrollX] = useState(new Animated.Value(0));
-  // const [refreshing, setRefreshing] = useState(false);
-  // const [requestRefresh, setRequestRefresh] = useState(false);
 
-  // ///////////////////////////
-  // REFS & CONTEXT
-  // ///////////////////////////
+  // ///////////////////////////////////////////////////////////////
+  // OTHER HOOKS
+
   const insets = useSafeArea();
-  const { height, width } = Dimensions.get('window');
+  const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
 
   scrollX.addListener(({ value }) => {
     if (value === 0) setActiveTimeline(0);
     if (value === width * 1) setActiveTimeline(1);
     if (value === width * 2) setActiveTimeline(2);
-
-    // if (value >= 0 && value < width * 0.5 && activeTimeline !== 0) setActiveTimeline(0);
-    // if (value >= width * 0.5 && value < width * 1.5 && activeTimeline !== 1) setActiveTimeline(1);
-    // if (value >= width * 1.5 && activeTimeline !== 2) setActiveTimeline(2);
   });
 
-  // ///////////////////////////
-  // CONSTANTS
-  // ///////////////////////////
-  const tabs1Height = 42;
-  let tabs2Height = 0;
-  if (activeTimeline === 2) tabs2Height = 46;
-  // if (activeTimeline === 3) tabs2Height = 46;
-  const tabsHeight = tabs1Height + tabs2Height;
+  // const willFocusSubscription = navigation.addListener('didFocus', () => {
+  //   // this kinda works
+  //   // console.log('switching timelines');
+  //   if (goToTimeline === 0 || goToTimeline === 1 || goToTimeline === 2) {
+  //     setActiveTimeline(goToTimeline);
+  //     // console.log('switching timelines');
+  //   }
+  // });
 
-  const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
+  // willFocusSubscription.remove();
 
-  // ///////////////////////////
+  // ////////////////////////////////////////////////////////////////
   // QUERIES
-  // ///////////////////////////
+
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   if (errorUser) return <Error error={errorUser} />;
   const { userLoggedIn } = dataUser;
 
-  // ///////////////////////////
+  // ////////////////////////////////////////////////////////////////
+  // CONSTANTS
+
+  const tabs1Height = 42;
+  let tabs2Height = 0;
+  if (activeTimeline === 2) tabs2Height = 46;
+  const tabsHeight = tabs1Height + tabs2Height;
+
+  const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
+
+  // ////////////////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  // ///////////////////////////
 
   const onScrollHorizontal = Animated.event(
     [
@@ -82,11 +92,6 @@ const HomeScreen = ({ navigation }) => {
     { useNativeDriver: true }
   );
 
-  // const onRefresh = () => {
-  //   setRequestRefresh(true);
-  //   setRefreshing(true);
-  // };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -95,7 +100,6 @@ const HomeScreen = ({ navigation }) => {
           // horizontal scrollView
           ref={horizontalScrollRef}
           style={{ flex: 1 }} // must give a fixed height here of the onEndReached doesnt work in FlatLists
-          // contentContainerStyle={{ height: '100%' }}
           horizontal
           snapToAlignment="start"
           snapToInterval={width}
@@ -111,7 +115,6 @@ const HomeScreen = ({ navigation }) => {
               borderLeftColor: colors.borderBlack,
               borderRightWidth: StyleSheet.hairlineWidth,
               borderRightColor: colors.borderBlack,
-              // backgroundColor: 'pink',
             }}
           >
             <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT + tabsHeight} />
@@ -121,7 +124,6 @@ const HomeScreen = ({ navigation }) => {
               width,
               borderRightWidth: StyleSheet.hairlineWidth,
               borderRightColor: colors.borderBlack,
-              // backgroundColor: 'blue',
             }}
           >
             <LocalTimeline
@@ -136,7 +138,6 @@ const HomeScreen = ({ navigation }) => {
               width,
               borderRightWidth: StyleSheet.hairlineWidth,
               borderRightColor: colors.borderBlack,
-              // backgroundColor: 'tomato',
             }}
           >
             <TopicsTimeline
@@ -204,7 +205,7 @@ const HomeScreen = ({ navigation }) => {
 
         <View
           style={{
-            backgroundColor: colors.lightLightGray,
+            backgroundColor: 'white',
             borderBottomColor: colors.borderBlack,
             borderBottomWidth: StyleSheet.hairlineWidth,
           }}
@@ -221,25 +222,19 @@ const HomeScreen = ({ navigation }) => {
         {activeTimeline === 2 && (
           <View
             style={{
-              backgroundColor: colors.lightLightGray,
+              backgroundColor: 'white',
               borderBottomColor: colors.borderBlack,
               borderBottomWidth: StyleSheet.hairlineWidth,
             }}
           >
-            <TopicsSelector activeTopic={activeTopic} setActiveTopic={setActiveTopic} height={tabs2Height} />
+            <TopicsSelector
+              navigation={navigation}
+              activeTopic={activeTopic}
+              setActiveTopic={setActiveTopic}
+              height={tabs2Height}
+            />
           </View>
         )}
-        {/* {activeTimeline === 3 && (
-          <View
-            style={{
-              backgroundColor: colors.lightLightGray,
-              borderBottomColor: colors.borderBlack,
-              borderBottomWidth: StyleSheet.hairlineWidth,
-            }}
-          >
-            <GoalsSelector tabState={activeTimeline} setTabState={setActiveTimeline} height={tabs2Height} />
-          </View>
-        )} */}
       </Animated.View>
 
       {/* Gives a solid background to the StatusBar */}
@@ -251,7 +246,7 @@ const HomeScreen = ({ navigation }) => {
           right: 0,
           width: '100%',
           height: insets.top,
-          backgroundColor: colors.lightLightGray,
+          backgroundColor: 'white',
         }}
       />
     </SafeAreaView>

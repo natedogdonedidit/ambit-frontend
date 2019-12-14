@@ -73,6 +73,40 @@ const CommentScreen = ({ navigation }) => {
   const { loading: loadingPost, error: errorPost, data: dataPost } = useQuery(SINGLE_POST_QUERY, {
     variables: { id: parentPost.id },
   });
+
+  const loading = loadingUser || loadingPost;
+
+  if (errorUser) return <Error error={errorUser} />;
+  if (errorPost) return <Error error={errorPost} />;
+
+  const handleSubmit = async () => {
+    const message = validateInputs();
+    // if missing a required field, Alert user
+    if (message) {
+      Alert.alert('Please add a comment or image', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+      return;
+    }
+    if (commentImage) {
+      await uploadImage();
+    }
+    createComment();
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <HeaderWhite
+          handleLeft={navigation.goBack}
+          handleRight={handleSubmit}
+          textLeft="Back"
+          textRight="Reply"
+          title="Comment"
+        />
+        <Loader loading={loading} full={false} />
+      </View>
+    );
+  }
+
   const { singlePost: post } = dataPost;
 
   const [getPossibleMentions, { loading: loadingMentions, error: errorMentions, data: dataMentions }] = useLazyQuery(
@@ -251,18 +285,6 @@ const CommentScreen = ({ navigation }) => {
   // };
 
   // CUSTOM FUNCTIONS
-  const handleSubmit = async () => {
-    const message = validateInputs();
-    // if missing a required field, Alert user
-    if (message) {
-      Alert.alert('Please add a comment or image', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
-      return;
-    }
-    if (commentImage) {
-      await uploadImage();
-    }
-    createComment();
-  };
 
   // must pass this to camera roll modal
   // const handleMediaSelect = (uri, type) => {
@@ -337,7 +359,9 @@ const CommentScreen = ({ navigation }) => {
   const renderComments = () => {
     // if the clicked comment is a stand-alone comment
     if (!hasParentComment) {
-      return <Comment comment={clicked} navigation={navigation} currentTime={currentTime} hideButtons hideTopMargin />;
+      return (
+        <Comment comment={clicked} navigation={navigation} currentTime={currentTime} hideButtons hideTopMargin hideTopLine />
+      );
     }
 
     // // if the clicked comment is a a sub-comment, show all comments
@@ -376,10 +400,7 @@ const CommentScreen = ({ navigation }) => {
     );
   };
 
-  const loading = loadingUser || loadingPost;
   const loadingSubmit = uploading || loadingCreate;
-
-  if (errorUser) return <Error error={errorUser} />;
 
   // const renderPossibleMentions = () => {
   //   if (loadingMentions) return <Loader loading={loadingMentions} full={false} />;
@@ -412,63 +433,60 @@ const CommentScreen = ({ navigation }) => {
   // };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <HeaderWhite handleLeft={navigation.goBack} handleRight={handleSubmit} textLeft="Back" textRight="Reply" title="Comment" />
-      {loading ? (
-        <Loader loading={loading} full={false} />
-      ) : (
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
-          <View style={{ flex: 1 }}>
-            <ScrollView ref={scrollViewRef} style={{ flex: 1 }}>
-              {renderPost()}
-              {isComment && renderComments()}
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+        <View style={{ flex: 1 }}>
+          <ScrollView ref={scrollViewRef} style={{ flex: 1 }}>
+            {renderPost()}
+            {isComment && renderComments()}
 
-              <View style={[styles.commentInput, isComment && { paddingLeft: 48 }]}>
-                <View style={styles.leftColumn}>
-                  <ProfilePic size={30} navigation={navigation} user={userLoggedIn} disableVideo />
-                </View>
-                <View style={styles.rightColumn}>
-                  {/* <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
+            <View style={[styles.commentInput, isComment && { paddingLeft: 48 }]}>
+              <View style={styles.leftColumn}>
+                <ProfilePic size={30} navigation={navigation} user={userLoggedIn} disableVideo />
+              </View>
+              <View style={styles.rightColumn}>
+                {/* <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
                     {userLoggedIn.name}
                   </Text> */}
-                  <View style={{ paddingTop: 2, paddingBottom: 10 }}>
-                    <TextInput
-                      style={{ flex: 1, marginRight: 35, ...defaultStyles.largeRegular }}
-                      onChangeText={onChangeText}
-                      autoFocus
-                      autoCompleteType="off"
-                      // autoCorrect={false}
-                      multiline
-                      scrollEnabled={false}
-                      textAlignVertical="top"
-                      placeholder="Start your comment"
-                      onSelectionChange={event => setSelection(event.nativeEvent.selection)}
-                      inputAccessoryViewID="1"
-                      // onBlur={() => setShowMentionList(false)}
-                    />
-                    {/* {renderFormatedText()} */}
-                    {/* </TextInput> */}
-                  </View>
-                  {!!commentImage && (
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingRight: 10 }}>
-                      <View style={{ ...styles.image, width: '100%' }}>
-                        <FitImage source={{ uri: commentImage }} />
-                        <View style={styles.removeImageButton}>
-                          <Icon name="times" solid size={15} color="white" onPress={() => setCommentImage('')} />
-                        </View>
+                <View style={{ paddingTop: 2, paddingBottom: 10 }}>
+                  <TextInput
+                    style={{ flex: 1, marginRight: 35, ...defaultStyles.largeRegular }}
+                    onChangeText={onChangeText}
+                    autoFocus
+                    autoCompleteType="off"
+                    // autoCorrect={false}
+                    multiline
+                    scrollEnabled={false}
+                    textAlignVertical="top"
+                    placeholder="Start your comment"
+                    onSelectionChange={event => setSelection(event.nativeEvent.selection)}
+                    inputAccessoryViewID="1"
+                    // onBlur={() => setShowMentionList(false)}
+                  />
+                  {/* {renderFormatedText()} */}
+                  {/* </TextInput> */}
+                </View>
+                {!!commentImage && (
+                  <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingRight: 10 }}>
+                    <View style={{ ...styles.image, width: '100%' }}>
+                      <FitImage source={{ uri: commentImage }} />
+                      <View style={styles.removeImageButton}>
+                        <Icon name="times" solid size={15} color="white" onPress={() => setCommentImage('')} />
                       </View>
                     </View>
+                  </View>
 
-                    // <View style={styles.media}>
-                    //   <Image style={{ width: '100%', height: 160 }} source={{ uri: commentImage }} resizeMode="cover" />
-                    // </View>
-                  )}
-                </View>
+                  // <View style={styles.media}>
+                  //   <Image style={{ width: '100%', height: 160 }} source={{ uri: commentImage }} resizeMode="cover" />
+                  // </View>
+                )}
               </View>
-            </ScrollView>
-          </View>
+            </View>
+          </ScrollView>
+        </View>
 
-          {/* {showMentionList && (
+        {/* {showMentionList && (
             <>
               <View style={{ width: '100%', height: 10, backgroundColor: colors.lightGray }} />
               <View style={{ flex: 2 }}>
@@ -479,24 +497,24 @@ const CommentScreen = ({ navigation }) => {
             </>
           )} */}
 
-          <InputAccessoryView nativeID="1">
-            <View style={styles.aboveKeyboard}>
-              <View style={styles.aboveKeyboardLeft}>
-                <TouchableOpacity
-                  onPress={handleCameraIconPress}
-                  // onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
-                  hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-                >
-                  <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.6 }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                  <IconM name="camera-outline" size={22} color={colors.purp} style={{ paddingRight: 32, opacity: 0.6 }} />
-                </TouchableOpacity>
-              </View>
+        <InputAccessoryView nativeID="1">
+          <View style={styles.aboveKeyboard}>
+            <View style={styles.aboveKeyboardLeft}>
+              <TouchableOpacity
+                onPress={handleCameraIconPress}
+                // onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
+                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+              >
+                <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.6 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <IconM name="camera-outline" size={22} color={colors.purp} style={{ paddingRight: 32, opacity: 0.6 }} />
+              </TouchableOpacity>
             </View>
-          </InputAccessoryView>
+          </View>
+        </InputAccessoryView>
 
-          {/* <InputAccessoryView nativeID="1">
+        {/* <InputAccessoryView nativeID="1">
             <View style={styles.aboveKeyboard}>
               <TouchableOpacity
                 onPress={() => navigation.navigate('RollModal', { handleMediaSelect, assetType: 'Photos' })}
@@ -506,11 +524,10 @@ const CommentScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </InputAccessoryView> */}
-        </KeyboardAvoidingView>
-      )}
+      </KeyboardAvoidingView>
 
       {loadingSubmit && <Loader loading={loadingSubmit} />}
-    </SafeAreaView>
+    </View>
   );
 };
 

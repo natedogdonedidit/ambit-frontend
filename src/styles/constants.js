@@ -1,5 +1,3 @@
-const constants = {
-  paddingBottomNav: 50,
-};
+const constants = {};
 
 export default constants;

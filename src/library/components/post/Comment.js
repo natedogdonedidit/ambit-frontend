@@ -1,38 +1,32 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, TouchableOpacity, Alert, Image } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
-import { format } from 'date-fns';
 
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { timeDifference, timeDifferenceGoal } from 'library/utils';
+import { timeDifference } from 'library/utils';
 import LIKE_COMMENT_MUTATION from 'library/mutations/LIKE_COMMENT_MUTATION';
 import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
-import Heart from 'library/components/UI/Heart';
-import Options from 'library/components/UI/Options';
-import Share from 'library/components/UI/Share';
-import CommentIcon from 'library/components/UI/Comment';
-import Loader from 'library/components/UI/Loader';
-import Ellipsis from 'library/components/UI/Ellipsis';
+import Heart from 'library/components/UI/icons/Heart';
+import CommentIcon from 'library/components/UI/icons/Comment';
+import Chevron from 'library/components/UI/icons/Chevron';
 
 const Comment = ({
   comment,
   currentTime,
   navigation,
-  editable = false,
   showLine = false,
-  // broke = false,
   hideButtons = false,
   isSubComment = false,
   hideTopLine = false,
 }) => {
-  // console.log(comment);
-  // MUTATIONS - like, comment, share
+  // ////////////////////////////////////////////////////////////////
+  // MUTATIONS - like, share, delete
   const [likeComment, { loading: loadingLike }] = useMutation(LIKE_COMMENT_MUTATION, {
     variables: {
       id: comment.id,
@@ -72,15 +66,17 @@ const Comment = ({
       ]),
   });
 
+  // ////////////////////////////////////////////////////////////////
+  // HOOKS & VARIABLES
   const { currentUserId } = useContext(UserContext);
   const isMyPost = comment.owner.id === currentUserId;
-
   const containsMedia = !!comment.image;
-
   // for dates
   const createdAt = new Date(comment.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
 
+  // ////////////////////////////////////////////////////////////////
+  // CUSTOM FUNCTIONS
   const handleLike = () => {
     if (!loadingLike) likeComment();
   };
@@ -90,12 +86,7 @@ const Comment = ({
   };
 
   return (
-    <View
-      style={[
-        { width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 10 },
-        isSubComment && { paddingLeft: 48 },
-      ]}
-    >
+    <View style={[styles.commentContainer, isSubComment && { paddingLeft: 48 }]}>
       <View
         style={[
           styles.comment,
@@ -114,54 +105,42 @@ const Comment = ({
               onPress={() => navigation.navigate('Profile', { profileId: comment.owner.id })}
               hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
             >
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 1 }}>
+              <View style={styles.name}>
                 <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
                   {comment.owner.name}
                 </Text>
-                <Icon
-                  name="circle"
-                  solid
-                  size={3}
-                  color={colors.blueGray}
-                  style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 1, opacity: 0.6, alignSelf: 'center' }}
-                />
-                <Text style={{ ...defaultStyles.smallMute }}>{comment.owner.location}</Text>
               </View>
             </TouchableOpacity>
 
-            <Text style={defaultStyles.smallMute}>
-              {timeDiff} {period}
-            </Text>
+            {!hideButtons && isMyPost && (
+              <View style={{ position: 'absolute', top: 0, right: 0 }}>
+                <Chevron
+                  onPress={() =>
+                    navigation.navigate('EditPostPopup', {
+                      post: comment,
+                      isMyPost,
+                      deleteFunction: deleteComment,
+                      type: 'comment',
+                    })
+                  }
+                />
+              </View>
+            )}
           </View>
 
           <View style={styles.headlineRow}>
-            <Text style={defaultStyles.smallMute}>{comment.owner.headline}</Text>
-          </View>
-
-          {/* <View style={styles.topRow}>
-          <View style={styles.leftSide}>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              onPress={() => navigation.navigate('Profile', { profileId: comment.owner.id })}
-              hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
-            >
-              <Text style={defaultStyles.defaultMedium} numberOfLines={1}>
-                {comment.owner.name}
-                {'   '}
-                <Text style={{ ...defaultStyles.smallMute }}>
-                  <Icon name="map-marker-alt" solid size={10} color={colors.iconGray} style={{ opacity: 0.3 }} />{' '}
-                  {comment.owner.location}
-                </Text>
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.rightSide}>
-            <Text style={defaultStyles.smallMute}>
+            <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{comment.owner.headline}</Text>
+            <Icon
+              name="circle"
+              solid
+              size={3}
+              color={colors.blueGray}
+              style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
+            />
+            <Text style={{ ...defaultStyles.smallMute }}>
               {timeDiff} {period}
             </Text>
           </View>
-        </View> */}
 
           {!!comment.content && (
             <View style={styles.content}>
@@ -172,7 +151,7 @@ const Comment = ({
           {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
 
           {!hideButtons && (
-            <View style={[{ ...styles.buttons }]}>
+            <View style={styles.buttons}>
               <View style={styles.buttonGroup}>
                 <View style={styles.button}>
                   <CommentIcon onPress={() => navigation.navigate('Comment', { clicked: comment, isComment: true })} />
@@ -183,20 +162,6 @@ const Comment = ({
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.likesCount}</Text>
                 </View>
               </View>
-              {isMyPost && (
-                <View style={styles.buttonGroup}>
-                  <Ellipsis
-                    onPress={() =>
-                      navigation.navigate('EditPostPopup', {
-                        post: comment,
-                        isMyPost,
-                        deletePost: deleteComment,
-                        isComment: true,
-                      })
-                    }
-                  />
-                </View>
-              )}
             </View>
           )}
         </View>
@@ -206,13 +171,18 @@ const Comment = ({
 };
 
 const styles = StyleSheet.create({
+  commentContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
   comment: {
     width: '100%',
     flexDirection: 'row',
     paddingTop: 5,
     marginTop: 0,
     backgroundColor: 'white',
-    // marginTop: 5,
   },
   threadLine: {
     flex: 1,
@@ -229,31 +199,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: 48,
   },
-  // leftColumnSub: {
-  //   alignItems: 'flex-start',
-  //   paddingLeft: 48,
-  //   width: 96,
-  // },
   rightColumn: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    // paddingRight: 15,
     paddingBottom: 10,
     paddingLeft: 8,
   },
   topRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  headlineRow: {
-    paddingBottom: 4,
+  name: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 30,
   },
-  leftSide: {},
-  rightSide: {
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
+  headlineRow: {
+    flexDirection: 'row',
+    paddingBottom: 4,
   },
   content: {
     paddingBottom: 4,
@@ -266,16 +230,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     overflow: 'hidden',
   },
-  // buttons: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  // },
-  // button: {
-  //   width: 55,
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  // },
-
   buttons: {
     flexDirection: 'row',
     justifyContent: 'space-between',

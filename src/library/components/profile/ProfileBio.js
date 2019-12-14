@@ -4,7 +4,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import TextButton from 'library/components/UI/TextButton';
+import TextButton from 'library/components/UI/buttons/TextButton';
 import Projects from 'library/components/profile/Projects';
 import Skills from 'library/components/profile/Skills';
 import Experience from 'library/components/profile/Experience';

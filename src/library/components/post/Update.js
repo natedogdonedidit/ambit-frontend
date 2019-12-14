@@ -1,20 +1,22 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, StatusBar, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { format } from 'date-fns';
 import { useMutation } from '@apollo/react-hooks';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import LIKE_UPDATE_MUTATION from 'library/mutations/LIKE_UPDATE_MUTATION';
-import TextButton from 'library/components/UI/TextButton';
+import DELETE_UPDATE_MUTATION from 'library/mutations/DELETE_UPDATE_MUTATION';
+import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
-import Heart from 'library/components/UI/Heart';
-import Comment from 'library/components/UI/Comment';
-import Share from 'library/components/UI/Share';
-import Ellipsis from 'library/components/UI/Ellipsis';
+import Heart from 'library/components/UI/icons/Heart';
+import Comment from 'library/components/UI/icons/Comment';
+import Share from 'library/components/UI/icons/Share';
+import Chevron from 'library/components/UI/icons/Chevron';
 
 const Update = ({
   post,
@@ -25,10 +27,10 @@ const Update = ({
   showLine = false,
   hideButtons = false,
   hideTopLine = false,
-  isStandalone = false,
   updateInd,
 }) => {
-  // MUTATIONS - like, share
+  // ////////////////////////////////////////////////////////////////
+  // MUTATIONS - like, share, delete
   const [likeUpdate, { loading: loadingLike }] = useMutation(LIKE_UPDATE_MUTATION, {
     variables: {
       updateId: update.id,
@@ -55,27 +57,41 @@ const Update = ({
     },
   });
 
+  const [deleteUpdate, { loading: loadingDelete }] = useMutation(DELETE_UPDATE_MUTATION, {
+    variables: {
+      owner: post.owner.id,
+      id: update.id,
+    },
+    refetchQueries: () => [{ query: SINGLE_POST_QUERY, variables: { id: update.parentPost.id } }],
+    onCompleted: () => {},
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to delete this update. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
+  // ////////////////////////////////////////////////////////////////
+  // HOOKS & VARIABLES
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;
-
   const containsMedia = !!update.image;
-
   // for dates
   const createdAt = new Date(update.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
   const formatedDate = format(createdAt, 'M/d/yy h:mm a');
 
-  // for potential updates
-
+  // ////////////////////////////////////////////////////////////////
+  // CUSTOM FUNCTIONS
   const handleLike = () => {
     if (!loadingLike) likeUpdate();
   };
 
-  // const renderMedia = () => {};
+  const renderMedia = () => {
+    return <Image style={{ width: '100%', height: 160 }} source={{ uri: update.image }} resizeMode="cover" />;
+  };
 
   return (
-    // <View style={[styles.update, isStandalone && { paddingTop: 12, marginTop: 5 }]}>
-    <View style={{ width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 10 }}>
+    <View style={styles.updateContainer}>
       <View style={hideTopLine ? styles.updateNoLine : styles.update}>
         <View style={styles.leftColumn}>
           <ProfilePic navigation={navigation} user={post.owner} size={30} disableVideo />
@@ -83,32 +99,54 @@ const Update = ({
         </View>
         <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
           <View style={styles.topRow}>
-            <View style={styles.leftSide}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
-                hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
-              >
-                <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
+              hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
+            >
+              <View style={styles.name}>
+                <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
                   {post.owner.name}
                 </Text>
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
 
-            <View style={styles.rightSide}>
-              <Text style={defaultStyles.smallMute}>
-                {timeDiff} {period}
-              </Text>
-            </View>
+            {!hideButtons && (
+              <View style={{ position: 'absolute', top: 0, right: 0 }}>
+                <Chevron
+                  onPress={() =>
+                    navigation.navigate('EditPostPopup', {
+                      post: update,
+                      isMyPost,
+                      deleteFunction: deleteUpdate,
+                      type: 'update',
+                    })
+                  }
+                />
+              </View>
+            )}
           </View>
 
           <View style={styles.headlineRow}>
-            <Text style={defaultStyles.smallMute}>Update #{updateInd + 1}</Text>
+            <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>Update #{updateInd + 1}</Text>
+            <Icon
+              name="circle"
+              solid
+              size={3}
+              color={colors.blueGray}
+              style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
+            />
+            <Text style={{ ...defaultStyles.smallMute }}>
+              {timeDiff} {period}
+            </Text>
           </View>
 
           <View style={styles.content}>
             <Text style={defaultStyles.defaultText}>{update.content}</Text>
           </View>
+
+          {containsMedia && <View style={styles.media}>{renderMedia()}</View>}
+
           {showDetails ? (
             <>
               <View style={styles.date}>
@@ -157,9 +195,6 @@ const Update = ({
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.sharesCount}</Text>
                   </View>
                 </View>
-                <View style={styles.buttonGroup}>
-                  <Ellipsis onPress={() => null} />
-                </View>
               </View>
             )
           )}
@@ -170,12 +205,17 @@ const Update = ({
 };
 
 const styles = StyleSheet.create({
+  updateContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
   update: {
     width: '100%',
     flexDirection: 'row',
     backgroundColor: 'white',
     paddingTop: 12,
-
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderBlack,
   },
@@ -203,7 +243,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    // paddingRight: 15,
     paddingBottom: 10,
     paddingLeft: 8,
   },
@@ -213,32 +252,19 @@ const styles = StyleSheet.create({
   },
   topRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    // paddingBottom: 4,
+    alignItems: 'center',
   },
   headlineRow: {
+    flexDirection: 'row',
     paddingBottom: 4,
   },
-  leftSide: {},
-  rightSide: {
-    // flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-  },
-  goal: {
-    alignSelf: 'flex-start',
-    paddingTop: 5,
-    paddingBottom: 15,
+  name: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 30,
   },
   content: {
     paddingBottom: 8,
-    // paddingRight: 15,
-  },
-  tags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingBottom: 11,
-    paddingRight: 20,
   },
   buttons: {
     flexDirection: 'row',
@@ -254,25 +280,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  countdown: {
-    flexDirection: 'row',
-    paddingVertical: 10,
-    marginBottom: 15,
-
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
-  },
   date: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 10,
     paddingBottom: 5,
     paddingRight: 15,
-
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
   },
@@ -283,11 +296,6 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 15,
-
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
   },
 });
 

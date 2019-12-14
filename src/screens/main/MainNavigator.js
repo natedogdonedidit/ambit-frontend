@@ -24,34 +24,32 @@ import UpdateScreen from './UpdateScreen';
 import CommentScreen from './CommentScreen';
 import UpdatePostScreen from './UpdatePostScreen';
 import RequestsScreen from './RequestsScreen';
+import TopicScreen from './TopicScreen';
 import CustomSearchScreen from './CustomSearchScreen';
 // modals
-import StoryModal from './modals/StoryModal';
-import CreateIntroModal from './modals/CreateIntroModal';
-import NewPostModal from './modals/NewPostModal';
-import SelectGoalModal from './modals/SelectGoalModal';
-import SelectGoalFieldModal from './modals/SelectGoalFieldModal';
-import RollModal from './modals/RollModal';
-import EditLocationModal from './modals/EditLocationModal';
-import EditLocationRadiusModal from './modals/EditLocationRadiusModal';
-import EditNameModal from './modals/EditNameModal';
-import EditProfessionModal from './modals/EditProfessionModal';
-import EditBioModal from './modals/EditBioModal';
-import EditAboutModal from './modals/EditAboutModal';
-import EditExperienceModal from './modals/EditExperienceModal';
-import EditEducationModal from './modals/EditEducationModal';
-import EditSkillsModal from './modals/EditSkillsModal';
-import SelectIndustryModal from './modals/SelectIndustryModal';
-import SelectFreelanceModal from './modals/SelectFreelanceModal';
-import SelectInvestorModal from './modals/SelectInvestorModal';
-import SelectMentorModal from './modals/SelectMentorModal';
+import StoryModal from './modals/stories/StoryModal';
+import CreateIntroModal from './modals/stories/CreateIntroModal';
+import NewPostModal from './modals/post/NewPostModal';
+import SelectGoalModal from './modals/post/SelectGoalModal';
+import SelectGoalFieldModal from './modals/post/SelectGoalFieldModal';
+import EditLocationModal from './modals/general/EditLocationModal';
+import EditLocationRadiusModal from './modals/general/EditLocationRadiusModal';
+import EditProfileModal from './modals/profile/EditProfileModal';
+import EditAboutModal from './modals/profile/EditAboutModal';
+import EditExperienceModal from './modals/profile/EditExperienceModal';
+import EditEducationModal from './modals/profile/EditEducationModal';
+import EditSkillsModal from './modals/profile/EditSkillsModal';
+import SelectIndustryModal from './modals/profile/SelectIndustryModal';
+import SelectFreelanceModal from './modals/profile/SelectFreelanceModal';
+import SelectInvestorModal from './modals/profile/SelectInvestorModal';
+import SelectMentorModal from './modals/profile/SelectMentorModal';
 
 // popups
-import EditSkillsPopup from './modals/EditSkillsPopup';
-import EditPostPopup from './modals/EditPostPopup';
-import YearModal from './modals/YearModal';
-import MonthModal from './modals/MonthModal';
-import EditStoryItemPopup from './modals/EditStoryItemPopup';
+import EditSkillsPopup from './modals/profile/EditSkillsPopup';
+import EditPostPopup from './modals/post/EditPostPopup';
+import YearModal from './modals/general/YearModal';
+import MonthModal from './modals/general/MonthModal';
+import EditStoryItemPopup from './modals/stories/EditStoryItemPopup';
 
 // const { cond, interpolate } = Animated;
 
@@ -72,6 +70,9 @@ const HomeStack = createStackNavigator(
     },
     Comment: {
       screen: CommentScreen,
+    },
+    Topic: {
+      screen: TopicScreen,
     },
     CustomSearch: {
       screen: CustomSearchScreen,
@@ -271,16 +272,15 @@ const MainNavWithModal = createStackNavigator(
       screen: SelectGoalModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: false,
       },
     },
     SelectGoalFieldModal: {
       screen: SelectGoalFieldModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: false,
       },
-    },
-    RollModal: {
-      screen: RollModal,
     },
     EditLocationModal: {
       screen: EditLocationModal,
@@ -289,22 +289,14 @@ const MainNavWithModal = createStackNavigator(
       screen: EditLocationModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: false,
       },
     },
     EditLocationRadiusModal: {
       screen: EditLocationRadiusModal,
     },
-    EditNameModal: {
-      screen: EditNameModal,
-    },
-    EditProfessionModal: {
-      screen: EditProfessionModal,
-      navigationOptions: {
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-      },
-    },
-    EditBioModal: {
-      screen: EditBioModal,
+    EditProfileModal: {
+      screen: EditProfileModal,
     },
     EditAboutModal: {
       screen: EditAboutModal,
@@ -340,24 +332,28 @@ const MainNavWithModal = createStackNavigator(
       screen: SelectIndustryModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: false,
       },
     },
     SelectFreelanceModal: {
       screen: SelectFreelanceModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: false,
       },
     },
     SelectInvestorModal: {
       screen: SelectInvestorModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: false,
       },
     },
     SelectMentorModal: {
       screen: SelectMentorModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: false,
       },
     },
     YearModal: {

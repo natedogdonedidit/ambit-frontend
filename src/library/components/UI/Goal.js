@@ -5,65 +5,28 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import { moneyGoals, helpGoals, networkGoals, answersGoals, hireGoals } from 'library/utils/lists';
-import { getPrimaryColor, getBackgroundColor, getIcon } from 'library/utils';
+// import { moneyGoals, helpGoals, networkGoals, answersGoals, hireGoals } from 'library/utils/lists';
+import { getGoalInfo } from 'library/utils';
 
 const Goal = ({ goal, onPress }) => {
   return (
-    // solid w/ white text
-    // <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
-    //   <View style={styles.whiteBack}>
-    //     <View
-    //       style={{
-    //         ...styles.goalView,
-    //         backgroundColor: getPrimaryColor(goal),
-    //         // opacity: 0.05,
-    //         // backgroundColor: 'white',
-    //         // borderColor: getPrimaryColor(goal),
-    //         // borderWidth: StyleSheet.hairlineWidth,
-    //       }}
-    //     >
-    //       <View style={{ paddingRight: 10 }}>{getIcon(goal)}</View>
-    //       <Text style={{ ...defaultStyles.defaultSemibold, color: 'white' }}>{goal}</Text>
-    //     </View>
-    //   </View>
-    // </TouchableOpacity>
-
     // color background w/ black text
     <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
       <View style={styles.whiteBack}>
         <View
           style={{
             ...styles.goalView,
-            backgroundColor: getBackgroundColor(goal),
-            // backgroundColor: 'white',
-            // backgroundColor: 'rgba(0,0,0,0.06)',
-            // borderColor: getPrimaryColor(goal),
-            // borderWidth: StyleSheet.hairlineWidth,
+            backgroundColor: getGoalInfo(goal, 'secondaryColor'),
+            borderColor: getGoalInfo(goal, 'primaryColor'),
           }}
         >
-          <View style={{ paddingRight: 10 }}>{getIcon(goal)}</View>
-          {/* <Text style={{ ...defaultStyles.defaultRegular, color: colors.darkGray }}>{goal}</Text> */}
-          <Text style={{ ...defaultStyles.defaultMedium, color: getPrimaryColor(goal) }}>{goal}</Text>
+          <View style={{ paddingRight: 10 }}>
+            <Icon name={getGoalInfo(goal, 'logo')} size={15} color={getGoalInfo(goal, 'primaryColor')} solid />
+          </View>
+          <Text style={{ ...defaultStyles.defaultMedium, color: getGoalInfo(goal, 'primaryColor') }}>{goal}</Text>
         </View>
       </View>
     </TouchableOpacity>
-
-    // <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
-    //   <View style={styles.whiteBack}>
-    //     <View
-    //       style={{
-    //         ...styles.goalView,
-    //         backgroundColor: getBackgroundColor(goal),
-    //         borderColor: getPrimaryColor(goal),
-    //         borderWidth: StyleSheet.hairlineWidth,
-    //       }}
-    //     >
-    //       <View style={{ paddingRight: 10 }}>{getIcon(goal)}</View>
-    //       <Text style={{ ...defaultStyles.defaultSemibold, color: getPrimaryColor(goal) }}>{goal}</Text>
-    //     </View>
-    //   </View>
-    // </TouchableOpacity>
   );
 };
 
@@ -72,7 +35,7 @@ export default Goal;
 const styles = StyleSheet.create({
   whiteBack: {
     height: 32,
-    borderRadius: 5,
+    borderRadius: 8,
     backgroundColor: 'white',
     // ...defaultStyles.shadowGoal,
   },
@@ -81,8 +44,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 5,
-    // borderWidth: 0.4,
+    borderRadius: 8,
+    borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.darkGray,
     paddingHorizontal: 15,
   },

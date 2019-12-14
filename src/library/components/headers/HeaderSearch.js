@@ -6,7 +6,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-import TextButton from 'library/components/UI/TextButton';
+import TextButton from 'library/components/UI/buttons/TextButton';
 
 const HeaderPic = ({ handleLeft, handleRight, textRight, title, user }) => {
   return (

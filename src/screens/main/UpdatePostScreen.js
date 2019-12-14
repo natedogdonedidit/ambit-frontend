@@ -59,7 +59,7 @@ const UpdatePostScreen = ({ navigation }) => {
   const loading = loadingUpdate;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <HeaderWhite
         handleLeft={() => navigation.goBack()}
         handleRight={() => handleUpdate()}
@@ -81,7 +81,7 @@ const UpdatePostScreen = ({ navigation }) => {
 
           <View style={styles.update}>
             <View style={styles.leftColumn}>
-              <ProfilePic navigation={navigation} user={post.owner} size={30} />
+              <ProfilePic navigation={navigation} user={post.owner} size={30} disableVideo />
             </View>
             <View style={styles.rightColumn}>
               {/* <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
@@ -107,7 +107,7 @@ const UpdatePostScreen = ({ navigation }) => {
       </KeyboardAvoidingView>
 
       {loading && <Loader loading={loading} full />}
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -8,12 +8,12 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
 
-const TopicsSelector = ({ activeTopic, setActiveTopic, height }) => {
-  const renderTrendingTab = () => {
+const TopicsSelector = ({ navigation, activeTopic, setActiveTopic, height }) => {
+  const renderAllTab = () => {
     const topic = 'Trending';
 
     return (
-      <TouchableOpacity activeOpacity={1} onPress={() => setActiveTopic(topic)}>
+      <TouchableOpacity activeOpacity={0.6} onPress={() => setActiveTopic(topic)}>
         <View style={{ justifyContent: 'center' }}>
           <View style={[activeTopic === topic ? { ...styles.topicSelected } : { ...styles.topic }]}>
             <Text style={activeTopic === topic ? styles.topicSelectedText : styles.topicText}>{topic}</Text>
@@ -28,7 +28,8 @@ const TopicsSelector = ({ activeTopic, setActiveTopic, height }) => {
       const { topic } = item;
 
       return (
-        <TouchableOpacity activeOpacity={1} key={i} onPress={() => setActiveTopic(topic)}>
+        // <TouchableOpacity activeOpacity={1} key={i} onPress={() => setActiveTopic(topic)}>
+        <TouchableOpacity activeOpacity={0.6} key={i} onPress={() => navigation.navigate('Topic', { topic })}>
           <View style={{ justifyContent: 'center' }}>
             <View style={[activeTopic === topic ? { ...styles.topicSelected } : { ...styles.topic }]}>
               <Text style={activeTopic === topic ? styles.topicSelectedText : styles.topicText}>{topic}</Text>
@@ -42,9 +43,9 @@ const TopicsSelector = ({ activeTopic, setActiveTopic, height }) => {
   return (
     <ScrollView contentContainerStyle={{ ...styles.topics, height }} horizontal showsHorizontalScrollIndicator={false}>
       <View style={styles.selectIcon}>
-        <Icon name="angle-down" solid size={16} color={colors.blueGray} style={{ paddingTop: 2 }} />
+        <Icon name="bars" size={16} color={colors.iconDark} style={{ paddingLeft: 4, paddingRight: 5 }} />
       </View>
-      {renderTrendingTab()}
+      {renderAllTab()}
       {renderTabs()}
     </ScrollView>
   );
@@ -57,10 +58,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 28,
-    width: 28,
-    borderRadius: 14,
-    borderWidth: 0.5,
-    borderColor: colors.blueGray,
+    // width: 28,
+    // borderRadius: 14,
+    // borderWidth: 0.5,
+    // borderColor: colors.blueGray,
     backgroundColor: colors.white,
     // paddingHorizontal: 12,
     marginRight: 8,
@@ -69,7 +70,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: colors.lightLightGray,
+    // backgroundColor: colors.lightLightGray,
+    backgroundColor: 'white',
     paddingHorizontal: 10,
   },
   topic: {
@@ -89,8 +91,8 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 14,
     borderWidth: 0.5,
-    borderColor: colors.purp,
-    backgroundColor: colors.purp,
+    borderColor: colors.blueGray,
+    backgroundColor: colors.blueGray,
     paddingHorizontal: 12,
     marginRight: 8,
   },
@@ -99,7 +101,7 @@ const styles = StyleSheet.create({
     color: colors.blueGray,
   },
   topicSelectedText: {
-    ...defaultStyles.defaultBold,
+    ...defaultStyles.defaultMedium,
     color: 'white',
   },
 });

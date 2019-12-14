@@ -191,9 +191,14 @@ const styles = StyleSheet.create({
     fontSize: huge,
     fontFamily: 'SFProText-Bold',
   },
+  headerTopic: {
+    color: colors.black,
+    fontSize: 18,
+    fontFamily: 'SFProDisplay-Medium',
+  },
   headerSmall: {
     color: colors.black,
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: 'SFProDisplay-Bold',
   },
   headerMedium: {

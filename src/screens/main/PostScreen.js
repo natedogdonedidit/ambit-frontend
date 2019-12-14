@@ -13,14 +13,14 @@ import Post from 'library/components/post/Post';
 import Update from 'library/components/post/Update';
 
 const PostScreen = ({ navigation }) => {
-  // PARAMS
+  // ////////////////////////////////////////////////////////////////
+  // ROUTE PARAMS
   const postToQuery = navigation.getParam('post', null); // all the data from parent post down to updates
 
-  // CONSTANTS
+  // ////////////////////////////////////////////////////////////////
+  // QUERIES
 
-  // QUERIES - this gets the comments for a POST
-  // this could be optimized to only retrieve comments of clicked on Post/Update
-  // right now it queries ALL comments in the Post & down stream updates
+  // this could be optimized to retrieve the comments seperately
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
     variables: { id: postToQuery.id },
   });
@@ -28,10 +28,10 @@ const PostScreen = ({ navigation }) => {
   if (error) return <Error error={error} />;
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
         <Loader loading={loading} full={false} />
-      </SafeAreaView>
+      </View>
     );
   }
   const currentTime = new Date();
@@ -60,8 +60,6 @@ const PostScreen = ({ navigation }) => {
             paddingHorizontal: 15,
             marginTop: 15,
             backgroundColor: 'white',
-            // borderBottomWidth: StyleSheet.hairlineWidth,
-            // borderBottomColor: colors.borderBlack,
           }}
         >
           <Text style={defaultStyles.headerSmall}>Updates</Text>
@@ -82,24 +80,12 @@ const PostScreen = ({ navigation }) => {
   };
 
   const renderComments = () => {
-    // const comments = isUpdate ? post.updates[updateInd].comments : post.comments;
     const { comments } = post;
 
     if (comments.length < 1) {
       return (
         <>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              paddingVertical: 12,
-              paddingHorizontal: 15,
-              marginTop: 15,
-              backgroundColor: 'white',
-              // borderBottomWidth: StyleSheet.hairlineWidth,
-              // borderBottomColor: colors.borderBlack,
-            }}
-          >
+          <View style={styles.sectionHeader}>
             <Text style={defaultStyles.headerSmall}>Comments</Text>
             <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2 }}>No comments yet</Text>
           </View>
@@ -109,21 +95,10 @@ const PostScreen = ({ navigation }) => {
 
     return (
       <>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            paddingVertical: 12,
-            paddingHorizontal: 15,
-            marginTop: 15,
-            backgroundColor: 'white',
-            // borderBottomWidth: StyleSheet.hairlineWidth,
-            // borderBottomColor: colors.borderBlack,
-          }}
-        >
+        <View style={styles.sectionHeader}>
           <Text style={defaultStyles.headerSmall}>Comments</Text>
         </View>
-        {comments.map((comment, i) => {
+        {comments.map(comment => {
           // if its a direct comment on the post
           if (!comment.parentComment && !comment.parentUpdate) {
             // if there are subComments
@@ -155,18 +130,15 @@ const PostScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
-      {loading ? (
-        <Loader loading={loading} full={false} />
-      ) : (
-        <ScrollView style={styles.scrollView}>
-          {!loading && renderPost()}
-          {!loading && renderUpdates()}
-          {!loading && <View style={styles.commentsView}>{renderComments()}</View>}
-        </ScrollView>
-      )}
-    </SafeAreaView>
+
+      <ScrollView style={styles.scrollView}>
+        {!loading && renderPost()}
+        {!loading && renderUpdates()}
+        {!loading && <View style={styles.commentsView}>{renderComments()}</View>}
+      </ScrollView>
+    </View>
   );
 };
 
@@ -177,6 +149,14 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     backgroundColor: colors.lightGray,
+  },
+  sectionHeader: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    marginTop: 15,
+    backgroundColor: 'white',
   },
   commentsView: {
     width: '100%',

@@ -6,7 +6,7 @@ import { useSafeArea } from 'react-native-safe-area-context';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import TextButton from 'library/components/UI/TextButton';
+import TextButton from 'library/components/UI/buttons/TextButton';
 
 const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, title }) => {
   const insets = useSafeArea();

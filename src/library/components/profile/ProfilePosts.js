@@ -8,7 +8,7 @@ import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 
 import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
-import BigButton from 'library/components/UI/BigButton';
+import BigButton from 'library/components/UI/buttons/BigButton';
 
 const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId }) => {
   // QUERIES

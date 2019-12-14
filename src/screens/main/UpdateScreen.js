@@ -120,7 +120,7 @@ const UpdateScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Update" />
       {loading ? (
         <Loader loading={loading} full={false} />
@@ -130,7 +130,7 @@ const UpdateScreen = ({ navigation }) => {
           {!loading && <View style={styles.commentsView}>{renderComments()}</View>}
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 

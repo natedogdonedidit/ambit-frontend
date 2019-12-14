@@ -32,7 +32,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 12,
-    backgroundColor: colors.lightLightGray,
+    // backgroundColor: colors.lightLightGray,
+    backgroundColor: 'white',
     // backgroundColor: 'gray',
   },
   leftSide: {

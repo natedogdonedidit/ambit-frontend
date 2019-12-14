@@ -16,7 +16,9 @@ const colors = {
 
   // backgrounds used
   lightGray: 'rgba(239,239,244,1)', // systemBackgroundSecondary: used for app background
+  // lightGray: 'rgba(101,119,134,0.001)', // twitter blueGray
   lightLightGray: '#F9F9F9',
+  // lightLightGray: 'white',
   borderBlack: 'rgba(0, 0, 0, 0.2)',
 
   // icon colors
@@ -37,13 +39,14 @@ const colors = {
   // green: 'rgba(10,141,42,1)',
   green: 'rgba(52,199,89,1)', // ios
   orange: 'rgba(255, 149, 0, 1)', // ios
+  yellow: 'rgba(255, 204, 0, 1)', // ios
 
   // goal backgrounds
-  goalBlue: 'rgba(0,35,229,0.15)', // ios
-  goalPurp: 'rgba(94,92,230,0.15)', // ios
-  goalPeach: 'rgba(255,69,58,0.15)', // ios
-  goalGreen: 'rgba(50,215,75,0.15)', // ios
-  goalOrange: 'rgba(255, 149, 0, 0.15)', // ios
+  goalBlue: 'rgba(0,35,229,0.1)', // ios
+  goalPurp: 'rgba(94,92,230,0.1)', // ios
+  goalPeach: 'rgba(255,69,58,0.1)', // ios
+  goalGreen: 'rgba(50,215,75,0.1)', // ios
+  goalOrange: 'rgba(255, 149, 0, 0.1)', // ios
 
   // system grays
   systemGray1: 'rgb(142,142,147)',

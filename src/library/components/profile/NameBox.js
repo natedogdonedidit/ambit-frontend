@@ -4,12 +4,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import WhiteButton from 'library/components/UI/WhiteButton';
-import FollowButton from 'library/components/UI/FollowButton';
-import ConnectButton from 'library/components/UI/ConnectButton';
-import ThreeDotsButton from 'library/components/UI/ThreeDotsButton';
-import MessageButton from 'library/components/UI/MessageButton';
-import SmallGrayButton from 'library/components/UI/SmallGrayButton';
+import FollowButton from 'library/components/UI/buttons/FollowButton';
+import ConnectButton from 'library/components/UI/buttons/ConnectButton';
+import ThreeDotsButton from 'library/components/UI/buttons/ThreeDotsButton';
+import MessageButton from 'library/components/UI/buttons/MessageButton';
+import SmallGrayButton from 'library/components/UI/buttons/SmallGrayButton';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
 const NameBox = ({ user, navigation, isMyProfile }) => {
@@ -86,7 +85,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       {/* absolute */}
       <View style={styles.topRowButtons}>
         {isMyProfile ? (
-          <SmallGrayButton onPress={() => navigation.navigate('EditNameModal', { user })}>Edit Profile</SmallGrayButton>
+          <SmallGrayButton onPress={() => navigation.navigate('EditProfileModal', { user })}>Edit Profile</SmallGrayButton>
         ) : (
           <>
             <SmallGrayButton onPress={() => null} buttonStyle={{ marginRight: 10 }}>
@@ -99,14 +98,6 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       <View style={styles.profilePicView}>
         <ProfilePic user={user} intro={user.intro} navigation={navigation} size={70} border borderWidth={2.4} />
       </View>
-
-      {/* {isMyProfile && (
-        <View style={styles.editProfileButton}>
-          <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditNameModal', { user })}>
-            Edit
-          </TextButton>
-        </View>
-      )} */}
     </View>
   );
 };

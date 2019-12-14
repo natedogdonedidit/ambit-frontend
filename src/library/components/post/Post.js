@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, TouchableOpacity, Alert, Image } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
 import { format } from 'date-fns';
@@ -7,25 +7,22 @@ import { format } from 'date-fns';
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { timeDifference, timeDifferenceGoal } from 'library/utils';
+import { timeDifference } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
-import TextButton from 'library/components/UI/TextButton';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Goal from 'library/components/UI/Goal';
-import GoalField from 'library/components/UI/GoalField';
-import Heart from 'library/components/UI/Heart';
-import Comment from 'library/components/UI/Comment';
-import Ellipsis from 'library/components/UI/Ellipsis';
-import Options from 'library/components/UI/Options';
-import Share from 'library/components/UI/Share';
-import Dots from 'library/components/UI/Dots';
+import Heart from 'library/components/UI/icons/Heart';
+import Comment from 'library/components/UI/icons/Comment';
+import Chevron from 'library/components/UI/icons/Chevron';
+import Share from 'library/components/UI/icons/Share';
 import Topic from 'library/components/post/Topic';
 
 const Post = ({ post, currentTime, navigation, showDetails = false, showLine = false, hideButtons = false }) => {
-  // MUTATIONS - like, share
+  // ////////////////////////////////////////////////////////////////
+  // MUTATIONS - like, share, delete
   const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
     variables: {
       postId: post.id,
@@ -65,18 +62,22 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
       ]),
   });
 
+  // ////////////////////////////////////////////////////////////////
+  // HOOKS & VARIABLES
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;
   const containsMedia = post.video || post.images.length > 0;
-  const containsTopics = !!post.topic || !!post.subTopic || !!post.location;
+  const containsTopics = !!post.subField || !!post.topic || !!post.subTopic || !!post.location;
 
   // for dates
   const createdAt = new Date(post.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
   const formatedDate = format(createdAt, 'M/d/yy h:mm a');
-
   // for goal remaining time
-  const lastUpdated = new Date(post.lastUpdated);
+  // const lastUpdated = new Date(post.lastUpdated);
+
+  // ////////////////////////////////////////////////////////////////
+  // CUSTOM FUNCTIONS
 
   const handleLike = () => {
     if (!loadingLike) likePost();
@@ -87,55 +88,40 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
   };
 
   return (
-    <View style={{ width: '100%', backgroundColor: 'white', paddingLeft: 10, paddingRight: 12, marginTop: 5 }}>
+    <View style={styles.postContainer}>
       <View style={styles.post}>
         <View style={styles.leftColumn}>
           <ProfilePic user={post.owner} navigation={navigation} />
           {showLine && <View style={styles.threadLine} />}
         </View>
-        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 10 }]}>
+        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 12 }]}>
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
               hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
             >
-              <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 1 }}>
+              <View style={styles.name}>
                 <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
                   {post.owner.name}
                 </Text>
-                {/* <Icon
-                  name="circle"
-                  solid
-                  size={3}
-                  color={colors.blueGray}
-                  style={{ paddingLeft: 6, paddingRight: 6, paddingBottom: 1, opacity: 0.6, alignSelf: 'center' }}
-                /> */}
-                {/* <Text style={{ ...defaultStyles.smallMute }}>{post.location}</Text> */}
               </View>
             </TouchableOpacity>
 
-            {!hideButtons && <Dots onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />}
-            {/* <Icon name="circle" solid size={3} color={colors.blueGray} style={{ opacity: 0.6, alignSelf: 'center' }} /> */}
-            {/* <Text style={{ ...defaultStyles.smallMute }}>
-              {timeDiff} {period}
-            </Text> */}
-            {/* {!hideButtons && (
-            <View style={{ position: 'absolute', top: -4, right: 0 }}>
-              <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} />
-            </View>
-          )} */}
+            {!hideButtons && (
+              <View style={{ position: 'absolute', top: 0, right: 0 }}>
+                <Chevron
+                  onPress={() =>
+                    navigation.navigate('EditPostPopup', { post, isMyPost, deleteFunction: deletePost, type: 'post' })
+                  }
+                />
+              </View>
+            )}
           </View>
 
           <View style={styles.headlineRow}>
             <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{post.owner.headline}</Text>
-            <Icon
-              name="circle"
-              solid
-              size={3}
-              color={colors.blueGray}
-              style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
-            />
+            <Icon name="circle" solid size={3} color={colors.iconGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
             <Text style={{ ...defaultStyles.smallMute }}>
               {timeDiff} {period}
             </Text>
@@ -143,14 +129,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
           {post.isGoal && (
             <View style={styles.goalView}>
-              {/* <Text style={{ ...defaultStyles.smallMute, paddingBottom: 5, paddingLeft: 0 }}>I am looking to:</Text> */}
-
-              <View style={{ flexDirection: 'row' }}>
-                <View style={{ marginRight: 6 }}>
-                  <Goal goal={post.goal} />
-                </View>
-                {/* {!!post.field && <GoalField goalField={post.field} />} */}
-              </View>
+              <Goal goal={post.goal} />
             </View>
           )}
 
@@ -160,9 +139,26 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
           {containsTopics && (
             <View style={styles.topics}>
-              {!!post.topic && <Topic>{post.topic}</Topic>}
-              {!!post.subTopic && <Topic>{post.subTopic}</Topic>}
-              {!!post.location && <Topic>{post.location}</Topic>}
+              {!!post.subField && post.subField !== post.topic && (
+                <Topic navigation={navigation} type="topic">
+                  {post.subField}
+                </Topic>
+              )}
+              {!!post.topic && (
+                <Topic navigation={navigation} type="topic">
+                  {post.topic}
+                </Topic>
+              )}
+              {!!post.subTopic && (
+                <Topic navigation={navigation} type="subTopic">
+                  {post.subTopic}
+                </Topic>
+              )}
+              {!!post.location && (
+                <Topic navigation={navigation} type="location">
+                  {post.location}
+                </Topic>
+              )}
             </View>
           )}
 
@@ -171,7 +167,6 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
             <>
               <View style={styles.date}>
                 <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{formatedDate}</Text>
-                {/* <TextButton onPress={() => null}>Tags</TextButton> */}
               </View>
               <View style={styles.likesRow}>
                 <View style={{ flexDirection: 'row' }}>
@@ -198,25 +193,17 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
           ) : (
             !hideButtons && (
               <View style={styles.buttons}>
-                <View style={styles.buttonGroup}>
-                  <View style={styles.button}>
-                    <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
-                  </View>
-                  <View style={styles.button}>
-                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
-                  </View>
-                  <View style={styles.button}>
-                    <Share onPress={() => null} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
-                  </View>
+                <View style={styles.button}>
+                  <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
                 </View>
-                <View style={styles.buttonGroup}>
-                  {/* <Ellipsis onPress={() => navigation.navigate('EditPostPopup', { post, isMyPost, deletePost })} /> */}
-                  {/* <Text style={{ ...defaultStyles.smallMute }}>
-                  {timeDiff} {period} ago
-                </Text> */}
+                <View style={styles.button}>
+                  <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
+                </View>
+                <View style={styles.button}>
+                  <Share onPress={() => null} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
                 </View>
               </View>
             )
@@ -228,14 +215,18 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 };
 
 const styles = StyleSheet.create({
+  postContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    paddingLeft: 10,
+    paddingRight: 12,
+    marginTop: 5,
+  },
   post: {
     width: '100%',
     flexDirection: 'row',
     paddingTop: 12,
     backgroundColor: 'white',
-    // borderRadius: 3,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
   },
   threadLine: {
     flex: 1,
@@ -255,23 +246,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    // paddingRight: 15,
     paddingTop: 4,
     paddingLeft: 8,
     paddingBottom: 10,
   },
   topRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  name: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingRight: 30,
   },
   headlineRow: {
     flexDirection: 'row',
     paddingBottom: 12,
   },
   goalView: {
-    width: '100%',
-    alignSelf: 'flex-start',
+    flexDirection: 'row',
     paddingBottom: 12,
   },
   content: {
@@ -283,26 +276,13 @@ const styles = StyleSheet.create({
   },
   media: {
     width: '100%',
-    // height: 240,
     borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
     marginBottom: 12,
     overflow: 'hidden',
   },
-  tags: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingBottom: 11,
-    paddingRight: 20,
-  },
   buttons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    // marginTop: 6,
-  },
-  buttonGroup: {
     flexDirection: 'row',
     alignItems: 'center',
   },

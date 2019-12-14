@@ -115,6 +115,7 @@ export const ListPosts = gql`
     }
     isGoal
     goal
+    subField
     topic
     subTopic
     location

@@ -139,15 +139,17 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 3,
     paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 12,
   },
   leftColumn: {
     alignItems: 'center',
-    width: 64,
+    width: 48,
   },
   rightColumn: {
     flex: 1,
     justifyContent: 'center',
-    paddingRight: 15,
+    paddingLeft: 8,
   },
 });
 

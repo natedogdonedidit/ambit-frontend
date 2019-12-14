@@ -94,7 +94,8 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    backgroundColor: colors.lightLightGray,
+    // backgroundColor: colors.lightLightGray,
+    backgroundColor: 'white',
   },
   tab: {
     flex: 1,
@@ -103,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabText: {
-    ...defaultStyles.largeRegular,
+    ...defaultStyles.largeMedium,
     color: colors.blueGray,
   },
   tabSelectedText: {

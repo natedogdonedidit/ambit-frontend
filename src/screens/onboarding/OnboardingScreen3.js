@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, View, Text } from 'react-native';
 
 import colors from 'styles/colors';
-import ButtonDefault from 'library/components/UI/ButtonDefault';
+import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
 const OnboardingScreen3 = props => {
   // state declaration

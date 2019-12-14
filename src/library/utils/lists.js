@@ -265,135 +265,135 @@ export const investmentMarkets = ['Startup', 'Venture Capital', 'Real Estate', '
 export const topicsList = [
   {
     topic: 'Technology',
-    subTopics: ['Software', 'Hardware', 'Semiconductors'],
+    subTopics: ['All', 'Software', 'Hardware', 'Semiconductors'],
   },
   {
     topic: 'Science & Research',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Automotive',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Gaming',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Sports',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Real Estate',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Photography',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Videography',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Music',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Art & Design',
-    subTopics: ['Graphic Design'],
+    subTopics: ['All'],
   },
   {
     topic: 'Media & Journalism',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Writing',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Entertainment',
-    subTopics: ['Acting'],
+    subTopics: ['All'],
   },
   {
     topic: 'Entrepreneurship',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Small Business',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Startups',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Finance & Markets',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Marketing',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'HR',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Manufacturing',
-    subTopics: ['Automation'],
+    subTopics: ['All'],
   },
   {
     topic: 'E-commerce & Retail',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Food & Beverage',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Health & Wellness',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Medicine',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Construction',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Politics',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Law & Policy',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Education',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Non-profit',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Apparel & Fashion',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Makeup & Beauty',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Travel & Hospitality',
-    subTopics: [],
+    subTopics: ['All'],
   },
   {
     topic: 'Misc',
-    subTopics: [],
+    subTopics: ['All'],
   },
 ];
 

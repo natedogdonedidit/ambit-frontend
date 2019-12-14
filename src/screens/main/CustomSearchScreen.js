@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import BigButton from 'library/components/UI/BigButton';
+import BigButton from 'library/components/UI/buttons/BigButton';
 
 const CustomSearchScreen = ({ navigation }) => {
   const [switch1, setSwitch1] = useState(true);
