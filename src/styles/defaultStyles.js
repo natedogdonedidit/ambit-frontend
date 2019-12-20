@@ -186,6 +186,11 @@ const styles = StyleSheet.create({
     fontFamily: 'SFProText-Bold',
   },
 
+  headerHat: {
+    color: colors.black,
+    fontSize: 18,
+    fontFamily: 'SFProText-Semibold',
+  },
   headerTitle: {
     color: colors.black,
     fontSize: huge,

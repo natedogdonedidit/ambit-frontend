@@ -26,6 +26,7 @@ import UpdatePostScreen from './UpdatePostScreen';
 import TopicScreen from './TopicScreen';
 import SearchScreen from './SearchScreen';
 import MyTopicsScreen from './MyTopicsScreen';
+import MyHatsScreen from './MyHatsScreen';
 
 // modals
 import StoryModal from './modals/stories/StoryModal';
@@ -42,9 +43,9 @@ import EditEducationModal from './modals/profile/EditEducationModal';
 import EditSkillsModal from './modals/profile/EditSkillsModal';
 import SelectTopicsFocusModal from './modals/profile/SelectTopicsFocusModal';
 import SelectTopicsInterestModal from './modals/profile/SelectTopicsInterestModal';
-import SelectFreelanceModal from './modals/profile/SelectFreelanceModal';
-import SelectInvestorModal from './modals/profile/SelectInvestorModal';
-import SelectMentorModal from './modals/profile/SelectMentorModal';
+import SelectTopicsFreelanceModal from './modals/profile/SelectTopicsFreelanceModal';
+import SelectTopicsInvestModal from './modals/profile/SelectTopicsInvestModal';
+import SelectTopicsMentorModal from './modals/profile/SelectTopicsMentorModal';
 
 // popups
 import EditSkillsPopup from './modals/profile/EditSkillsPopup';
@@ -81,6 +82,9 @@ const HomeStack = createStackNavigator(
     },
     MyTopics: {
       screen: MyTopicsScreen,
+    },
+    MyHats: {
+      screen: MyHatsScreen,
     },
   },
   {
@@ -346,27 +350,48 @@ const MainNavWithModal = createStackNavigator(
         gestureEnabled: false,
       },
     },
-    SelectFreelanceModal: {
-      screen: SelectFreelanceModal,
+    SelectTopicsFreelanceModal: {
+      screen: SelectTopicsFreelanceModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         gestureEnabled: false,
       },
     },
-    SelectInvestorModal: {
-      screen: SelectInvestorModal,
+    SelectTopicsInvestModal: {
+      screen: SelectTopicsInvestModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         gestureEnabled: false,
       },
     },
-    SelectMentorModal: {
-      screen: SelectMentorModal,
+    SelectTopicsMentorModal: {
+      screen: SelectTopicsMentorModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         gestureEnabled: false,
       },
     },
+    // SelectFreelanceModal: {
+    //   screen: SelectFreelanceModal,
+    //   navigationOptions: {
+    //     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    //     gestureEnabled: false,
+    //   },
+    // },
+    // SelectInvestorModal: {
+    //   screen: SelectInvestorModal,
+    //   navigationOptions: {
+    //     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    //     gestureEnabled: false,
+    //   },
+    // },
+    // SelectMentorModal: {
+    //   screen: SelectMentorModal,
+    //   navigationOptions: {
+    //     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    //     gestureEnabled: false,
+    //   },
+    // },
     YearModal: {
       screen: YearModal,
       navigationOptions: {

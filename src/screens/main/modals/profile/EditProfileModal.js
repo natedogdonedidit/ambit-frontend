@@ -186,86 +186,6 @@ const EditProfileModal = ({ navigation }) => {
     }
   };
 
-  // industry stuff
-  // const handleIndustryClick = () => {
-  //   navigation.navigate('SelectIndustryModal', {
-  //     industry,
-  //     saveIndustryFields,
-  //   });
-  // };
-
-  // const saveIndustryFields = fields => {
-  //   if (fields.length > 0) {
-  //     setIndustryFields(fields);
-  //   } else {
-  //     setIndustryFields([]);
-  //   }
-  // };
-
-  // const renderIndustries = () => {
-  //   if (industry.length < 1) return <Text style={{ ...defaultStyles.defaultMute }}>Select your industry</Text>;
-
-  //   return industry.map((ind, i) => (
-  //     <Text key={ind} style={{ ...defaultStyles.defaultText }}>
-  //       {i === 0 ? ind : `, ${ind}`}
-  //     </Text>
-  //   ));
-  // };
-
-  // freelance stuff
-  const handleFreelanceClick = () => {
-    navigation.navigate('SelectFreelanceModal', {
-      freelanceFields,
-      saveFreelanceFields,
-    });
-  };
-
-  const saveFreelanceFields = fields => {
-    if (fields.length > 0) {
-      setIsFreelancer(true);
-      setFreelanceFields(fields);
-    } else {
-      setIsFreelancer(false);
-      setFreelanceFields([]);
-    }
-  };
-
-  // investor stuff
-  const handleInvestorClick = () => {
-    navigation.navigate('SelectInvestorModal', {
-      investorFields,
-      saveInvestorFields,
-    });
-  };
-
-  const saveInvestorFields = fields => {
-    if (fields.length > 0) {
-      setIsInvestor(true);
-      setInvestorFields(fields);
-    } else {
-      setIsInvestor(false);
-      setInvestorFields([]);
-    }
-  };
-
-  // mentor stuff
-  const handleMentorClick = () => {
-    navigation.navigate('SelectMentorModal', {
-      mentorFields,
-      saveMentorFields,
-    });
-  };
-
-  const saveMentorFields = fields => {
-    if (fields.length > 0) {
-      setIsMentor(true);
-      setMentorFields(fields);
-    } else {
-      setIsMentor(false);
-      setMentorFields([]);
-    }
-  };
-
   const loading = loadingEdit || uploading;
 
   return (
@@ -366,20 +286,7 @@ const EditProfileModal = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
-            {/* <View style={styles.row}>
-              <View style={styles.rowTitle}>
-                <Text style={{ ...defaultStyles.defaultBold }}>Industry</Text>
-              </View>
-              <View style={styles.rowInput}>
-                <TouchableOpacity
-                  onPress={() => handleIndustryClick()}
-                  style={styles.touchableRow}
-                  hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
-                >
-                  <Text numberOfLines={1}>{renderIndustries()}</Text>
-                </TouchableOpacity>
-              </View>
-            </View> */}
+
             <View style={{ ...styles.row }}>
               <View style={styles.rowTitle}>
                 <Text style={{ ...defaultStyles.defaultBold }}>Website</Text>
@@ -414,72 +321,21 @@ const EditProfileModal = ({ navigation }) => {
                 autoCompleteType="off"
               />
             </View>
-            <TouchableOpacity onPress={() => null}>
-              <View style={{ ...styles.hatRow }}>
+            <TouchableOpacity onPress={() => navigation.navigate('MyTopics', { userLoggedIn: user })}>
+              <View style={{ ...styles.hatRowTop }}>
                 <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>My topics</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => null}>
-              <View style={{ ...styles.hatRow }}>
-                <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>My hats</Text>
-                </View>
-              </View>
-            </TouchableOpacity>
-            {/* <TouchableOpacity onPress={() => handleInvestorClick()}>
-              <View style={{ ...styles.hatRow }}>
-                <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>I'm open to invest</Text>
-                </View>
-
-                <View style={styles.hatButton}>
-                  <Icon
-                    name={isInvestor ? 'check-circle' : 'circle'}
-                    size={25}
-                    color={isInvestor ? colors.purp : colors.borderBlack}
-                    style={{ paddingRight: 0 }}
-                    solid={!!isInvestor}
-                  />
-                </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleFreelanceClick()}>
-              <View style={{ ...styles.hatRow }}>
-                <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>I'm open to freelance</Text>
-                </View>
-
-                <View style={styles.hatButton}>
-                  <Icon
-                    name={isFreelancer ? 'check-circle' : 'circle'}
-                    size={25}
-                    color={isFreelancer ? colors.purp : colors.borderBlack}
-                    style={{ paddingRight: 0 }}
-                    solid={!!isFreelancer}
-                  />
+                  <Text style={{ ...defaultStyles.hugeRegular, color: colors.iosBlue }}>Select my topics</Text>
                 </View>
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handleMentorClick()}>
+            <TouchableOpacity onPress={() => navigation.navigate('MyHats', { userLoggedIn: user })}>
               <View style={{ ...styles.hatRow }}>
                 <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>I'm open to mentor others</Text>
-                </View>
-
-                <View style={styles.hatButton}>
-                  <Icon
-                    name={isMentor ? 'check-circle' : 'circle'}
-                    size={25}
-                    color={isMentor ? colors.purp : colors.borderBlack}
-                    style={{ paddingRight: 0 }}
-                    solid={!!isMentor}
-                  />
+                  <Text style={{ ...defaultStyles.hugeRegular, color: colors.iosBlue }}>Select my hats</Text>
                 </View>
               </View>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -535,11 +391,21 @@ const styles = StyleSheet.create({
   rowTitle: {
     width: 100,
   },
+  hatRowTop: {
+    flexDirection: 'row',
+    height: 46,
+    alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
+  },
   hatRow: {
     flexDirection: 'row',
-    height: 40,
+    height: 46,
     alignItems: 'center',
-    paddingTop: 15,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   hatTitle: {
     flex: 1,

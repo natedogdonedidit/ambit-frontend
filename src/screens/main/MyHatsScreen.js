@@ -6,12 +6,13 @@ import HeaderBack from 'library/components/headers/HeaderBack';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
-import TopicsOfFocus from 'library/components/settings/TopicsOfFocus';
-import TopicsOfInterest from 'library/components/settings/TopicsOfInterest';
+import FreelanceHat from 'library/components/settings/FreelanceHat';
+import InvestorHat from 'library/components/settings/InvestorHat';
+import MentorHat from 'library/components/settings/MentorHat';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
-const MyTopicsScreen = ({ navigation }) => {
+const MyHatsScreen = ({ navigation }) => {
   // ////////////////////////////////////////
   // ROUTE PARAMS
   // const userPassedIn = navigation.getParam('userLoggedIn');
@@ -23,7 +24,7 @@ const MyTopicsScreen = ({ navigation }) => {
   if (loading)
     return (
       <View style={styles.container}>
-        <HeaderBack navigation={navigation} title="My Topics" />
+        <HeaderBack navigation={navigation} title="My Hats" />
         <Loader loading={loading} />
       </View>
     );
@@ -41,10 +42,11 @@ const MyTopicsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} title="My Topics" />
+      <HeaderBack navigation={navigation} title="My Hats" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 20 }}>
-        <TopicsOfFocus navigation={navigation} userLoggedIn={userLoggedIn} />
-        <TopicsOfInterest navigation={navigation} userLoggedIn={userLoggedIn} />
+        <InvestorHat navigation={navigation} userLoggedIn={userLoggedIn} />
+        <FreelanceHat navigation={navigation} userLoggedIn={userLoggedIn} />
+        <MentorHat navigation={navigation} userLoggedIn={userLoggedIn} />
       </ScrollView>
     </View>
   );
@@ -98,4 +100,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyTopicsScreen;
+export default MyHatsScreen;

@@ -9,10 +9,10 @@ import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
 import HeaderBack from 'library/components/headers/HeaderBack';
 
-import EDIT_TOPICS_INTEREST_MUTATION from 'library/mutations/EDIT_TOPICS_INTEREST_MUTATION';
+import EDIT_TOPICS_MENTOR_MUTATION from 'library/mutations/EDIT_TOPICS_MENTOR_MUTATION';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
-const SelectTopicsInterestModal = ({ navigation }) => {
+const SelectTopicsMentorModal = ({ navigation }) => {
   const [selectedCategories, setSelectedCategories] = useState('');
 
   // ////////////////////////////////////////
@@ -22,15 +22,15 @@ const SelectTopicsInterestModal = ({ navigation }) => {
   if (error) return <Text>{`Error! ${error}`}</Text>;
   const { userLoggedIn } = data;
   // this is the single source of truth
-  const { id, topicsInterest } = userLoggedIn;
+  const { id, mentorFields } = userLoggedIn;
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsInterest, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(
-    EDIT_TOPICS_INTEREST_MUTATION,
+  const [editTopicsMentor, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(
+    EDIT_TOPICS_MENTOR_MUTATION,
     {
       onError: () =>
-        Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+        Alert.alert('Oh no!', 'An error occured when trying to edit your mentor topics. Try again later!', [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ]),
     }
@@ -41,33 +41,33 @@ const SelectTopicsInterestModal = ({ navigation }) => {
   const handleTopicSelect = selectedTopic => {
     // build the new array of topics
     let newArray = [];
-    if (topicsInterest.includes(selectedTopic)) {
+    if (mentorFields.includes(selectedTopic)) {
       // remove it
-      newArray = topicsInterest.filter(field => field !== selectedTopic);
+      newArray = mentorFields.filter(field => field !== selectedTopic);
     } else {
       // add it
-      newArray = [...topicsInterest, selectedTopic];
+      newArray = [...mentorFields, selectedTopic];
     }
 
     // run the mutation
-    editTopicsInterest({
+    editTopicsMentor({
       variables: {
         id,
         topics: newArray,
       },
       optimisticResponse: {
         __typename: 'Mutation',
-        editTopicsInterest: {
+        editTopicsMentor: {
           __typename: 'User',
           ...userLoggedIn,
-          topicsInterest: newArray,
+          mentorFields: newArray,
         },
       },
       update: (proxy, { data: dataReturned }) => {
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
-            userLoggedIn: dataReturned.editTopicsInterest,
+            userLoggedIn: dataReturned.editTopicsMentor,
           },
         });
       },
@@ -92,7 +92,7 @@ const SelectTopicsInterestModal = ({ navigation }) => {
   const renderList = () => {
     return topicsList.map((item, i) => {
       const { topic, subTopics } = item;
-      const isSelected = topicsInterest.includes(topic);
+      const isSelected = mentorFields.includes(topic);
       const isExpanded = selectedCategories.includes(topic);
 
       return (
@@ -131,7 +131,7 @@ const SelectTopicsInterestModal = ({ navigation }) => {
 
   const renderSubtopics = subTopics => {
     return subTopics.map((subTopic, i) => {
-      const isSelected = topicsInterest.includes(subTopic);
+      const isSelected = mentorFields.includes(subTopic);
 
       return (
         <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(subTopic)}>
@@ -169,7 +169,7 @@ const SelectTopicsInterestModal = ({ navigation }) => {
           }}
         >
           {/* <Icon name="briefcase" size={40} color={colors.purp} /> */}
-          <Ionicons name="ios-chatbubbles" size={40} color={colors.purp} />
+          <Icon name="user-friends" size={40} color={colors.purp} />
         </View>
         <View style={{ width: '100%' }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -178,12 +178,12 @@ const SelectTopicsInterestModal = ({ navigation }) => {
                 ...defaultStyles.headerMedium,
               }}
             >
-              Select your topics{`\n`}of interest
+              Select your areas{`\n`}of expertise
             </Text>
           </View>
 
           <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>
-            We will use this data to show you interesting content
+            We will suggest you as a potential mentor for users looking for a mentor in these topics
           </Text>
         </View>
 
@@ -193,7 +193,7 @@ const SelectTopicsInterestModal = ({ navigation }) => {
   );
 };
 
-export default SelectTopicsInterestModal;
+export default SelectTopicsMentorModal;
 
 const styles = StyleSheet.create({
   container: {

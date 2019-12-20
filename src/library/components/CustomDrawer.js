@@ -61,7 +61,7 @@ const CustomDrawer = ({ navigation }) => {
               <Text style={styles.buttonText}>My Topics</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => null}>
+          <TouchableOpacity onPress={() => navigation.navigate('MyHats', { userLoggedIn })}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>My Hats</Text>
             </View>
