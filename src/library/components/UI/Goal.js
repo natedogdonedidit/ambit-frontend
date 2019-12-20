@@ -17,13 +17,13 @@ const Goal = ({ goal, onPress }) => {
           style={{
             ...styles.goalView,
             backgroundColor: getGoalInfo(goal, 'secondaryColor'),
-            borderColor: getGoalInfo(goal, 'primaryColor'),
+            // borderColor: getGoalInfo(goal, 'primaryColor'),
           }}
         >
           <View style={{ paddingRight: 10 }}>
             <Icon name={getGoalInfo(goal, 'logo')} size={15} color={getGoalInfo(goal, 'primaryColor')} solid />
           </View>
-          <Text style={{ ...defaultStyles.defaultMedium, color: getGoalInfo(goal, 'primaryColor') }}>{goal}</Text>
+          <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(goal, 'primaryColor') }}>{goal}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
-    borderWidth: StyleSheet.hairlineWidth,
+    // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.darkGray,
     paddingHorizontal: 15,
   },

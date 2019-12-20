@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeArea } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
@@ -9,14 +9,14 @@ import { HEADER_HEIGHT } from 'styles/constants';
 
 import TextButton from 'library/components/UI/buttons/TextButton';
 
-const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, title }) => {
+const HeaderBack = ({ navigation, handleRight, textRight, title }) => {
   const insets = useSafeArea();
   return (
     <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
       <View style={styles.leftSide}>
-        <TextButton textStyle={styles.leftText} onPress={handleLeft}>
-          {textLeft}
-        </TextButton>
+        <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>
+          <Ionicons name="ios-arrow-back" size={28} color={colors.purp} style={{}} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.middle}>
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
-    backgroundColor: colors.lightLightGray,
+    backgroundColor: colors.white,
   },
   leftSide: {
     width: 60,
@@ -80,4 +80,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HeaderWhite;
+export default HeaderBack;

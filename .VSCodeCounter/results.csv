@@ -1,106 +1,144 @@
-filename, language, JSON, JavaScript, comment, blank, total
-library/components/CustomDrawer.js, JavaScript, 0, 82, 3, 12, 97
-library/components/Education.js, JavaScript, 0, 100, 0, 8, 108
-library/components/Experience.js, JavaScript, 0, 90, 0, 9, 99
-library/components/GlobalTimeline.js, JavaScript, 0, 56, 3, 12, 71
-library/components/LocalTimeline.js, JavaScript, 0, 123, 3, 16, 142
-library/components/PersonalTimeline.js, JavaScript, 0, 62, 4, 13, 79
-library/components/Post.js, JavaScript, 0, 231, 19, 19, 269
-library/components/ProfileBio.js, JavaScript, 0, 92, 0, 6, 98
-library/components/ProfileNetwork.js, JavaScript, 0, 19, 0, 5, 24
-library/components/ProfilePosts.js, JavaScript, 0, 70, 9, 13, 92
-library/components/ProfileTabs.js, JavaScript, 0, 59, 1, 8, 68
-library/components/Projects.js, JavaScript, 0, 96, 0, 7, 103
-library/components/Skills.js, JavaScript, 0, 81, 0, 6, 87
-library/components/TimelineTabs.js, JavaScript, 0, 114, 22, 11, 147
-library/components/UI/BigButton.js, JavaScript, 0, 24, 3, 6, 33
-library/components/UI/ButtonDefault.js, JavaScript, 0, 24, 3, 6, 33
-library/components/UI/Coffee.js, JavaScript, 0, 13, 1, 6, 20
-library/components/UI/Comment.js, JavaScript, 0, 13, 1, 6, 20
-library/components/UI/Envelope.js, JavaScript, 0, 13, 1, 6, 20
-library/components/UI/Goal.js, JavaScript, 0, 52, 0, 10, 62
-library/components/UI/GoalSelect.js, JavaScript, 0, 68, 1, 13, 82
-library/components/UI/GrayButton.js, JavaScript, 0, 27, 1, 6, 34
-library/components/UI/Heart.js, JavaScript, 0, 13, 1, 6, 20
-library/components/UI/LargeProfilePic.js, JavaScript, 0, 75, 0, 7, 82
-library/components/UI/Loader.js, JavaScript, 0, 35, 0, 5, 40
-library/components/UI/Location.js, JavaScript, 0, 25, 0, 5, 30
-library/components/UI/MediumProfilePic.js, JavaScript, 0, 75, 1, 7, 83
-library/components/UI/Options.js, JavaScript, 0, 19, 4, 7, 30
-library/components/UI/Share.js, JavaScript, 0, 13, 1, 6, 20
-library/components/UI/SmallProfilePic.js, JavaScript, 0, 52, 2, 9, 63
-library/components/UI/Tag.js, JavaScript, 0, 20, 1, 6, 27
-library/components/UI/TextButton.js, JavaScript, 0, 23, 1, 6, 30
-library/components/UI/WhiteButton.js, JavaScript, 0, 44, 1, 6, 51
-library/components/headers/HeaderBackground.js, JavaScript, 0, 24, 0, 5, 29
-library/components/headers/HeaderHome.js, JavaScript, 0, 88, 1, 7, 96
-library/components/headers/HeaderNewPost.js, JavaScript, 0, 49, 0, 7, 56
-library/components/headers/HeaderSelectGoal.js, JavaScript, 0, 31, 0, 7, 38
-library/components/headers/HeaderWhite.js, JavaScript, 0, 44, 0, 6, 50
-library/components/modals/CameraRollModal.js, JavaScript, 0, 92, 0, 11, 103
-library/components/modals/EditBioModal.js, JavaScript, 0, 397, 34, 24, 455
-library/components/modals/EditEducationModal.js, JavaScript, 0, 406, 13, 26, 445
-library/components/modals/EditExperienceModal.js, JavaScript, 0, 406, 15, 26, 447
-library/components/modals/EditLocationModal.js, JavaScript, 0, 167, 2, 16, 185
-library/components/modals/EditLocationRadiusModal.js, JavaScript, 0, 178, 3, 16, 197
-library/components/modals/EditPostModal.js, JavaScript, 0, 80, 1, 5, 86
-library/components/modals/EditProfessionModal.js, JavaScript, 0, 213, 2, 14, 229
-library/components/modals/EditSkillsModal.js, JavaScript, 0, 184, 7, 13, 204
-library/components/modals/MonthModal.js, JavaScript, 0, 82, 0, 6, 88
-library/components/modals/NewPostModal.js, JavaScript, 0, 372, 32, 29, 433
-library/components/modals/PopupBackground.js, JavaScript, 0, 20, 2, 4, 26
-library/components/modals/PopupSkills.js, JavaScript, 0, 109, 0, 6, 115
-library/components/modals/SelectGoalModal.js, JavaScript, 0, 84, 2, 11, 97
-library/components/modals/YearModal.js, JavaScript, 0, 80, 0, 6, 86
-library/config/index.js, JavaScript, 0, 4, 0, 3, 7
-library/mutations/CREATE_EDUCATION_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/CREATE_EXPERIENCE_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/CREATE_POST_MUTATION.js, JavaScript, 0, 31, 0, 3, 34
-library/mutations/DELETE_EDUCATION_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/DELETE_EXPERIENCE_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/DELETE_POST_MUTATION.js, JavaScript, 0, 9, 0, 3, 12
-library/mutations/EDIT_BIO_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/EDIT_EDUCATION_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/EDIT_EXPERIENCE_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/EDIT_SKILLS_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/LIKE_POST_MUTATION.js, JavaScript, 0, 11, 0, 3, 14
-library/mutations/LOGIN_MUTATION.js, JavaScript, 0, 14, 0, 3, 17
-library/mutations/SIGNUP_MUTATION.js, JavaScript, 0, 14, 0, 3, 17
-library/package.json, JSON, 4, 0, 0, 0, 4
-library/queries/CURRENT_USER_QUERY.js, JavaScript, 0, 10, 0, 2, 12
-library/queries/GLOBAL_POSTS_QUERY.js, JavaScript, 0, 10, 0, 2, 12
-library/queries/LOCAL_POSTS_QUERY.js, JavaScript, 0, 10, 0, 2, 12
-library/queries/SINGLE_USER_BIO.js, JavaScript, 0, 11, 0, 3, 14
-library/queries/USER_POSTS_QUERY.js, JavaScript, 0, 10, 0, 2, 12
-library/queries/_fragments.js, JavaScript, 0, 167, 2, 9, 178
-library/utils/UserContext.js, JavaScript, 0, 40, 10, 11, 61
-library/utils/authUtil.js, JavaScript, 0, 18, 1, 8, 27
-library/utils/index.js, JavaScript, 0, 85, 5, 18, 108
-library/utils/lists.js, JavaScript, 0, 86, 4, 2, 92
-screens/main/AccountScreen.js, JavaScript, 0, 23, 2, 7, 32
-screens/main/HomeScreen copy 2.js, JavaScript, 0, 201, 36, 22, 259
-screens/main/HomeScreen copy.js, JavaScript, 0, 156, 5, 17, 178
-screens/main/HomeScreen.js, JavaScript, 0, 241, 6, 17, 264
-screens/main/MainNavigator.js, JavaScript, 0, 178, 4, 14, 196
-screens/main/MessagesScreen.js, JavaScript, 0, 23, 2, 7, 32
-screens/main/NetworkScreen.js, JavaScript, 0, 23, 2, 7, 32
-screens/main/PostScreen.js, JavaScript, 0, 30, 2, 10, 42
-screens/main/ProfileScreen.js, JavaScript, 0, 417, 11, 31, 459
-screens/main/ProfileScreenAttemptedSticky.js, JavaScript, 0, 271, 19, 25, 315
-screens/main/RequestsScreen.js, JavaScript, 0, 23, 2, 7, 32
-screens/main/SettingsScreen.js, JavaScript, 0, 23, 2, 7, 32
-screens/main/SuggestionsScreen.js, JavaScript, 0, 31, 2, 8, 41
-screens/onboarding/AuthLoadingScreen.js, JavaScript, 0, 59, 3, 14, 76
-screens/onboarding/BenefitsScreen1.js, JavaScript, 0, 60, 2, 10, 72
-screens/onboarding/BenefitsScreen2.js, JavaScript, 0, 60, 2, 10, 72
-screens/onboarding/BenefitsScreen3.js, JavaScript, 0, 60, 2, 10, 72
-screens/onboarding/CreateAccountScreen.js, JavaScript, 0, 136, 13, 17, 166
-screens/onboarding/LoginScreen.js, JavaScript, 0, 154, 12, 18, 184
-screens/onboarding/OnboardingScreen1.js, JavaScript, 0, 76, 2, 9, 87
-screens/onboarding/OnboardingScreen2.js, JavaScript, 0, 76, 2, 9, 87
-screens/onboarding/OnboardingScreen3.js, JavaScript, 0, 73, 2, 9, 84
-styles/colors.js, JavaScript, 0, 21, 5, 2, 28
-styles/constants.js, JavaScript, 0, 4, 0, 2, 6
-styles/defaultStyles.js, JavaScript, 0, 222, 15, 12, 249
-styles/package.json, JSON, 4, 0, 0, 0, 4
-Total, -, 8, 8268, 378, 921, 9575
+filename, language, JSON, JavaScript, TypeScript React, comment, blank, total
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/CustomDrawer.js, JavaScript, 0, 104, 0, 6, 12, 122
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/Error.js, JavaScript, 0, 25, 0, 0, 5, 30
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/Goal.js, JavaScript, 0, 47, 0, 6, 6, 59
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/Loader.js, JavaScript, 0, 33, 0, 2, 5, 40
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/ProfilePic.js, JavaScript, 0, 121, 0, 6, 16, 143
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/ProfilePicBasic.js, JavaScript, 0, 50, 0, 4, 8, 62
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/ScrollProfilePic.js, JavaScript, 0, 75, 0, 1, 7, 83
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/ThreadLine.js, JavaScript, 0, 69, 0, 0, 5, 74
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/BigButton.js, JavaScript, 0, 24, 0, 1, 6, 31
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/ButtonDefault.js, JavaScript, 0, 24, 0, 1, 6, 31
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/ConnectButton.js, JavaScript, 0, 46, 0, 3, 7, 56
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/FollowButton.js, JavaScript, 0, 30, 0, 11, 7, 48
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/GrayButton.js, JavaScript, 0, 24, 0, 1, 6, 31
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/MessageButton.js, JavaScript, 0, 25, 0, 1, 6, 32
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/SmallGrayButton.js, JavaScript, 0, 25, 0, 1, 6, 32
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/TextButton.js, JavaScript, 0, 23, 0, 1, 6, 30
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/buttons/ThreeDotsButton.js, JavaScript, 0, 27, 0, 1, 6, 34
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/icons/Chevron.js, JavaScript, 0, 12, 0, 2, 6, 20
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/icons/Comment.js, JavaScript, 0, 13, 0, 1, 6, 20
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/icons/Ellipsis.js, JavaScript, 0, 13, 0, 1, 6, 20
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/icons/Heart.js, JavaScript, 0, 13, 0, 1, 6, 20
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/icons/Location.js, JavaScript, 0, 25, 0, 0, 5, 30
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UI/icons/Share.js, JavaScript, 0, 13, 0, 1, 6, 20
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/UserSlider.js, JavaScript, 0, 53, 0, 7, 9, 69
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/headers/HeaderBack.js, JavaScript, 0, 74, 0, 2, 8, 84
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/headers/HeaderHome.js, JavaScript, 0, 46, 0, 4, 6, 56
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/headers/HeaderSearch.js, JavaScript, 0, 65, 0, 5, 8, 78
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/headers/HeaderTopic.js, JavaScript, 0, 53, 0, 4, 6, 63
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/headers/HeaderWhite.js, JavaScript, 0, 74, 0, 2, 8, 84
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/post/Comment.js, JavaScript, 0, 226, 0, 8, 16, 250
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/post/Post.js, JavaScript, 0, 285, 0, 10, 20, 315
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/post/PostGroupTL.js, JavaScript, 0, 142, 0, 4, 11, 157
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/post/Topic.js, JavaScript, 0, 29, 0, 0, 5, 34
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/post/Update.js, JavaScript, 0, 279, 0, 8, 16, 303
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/Education.js, JavaScript, 0, 102, 0, 0, 8, 110
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/Experience.js, JavaScript, 0, 93, 0, 0, 9, 102
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/NameBox.js, JavaScript, 0, 141, 0, 4, 15, 160
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/ProfileBio.js, JavaScript, 0, 103, 0, 4, 6, 113
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/ProfileComponent.js, JavaScript, 0, 201, 0, 5, 14, 220
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/ProfileNetwork.js, JavaScript, 0, 20, 0, 0, 5, 25
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/ProfilePosts.js, JavaScript, 0, 78, 0, 8, 13, 99
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/ProfileTabs.js, JavaScript, 0, 57, 0, 1, 8, 66
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/Projects.js, JavaScript, 0, 96, 0, 0, 7, 103
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/profile/Skills.js, JavaScript, 0, 108, 0, 3, 10, 121
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/search/SearchResults.js, JavaScript, 0, 183, 0, 46, 19, 248
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/search/SearchTabs.js, JavaScript, 0, 60, 0, 2, 8, 70
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/timelines/HomeTimeline.js, JavaScript, 0, 183, 0, 46, 19, 248
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/timelines/LocalTimeline.js, JavaScript, 0, 208, 0, 42, 21, 271
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/timelines/SubTopicsSelector.js, JavaScript, 0, 77, 0, 8, 9, 94
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/timelines/TimelineTabs.js, JavaScript, 0, 89, 0, 17, 9, 115
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/timelines/TopicsSelector.js, JavaScript, 0, 90, 0, 8, 10, 108
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/components/timelines/TopicsTimeline.js, JavaScript, 0, 185, 0, 47, 21, 253
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/config/index.js, JavaScript, 0, 4, 0, 0, 3, 7
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/CREATE_COMMENT_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/CREATE_EDUCATION_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/CREATE_EXPERIENCE_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/CREATE_POST_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/CREATE_UPDATE_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/DELETE_COMMENT_MUTATION.js, JavaScript, 0, 9, 0, 0, 3, 12
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/DELETE_EDUCATION_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/DELETE_EXPERIENCE_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/DELETE_POST_MUTATION.js, JavaScript, 0, 9, 0, 0, 3, 12
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/DELETE_UPDATE_MUTATION.js, JavaScript, 0, 9, 0, 0, 3, 12
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/EDIT_BIO_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/EDIT_EDUCATION_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/EDIT_EXPERIENCE_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/EDIT_INTRO_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/EDIT_SKILLS_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/EDIT_TOPICS_FOCUS_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/LIKE_COMMENT_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/LIKE_POST_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/LIKE_UPDATE_MUTATION.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/LOGIN_MUTATION.js, JavaScript, 0, 14, 0, 0, 3, 17
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/mutations/SIGNUP_MUTATION.js, JavaScript, 0, 14, 0, 0, 3, 17
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/package.json, JSON, 4, 0, 0, 0, 0, 4
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/ALL_COMMENTS_QUERY.js, JavaScript, 0, 10, 0, 0, 2, 12
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/ALL_USERS_QUERY.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/CURRENT_USER_QUERY.js, JavaScript, 0, 10, 0, 0, 2, 12
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/GLOBAL_POSTS_QUERY.js, JavaScript, 0, 18, 0, 0, 2, 20
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/LOCAL_POSTS_QUERY.js, JavaScript, 0, 18, 0, 0, 2, 20
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/SINGLE_POST_QUERY.js, JavaScript, 0, 10, 0, 0, 2, 12
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/SINGLE_UPDATE_QUERY.js, JavaScript, 0, 10, 0, 0, 2, 12
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/SINGLE_USER_BIO.js, JavaScript, 0, 11, 0, 0, 3, 14
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/TOPIC_POSTS_QUERY.js, JavaScript, 0, 211, 0, 0, 15, 226
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/USER_POSTS_QUERY.js, JavaScript, 0, 10, 0, 0, 2, 12
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/queries/_fragments.js, JavaScript, 0, 223, 0, 43, 12, 278
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/utils/UserContext.js, JavaScript, 0, 40, 0, 10, 11, 61
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/utils/authUtil.js, JavaScript, 0, 18, 0, 1, 8, 27
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/utils/index.js, JavaScript, 0, 211, 0, 42, 39, 292
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/utils/lists.js, JavaScript, 0, 387, 0, 136, 9, 532
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/library/utils/types.tsx, TypeScript React, 0, 0, 50, 3, 10, 63
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/AccountScreen.js, JavaScript, 0, 23, 0, 2, 7, 32
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/CommentScreen.js, JavaScript, 0, 328, 0, 234, 73, 635
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/HomeScreen.js, JavaScript, 0, 233, 0, 25, 23, 281
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/JobsScreen.js, JavaScript, 0, 17, 0, 1, 5, 23
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/MainNavigator.js, JavaScript, 0, 363, 0, 11, 21, 395
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/MessagesScreen.js, JavaScript, 0, 23, 0, 2, 7, 32
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/MyTopicsScreen.js, JavaScript, 0, 56, 0, 11, 11, 78
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/PostScreen.js, JavaScript, 0, 144, 0, 10, 18, 172
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/ProfileScreen.js, JavaScript, 0, 42, 0, 4, 14, 60
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/SearchScreen.js, JavaScript, 0, 109, 0, 17, 19, 145
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/SettingsScreen.js, JavaScript, 0, 23, 0, 2, 7, 32
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/SuggestionsScreen.js, JavaScript, 0, 110, 0, 10, 19, 139
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/TopicScreen.js, JavaScript, 0, 145, 0, 21, 18, 184
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/UpdatePostScreen.js, JavaScript, 0, 131, 0, 7, 14, 152
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/UpdateScreen.js, JavaScript, 0, 128, 0, 10, 14, 152
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/general/BlankComponent.js, JavaScript, 0, 24, 0, 0, 4, 28
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/general/EditLocationModal.js, JavaScript, 0, 159, 0, 4, 17, 180
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/general/EditLocationRadiusModal.js, JavaScript, 0, 196, 0, 4, 19, 219
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/general/MonthModal.js, JavaScript, 0, 85, 0, 0, 7, 92
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/general/YearModal.js, JavaScript, 0, 85, 0, 0, 7, 92
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/post/EditPostPopup.js, JavaScript, 0, 154, 0, 0, 8, 162
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/post/NewPostModal.js, JavaScript, 0, 515, 0, 31, 39, 585
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/post/SelectGoalFieldModal.js, JavaScript, 0, 210, 0, 6, 24, 240
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/post/SelectGoalModal.js, JavaScript, 0, 103, 0, 1, 11, 115
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/EditAboutModal.js, JavaScript, 0, 66, 0, 0, 10, 76
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/EditEducationModal.js, JavaScript, 0, 320, 0, 8, 21, 349
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/EditExperienceModal.js, JavaScript, 0, 320, 0, 7, 21, 348
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/EditProfileModal.js, JavaScript, 0, 444, 0, 100, 34, 578
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/EditSkillsModal.js, JavaScript, 0, 143, 0, 3, 11, 157
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/EditSkillsPopup.js, JavaScript, 0, 123, 0, 0, 6, 129
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/SelectFreelanceModal.js, JavaScript, 0, 195, 0, 6, 18, 219
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/SelectIndustryModal.js, JavaScript, 0, 146, 0, 2, 14, 162
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/SelectInvestorModal.js, JavaScript, 0, 145, 0, 2, 14, 161
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/SelectMentorModal.js, JavaScript, 0, 146, 0, 3, 14, 163
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/profile/SelectTopicsModal.js, JavaScript, 0, 214, 0, 14, 18, 246
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/stories/CreateIntroModal.js, JavaScript, 0, 395, 0, 29, 31, 455
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/stories/EditStoryItemPopup.js, JavaScript, 0, 129, 0, 0, 8, 137
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/main/modals/stories/StoryModal.js, JavaScript, 0, 259, 0, 46, 41, 346
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/AuthLoadingScreen.js, JavaScript, 0, 43, 0, 3, 13, 59
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/BenefitsScreen1.js, JavaScript, 0, 60, 0, 2, 10, 72
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/BenefitsScreen2.js, JavaScript, 0, 60, 0, 2, 10, 72
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/BenefitsScreen3.js, JavaScript, 0, 60, 0, 2, 10, 72
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/CreateAccountScreen.js, JavaScript, 0, 136, 0, 13, 17, 166
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/LoginScreen.js, JavaScript, 0, 155, 0, 12, 18, 185
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/OnboardingScreen1.js, JavaScript, 0, 70, 0, 2, 9, 81
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/OnboardingScreen2.js, JavaScript, 0, 70, 0, 2, 9, 81
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/screens/onboarding/OnboardingScreen3.js, JavaScript, 0, 67, 0, 2, 9, 78
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/styles/colors.js, JavaScript, 0, 42, 0, 70, 16, 128
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/styles/constants.js, JavaScript, 0, 1, 0, 0, 1, 2
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/styles/defaultStyles.js, JavaScript, 0, 280, 0, 26, 14, 320
+/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/src/styles/package.json, JSON, 4, 0, 0, 0, 0, 4
+Total, -, 8, 13189, 50, 1351, 1472, 16070

@@ -41,7 +41,7 @@ const EditAboutModal = ({ navigation }) => {
   });
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <HeaderWhite handleLeft={navigation.goBack} handleRight={editAbout} textLeft="Cancel" textRight="Save" title="Edit About" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView>
@@ -59,7 +59,7 @@ const EditAboutModal = ({ navigation }) => {
         </ScrollView>
       </KeyboardAvoidingView>
       {loading && <Loader active={loading} />}
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -16,9 +16,8 @@ const colors = {
 
   // backgrounds used
   lightGray: 'rgba(239,239,244,1)', // systemBackgroundSecondary: used for app background
-  // lightGray: 'rgba(101,119,134,0.001)', // twitter blueGray
+  searchGray: 'rgba(101,119,134,0.1)', // twitter blueGray
   lightLightGray: '#F9F9F9',
-  // lightLightGray: 'white',
   borderBlack: 'rgba(0, 0, 0, 0.2)',
 
   // icon colors

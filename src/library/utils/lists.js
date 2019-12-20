@@ -265,135 +265,87 @@ export const investmentMarkets = ['Startup', 'Venture Capital', 'Real Estate', '
 export const topicsList = [
   {
     topic: 'Technology',
-    subTopics: ['All', 'Software', 'Hardware', 'Semiconductors'],
+    subTopics: [
+      'Software',
+      'Hardware',
+      'Semiconductors',
+      'Cloud Computing',
+      'Gaming',
+      'AR/VR',
+      'Crypto',
+      'AI',
+      'Automation',
+      'IT & Networking',
+      'Aerospace & Aviation',
+      'Automotive',
+    ],
   },
   {
-    topic: 'Science & Research',
-    subTopics: ['All'],
+    topic: 'Science',
+    subTopics: ['Physics', 'Chemistry', 'Biology', 'Biotechnology', 'Anthropology', 'Renewable Energy', 'Astrophysics'],
   },
+
   {
-    topic: 'Automotive',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Gaming',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Sports',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Real Estate',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Photography',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Videography',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Music',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Art & Design',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Media & Journalism',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Writing',
-    subTopics: ['All'],
+    topic: 'Creatives',
+    subTopics: ['Photography', 'Graphic Design', 'UI/UX', 'Videography', 'Fashion & Apparel', 'Makeup & Beauty', 'Visual Art'],
   },
   {
     topic: 'Entertainment',
-    subTopics: ['All'],
+    subTopics: ['Music', 'Acting', 'Comedy', 'Motion Pictures', 'Writing', 'Streaming Services'],
   },
   {
-    topic: 'Entrepreneurship',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Small Business',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Startups',
-    subTopics: ['All'],
+    topic: 'Business',
+    subTopics: [
+      'Entreprenuership',
+      'Small Business',
+      'Large Business',
+      'Startup',
+      'HR',
+      'Management',
+      'Sales',
+      'Operation',
+      'Manufacturing',
+    ],
   },
   {
     topic: 'Finance & Markets',
-    subTopics: ['All'],
+    subTopics: ['Banking', 'Stock Market', 'Insurance', 'Wealth Management', 'Day Trading'],
   },
   {
     topic: 'Marketing',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'HR',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Manufacturing',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'E-commerce & Retail',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Food & Beverage',
-    subTopics: ['All'],
+    subTopics: ['Advertising', 'Social Media Marketing', 'Branding'],
   },
   {
     topic: 'Health & Wellness',
-    subTopics: ['All'],
+    subTopics: ['Fitness', 'Nutrition', 'Medicine', 'Physical Therapy'],
   },
   {
-    topic: 'Medicine',
-    subTopics: ['All'],
+    topic: 'Content Creators',
+    subTopics: ['Social Media', 'Blogging', 'Podcasting', 'YouTube', 'Streaming'],
   },
   {
-    topic: 'Construction',
-    subTopics: ['All'],
+    topic: 'News & Politics',
+    subTopics: ['Politics', 'Journalism', 'Law & Policy'],
   },
   {
-    topic: 'Politics',
-    subTopics: ['All'],
+    topic: 'Food Services',
+    subTopics: [],
   },
   {
-    topic: 'Law & Policy',
-    subTopics: ['All'],
+    topic: 'Sports',
+    subTopics: [],
+  },
+  {
+    topic: 'Real Estate',
+    subTopics: [],
   },
   {
     topic: 'Education',
-    subTopics: ['All'],
+    subTopics: [],
   },
   {
-    topic: 'Non-profit',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Apparel & Fashion',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Makeup & Beauty',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Travel & Hospitality',
-    subTopics: ['All'],
-  },
-  {
-    topic: 'Misc',
-    subTopics: ['All'],
+    topic: 'Industry',
+    subTopics: ['E-commerce & Retail', 'Travel & Hospitality', 'Non-profit', 'Construction'],
   },
 ];
 

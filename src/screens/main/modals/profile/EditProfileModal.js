@@ -71,14 +71,12 @@ const EditProfileModal = ({ navigation }) => {
         firstName,
         lastName,
         name: `${firstName} ${lastName}`,
-        // jobTitle,
         bio,
         website,
-        // profession,
         headline,
-        industry: {
-          set: industry,
-        },
+        // industry: {
+        //   set: industry,
+        // },
         location,
         locationLat,
         locationLon,
@@ -189,30 +187,30 @@ const EditProfileModal = ({ navigation }) => {
   };
 
   // industry stuff
-  const handleIndustryClick = () => {
-    navigation.navigate('SelectIndustryModal', {
-      industry,
-      saveIndustryFields,
-    });
-  };
+  // const handleIndustryClick = () => {
+  //   navigation.navigate('SelectIndustryModal', {
+  //     industry,
+  //     saveIndustryFields,
+  //   });
+  // };
 
-  const saveIndustryFields = fields => {
-    if (fields.length > 0) {
-      setIndustryFields(fields);
-    } else {
-      setIndustryFields([]);
-    }
-  };
+  // const saveIndustryFields = fields => {
+  //   if (fields.length > 0) {
+  //     setIndustryFields(fields);
+  //   } else {
+  //     setIndustryFields([]);
+  //   }
+  // };
 
-  const renderIndustries = () => {
-    if (industry.length < 1) return <Text style={{ ...defaultStyles.defaultMute }}>Select your industry</Text>;
+  // const renderIndustries = () => {
+  //   if (industry.length < 1) return <Text style={{ ...defaultStyles.defaultMute }}>Select your industry</Text>;
 
-    return industry.map((ind, i) => (
-      <Text key={ind} style={{ ...defaultStyles.defaultText }}>
-        {i === 0 ? ind : `, ${ind}`}
-      </Text>
-    ));
-  };
+  //   return industry.map((ind, i) => (
+  //     <Text key={ind} style={{ ...defaultStyles.defaultText }}>
+  //       {i === 0 ? ind : `, ${ind}`}
+  //     </Text>
+  //   ));
+  // };
 
   // freelance stuff
   const handleFreelanceClick = () => {
@@ -368,7 +366,7 @@ const EditProfileModal = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
               <View style={styles.rowTitle}>
                 <Text style={{ ...defaultStyles.defaultBold }}>Industry</Text>
               </View>
@@ -381,7 +379,7 @@ const EditProfileModal = ({ navigation }) => {
                   <Text numberOfLines={1}>{renderIndustries()}</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
             <View style={{ ...styles.row }}>
               <View style={styles.rowTitle}>
                 <Text style={{ ...defaultStyles.defaultBold }}>Website</Text>
@@ -416,7 +414,21 @@ const EditProfileModal = ({ navigation }) => {
                 autoCompleteType="off"
               />
             </View>
-            <TouchableOpacity onPress={() => handleInvestorClick()}>
+            <TouchableOpacity onPress={() => null}>
+              <View style={{ ...styles.hatRow }}>
+                <View style={styles.hatTitle}>
+                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>My topics</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => null}>
+              <View style={{ ...styles.hatRow }}>
+                <View style={styles.hatTitle}>
+                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>My hats</Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+            {/* <TouchableOpacity onPress={() => handleInvestorClick()}>
               <View style={{ ...styles.hatRow }}>
                 <View style={styles.hatTitle}>
                   <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>I'm open to invest</Text>
@@ -467,7 +479,7 @@ const EditProfileModal = ({ navigation }) => {
                   />
                 </View>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

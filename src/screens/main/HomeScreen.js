@@ -17,19 +17,17 @@ import TopicsTimeline from 'library/components/timelines/TopicsTimeline';
 
 import TimelineTabs from 'library/components/timelines/TimelineTabs';
 import TopicsSelector from 'library/components/timelines/TopicsSelector';
+import { HEADER_HEIGHT } from 'styles/constants';
 
-const HEADER_HEIGHT = 44;
 const BANNER_HEIGHT = 0;
 
 const HomeScreen = ({ navigation }) => {
   // ////////////////////////////////////////////////////////////////
   // ROUTE PARAMS
-
   // const goToTimeline = navigation.getParam('goToTimeline');
 
   // ////////////////////////////////////////////////////////////////
   // STATE
-
   const [activeTimeline, setActiveTimeline] = useState(0);
   const [activeTopic, setActiveTopic] = useState('Trending');
   const [scrollY] = useState(new Animated.Value(0));
@@ -37,7 +35,6 @@ const HomeScreen = ({ navigation }) => {
 
   // ///////////////////////////////////////////////////////////////
   // OTHER HOOKS
-
   const insets = useSafeArea();
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
@@ -61,14 +58,12 @@ const HomeScreen = ({ navigation }) => {
 
   // ////////////////////////////////////////////////////////////////
   // QUERIES
-
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   if (errorUser) return <Error error={errorUser} />;
   const { userLoggedIn } = dataUser;
 
   // ////////////////////////////////////////////////////////////////
   // CONSTANTS
-
   const tabs1Height = 42;
   let tabs2Height = 0;
   if (activeTimeline === 2) tabs2Height = 46;
@@ -78,7 +73,6 @@ const HomeScreen = ({ navigation }) => {
 
   // ////////////////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
-
   const onScrollHorizontal = Animated.event(
     [
       {
@@ -193,7 +187,7 @@ const HomeScreen = ({ navigation }) => {
           <HeaderHome
             user={userLoggedIn}
             handleMiddle={() => null}
-            handleRight={() => navigation.navigate('CustomSearch')}
+            handleRight={() => navigation.navigate('Search')}
             navigation={navigation}
             height={HEADER_HEIGHT}
           />

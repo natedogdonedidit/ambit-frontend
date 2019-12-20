@@ -1,3 +1,1 @@
-const constants = {};
-
-export default constants;
+export const HEADER_HEIGHT = 44;

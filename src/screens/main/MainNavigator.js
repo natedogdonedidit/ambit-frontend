@@ -23,9 +23,10 @@ import PostScreen from './PostScreen';
 import UpdateScreen from './UpdateScreen';
 import CommentScreen from './CommentScreen';
 import UpdatePostScreen from './UpdatePostScreen';
-import RequestsScreen from './RequestsScreen';
 import TopicScreen from './TopicScreen';
-import CustomSearchScreen from './CustomSearchScreen';
+import SearchScreen from './SearchScreen';
+import MyTopicsScreen from './MyTopicsScreen';
+
 // modals
 import StoryModal from './modals/stories/StoryModal';
 import CreateIntroModal from './modals/stories/CreateIntroModal';
@@ -39,7 +40,8 @@ import EditAboutModal from './modals/profile/EditAboutModal';
 import EditExperienceModal from './modals/profile/EditExperienceModal';
 import EditEducationModal from './modals/profile/EditEducationModal';
 import EditSkillsModal from './modals/profile/EditSkillsModal';
-import SelectIndustryModal from './modals/profile/SelectIndustryModal';
+import SelectTopicsFocusModal from './modals/profile/SelectTopicsFocusModal';
+import SelectTopicsInterestModal from './modals/profile/SelectTopicsInterestModal';
 import SelectFreelanceModal from './modals/profile/SelectFreelanceModal';
 import SelectInvestorModal from './modals/profile/SelectInvestorModal';
 import SelectMentorModal from './modals/profile/SelectMentorModal';
@@ -74,8 +76,11 @@ const HomeStack = createStackNavigator(
     Topic: {
       screen: TopicScreen,
     },
-    CustomSearch: {
-      screen: CustomSearchScreen,
+    Search: {
+      screen: SearchScreen,
+    },
+    MyTopics: {
+      screen: MyTopicsScreen,
     },
   },
   {
@@ -131,7 +136,6 @@ const PeopleStack = createStackNavigator(
 const InboxStack = createStackNavigator(
   {
     Messages: MessagesScreen,
-    Requests: RequestsScreen,
     Profile: {
       screen: ProfileScreen,
     },
@@ -328,8 +332,15 @@ const MainNavWithModal = createStackNavigator(
     EditEducationModal: {
       screen: EditEducationModal,
     },
-    SelectIndustryModal: {
-      screen: SelectIndustryModal,
+    SelectTopicsFocusModal: {
+      screen: SelectTopicsFocusModal,
+      navigationOptions: {
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        gestureEnabled: false,
+      },
+    },
+    SelectTopicsInterestModal: {
+      screen: SelectTopicsInterestModal,
       navigationOptions: {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         gestureEnabled: false,

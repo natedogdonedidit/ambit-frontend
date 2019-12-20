@@ -1,68 +1,77 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
+import { useSafeArea } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import ProfilePic from 'library/components/UI/ProfilePic';
+import { HEADER_HEIGHT } from 'styles/constants';
 
-import TextButton from 'library/components/UI/buttons/TextButton';
+// Header Height is 44 !!!
+// insets.top is used as padding under the StatusBar
 
-const HeaderPic = ({ handleLeft, handleRight, textRight, title, user }) => {
+const HeaderSearch = ({ user, handleLeft, handleRight }) => {
+  const insets = useSafeArea();
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.leftSide} onPress={() => handleLeft()}>
-        <ProfilePic user={user} size={30} disableVideo disableClick />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.middleSection} onPress={() => null}>
-        <View style={styles.searchBar}>
-          <Icon name="search" size={15} color={colors.iconGray} />
-          <Text style={{ ...defaultStyles.defaultText, paddingLeft: 35 }}>Search for people</Text>
+    <View style={{ ...styles.container, paddingTop: insets.top }}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.leftSide} onPress={handleLeft}>
+          <Ionicons name="ios-arrow-back" size={28} color={colors.iosBlue} style={{}} />
+        </TouchableOpacity>
+
+        <View style={styles.middle}>
+          <View style={styles.searchBarView} />
         </View>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.rightSide} onPres={() => null}>
-        <Icon name="cog" size={20} color={colors.iconGray} />
-      </TouchableOpacity>
-    </SafeAreaView>
+
+        <TouchableOpacity style={styles.rightSide} onPress={handleRight}>
+          <Ionicons name="ios-rocket" size={24} color={colors.iconGray} />
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 44,
+    paddingHorizontal: 12,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: colors.borderBlack,
+    backgroundColor: colors.lightLightGray,
+  },
+  // top portion
+  header: {
+    height: HEADER_HEIGHT,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
-    backgroundColor: 'white',
   },
   leftSide: {
-    width: 60,
-    alignItems: 'flex-start',
-  },
-  rightSide: {
-    width: 60,
-    alignItems: 'flex-end',
-  },
-  middleSection: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // paddingHorizontal: 10,
-  },
-  searchBar: {
-    width: '100%',
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: colors.lightGray,
+    width: 30,
     flexDirection: 'row',
-    paddingHorizontal: 15,
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  middle: {
+    flexDirection: 'row',
+    flex: 1,
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rightSide: {
+    width: 35,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  searchBarView: {
+    width: '100%',
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.searchGray,
+  },
 });
 
-export default HeaderPic;
+export default HeaderSearch;

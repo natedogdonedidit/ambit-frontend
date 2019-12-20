@@ -6,8 +6,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import { HEADER_HEIGHT } from 'styles/constants';
 
-const HeaderHome = ({ navigation, handleMiddle, handleRight, user, height = 44 }) => {
+const HeaderHome = ({ navigation, handleMiddle, handleRight, user, height = HEADER_HEIGHT }) => {
   // const insets = useSafeArea();
 
   return (
@@ -18,7 +19,7 @@ const HeaderHome = ({ navigation, handleMiddle, handleRight, user, height = 44 }
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.ambitLogo }}>Ambit</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.rightSide} onPress={handleRight}>
+      <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
         <Icon name="search" size={18} color={colors.iconDark} />
       </TouchableOpacity>
     </View>

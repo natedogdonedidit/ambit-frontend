@@ -36,16 +36,16 @@ const CustomDrawer = ({ navigation }) => {
   return (
     <ScrollView>
       <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
-        <View style={styles.header}>
+        <TouchableOpacity style={styles.header} onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
           <ProfilePic user={userLoggedIn} size={30} navigation={navigation} disableVideo />
           <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.firstName}!</Text>
-        </View>
+        </TouchableOpacity>
         <>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
+          {/* <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>My Profile</Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('CreateIntroModal', { userLoggedIn });
@@ -53,17 +53,28 @@ const CustomDrawer = ({ navigation }) => {
             }}
           >
             <View style={styles.button}>
-              <Text style={styles.buttonText}>Create Your Intro</Text>
+              <Text style={styles.buttonText}>My Intro</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleLogout()}>
+          <TouchableOpacity onPress={() => navigation.navigate('MyTopics', { userLoggedIn })}>
             <View style={styles.button}>
-              <Text style={styles.buttonText}>Logout</Text>
+              <Text style={styles.buttonText}>My Topics</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => null}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>My Hats</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Settings</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => handleLogout()}>
+            <View style={styles.button}>
+              <Text style={styles.buttonText}>Logout</Text>
             </View>
           </TouchableOpacity>
         </>

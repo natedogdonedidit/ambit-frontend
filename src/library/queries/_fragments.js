@@ -36,6 +36,16 @@ export const LoggedInUser = gql`
     location
     locationLat
     locationLon
+    isMentor
+    isFreelancer
+    isAgency
+    isInvestor
+    mentorFields
+    freelanceFields
+    investorFields
+    agencyFields
+    topicsFocus
+    topicsInterest
     intro {
       id
       title
@@ -247,18 +257,9 @@ export const DetailedUser = gql`
   fragment DetailedUser on User {
     ...LoggedInUser
     bannerPic
-    industry
     website
     bio
     about
-    isMentor
-    isFreelancer
-    isAgency
-    isInvestor
-    mentorFields
-    freelanceFields
-    investorFields
-    agencyFields
     skills {
       ...FullSkills
     }
