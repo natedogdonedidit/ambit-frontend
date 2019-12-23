@@ -7,13 +7,13 @@ import { format } from 'date-fns';
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { timeDifference } from 'library/utils';
+import { timeDifference, getGoalInfo } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
-import Goal from 'library/components/UI/Goal';
+import Goal from 'library/components/UI/Goal2';
 import Heart from 'library/components/UI/icons/Heart';
 import Comment from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
@@ -67,7 +67,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;
   const containsMedia = post.video || post.images.length > 0;
-  const containsTopics = !!post.subField || !!post.topic || !!post.subTopic || !!post.location;
+  const containsTopics = !!post.subField || post.topics.length > 0 || !!post.location;
 
   // for dates
   const createdAt = new Date(post.createdAt);
@@ -102,7 +102,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
               hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
             >
               <View style={styles.name}>
-                <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
+                <Text style={{ ...defaultStyles.largeMedium }} numberOfLines={1}>
                   {post.owner.name}
                 </Text>
               </View>
@@ -129,7 +129,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
           {post.isGoal && (
             <View style={styles.goalView}>
-              <Goal goal={post.goal} />
+              <Goal goal={post.goal} subField={post.subField} />
             </View>
           )}
 
@@ -139,26 +139,14 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
           {containsTopics && (
             <View style={styles.topics}>
-              {!!post.subField && post.subField !== post.topic && (
+              {/* {!!post.subField && !post.topics.includes(post.subField) && (
                 <Topic navigation={navigation} type="topic">
                   {post.subField}
                 </Topic>
-              )}
-              {!!post.topic && (
-                <Topic navigation={navigation} type="topic">
-                  {post.topic}
-                </Topic>
-              )}
-              {!!post.subTopic && (
-                <Topic navigation={navigation} type="subTopic">
-                  {post.subTopic}
-                </Topic>
-              )}
-              {!!post.location && (
-                <Topic navigation={navigation} type="location">
-                  {post.location}
-                </Topic>
-              )}
+              )} */}
+              {post.topics.length > 0 &&
+                post.topics.map(topic => <Topic key={topic} navigation={navigation} type="topic" topicToShow={topic} />)}
+              {!!post.location && <Topic navigation={navigation} type="location" topicToShow={post.location} />}
             </View>
           )}
 
@@ -272,7 +260,8 @@ const styles = StyleSheet.create({
   },
   topics: {
     flexDirection: 'row',
-    paddingBottom: 12,
+    flexWrap: 'wrap',
+    marginBottom: 6,
   },
   media: {
     width: '100%',

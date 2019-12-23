@@ -10,11 +10,11 @@ import { goalsList } from 'library/utils/lists';
 
 const SelectGoalModal = ({ navigation }) => {
   const setGoal = navigation.getParam('setGoal');
-  const setTopic = navigation.getParam('setTopic');
+  const setTopics = navigation.getParam('setTopics');
   const setSubField = navigation.getParam('setSubField');
 
   const handleGoalSelect = goal => {
-    navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopic, setSubField });
+    navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField });
   };
 
   const renderList = () => {

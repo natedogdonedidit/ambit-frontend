@@ -19,9 +19,10 @@ const BANNER_HEIGHT = 0;
 
 const TopicScreen = ({ navigation }) => {
   const activeTopic = navigation.getParam('topic');
+  const subTopic = navigation.getParam('subTopic', 'All');
 
   // const [activeTimeline, setActiveTimeline] = useState(0);
-  const [activeSubTopic, setActiveSubTopic] = useState('All');
+  const [activeSubTopic, setActiveSubTopic] = useState(subTopic);
   const [scrollY] = useState(new Animated.Value(0));
   // const [scrollX] = useState(new Animated.Value(0));
   // const [refreshing, setRefreshing] = useState(false);

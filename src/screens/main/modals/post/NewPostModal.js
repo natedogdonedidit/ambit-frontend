@@ -45,8 +45,7 @@ const NewPostModal = ({ navigation }) => {
   // STATE
   const [goal, setGoal] = useState('');
   const [subField, setSubField] = useState('');
-  const [topic, setTopic] = useState('');
-  const [subTopic, setSubTopic] = useState('');
+  const [topics, setTopics] = useState([]);
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState('');
@@ -71,7 +70,7 @@ const NewPostModal = ({ navigation }) => {
         isGoal: !!goal,
         goal: goal ? goal.name : null,
         subField,
-        topic,
+        topics: { set: topics },
         location,
         locationLat,
         locationLon,
@@ -121,25 +120,29 @@ const NewPostModal = ({ navigation }) => {
     if (images.length > 0) {
       await uploadImages();
     }
+
+    // make sure all main topics are added
+
     createPost();
   };
 
   const handleGoalRowSelect = () => {
-    navigation.navigate('SelectGoalModal', { setGoal, setTopic, setSubField });
+    navigation.navigate('SelectGoalModal', { setGoal, setTopics, setSubField });
   };
 
   const handleTopicRowSelect = () => {
     // when we just want to change the Topic
-    if (!goal) {
-      navigation.navigate('SelectGoalFieldModal', { setGoal, setTopic, setSubField });
-      return;
-    }
+    // if (!goal) {
+    //   navigation.navigate('SelectGoalFieldModal', { setGoal, setTopics, setSubField, topics, multiple: true });
+    //   return;
+    // }
     if (goal.modalType === 'topic') {
-      navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopic, setSubField });
+      navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField });
       return;
     }
     // when we just want to change the Topic
-    navigation.navigate('SelectGoalFieldModal', { setGoal, setTopic, setSubField });
+    // navigation.navigate('SelectGoalFieldModal', { setGoal, setTopics, setSubField });
+    navigation.navigate('SelectGoalFieldModal', { setGoal, setTopics, setSubField, topics, multiple: true });
   };
 
   const clearGoal = () => {
@@ -148,7 +151,7 @@ const NewPostModal = ({ navigation }) => {
   };
 
   const clearTopic = () => {
-    setTopic('');
+    setTopics([]);
   };
 
   const attemptUploads = () => {
@@ -366,14 +369,14 @@ const NewPostModal = ({ navigation }) => {
   };
 
   const renderTopicText = () => {
-    if (!topic) {
+    if (topics.length < 1) {
       return (
         <>
           <View style={styles.leftSide}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.iconGray} />
           </View>
 
-          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>Add a topic</Text>
+          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>Add topics</Text>
           <TouchableOpacity
             style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={handleTopicRowSelect}
@@ -391,7 +394,14 @@ const NewPostModal = ({ navigation }) => {
           <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
         </View>
 
-        <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>{topic}</Text>
+        <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>
+          {topics.map((topic, i) => {
+            if (i < topics.length - 1) {
+              return `${topic}, `;
+            }
+            return topic;
+          })}
+        </Text>
         <TouchableOpacity
           style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignItems: 'center' }}
           onPress={clearTopic}

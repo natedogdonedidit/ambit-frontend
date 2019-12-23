@@ -95,7 +95,7 @@ const FreelanceHat = ({ navigation, userLoggedIn }) => {
     <View style={styles.section}>
       <Text style={{ ...defaultStyles.headerHat, textAlign: 'center', paddingBottom: 10 }}>Are you a freelancer?</Text>
       <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
-        Select your specialties and we will send you freelance opporunities from other users
+        Select your specialties and we will send you freelance opportunities from other users
       </Text>
       {freelanceFields.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
       <ButtonDefault

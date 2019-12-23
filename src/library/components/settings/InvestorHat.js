@@ -95,7 +95,7 @@ const InvestorHat = ({ navigation, userLoggedIn }) => {
     <View style={styles.section}>
       <Text style={{ ...defaultStyles.headerHat, textAlign: 'center', paddingBottom: 10 }}>Are you an investor?</Text>
       <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
-        Select your target markets and we will send you investment opporunities from other users
+        Select your target markets and we will send you investment opportunities from other users
       </Text>
       {investorFields.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
       <ButtonDefault

@@ -1,18 +1,33 @@
 import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import { topicsList } from 'library/utils/lists';
 
-const Topic = ({ navigation, children, type = 'topic' }) => {
-  let onPress;
-  if (type === 'topic') {
-    onPress = () => navigation.navigate('Topic', { topic: children });
-  }
+const Topic = ({ navigation, topicToShow, type = 'topic' }) => {
+  const getOnPress = () => {
+    if (type === 'topic') {
+      const group = topicsList.find(item => item.topic === topicToShow || item.subTopics.includes(topicToShow));
+
+      // the topicToShow is not a master Topic or a subtopic
+      if (!group) return () => null;
+
+      // the topicToShow is a master Topic
+      if (group.topic === topicToShow) return () => navigation.navigate('Topic', { topic: topicToShow });
+
+      // the topicToShow is a subTopic
+      if (group.subTopics.includes(topicToShow))
+        return () => navigation.navigate('Topic', { topic: group.topic, subTopic: topicToShow });
+
+      return () => null;
+    }
+  };
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
+    <TouchableOpacity onPress={getOnPress()} activeOpacity={0.9}>
       <View style={styles.topic}>
-        <Text style={defaultStyles.smallMute}>{children}</Text>
+        <Text style={defaultStyles.smallMute}>{topicToShow}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -29,5 +44,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     backgroundColor: colors.grayButton,
     marginRight: 6,
+    marginBottom: 6,
   },
 });

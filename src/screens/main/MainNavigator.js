@@ -275,6 +275,9 @@ const MainNavWithModal = createStackNavigator(
     },
     NewPostModal: {
       screen: NewPostModal,
+      navigationOptions: {
+        gestureEnabled: false,
+      },
     },
     SelectGoalModal: {
       screen: SelectGoalModal,

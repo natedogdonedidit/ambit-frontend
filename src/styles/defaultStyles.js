@@ -76,6 +76,11 @@ const styles = StyleSheet.create({
     fontSize: reg,
     fontFamily: 'SFProText-Thin',
   },
+  defaultLight: {
+    color: colors.black,
+    fontSize: reg,
+    fontFamily: 'SFProText-Light',
+  },
   defaultText: {
     color: colors.black,
     fontSize: reg,
