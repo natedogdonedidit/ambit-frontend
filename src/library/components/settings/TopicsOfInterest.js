@@ -11,47 +11,58 @@ import EDIT_TOPICS_INTEREST_MUTATION from 'library/mutations/EDIT_TOPICS_INTERES
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const TopicsOfInterest = ({ navigation, userLoggedIn }) => {
-  const { id, topicsInterest } = userLoggedIn;
+  const { id } = userLoggedIn;
+  const topics = userLoggedIn.topicsInterest || [];
+  const topicsIDonly = topics.map(topic => topic.topicID);
+
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsInterest, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(
-    EDIT_TOPICS_INTEREST_MUTATION,
-    {
-      onError: () =>
-        Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]),
-    }
-  );
+  const [editTopicsInterest] = useMutation(EDIT_TOPICS_INTEREST_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // //////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicInterestSelect = selectedTopic => {
+  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
     // build the new array of topics
     let newArray = [];
-    if (topicsInterest.includes(selectedTopic)) {
+    if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = topicsInterest.filter(field => field !== selectedTopic);
+      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
     } else {
       // add it
-      newArray = [...topicsInterest, selectedTopic];
+      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
+
+    // for mutation
+    const newArrayTopicIDonly = newArray.map(topic => {
+      return { topicID: topic.topicID };
+    });
+
+    // for optimistic response
+    const newArrayTopicIDandType = newArray.map(topic => {
+      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    });
 
     // run the mutation
     editTopicsInterest({
       variables: {
         id,
-        topics: newArray,
+        topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsInterest: {
           __typename: 'User',
           ...userLoggedIn,
-          topicsInterest: newArray,
+          topicsInterest: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
@@ -64,17 +75,17 @@ const TopicsOfInterest = ({ navigation, userLoggedIn }) => {
 
   // //////////////////////////////////////////////////////
   // RENDER FUNCTIONS
-  const renderTopicsOfInterest = () => {
-    return topicsInterest.map(topic => {
-      const isSelected = topicsInterest.includes(topic);
+  const renderTopics = () => {
+    return topics.map(({ topicID, name }) => {
+      const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={topic} activeOpacity={0.7} onPress={() => handleTopicInterestSelect(topic)}>
+        <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.topicRow }}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
 
             <Text style={{ ...defaultStyles.largeMedium, color: colors.darkGray, paddingLeft: 10, paddingRight: 15, flex: 1 }}>
-              {topic}
+              {name}
             </Text>
             {isSelected ? (
               <View style={styles.addedButton}>
@@ -97,7 +108,7 @@ const TopicsOfInterest = ({ navigation, userLoggedIn }) => {
       <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
         These are topics you enjoy following and{'\n'}reading about
       </Text>
-      {topicsInterest.length > 0 && <View style={styles.topicsSection}>{renderTopicsOfInterest()}</View>}
+      {topics.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
       <ButtonDefault onPress={() => navigation.navigate('SelectTopicsInterestModal')}>Add some topics</ButtonDefault>
     </View>
   );

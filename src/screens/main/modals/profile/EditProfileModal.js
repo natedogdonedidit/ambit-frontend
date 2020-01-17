@@ -39,27 +39,21 @@ const EditProfileModal = ({ navigation }) => {
 
   // headline
   const experienceSorted = user.experience.sort(sortExperiences);
-  const headlineDefault = `${experienceSorted[0].subText} at ${experienceSorted[0].name}`;
+  let headlineDefault;
+  if (experienceSorted.length > 0 && experienceSorted[0].subText && experienceSorted[0].name) {
+    headlineDefault = `${experienceSorted[0].subText} at ${experienceSorted[0].name}`;
+  }
 
   const [profilePic, setProfilePic] = useState(user.profilePic);
   const [bannerPic, setBannerPic] = useState(user.bannerPic);
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
-  // const [jobTitle, setJobTitle] = useState(user.jobTitle);
-  // const [profession, setProfession] = useState(user.profession || headlineDefault);
   const [headline, setHeadline] = useState(user.headline || headlineDefault);
-  const [industry, setIndustryFields] = useState(user.industry);
   const [location, setLocation] = useState(user.location);
   const [locationLat, setLocationLat] = useState(user.locationLat);
   const [locationLon, setLocationLon] = useState(user.locationLon);
   const [bio, setBio] = useState(user.bio);
   const [website, setWebsite] = useState(user.website);
-  const [isFreelancer, setIsFreelancer] = useState(user.isFreelancer);
-  const [freelanceFields, setFreelanceFields] = useState(user.freelanceFields);
-  const [isInvestor, setIsInvestor] = useState(user.isInvestor);
-  const [investorFields, setInvestorFields] = useState(user.investorFields);
-  const [isMentor, setIsMentor] = useState(user.isMentor);
-  const [mentorFields, setMentorFields] = useState(user.mentorFields);
   const [uploading, setUploading] = useState(false);
 
   // temp pics
@@ -74,26 +68,11 @@ const EditProfileModal = ({ navigation }) => {
         bio,
         website,
         headline,
-        // industry: {
-        //   set: industry,
-        // },
         location,
         locationLat,
         locationLon,
         profilePic,
         bannerPic,
-        isFreelancer,
-        freelanceFields: {
-          set: freelanceFields,
-        },
-        isInvestor,
-        investorFields: {
-          set: investorFields,
-        },
-        isMentor,
-        mentorFields: {
-          set: mentorFields,
-        },
       },
     },
     refetchQueries: () => [{ query: CURRENT_USER_QUERY }],
@@ -259,7 +238,7 @@ const EditProfileModal = ({ navigation }) => {
                 style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
                 onChangeText={val => setHeadline(val)}
                 value={headline}
-                placeholder={`${headlineDefault}`}
+                placeholder="Software Engineer at Facebook"
                 autoCorrect={false}
                 autoCompleteType="off"
                 required
@@ -324,7 +303,7 @@ const EditProfileModal = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate('MyTopics', { userLoggedIn: user })}>
               <View style={{ ...styles.hatRowTop }}>
                 <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.hugeRegular, color: colors.iosBlue }}>Select my topics</Text>
+                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Select my topics</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -332,7 +311,7 @@ const EditProfileModal = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate('MyHats', { userLoggedIn: user })}>
               <View style={{ ...styles.hatRow }}>
                 <View style={styles.hatTitle}>
-                  <Text style={{ ...defaultStyles.hugeRegular, color: colors.iosBlue }}>Select my hats</Text>
+                  <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Select my hats</Text>
                 </View>
               </View>
             </TouchableOpacity>

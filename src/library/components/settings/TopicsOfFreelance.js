@@ -10,48 +10,59 @@ import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import EDIT_TOPICS_FREELANCE_MUTATION from 'library/mutations/EDIT_TOPICS_FREELANCE_MUTATION';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
-const FreelanceHat = ({ navigation, userLoggedIn }) => {
-  const { id, freelanceFields } = userLoggedIn;
+const TopicsOfFreelance = ({ navigation, userLoggedIn }) => {
+  const { id } = userLoggedIn;
+  const topics = userLoggedIn.topicsFreelance || [];
+  const topicsIDonly = topics.map(topic => topic.topicID);
+
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsFreelance, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(
-    EDIT_TOPICS_FREELANCE_MUTATION,
-    {
-      onError: () =>
-        Alert.alert('Oh no!', 'An error occured when trying to edit your freelance topics. Try again later!', [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]),
-    }
-  );
+  const [editTopicsFreelance] = useMutation(EDIT_TOPICS_FREELANCE_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your freelance topics. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // //////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = selectedTopic => {
+  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
     // build the new array of topics
     let newArray = [];
-    if (freelanceFields.includes(selectedTopic)) {
+    if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = freelanceFields.filter(field => field !== selectedTopic);
+      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
     } else {
       // add it
-      newArray = [...freelanceFields, selectedTopic];
+      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
+
+    // for mutation
+    const newArrayTopicIDonly = newArray.map(topic => {
+      return { topicID: topic.topicID };
+    });
+
+    // for optimistic response
+    const newArrayTopicIDandType = newArray.map(topic => {
+      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    });
 
     // run the mutation
     editTopicsFreelance({
       variables: {
         id,
-        topics: newArray,
+        topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsFreelance: {
           __typename: 'User',
           ...userLoggedIn,
-          freelanceFields: newArray,
+          topicsFreelance: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
@@ -65,16 +76,16 @@ const FreelanceHat = ({ navigation, userLoggedIn }) => {
   // //////////////////////////////////////////////////////
   // RENDER FUNCTIONS
   const renderTopics = () => {
-    return freelanceFields.map(topic => {
-      const isSelected = freelanceFields.includes(topic);
+    return topics.map(({ topicID, name }) => {
+      const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={topic} activeOpacity={0.7} onPress={() => handleTopicSelect(topic)}>
+        <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.topicRow }}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
 
             <Text style={{ ...defaultStyles.largeMedium, color: colors.darkGray, paddingLeft: 10, paddingRight: 15, flex: 1 }}>
-              {topic}
+              {name}
             </Text>
             {isSelected ? (
               <View style={styles.addedButton}>
@@ -82,7 +93,7 @@ const FreelanceHat = ({ navigation, userLoggedIn }) => {
               </View>
             ) : (
               <View style={styles.addButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
+                <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
               </View>
             )}
           </View>
@@ -97,7 +108,7 @@ const FreelanceHat = ({ navigation, userLoggedIn }) => {
       <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
         Select your specialties and we will send you freelance opportunities from other users
       </Text>
-      {freelanceFields.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
+      {topics.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
       <ButtonDefault
         buttonStyle={{ backgroundColor: colors.peach }}
         onPress={() => navigation.navigate('SelectTopicsFreelanceModal')}
@@ -152,4 +163,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FreelanceHat;
+export default TopicsOfFreelance;

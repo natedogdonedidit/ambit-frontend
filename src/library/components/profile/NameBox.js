@@ -12,19 +12,24 @@ import SmallGrayButton from 'library/components/UI/buttons/SmallGrayButton';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
 const NameBox = ({ user, navigation, isMyProfile }) => {
+  const isFreelancer = user.topicsFreelance.length > 0;
+  const isMentor = user.topicsMentor.length > 0;
+  const isInvestor = user.topicsInvest.length > 0;
+  const useOpenToBox = isFreelancer || isMentor || isInvestor;
+
   // custom functions
-  const useOpenToBox = user.isFreelancer || user.isMentor || user.isInvestor;
+
   const renderOpenTo = () => {
     if (!useOpenToBox) return null;
 
     return (
       <Text>
         <Text style={defaultStyles.defaultMute}>💼{`  `}Open to</Text>
-        {user.isFreelancer && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purple }}> freelance</Text>}
-        {user.isFreelancer && user.isInvestor && <Text style={{ ...defaultStyles.defaultText }}>,</Text>}
-        {user.isInvestor && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.green }}> invest</Text>}
-        {(user.isFreelancer || user.isInvestor) && user.isMentor && <Text style={{ ...defaultStyles.defaultText }}>,</Text>}
-        {user.isMentor && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.salmon }}> mentor</Text>}
+        {isFreelancer && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purple }}> freelance</Text>}
+        {isFreelancer && isInvestor && <Text style={{ ...defaultStyles.defaultText }}>,</Text>}
+        {isInvestor && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.green }}> invest</Text>}
+        {(isFreelancer || isInvestor) && isMentor && <Text style={{ ...defaultStyles.defaultText }}>,</Text>}
+        {isMentor && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.salmon }}> mentor</Text>}
       </Text>
     );
   };
@@ -60,7 +65,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
       {user.headline && <Text style={{ ...defaultStyles.defaultMute, ...styles.headline }}>{user.headline}</Text>}
       {renderStats()}
-      <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>
+      {user.bio && <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>}
       {(useOpenToBox || !!user.website) && (
         <View style={styles.detailsBox}>
           {renderLocation()}

@@ -70,7 +70,7 @@ const Skills = ({ navigation, skills, setSkills, height = 44, editable = false }
     ));
   };
 
-  return <View>{renderSkills()}</View>;
+  return <View style={{ paddingBottom: 15 }}>{renderSkills()}</View>;
 };
 
 const styles = StyleSheet.create({

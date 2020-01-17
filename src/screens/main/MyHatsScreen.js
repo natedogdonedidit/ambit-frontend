@@ -6,9 +6,9 @@ import HeaderBack from 'library/components/headers/HeaderBack';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
-import FreelanceHat from 'library/components/settings/FreelanceHat';
-import InvestorHat from 'library/components/settings/InvestorHat';
-import MentorHat from 'library/components/settings/MentorHat';
+import TopicsOfFreelance from 'library/components/settings/TopicsOfFreelance';
+import TopicsOfInvest from 'library/components/settings/TopicsOfInvest';
+import TopicsOfMentor from 'library/components/settings/TopicsOfMentor';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
@@ -44,9 +44,9 @@ const MyHatsScreen = ({ navigation }) => {
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title="My Hats" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 20 }}>
-        <InvestorHat navigation={navigation} userLoggedIn={userLoggedIn} />
-        <FreelanceHat navigation={navigation} userLoggedIn={userLoggedIn} />
-        <MentorHat navigation={navigation} userLoggedIn={userLoggedIn} />
+        <TopicsOfInvest navigation={navigation} userLoggedIn={userLoggedIn} />
+        <TopicsOfFreelance navigation={navigation} userLoggedIn={userLoggedIn} />
+        <TopicsOfMentor navigation={navigation} userLoggedIn={userLoggedIn} />
       </ScrollView>
     </View>
   );

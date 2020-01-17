@@ -22,48 +22,58 @@ const SelectTopicsFreelanceModal = ({ navigation }) => {
   if (error) return <Text>{`Error! ${error}`}</Text>;
   const { userLoggedIn } = data;
   // this is the single source of truth
-  const { id, freelanceFields } = userLoggedIn;
+  const { id } = userLoggedIn;
+  const topics = userLoggedIn.topicsFreelance || [];
+  const topicsIDonly = topics.map(topic => topic.topicID);
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsFreelance, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(
-    EDIT_TOPICS_FREELANCE_MUTATION,
-    {
-      onError: () =>
-        Alert.alert('Oh no!', 'An error occured when trying to edit your freelance topics. Try again later!', [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]),
-    }
-  );
+  const [editTopicsFreelance] = useMutation(EDIT_TOPICS_FREELANCE_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = selectedTopic => {
+  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
     // build the new array of topics
     let newArray = [];
-    if (freelanceFields.includes(selectedTopic)) {
+    if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = freelanceFields.filter(field => field !== selectedTopic);
+      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
     } else {
       // add it
-      newArray = [...freelanceFields, selectedTopic];
+      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
+
+    // for mutation
+    const newArrayTopicIDonly = newArray.map(topic => {
+      return { topicID: topic.topicID };
+    });
+
+    // for optimistic response
+    const newArrayTopicIDandType = newArray.map(topic => {
+      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    });
 
     // run the mutation
     editTopicsFreelance({
       variables: {
         id,
-        topics: newArray,
+        topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsFreelance: {
           __typename: 'User',
           ...userLoggedIn,
-          freelanceFields: newArray,
+          topicsFreelance: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
@@ -90,19 +100,41 @@ const SelectTopicsFreelanceModal = ({ navigation }) => {
   // ////////////////////////////////////////
   // RENDER FUNCTIONS
   const renderList = () => {
-    return freelanceList.map((item, i) => {
-      const { category, logo, list } = item;
-      const isExpanded = selectedCategories.includes(category);
+    return freelanceList.map((mainTopic, i) => {
+      const { name, topicID, children } = mainTopic;
+
+      const isSelected = topicsIDonly.includes(topicID);
+      const isExpanded = selectedCategories.includes(topicID);
 
       return (
-        <View key={i} style={styles.categorySection}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(category)}>
+        <View key={`${topicID}-${i}`} style={styles.categorySection}>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(topicID)}>
             <View style={{ ...styles.mainRow }}>
-              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.peach, paddingRight: 15, flex: 1 }}>{category}</Text>
+              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.peach, paddingRight: 15, flex: 1 }}>{name}</Text>
               <Ionicons name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'} size={24} color={colors.iconGray} />
             </View>
           </TouchableOpacity>
-          {isExpanded && list.length > 0 && <View style={styles.subTopicsView}>{renderSubtopics(list)}</View>}
+          {isExpanded && children.length > 0 && (
+            <View style={styles.subTopicsView}>
+              <TouchableOpacity key={`${i}-${topicID}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                <View style={{ ...styles.subRow }}>
+                  <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>
+                    {name} (general)
+                  </Text>
+                  {isSelected ? (
+                    <View style={styles.addedButton}>
+                      <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
+                    </View>
+                  ) : (
+                    <View style={styles.addButton}>
+                      <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
+                    </View>
+                  )}
+                </View>
+              </TouchableOpacity>
+              {renderSubtopics(children)}
+            </View>
+          )}
         </View>
       );
     });
@@ -110,12 +142,13 @@ const SelectTopicsFreelanceModal = ({ navigation }) => {
 
   const renderSubtopics = subTopics => {
     return subTopics.map((subTopic, i) => {
-      const isSelected = freelanceFields.includes(subTopic);
+      const { name, topicID } = subTopic;
+      const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(subTopic)}>
+        <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.subRow }}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{subTopic}</Text>
+            <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{name}</Text>
             {isSelected ? (
               <View style={styles.addedButton}>
                 <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>

@@ -22,48 +22,58 @@ const SelectTopicsMentorModal = ({ navigation }) => {
   if (error) return <Text>{`Error! ${error}`}</Text>;
   const { userLoggedIn } = data;
   // this is the single source of truth
-  const { id, mentorFields } = userLoggedIn;
+  const { id } = userLoggedIn;
+  const topics = userLoggedIn.topicsMentor || [];
+  const topicsIDonly = topics.map(topic => topic.topicID);
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsMentor, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(
-    EDIT_TOPICS_MENTOR_MUTATION,
-    {
-      onError: () =>
-        Alert.alert('Oh no!', 'An error occured when trying to edit your mentor topics. Try again later!', [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]),
-    }
-  );
+  const [editTopicsMentor] = useMutation(EDIT_TOPICS_MENTOR_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = selectedTopic => {
+  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
     // build the new array of topics
     let newArray = [];
-    if (mentorFields.includes(selectedTopic)) {
+    if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = mentorFields.filter(field => field !== selectedTopic);
+      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
     } else {
       // add it
-      newArray = [...mentorFields, selectedTopic];
+      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
+
+    // for mutation
+    const newArrayTopicIDonly = newArray.map(topic => {
+      return { topicID: topic.topicID };
+    });
+
+    // for optimistic response
+    const newArrayTopicIDandType = newArray.map(topic => {
+      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    });
 
     // run the mutation
     editTopicsMentor({
       variables: {
         id,
-        topics: newArray,
+        topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsMentor: {
           __typename: 'User',
           ...userLoggedIn,
-          mentorFields: newArray,
+          topicsMentor: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
@@ -90,25 +100,26 @@ const SelectTopicsMentorModal = ({ navigation }) => {
   // ////////////////////////////////////////
   // RENDER FUNCTIONS
   const renderList = () => {
-    return topicsList.map((item, i) => {
-      const { topic, subTopics } = item;
-      const isSelected = mentorFields.includes(topic);
-      const isExpanded = selectedCategories.includes(topic);
+    return topicsList.map((mainTopic, i) => {
+      const { name, topicID, children } = mainTopic;
+
+      const isSelected = topicsIDonly.includes(topicID);
+      const isExpanded = selectedCategories.includes(topicID);
 
       return (
-        <View key={`${topic}-${i}`} style={styles.categorySection}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(topic)}>
+        <View key={`${topicID}-${i}`} style={styles.categorySection}>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(topicID)}>
             <View style={{ ...styles.mainRow }}>
-              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.purp, paddingRight: 15, flex: 1 }}>{topic}</Text>
+              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.purp, paddingRight: 15, flex: 1 }}>{name}</Text>
               <Ionicons name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'} size={24} color={colors.iconGray} />
             </View>
           </TouchableOpacity>
-          {isExpanded && subTopics.length > 0 && (
+          {isExpanded && children.length > 0 && (
             <View style={styles.subTopicsView}>
-              <TouchableOpacity key={`${i}-${topic}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topic)}>
+              <TouchableOpacity key={`${i}-${topicID}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
                 <View style={{ ...styles.subRow }}>
                   <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>
-                    {topic} (general)
+                    {name} (general)
                   </Text>
                   {isSelected ? (
                     <View style={styles.addedButton}>
@@ -121,7 +132,7 @@ const SelectTopicsMentorModal = ({ navigation }) => {
                   )}
                 </View>
               </TouchableOpacity>
-              {renderSubtopics(subTopics)}
+              {renderSubtopics(children)}
             </View>
           )}
         </View>
@@ -131,12 +142,13 @@ const SelectTopicsMentorModal = ({ navigation }) => {
 
   const renderSubtopics = subTopics => {
     return subTopics.map((subTopic, i) => {
-      const isSelected = mentorFields.includes(subTopic);
+      const { name, topicID } = subTopic;
+      const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(subTopic)}>
+        <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.subRow }}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{subTopic}</Text>
+            <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{name}</Text>
             {isSelected ? (
               <View style={styles.addedButton}>
                 <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>

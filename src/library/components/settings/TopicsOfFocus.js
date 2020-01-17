@@ -11,10 +11,13 @@ import EDIT_TOPICS_FOCUS_MUTATION from 'library/mutations/EDIT_TOPICS_FOCUS_MUTA
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
-  const { id, topicsFocus } = userLoggedIn;
+  const { id } = userLoggedIn;
+  const topics = userLoggedIn.topicsFocus || [];
+  const topicsIDonly = topics.map(topic => topic.topicID);
+
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsFocus, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(EDIT_TOPICS_FOCUS_MUTATION, {
+  const [editTopicsFocus] = useMutation(EDIT_TOPICS_FOCUS_MUTATION, {
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -23,32 +26,43 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
 
   // //////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicFocusSelect = selectedTopic => {
+  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
     // build the new array of topics
     let newArray = [];
-    if (topicsFocus.includes(selectedTopic)) {
+    if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = topicsFocus.filter(field => field !== selectedTopic);
+      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
     } else {
       // add it
-      newArray = [...topicsFocus, selectedTopic];
+      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
+
+    // for mutation
+    const newArrayTopicIDonly = newArray.map(topic => {
+      return { topicID: topic.topicID };
+    });
+
+    // for optimistic response
+    const newArrayTopicIDandType = newArray.map(topic => {
+      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    });
 
     // run the mutation
     editTopicsFocus({
       variables: {
         id,
-        topics: newArray,
+        topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsFocus: {
           __typename: 'User',
           ...userLoggedIn,
-          topicsFocus: newArray,
+          topicsFocus: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
@@ -61,17 +75,17 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
 
   // //////////////////////////////////////////////////////
   // RENDER FUNCTIONS
-  const renderTopicsOfFocus = () => {
-    return topicsFocus.map(topic => {
-      const isSelected = topicsFocus.includes(topic);
+  const renderTopics = () => {
+    return topics.map(({ topicID, name }) => {
+      const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={topic} activeOpacity={0.7} onPress={() => handleTopicFocusSelect(topic)}>
+        <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.topicRow }}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
 
             <Text style={{ ...defaultStyles.largeMedium, color: colors.darkGray, paddingLeft: 10, paddingRight: 15, flex: 1 }}>
-              {topic}
+              {name}
             </Text>
             {isSelected ? (
               <View style={styles.addedButton}>
@@ -94,7 +108,7 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
       <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
         These are topics you are focused on building{'\n'}your career goals around (3 max)
       </Text>
-      {topicsFocus.length > 0 && <View style={styles.topicsSection}>{renderTopicsOfFocus()}</View>}
+      {topics.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
       <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>Add some topics</ButtonDefault>
     </View>
   );

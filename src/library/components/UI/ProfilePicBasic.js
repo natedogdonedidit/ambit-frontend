@@ -34,6 +34,7 @@ const ProfilePicBasic = ({ pic, size = 40, border = false, borderWidth = 2 }) =>
     grayBox: {
       width: '100%',
       height: '100%',
+      backgroundColor: 'lightgray',
     },
   });
 

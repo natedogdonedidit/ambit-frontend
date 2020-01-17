@@ -22,11 +22,13 @@ const SelectTopicsFocusModal = ({ navigation }) => {
   if (error) return <Text>{`Error! ${error}`}</Text>;
   const { userLoggedIn } = data;
   // this is the single source of truth
-  const { id, topicsFocus } = userLoggedIn;
+  const { id } = userLoggedIn;
+  const topics = userLoggedIn.topicsFocus || [];
+  const topicsIDonly = topics.map(topic => topic.topicID);
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsFocus, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(EDIT_TOPICS_FOCUS_MUTATION, {
+  const [editTopicsFocus] = useMutation(EDIT_TOPICS_FOCUS_MUTATION, {
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -35,32 +37,43 @@ const SelectTopicsFocusModal = ({ navigation }) => {
 
   // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = selectedTopic => {
+  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
     // build the new array of topics
     let newArray = [];
-    if (topicsFocus.includes(selectedTopic)) {
+    if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = topicsFocus.filter(field => field !== selectedTopic);
+      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
     } else {
       // add it
-      newArray = [...topicsFocus, selectedTopic];
+      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
+
+    // for mutation
+    const newArrayTopicIDonly = newArray.map(topic => {
+      return { topicID: topic.topicID };
+    });
+
+    // for optimistic response
+    const newArrayTopicIDandType = newArray.map(topic => {
+      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    });
 
     // run the mutation
     editTopicsFocus({
       variables: {
         id,
-        topics: newArray,
+        topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsFocus: {
           __typename: 'User',
           ...userLoggedIn,
-          topicsFocus: newArray,
+          topicsFocus: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
@@ -87,25 +100,26 @@ const SelectTopicsFocusModal = ({ navigation }) => {
   // ////////////////////////////////////////
   // RENDER FUNCTIONS
   const renderList = () => {
-    return topicsList.map((item, i) => {
-      const { topic, subTopics } = item;
-      const isSelected = topicsFocus.includes(topic);
-      const isExpanded = selectedCategories.includes(topic);
+    return topicsList.map((mainTopic, i) => {
+      const { name, topicID, children } = mainTopic;
+
+      const isSelected = topicsIDonly.includes(topicID);
+      const isExpanded = selectedCategories.includes(topicID);
 
       return (
-        <View key={`${topic}-${i}`} style={styles.categorySection}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(topic)}>
+        <View key={`${topicID}-${i}`} style={styles.categorySection}>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(topicID)}>
             <View style={{ ...styles.mainRow }}>
-              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.purp, paddingRight: 15, flex: 1 }}>{topic}</Text>
+              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.purp, paddingRight: 15, flex: 1 }}>{name}</Text>
               <Ionicons name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'} size={24} color={colors.iconGray} />
             </View>
           </TouchableOpacity>
-          {isExpanded && subTopics.length > 0 && (
+          {isExpanded && children.length > 0 && (
             <View style={styles.subTopicsView}>
-              <TouchableOpacity key={`${i}-${topic}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topic)}>
+              <TouchableOpacity key={`${i}-${topicID}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
                 <View style={{ ...styles.subRow }}>
                   <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>
-                    {topic} (general)
+                    {name} (general)
                   </Text>
                   {isSelected ? (
                     <View style={styles.addedButton}>
@@ -118,7 +132,7 @@ const SelectTopicsFocusModal = ({ navigation }) => {
                   )}
                 </View>
               </TouchableOpacity>
-              {renderSubtopics(subTopics)}
+              {renderSubtopics(children)}
             </View>
           )}
         </View>
@@ -128,12 +142,13 @@ const SelectTopicsFocusModal = ({ navigation }) => {
 
   const renderSubtopics = subTopics => {
     return subTopics.map((subTopic, i) => {
-      const isSelected = topicsFocus.includes(subTopic);
+      const { name, topicID } = subTopic;
+      const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(subTopic)}>
+        <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.subRow }}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{subTopic}</Text>
+            <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{name}</Text>
             {isSelected ? (
               <View style={styles.addedButton}>
                 <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>

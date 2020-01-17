@@ -40,12 +40,26 @@ export const LoggedInUser = gql`
     isFreelancer
     isAgency
     isInvestor
-    mentorFields
-    freelanceFields
-    investorFields
-    agencyFields
-    topicsFocus
-    topicsInterest
+    topicsFocus {
+      topicID
+      name
+    }
+    topicsInterest {
+      topicID
+      name
+    }
+    topicsFreelance {
+      topicID
+      name
+    }
+    topicsInvest {
+      topicID
+      name
+    }
+    topicsMentor {
+      topicID
+      name
+    }
     intro {
       id
       title

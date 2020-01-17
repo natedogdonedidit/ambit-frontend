@@ -7,55 +7,66 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
-import EDIT_TOPICS_MENTOR_MUTATION from 'library/mutations/EDIT_TOPICS_MENTOR_MUTATION';
+import EDIT_TOPICS_INVEST_MUTATION from 'library/mutations/EDIT_TOPICS_INVEST_MUTATION';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
-const MentorHat = ({ navigation, userLoggedIn }) => {
-  const { id, mentorFields } = userLoggedIn;
+const TopicsOfInvest = ({ navigation, userLoggedIn }) => {
+  const { id } = userLoggedIn;
+  const topics = userLoggedIn.topicsInvest || [];
+  const topicsIDonly = topics.map(topic => topic.topicID);
+
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsMentor, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(
-    EDIT_TOPICS_MENTOR_MUTATION,
-    {
-      onError: () =>
-        Alert.alert('Oh no!', 'An error occured when trying to edit your mentor topics. Try again later!', [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]),
-    }
-  );
+  const [editTopicsInvest] = useMutation(EDIT_TOPICS_INVEST_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // //////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = selectedTopic => {
+  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
     // build the new array of topics
     let newArray = [];
-    if (mentorFields.includes(selectedTopic)) {
+    if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = mentorFields.filter(field => field !== selectedTopic);
+      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
     } else {
       // add it
-      newArray = [...mentorFields, selectedTopic];
+      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
 
+    // for mutation
+    const newArrayTopicIDonly = newArray.map(topic => {
+      return { topicID: topic.topicID };
+    });
+
+    // for optimistic response
+    const newArrayTopicIDandType = newArray.map(topic => {
+      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    });
+
     // run the mutation
-    editTopicsMentor({
+    editTopicsInvest({
       variables: {
         id,
-        topics: newArray,
+        topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
-        editTopicsMentor: {
+        editTopicsInvest: {
           __typename: 'User',
           ...userLoggedIn,
-          mentorFields: newArray,
+          topicsInvest: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
-            userLoggedIn: dataReturned.editTopicsMentor,
+            userLoggedIn: dataReturned.editTopicsInvest,
           },
         });
       },
@@ -65,16 +76,16 @@ const MentorHat = ({ navigation, userLoggedIn }) => {
   // //////////////////////////////////////////////////////
   // RENDER FUNCTIONS
   const renderTopics = () => {
-    return mentorFields.map(topic => {
-      const isSelected = mentorFields.includes(topic);
+    return topics.map(({ topicID, name }) => {
+      const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={topic} activeOpacity={0.7} onPress={() => handleTopicSelect(topic)}>
+        <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.topicRow }}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
 
             <Text style={{ ...defaultStyles.largeMedium, color: colors.darkGray, paddingLeft: 10, paddingRight: 15, flex: 1 }}>
-              {topic}
+              {name}
             </Text>
             {isSelected ? (
               <View style={styles.addedButton}>
@@ -82,7 +93,7 @@ const MentorHat = ({ navigation, userLoggedIn }) => {
               </View>
             ) : (
               <View style={styles.addButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
+                <Text style={{ ...defaultStyles.defaultMedium, color: colors.green }}>Add</Text>
               </View>
             )}
           </View>
@@ -93,16 +104,16 @@ const MentorHat = ({ navigation, userLoggedIn }) => {
 
   return (
     <View style={styles.section}>
-      <Text style={{ ...defaultStyles.headerHat, textAlign: 'center', paddingBottom: 10 }}>Are you open to mentor?</Text>
+      <Text style={{ ...defaultStyles.headerHat, textAlign: 'center', paddingBottom: 10 }}>Are you an investor?</Text>
       <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
-        Select your areas of expertise and we will suggest you as a potential mentor for other users
+        Select your target markets and we will send you investment opportunities from other users
       </Text>
-      {mentorFields.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
+      {topics.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
       <ButtonDefault
-        buttonStyle={{ backgroundColor: colors.purp }}
-        onPress={() => navigation.navigate('SelectTopicsMentorModal')}
+        buttonStyle={{ backgroundColor: colors.green }}
+        onPress={() => navigation.navigate('SelectTopicsInvestModal')}
       >
-        Add some topics
+        Add target markets
       </ButtonDefault>
     </View>
   );
@@ -139,7 +150,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
     borderWidth: 1,
-    borderColor: colors.purp,
+    borderColor: colors.green,
     opacity: 0.9,
   },
   addedButton: {
@@ -148,8 +159,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 15,
-    backgroundColor: colors.purp,
+    backgroundColor: colors.green,
   },
 });
 
-export default MentorHat;
+export default TopicsOfInvest;

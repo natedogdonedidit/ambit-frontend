@@ -6,7 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { topicsList, freelanceList, investmentMarkets } from 'library/utils/lists';
+import { topicsList, freelanceList, investList } from 'library/utils/lists';
 
 // import HeaderWhite from 'library/components/headers/HeaderWhite';
 // import GoalSelect from 'library/components/UI/GoalSelect';
@@ -116,7 +116,7 @@ const SelectGoalFieldModal = ({ navigation }) => {
     }
 
     if (goal.modalType === 'invest') {
-      return investmentMarkets.map(listItem => {
+      return investList.map(listItem => {
         const isSelected = activeTopics.includes(listItem);
 
         return (

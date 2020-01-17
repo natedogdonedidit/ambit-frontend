@@ -13,10 +13,6 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const MyTopicsScreen = ({ navigation }) => {
   // ////////////////////////////////////////
-  // ROUTE PARAMS
-  // const userPassedIn = navigation.getParam('userLoggedIn');
-
-  // ////////////////////////////////////////
   // QUERIES
   // this is the single source of truth
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);

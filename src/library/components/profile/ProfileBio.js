@@ -10,26 +10,19 @@ import Skills from 'library/components/profile/Skills';
 import Experience from 'library/components/profile/Experience';
 import Education from 'library/components/profile/Education';
 
-const ProfileBio = ({
-  navigation,
-  isMyProfile,
-  user,
-  // handleSelectExperience = null,
-  // handleSelectEducation,
-  // setModalVisibleSkills,
-}) => {
+const ProfileBio = ({ navigation, isMyProfile, user }) => {
   return (
     <View style={styles.content}>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader }}>
-          <Text style={{ ...defaultStyles.hugeMedium, paddingBottom: 10 }}>About</Text>
+          <Text style={{ ...defaultStyles.hugeMedium }}>About</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditAboutModal', { user })}>
               Edit
             </TextButton>
           )}
         </View>
-        <Text style={{ ...defaultStyles.defaultText }}>{user.about}</Text>
+        {user.about && <Text style={{ ...defaultStyles.defaultText, paddingBottom: 10 }}>{user.about}</Text>}
       </View>
       <View style={{ ...styles.projectsSection }}>
         <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
@@ -65,7 +58,7 @@ const ProfileBio = ({
         <Education navigation={navigation} isMyProfile={isMyProfile} education={user.education} />
       </View>
       <View style={styles.contentSection}>
-        <View style={[{ ...styles.contentHeader }, !!user.skills && { paddingBottom: 15 }]}>
+        <View style={[{ ...styles.contentHeader }]}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditSkillsModal', { user })}>
@@ -73,7 +66,7 @@ const ProfileBio = ({
             </TextButton>
           )}
         </View>
-        <Skills skills={user.skills} height={32} />
+        {user.skills.length > 0 && <Skills skills={user.skills} height={32} />}
       </View>
     </View>
   );

@@ -6,7 +6,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { investmentMarkets } from 'library/utils/lists';
+import { investList } from 'library/utils/lists';
 import HeaderBack from 'library/components/headers/HeaderBack';
 
 import EDIT_TOPICS_INVEST_MUTATION from 'library/mutations/EDIT_TOPICS_INVEST_MUTATION';
@@ -20,48 +20,58 @@ const SelectTopicsInvestModal = ({ navigation }) => {
   if (error) return <Text>{`Error! ${error}`}</Text>;
   const { userLoggedIn } = data;
   // this is the single source of truth
-  const { id, investorFields } = userLoggedIn;
+  const { id } = userLoggedIn;
+  const topics = userLoggedIn.topicsInvest || [];
+  const topicsIDonly = topics.map(topic => topic.topicID);
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsInvest, { loading: loadingEdit, error: errorEdit, data: dataEdit }] = useMutation(
-    EDIT_TOPICS_INVEST_MUTATION,
-    {
-      onError: () =>
-        Alert.alert('Oh no!', 'An error occured when trying to edit your investor topics. Try again later!', [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]),
-    }
-  );
+  const [editTopicsInvest] = useMutation(EDIT_TOPICS_INVEST_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = selectedTopic => {
+  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
     // build the new array of topics
     let newArray = [];
-    if (investorFields.includes(selectedTopic)) {
+    if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = investorFields.filter(field => field !== selectedTopic);
+      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
     } else {
       // add it
-      newArray = [...investorFields, selectedTopic];
+      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
+
+    // for mutation
+    const newArrayTopicIDonly = newArray.map(topic => {
+      return { topicID: topic.topicID };
+    });
+
+    // for optimistic response
+    const newArrayTopicIDandType = newArray.map(topic => {
+      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    });
 
     // run the mutation
     editTopicsInvest({
       variables: {
         id,
-        topics: newArray,
+        topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsInvest: {
           __typename: 'User',
           ...userLoggedIn,
-          investorFields: newArray,
+          topicsInvest: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {
@@ -75,14 +85,16 @@ const SelectTopicsInvestModal = ({ navigation }) => {
   // ////////////////////////////////////////
   // RENDER FUNCTIONS
   const renderList = () => {
-    return investmentMarkets.map((market, i) => {
-      const isSelected = investorFields.includes(market);
+    return investList.map((mainTopic, i) => {
+      const { name, topicID } = mainTopic;
+
+      const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <View key={i} style={styles.categorySection}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(market)}>
+        <View key={`${topicID}-${i}`} style={styles.categorySection}>
+          <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
             <View style={{ ...styles.mainRow }}>
-              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{market}</Text>
+              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.green, paddingRight: 15, flex: 1 }}>{name}</Text>
               {isSelected ? (
                 <View style={styles.addedButton}>
                   <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
