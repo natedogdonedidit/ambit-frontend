@@ -109,9 +109,9 @@ const CommentScreen = ({ navigation }) => {
 
   const { singlePost: post } = dataPost;
 
-  const [getPossibleMentions, { loading: loadingMentions, error: errorMentions, data: dataMentions }] = useLazyQuery(
-    ALL_USERS_QUERY
-  );
+  // const [getPossibleMentions, { loading: loadingMentions, error: errorMentions, data: dataMentions }] = useLazyQuery(
+  //   ALL_USERS_QUERY
+  // );
 
   // const parentPostObject = isUpdate ? null : { connect: { id: parentPost.id } }; // dont want to attach comment to a parentPost if it has a parentUpdate
   const parentPostObject = { connect: { id: parentPost.id } }; // dont want to attach comment to a parentPost if it has a parentUpdate
@@ -143,9 +143,9 @@ const CommentScreen = ({ navigation }) => {
   });
 
   // EFFECTS
-  useEffect(() => {
-    // scrollViewRef.current.scrollResponderScrollToEnd();    // give me errors sometimes
-  }, [showMentionList]);
+  // useEffect(() => {
+  // scrollViewRef.current.scrollResponderScrollToEnd();    // give me errors sometimes
+  // }, [showMentionList]);
 
   // Mentions stuff
 
