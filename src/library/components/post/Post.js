@@ -19,6 +19,7 @@ import Comment from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
 import Share from 'library/components/UI/icons/Share';
 import Topic from 'library/components/post/Topic';
+import Location from 'library/components/post/Location';
 
 const Post = ({ post, currentTime, navigation, showDetails = false, showLine = false, hideButtons = false }) => {
   // ////////////////////////////////////////////////////////////////
@@ -120,16 +121,21 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
           </View>
 
           <View style={styles.headlineRow}>
-            <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{post.owner.headline}</Text>
-            <Icon name="circle" solid size={3} color={colors.iconGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
+            {post.owner.headline && (
+              <>
+                <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{post.owner.headline}</Text>
+                <Icon name="circle" solid size={3} color={colors.iconGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
+              </>
+            )}
             <Text style={{ ...defaultStyles.smallMute }}>
-              {timeDiff} {period}
+              {timeDiff}
+              {period} ago
             </Text>
           </View>
 
           {post.isGoal && (
             <View style={styles.goalView}>
-              <Goal goal={post.goal} subField={post.subField} />
+              <Goal goal={post.goal} subField={post.subField.name} />
             </View>
           )}
 
@@ -139,14 +145,9 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
           {containsTopics && (
             <View style={styles.topics}>
-              {/* {!!post.subField && !post.topics.includes(post.subField) && (
-                <Topic navigation={navigation} type="topic">
-                  {post.subField}
-                </Topic>
-              )} */}
               {post.topics.length > 0 &&
-                post.topics.map(topic => <Topic key={topic} navigation={navigation} type="topic" topicToShow={topic} />)}
-              {!!post.location && <Topic navigation={navigation} type="location" topicToShow={post.location} />}
+                post.topics.map(topic => <Topic key={topic.id} navigation={navigation} topicToShow={topic} />)}
+              {!!post.location && <Location navigation={navigation} location={post.location} />}
             </View>
           )}
 

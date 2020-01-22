@@ -61,6 +61,11 @@ const styles = StyleSheet.create({
     fontSize: reg,
     fontFamily: 'SFProText-Regular',
   },
+  defaultWarning: {
+    color: colors.peach,
+    fontSize: reg,
+    fontFamily: 'SFProText-Regular',
+  },
   defaultMuteItalic: {
     color: colors.blueGray,
     fontSize: reg,

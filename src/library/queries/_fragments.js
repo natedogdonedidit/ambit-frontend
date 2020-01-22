@@ -36,10 +36,6 @@ export const LoggedInUser = gql`
     location
     locationLat
     locationLon
-    isMentor
-    isFreelancer
-    isAgency
-    isInvestor
     topicsFocus {
       topicID
       name
@@ -139,8 +135,14 @@ export const ListPosts = gql`
     }
     isGoal
     goal
-    subField
-    topics
+    subField {
+      id
+      name
+    }
+    topics {
+      id
+      name
+    }
     location
     content
     images

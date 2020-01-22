@@ -3,9 +3,8 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { topicsList } from 'library/utils/lists';
 
-const Topic = ({ navigation, topicToShow, type = 'topic' }) => {
+const Location = ({ navigation, location }) => {
   const getOnPress = () => {
     // if (type === 'topic') {
     //   const group = topicsList.find(item => item.topic === topicToShow || item.subTopics.includes(topicToShow));
@@ -24,13 +23,13 @@ const Topic = ({ navigation, topicToShow, type = 'topic' }) => {
   return (
     <TouchableOpacity onPress={getOnPress()} activeOpacity={0.9}>
       <View style={styles.topic}>
-        <Text style={defaultStyles.smallMute}>{topicToShow.name}</Text>
+        <Text style={defaultStyles.smallMute}>{location}</Text>
       </View>
     </TouchableOpacity>
   );
 };
 
-export default Topic;
+export default Location;
 
 const styles = StyleSheet.create({
   topic: {

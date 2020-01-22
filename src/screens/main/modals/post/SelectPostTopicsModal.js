@@ -6,39 +6,89 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { topicsList, freelanceList, investList } from 'library/utils/lists';
+import { topicsList } from 'library/utils/lists';
 
-const SelectGoalFieldModal = ({ navigation }) => {
-  const goal = navigation.getParam('goal', null);
+// import HeaderWhite from 'library/components/headers/HeaderWhite';
+// import GoalSelect from 'library/components/UI/GoalSelect';
 
+const TOPIC_LIMIT = 3;
+
+const SelectPostTopicsModal = ({ navigation }) => {
   // PARAMS
-  const setGoal = navigation.getParam('setGoal');
+  const goal = navigation.getParam('goal', {
+    heading: '',
+    logo: '',
+    primaryColor: colors.blue,
+    secondaryColor: colors.blue,
+    modalType: 'none',
+  });
   const setTopics = navigation.getParam('setTopics');
   const setSubField = navigation.getParam('setSubField');
+  const topicsPassedIn = navigation.getParam('topics', []);
 
   // STATE
   const [selectedCategories, setSelectedCategories] = useState('');
-  const [activeSubfield, setActiveSubfield] = useState('');
+  const [activeTopics, setActiveTopics] = useState(topicsPassedIn);
   const [warning, setWarning] = useState('');
 
-  if (!goal) navigation.navigate('NewPostModal');
+  // CONSTANTS
+  // first get data from the goal passed in
+  let { heading } = goal;
+  let { logo } = goal;
+  let { secondaryColor } = goal;
+  let { primaryColor } = goal;
+
+  // if its a non topic goal
+  if (goal.modalType !== 'topic') {
+    heading = 'Select a topic';
+    logo = 'comments';
+    primaryColor = colors.blue;
+    secondaryColor = colors.goalBlue;
+  }
+
+  // if no goal was passed in
+  const multiple = goal.modalType === 'none';
+  if (multiple) {
+    heading = 'Select some topics';
+    logo = 'comments';
+    primaryColor = colors.blue;
+    secondaryColor = colors.goalBlue;
+  }
 
   const handleTopicSelect = selectedTopicID => {
-    setGoal(goal);
-    setSubField(selectedTopicID);
-    setActiveSubfield(selectedTopicID);
+    // build an array of active topics with topicID only - for comparision reasons
+    const activeTopicsIDonly = activeTopics.map(topic => topic.topicID);
 
-    // if its a topic type goal - then set topic also
-    if (goal.modalType === 'topic') {
-      // if its a topic type goal - then set topic also
-      setTopics([{ topicID: selectedTopicID }]);
+    // if there is NOT a goal passed in, then multiple selections are allowed
+    if (multiple) {
+      // build the new array of topics
+      let newArray = [...activeTopics];
+      if (activeTopicsIDonly.includes(selectedTopicID)) {
+        // remove it
+        newArray = activeTopics.filter(topic => topic.topicID !== selectedTopicID);
+        if (warning) setWarning('');
+      } else if (newArray.length < TOPIC_LIMIT) {
+        // add it
+        newArray = [...activeTopics, { topicID: selectedTopicID }];
+      } else {
+        setWarning('3 topics max');
+      }
+
+      setActiveTopics(newArray);
+      setTopics(newArray);
+      console.log(newArray);
     } else {
-      // if its NOT topic type goal - clear out previous selected topics
-      setTopics([]);
-    }
+      // if there is a goal - select one topic only
+      setActiveTopics([{ topicID: selectedTopicID }]);
+      setTopics([{ topicID: selectedTopicID }]);
 
-    // navigate back after a short delay
-    const timeout = setTimeout(() => navigation.navigate('NewPostModal'), 300);
+      if (goal.modalType === 'topic') {
+        setSubField(selectedTopicID);
+      }
+
+      // navigate back after a short delay
+      const timeout = setTimeout(() => navigation.navigate('NewPostModal'), 300);
+    }
   };
 
   const handleCategorySelect = category => {
@@ -55,80 +105,12 @@ const SelectGoalFieldModal = ({ navigation }) => {
   };
 
   const renderList = () => {
-    // freelance & agency goal
-    if (goal.modalType === 'specialist') {
-      return freelanceList.map((mainTopic, i) => {
-        const { name, topicID, children } = mainTopic;
+    const activeTopicsIDonly = activeTopics.map(topic => topic.topicID);
 
-        const isSelected = activeSubfield === topicID;
-        const isExpanded = selectedCategories.includes(topicID);
-
-        return (
-          <View key={`${topicID}-${i}`} style={styles.categorySection}>
-            <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(topicID)}>
-              <View style={{ ...styles.mainRow }}>
-                <Text style={{ ...defaultStyles.hugeSemibold, color: colors.peach, paddingRight: 15, flex: 1 }}>{name}</Text>
-                <Ionicons name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'} size={24} color={colors.iconGray} />
-              </View>
-            </TouchableOpacity>
-            {isExpanded && children.length > 0 && (
-              <View style={styles.subTopicsView}>
-                <TouchableOpacity key={`${i}-${topicID}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID)}>
-                  <View style={{ ...styles.subRow }}>
-                    <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>
-                      {name} (general)
-                    </Text>
-                    {isSelected ? (
-                      <View style={{ ...styles.addedButton, borderColor: colors.peach, backgroundColor: colors.peach }}>
-                        <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-                      </View>
-                    ) : (
-                      <View style={{ ...styles.addButton, borderColor: colors.peach }}>
-                        <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
-                      </View>
-                    )}
-                  </View>
-                </TouchableOpacity>
-                {renderSubtopics(children)}
-              </View>
-            )}
-          </View>
-        );
-      });
-    }
-
-    if (goal.modalType === 'invest') {
-      return investList.map((mainTopic, i) => {
-        const { name, topicID } = mainTopic;
-
-        const isSelected = activeSubfield === topicID;
-
-        return (
-          <View key={`${topicID}-${i}`} style={styles.categorySection}>
-            <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID)}>
-              <View style={{ ...styles.mainRow }}>
-                <Text style={{ ...defaultStyles.hugeSemibold, color: colors.green, paddingRight: 15, flex: 1 }}>{name}</Text>
-                {isSelected ? (
-                  <View style={{ ...styles.addedButton, borderColor: colors.green, backgroundColor: colors.green }}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-                  </View>
-                ) : (
-                  <View style={{ ...styles.addButton, borderColor: colors.green }}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.green }}>Add</Text>
-                  </View>
-                )}
-              </View>
-            </TouchableOpacity>
-          </View>
-        );
-      });
-    }
-
-    // default to topics list
     return topicsList.map((mainTopic, i) => {
       const { name, topicID, children } = mainTopic;
 
-      const isSelected = activeSubfield === topicID;
+      const isSelected = activeTopicsIDonly.includes(topicID);
       const isExpanded = selectedCategories.includes(topicID);
 
       return (
@@ -166,21 +148,23 @@ const SelectGoalFieldModal = ({ navigation }) => {
   };
 
   const renderSubtopics = subTopics => {
+    const activeTopicsIDonly = activeTopics.map(topic => topic.topicID);
+
     return subTopics.map((subTopic, i) => {
       const { name, topicID } = subTopic;
-      const isSelected = activeSubfield === topicID;
+      const isSelected = activeTopicsIDonly.includes(topicID);
 
       return (
         <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID)}>
           <View style={{ ...styles.subRow }}>
             <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{name}</Text>
             {isSelected ? (
-              <View style={{ ...styles.addedButton, borderColor: goal.primaryColor, backgroundColor: goal.primaryColor }}>
+              <View style={styles.addedButton}>
                 <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
               </View>
             ) : (
-              <View style={{ ...styles.addButton, borderColor: goal.primaryColor }}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: goal.primaryColor }}>Add</Text>
+              <View style={styles.addButton}>
+                <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
               </View>
             )}
           </View>
@@ -221,12 +205,12 @@ const SelectGoalFieldModal = ({ navigation }) => {
               borderRadius: 50,
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: goal.secondaryColor,
+              backgroundColor: secondaryColor,
               marginTop: 10,
               marginBottom: 15,
             }}
           >
-            <Icon name={goal.logo} solid size={40} color={goal.primaryColor} />
+            <Icon name={logo} solid size={40} color={primaryColor} />
           </View>
           <View style={{ width: '100%' }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -235,13 +219,15 @@ const SelectGoalFieldModal = ({ navigation }) => {
                   ...defaultStyles.headerMedium,
                 }}
               >
-                {goal.heading}
+                {heading}
               </Text>
               {/* <Icon name="question-circle" size={22} color={colors.iconDark} /> */}
             </View>
 
             <Text style={{ ...defaultStyles.defaultMute, paddingTop: 12, paddingBottom: 20 }}>
-              This info will be used to connect you with the right people
+              {multiple
+                ? `Your post will appear on these\ntopic timelines (3 max)`
+                : `Your post will also appear on this\ntopic timeline`}
             </Text>
           </View>
 
@@ -252,7 +238,7 @@ const SelectGoalFieldModal = ({ navigation }) => {
   );
 };
 
-export default SelectGoalFieldModal;
+export default SelectPostTopicsModal;
 
 const styles = StyleSheet.create({
   container: {

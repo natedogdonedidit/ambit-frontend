@@ -26,7 +26,7 @@ import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
-import { postPicUpload } from 'library/utils';
+import { postPicUpload, getTopicFromID } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -69,8 +69,8 @@ const NewPostModal = ({ navigation }) => {
       post: {
         isGoal: !!goal,
         goal: goal ? goal.name : null,
-        subField,
-        topics: { set: topics },
+        subField: subField ? { connect: { topicID: subField } } : null,
+        topics: topics.length > 0 ? { connect: topics } : null,
         location,
         locationLat,
         locationLon,
@@ -131,18 +131,29 @@ const NewPostModal = ({ navigation }) => {
   };
 
   const handleTopicRowSelect = () => {
-    // when we just want to change the Topic
-    // if (!goal) {
-    //   navigation.navigate('SelectGoalFieldModal', { setGoal, setTopics, setSubField, topics, multiple: true });
-    //   return;
-    // }
-    if (goal.modalType === 'topic') {
-      navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField });
-      return;
+    if (goal) {
+      navigation.navigate('SelectPostTopicsModal', { goal, setTopics, setSubField, topics });
+    } else {
+      navigation.navigate('SelectPostTopicsModal', { setTopics, setSubField, topics });
     }
-    // when we just want to change the Topic
-    // navigation.navigate('SelectGoalFieldModal', { setGoal, setTopics, setSubField });
-    navigation.navigate('SelectGoalFieldModal', { setGoal, setTopics, setSubField, topics, multiple: true });
+
+    // if (!goal) {
+    //   navigation.navigate('SelectPostTopicsModal', { setTopics, topics });
+    // } else {
+    //   navigation.navigate('SelectPostTopicsModal', { setTopics, topics, multiple: true });
+    // }
+
+    // if (!goal) {
+    //   // when we just want to change the Topic
+    //   navigation.navigate('SelectGoalFieldModal', { setGoal, setTopics, setSubField, topics });
+    //   // } else {
+    //   //   navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField, topicSelection: true });
+    //   // }
+    //   // } else if (goal.modalType === 'topic') {
+    //   //   navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField });
+    // } else {
+    //   navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField, topicsOnly: true });
+    // }
   };
 
   const clearGoal = () => {
@@ -327,7 +338,7 @@ const NewPostModal = ({ navigation }) => {
       );
     }
 
-    if (goal.modalType === 'topic') {
+    if (!subField) {
       return (
         <>
           <View style={styles.leftSide}>
@@ -354,7 +365,7 @@ const NewPostModal = ({ navigation }) => {
           <Text>
             <Text style={{ ...defaultStyles.largeMedium }}>{goal.name} </Text>
             <Text style={{ ...defaultStyles.largeLight }}>{goal.adverb} </Text>
-            <Text style={{ ...defaultStyles.largeMedium }}>{subField}</Text>
+            <Text style={{ ...defaultStyles.largeMedium }}>{getTopicFromID(subField).name}</Text>
           </Text>
         </View>
         <TouchableOpacity
@@ -376,7 +387,7 @@ const NewPostModal = ({ navigation }) => {
             <Ionicons name="ios-chatbubbles" size={22} color={colors.iconGray} />
           </View>
 
-          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>Add topics</Text>
+          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>{goal ? 'Add a topic' : 'Add topics'}</Text>
           <TouchableOpacity
             style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={handleTopicRowSelect}
@@ -396,10 +407,12 @@ const NewPostModal = ({ navigation }) => {
 
         <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>
           {topics.map((topic, i) => {
+            const { name } = getTopicFromID(topic.topicID);
+
             if (i < topics.length - 1) {
-              return `${topic}, `;
+              return `${name}, `;
             }
-            return topic;
+            return name;
           })}
         </Text>
         <TouchableOpacity

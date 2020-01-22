@@ -4,7 +4,7 @@ import { differenceInSeconds, differenceInDays, differenceInHours } from 'date-f
 import { cloud_name } from 'library/config';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../styles/colors';
-import { goalsList } from './lists';
+import { goalsList, allTopics } from './lists';
 
 export const monthToFloat = month => {
   if (month === 'Jan') return 0.01;
@@ -289,3 +289,6 @@ export const getGoalInfo = (goal, field) => {
   if (!item) return '';
   return item[field];
 };
+
+// will return an object { topicID: 'text', name: 'text' }
+export const getTopicFromID = topicID => allTopics.find(topic => topic.topicID === topicID);
