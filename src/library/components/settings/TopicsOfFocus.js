@@ -62,7 +62,6 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
         },
       },
       update: (proxy, { data: dataReturned }) => {
-        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {

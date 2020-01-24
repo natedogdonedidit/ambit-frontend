@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
-    paddingTop: 4,
+    // paddingTop: 4,
     paddingLeft: 8,
     paddingBottom: 10,
   },

@@ -21,8 +21,12 @@ const Topic = ({ navigation, topicToShow, type = 'topic' }) => {
     return null;
   };
 
+  const isSubTopic = !!topicToShow.parentTopic;
+  const mainTopicID = isSubTopic ? topicToShow.parentTopic.topicID : topicToShow.topicID;
+  const subTopic = isSubTopic ? topicToShow.topicID : null;
+
   return (
-    <TouchableOpacity onPress={getOnPress()} activeOpacity={0.9}>
+    <TouchableOpacity onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })} activeOpacity={0.3}>
       <View style={styles.topic}>
         <Text style={defaultStyles.smallMute}>{topicToShow.name}</Text>
       </View>

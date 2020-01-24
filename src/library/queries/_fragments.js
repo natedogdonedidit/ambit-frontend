@@ -142,6 +142,10 @@ export const ListPosts = gql`
     topics {
       id
       name
+      topicID
+      parentTopic {
+        topicID
+      }
     }
     location
     content

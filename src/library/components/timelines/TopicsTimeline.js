@@ -4,18 +4,19 @@ import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import topicQueries from 'library/queries/TOPIC_POSTS_QUERY';
+import topicQueries from 'library/queries/TOPIC_POSTS_QUERY'; // comes in as an object
 import Loader from 'library/components/UI/Loader';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
-const TopicsTimeline = ({ activeTopic, navigation, scrollY, paddingTop }) => {
+const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
 
-  const activeQuery = topicQueries.topicToQuery(activeTopic);
+  // turn the topicID into a query (ALL_CAPS)
+  const activeQuery = activeSubTopic.toUpperCase();
 
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(activeQuery, {
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(topicQueries[activeQuery], {
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });

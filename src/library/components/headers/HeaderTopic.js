@@ -8,7 +8,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const HeaderTopic = ({ navigation, handleMiddle, handleRight, user, height = 44, topic }) => {
+const HeaderTopic = ({ navigation, handleMiddle, handleRight, user, height = 44, topicName }) => {
   // const insets = useSafeArea();
 
   return (
@@ -17,7 +17,7 @@ const HeaderTopic = ({ navigation, handleMiddle, handleRight, user, height = 44,
         <Ionicons name="ios-arrow-back" size={26} color={colors.iconDark} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
-        <Text style={{ ...defaultStyles.headerTopic, color: colors.blueGray }}>{topic}</Text>
+        <Text style={{ ...defaultStyles.headerTopic, color: colors.blueGray }}>{topicName}</Text>
       </TouchableOpacity>
       <View style={styles.rightSide}>
         <TouchableOpacity onPress={handleRight}>

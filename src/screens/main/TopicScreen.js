@@ -13,32 +13,27 @@ import Error from 'library/components/UI/Error';
 
 import TopicsTimeline from 'library/components/timelines/TopicsTimeline';
 import SubTopicsSelector from 'library/components/timelines/SubTopicsSelector';
+import { getFullTopicFromID } from 'library/utils';
 
 const HEADER_HEIGHT = 44;
 const BANNER_HEIGHT = 0;
 
 const TopicScreen = ({ navigation }) => {
-  const activeTopic = navigation.getParam('topic');
-  const subTopic = navigation.getParam('subTopic', 'All');
+  // PARAMS
+  const topicID = navigation.getParam('topicID');
+  const subTopic = navigation.getParam('subTopic', null);
+  const activeTopic = getFullTopicFromID(topicID);
 
-  // const [activeTimeline, setActiveTimeline] = useState(0);
-  const [activeSubTopic, setActiveSubTopic] = useState(subTopic);
+  // STATE
+  const [activeSubTopic, setActiveSubTopic] = useState(subTopic || activeTopic.topicID);
   const [scrollY] = useState(new Animated.Value(0));
-  // const [scrollX] = useState(new Animated.Value(0));
-  // const [refreshing, setRefreshing] = useState(false);
-  // const [requestRefresh, setRequestRefresh] = useState(false);
 
-  // ///////////////////////////
   // REFS & CONTEXT
-  // ///////////////////////////
   const insets = useSafeArea();
   // const { height, width } = Dimensions.get('window');
 
-  // ///////////////////////////
   // CONSTANTS
-  // ///////////////////////////
   const tabsHeight = 46;
-
   const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
 
   // ///////////////////////////
@@ -58,6 +53,7 @@ const TopicScreen = ({ navigation }) => {
       <View style={{ flex: 1 }}>
         <TopicsTimeline
           activeTopic={activeTopic}
+          activeSubTopic={activeSubTopic}
           userLoggedIn={userLoggedIn}
           navigation={navigation}
           scrollY={scrollY}
@@ -110,7 +106,7 @@ const TopicScreen = ({ navigation }) => {
             handleRight={() => navigation.navigate('CustomSearch')}
             navigation={navigation}
             height={HEADER_HEIGHT}
-            topic={activeTopic}
+            topicName={activeTopic.name}
           />
           <View
             // custom banner (optional)

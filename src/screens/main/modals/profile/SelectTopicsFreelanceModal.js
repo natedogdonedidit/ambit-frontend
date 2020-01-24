@@ -73,7 +73,6 @@ const SelectTopicsFreelanceModal = ({ navigation }) => {
         },
       },
       update: (proxy, { data: dataReturned }) => {
-        console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {

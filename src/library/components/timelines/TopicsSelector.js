@@ -10,13 +10,13 @@ import { topicsList } from 'library/utils/lists';
 
 const TopicsSelector = ({ navigation, activeTopic, setActiveTopic, height }) => {
   const renderAllTab = () => {
-    const topic = 'Trending';
+    const name = 'Trending';
 
     return (
-      <TouchableOpacity activeOpacity={0.6} onPress={() => setActiveTopic(topic)}>
+      <TouchableOpacity activeOpacity={0.6} onPress={() => setActiveTopic(name)}>
         <View style={{ justifyContent: 'center' }}>
-          <View style={[activeTopic === topic ? { ...styles.topicSelected } : { ...styles.topic }]}>
-            <Text style={activeTopic === topic ? styles.topicSelectedText : styles.topicText}>{topic}</Text>
+          <View style={[activeTopic === name ? { ...styles.topicSelected } : { ...styles.topic }]}>
+            <Text style={activeTopic === name ? styles.topicSelectedText : styles.topicText}>{name}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -25,14 +25,14 @@ const TopicsSelector = ({ navigation, activeTopic, setActiveTopic, height }) => 
 
   const renderTabs = () => {
     return topicsList.map((item, i) => {
-      const { topic } = item;
+      const { name, topicID, children } = item;
 
       return (
         // <TouchableOpacity activeOpacity={1} key={i} onPress={() => setActiveTopic(topic)}>
-        <TouchableOpacity activeOpacity={0.6} key={i} onPress={() => navigation.navigate('Topic', { topic })}>
+        <TouchableOpacity activeOpacity={0.6} key={i} onPress={() => navigation.navigate('Topic', { topicID })}>
           <View style={{ justifyContent: 'center' }}>
-            <View style={[activeTopic === topic ? { ...styles.topicSelected } : { ...styles.topic }]}>
-              <Text style={activeTopic === topic ? styles.topicSelectedText : styles.topicText}>{topic}</Text>
+            <View style={[activeTopic === name ? { ...styles.topicSelected } : { ...styles.topic }]}>
+              <Text style={activeTopic === name ? styles.topicSelectedText : styles.topicText}>{name}</Text>
             </View>
           </View>
         </TouchableOpacity>

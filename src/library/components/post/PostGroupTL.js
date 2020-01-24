@@ -20,7 +20,6 @@ const PostGroupTL = ({
   showAll = false,
 }) => {
   const hasUpdates = post.updates.length > 0;
-  console.log(post);
 
   const renderAllUpdates = () => {
     return post.updates.map((update, i) => {

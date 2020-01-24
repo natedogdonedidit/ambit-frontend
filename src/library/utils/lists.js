@@ -689,7 +689,7 @@ export const topicsList = [
       },
       {
         name: 'Wealth Management',
-        topicID: 'topics_finance_management',
+        topicID: 'topics_finance_wealthmanagement',
       },
       {
         name: 'Banking',
@@ -818,7 +818,7 @@ export const topicsList = [
       },
       {
         name: 'Non-profit',
-        topicID: 'topics_industry_non-profit',
+        topicID: 'topics_industry_nonprofit',
       },
       {
         name: 'Travel & Hospitality',
@@ -1028,7 +1028,7 @@ export const allTopics = [
   },
   {
     name: 'Wealth Management',
-    topicID: 'topics_finance_management',
+    topicID: 'topics_business_wealthmanagement',
   },
   {
     name: 'Banking',
@@ -1144,7 +1144,7 @@ export const allTopics = [
   },
   {
     name: 'Non-profit',
-    topicID: 'topics_industry_non-profit',
+    topicID: 'topics_industry_nonprofit',
   },
   {
     name: 'Travel & Hospitality',

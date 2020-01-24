@@ -13,7 +13,7 @@ import Error from 'library/components/UI/Error';
 
 import HomeTimeline from 'library/components/timelines/HomeTimeline';
 import LocalTimeline from 'library/components/timelines/LocalTimeline';
-import TopicsTimeline from 'library/components/timelines/TopicsTimeline';
+import TopicsList from 'library/components/timelines/TopicsList';
 
 import TimelineTabs from 'library/components/timelines/TimelineTabs';
 import TopicsSelector from 'library/components/timelines/TopicsSelector';
@@ -65,8 +65,8 @@ const HomeScreen = ({ navigation }) => {
   // ////////////////////////////////////////////////////////////////
   // CONSTANTS
   const tabs1Height = 42;
-  let tabs2Height = 0;
-  if (activeTimeline === 2) tabs2Height = 46;
+  const tabs2Height = 0;
+  // if (activeTimeline === 2) tabs2Height = 46; // turn on to use topicsSelector
   const tabsHeight = tabs1Height + tabs2Height;
 
   const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
@@ -134,7 +134,7 @@ const HomeScreen = ({ navigation }) => {
               borderRightColor: colors.borderBlack,
             }}
           >
-            <TopicsTimeline
+            <TopicsList
               activeTopic={activeTopic}
               userLoggedIn={userLoggedIn}
               navigation={navigation}
@@ -213,7 +213,7 @@ const HomeScreen = ({ navigation }) => {
             horizontalScrollRef={horizontalScrollRef}
           />
         </View>
-        {activeTimeline === 2 && (
+        {/* {activeTimeline === 2 && ( // turn on to use topicsSelector
           <View
             style={{
               backgroundColor: 'white',
@@ -228,7 +228,7 @@ const HomeScreen = ({ navigation }) => {
               height={tabs2Height}
             />
           </View>
-        )}
+        )} */}
       </Animated.View>
 
       {/* Gives a solid background to the StatusBar */}

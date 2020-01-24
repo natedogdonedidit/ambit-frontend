@@ -4,7 +4,7 @@ import { differenceInSeconds, differenceInDays, differenceInHours } from 'date-f
 import { cloud_name } from 'library/config';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../styles/colors';
-import { goalsList, allTopics } from './lists';
+import { goalsList, allTopics, topicsList } from './lists';
 
 export const monthToFloat = month => {
   if (month === 'Jan') return 0.01;
@@ -292,3 +292,25 @@ export const getGoalInfo = (goal, field) => {
 
 // will return an object { topicID: 'text', name: 'text' }
 export const getTopicFromID = topicID => allTopics.find(topic => topic.topicID === topicID);
+export const getFullTopicFromID = topicID => topicsList.find(topic => topic.topicID === topicID);
+
+export const addMainTopics = topics => {
+  // the new array we are creating
+  const mainTopicsToAdd = [];
+
+  const usedTopicsIDonly = topics.map(topic => topic.topicID);
+  const mainTopicsIDonly = topicsList.map(topic => topic.topicID);
+
+  mainTopicsIDonly.forEach(mainTopicID => {
+    // check if the mainTopicID needs to be added
+    const addIt = usedTopicsIDonly.some(usedTopicID => usedTopicID.startsWith(mainTopicID) && mainTopicID !== usedTopicID);
+
+    // if true - add the main topic
+    if (addIt) {
+      mainTopicsToAdd.push({ topicID: mainTopicID });
+    }
+  });
+
+  // return a new array with the main topics on the end
+  return [...topics, ...mainTopicsToAdd];
+};

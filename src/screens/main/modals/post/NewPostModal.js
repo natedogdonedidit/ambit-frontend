@@ -26,13 +26,14 @@ import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
-import { postPicUpload, getTopicFromID } from 'library/utils';
+import { postPicUpload, getTopicFromID, addMainTopics } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
+
 // import Goal from 'library/components/UI/Goal';
 // import GoalField from 'library/components/UI/GoalField';
 
@@ -122,6 +123,11 @@ const NewPostModal = ({ navigation }) => {
     }
 
     // make sure all main topics are added
+    const finalTopicsArray = addMainTopics([...topics]);
+
+    await setTopics(finalTopicsArray);
+    console.log('finalTopicsArray', finalTopicsArray);
+    console.log('topics', topics);
 
     createPost();
   };
