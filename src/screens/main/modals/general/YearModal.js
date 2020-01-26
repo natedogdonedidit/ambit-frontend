@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   scrollView: {
     width: '100%',
     paddingHorizontal: 20,
-    marginBottom: 50,
+    marginBottom: 10,
   },
   yearView: {
     height: 50,

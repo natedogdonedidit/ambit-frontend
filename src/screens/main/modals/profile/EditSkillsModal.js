@@ -73,7 +73,7 @@ const EditSkillsModal = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <HeaderWhite
         handleLeft={navigation.goBack}
         handleRight={editSkills}
@@ -82,7 +82,7 @@ const EditSkillsModal = ({ navigation }) => {
         title="Edit Skills"
       />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
-        <ScrollView contentContainerStyle={{ flex: 1, paddingHorizontal: 20, paddingVertical: 20 }}>
+        <ScrollView contentContainerStyle={{ flex: 1, paddingHorizontal: 20, paddingBottom: 20 }}>
           <View style={styles.newSkillRow}>
             <TextInput
               style={styles.skillInput}
@@ -99,7 +99,7 @@ const EditSkillsModal = ({ navigation }) => {
         </ScrollView>
       </KeyboardAvoidingView>
       {loading && <Loader active={loading} />}
-    </SafeAreaView>
+    </View>
   );
 };
 

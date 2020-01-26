@@ -58,7 +58,7 @@ const ProfileBio = ({ navigation, isMyProfile, user }) => {
         <Education navigation={navigation} isMyProfile={isMyProfile} education={user.education} />
       </View>
       <View style={styles.contentSection}>
-        <View style={[{ ...styles.contentHeader }]}>
+        <View style={[{ ...styles.contentHeader, paddingBottom: 15 }]}>
           <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditSkillsModal', { user })}>

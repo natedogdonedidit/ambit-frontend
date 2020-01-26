@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, TextInput } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,7 +11,7 @@ import { HEADER_HEIGHT } from 'styles/constants';
 // Header Height is 44 !!!
 // insets.top is used as padding under the StatusBar
 
-const HeaderSearch = ({ user, handleLeft, handleRight }) => {
+const HeaderSearch = ({ user, handleLeft, handleRight, textInput, setTextInput }) => {
   const insets = useSafeArea();
   return (
     <View style={{ ...styles.container, paddingTop: insets.top }}>
@@ -21,7 +21,13 @@ const HeaderSearch = ({ user, handleLeft, handleRight }) => {
         </TouchableOpacity>
 
         <View style={styles.middle}>
-          <View style={styles.searchBarView} />
+          <TextInput
+            style={{ ...styles.searchBarView, ...defaultStyles.defaultMedium, color: colors.blueGray }}
+            onChangeText={val => setTextInput(val)}
+            value={textInput}
+            placeholder="Search for keywords, people, goals"
+            maxLength={30}
+          />
         </View>
 
         <TouchableOpacity style={styles.rightSide} onPress={handleRight}>
@@ -59,6 +65,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.searchGray,
+    height: 40,
+    borderRadius: 20,
   },
   rightSide: {
     width: 35,
@@ -68,9 +77,8 @@ const styles = StyleSheet.create({
   },
   searchBarView: {
     width: '100%',
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.searchGray,
+    // backgroundColor: colors.searchGray,
+    paddingHorizontal: 20,
   },
 });
 

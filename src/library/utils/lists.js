@@ -484,6 +484,7 @@ export const topicsList = [
   {
     name: 'Technology',
     topicID: 'topics_technology',
+    icon: 'bolt',
     children: [
       {
         name: 'Software',
@@ -538,6 +539,7 @@ export const topicsList = [
   {
     name: 'Science',
     topicID: 'topics_science',
+    icon: 'atom',
     children: [
       {
         name: 'Physics',
@@ -572,6 +574,7 @@ export const topicsList = [
   {
     name: 'Creatives',
     topicID: 'topics_creatives',
+    icon: 'palette',
     children: [
       {
         name: 'Photography',
@@ -602,6 +605,7 @@ export const topicsList = [
   {
     name: 'Entertainment',
     topicID: 'topics_entertainment',
+    icon: 'film',
     children: [
       {
         name: 'Music',
@@ -628,6 +632,7 @@ export const topicsList = [
   {
     name: 'Business',
     topicID: 'topics_business',
+    icon: 'user-tie',
     children: [
       {
         name: 'Entrepreneurship',
@@ -678,6 +683,7 @@ export const topicsList = [
   {
     name: 'Finance & Markets',
     topicID: 'topics_finance',
+    icon: 'chart-line',
     children: [
       {
         name: 'Stock Market',
@@ -704,6 +710,7 @@ export const topicsList = [
   {
     name: 'Marketing',
     topicID: 'topics_marketing',
+    icon: 'hashtag',
     children: [
       {
         name: 'Social Media Marketing',
@@ -722,6 +729,7 @@ export const topicsList = [
   {
     name: 'Health & Wellness',
     topicID: 'topics_health',
+    icon: 'heartbeat',
     children: [
       {
         name: 'Fitness',
@@ -744,6 +752,7 @@ export const topicsList = [
   {
     name: 'Content Creators',
     topicID: 'topics_content',
+    icon: 'thumbs-up',
     children: [
       {
         name: 'Social Media',
@@ -770,6 +779,7 @@ export const topicsList = [
   {
     name: 'News & Politics',
     topicID: 'topics_news',
+    icon: 'newspaper',
     children: [
       {
         name: 'Politics',
@@ -788,21 +798,25 @@ export const topicsList = [
   {
     name: 'Sports',
     topicID: 'topics_sports',
+    icon: 'football-ball',
     children: [],
   },
   {
     name: 'Real Estate',
     topicID: 'topics_realestate',
+    icon: 'home',
     children: [],
   },
   {
     name: 'Education',
     topicID: 'topics_education',
+    icon: 'graduation-cap',
     children: [],
   },
   {
     name: 'Industry',
     topicID: 'topics_industry',
+    icon: 'cogs',
     children: [
       {
         name: 'Food & Bev',

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, Animated, Dimensions, Text } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -7,31 +7,28 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import HomeTimeline from 'library/components/timelines/HomeTimeline';
+import SearchTimeline from 'library/components/timelines/SearchTimeline';
 import HeaderSearch from 'library/components/headers/HeaderSearch';
 import Error from 'library/components/UI/Error';
 import SearchTabs from 'library/components/search/SearchTabs';
 import { HEADER_HEIGHT } from 'styles/constants';
 import TimelineTabs from 'library/components/timelines/TimelineTabs';
+import { getTopicFromID } from 'library/utils';
 
 const DROPDOWNS_HEIGHT = 44;
 
 const SearchScreen = ({ navigation }) => {
-  // ////////////////////////////////////////////////////////////////
-  // ROUTE PARAMS
-  // const goToTimeline = navigation.getParam('goToTimeline');
+  // PARAMS
 
-  // ////////////////////////////////////////////////////////////////
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
-
   const [textInput, setTextInput] = useState('');
-
-  const [showingResults, setShowingResults] = useState(false);
+  const [topicID, setTopic] = useState('');
+  const [lat, setLat] = useState('');
   const [activeTab, setActiveTab] = useState('Top');
 
-  // ///////////////////////////////////////////////////////////////
   // OTHER HOOKS
   const insets = useSafeArea();
 
@@ -45,17 +42,26 @@ const SearchScreen = ({ navigation }) => {
   // CONSTANTS
   const tabsHeight = 42;
   const HEADER_HEIGHT_WITH_PADDING = HEADER_HEIGHT + insets.top;
+  const topic = getTopicFromID(topicID);
+  const topicSelectText = topic ? topic.name : 'All Topics';
+  const locationSelectText = 'All Locations';
 
   const SLIDE_HEIGHT = DROPDOWNS_HEIGHT;
 
   // ////////////////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
+  const clearTopic = () => {
+    setTopic('');
+  };
 
   return (
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
-        <HomeTimeline
+        <SearchTimeline
           navigation={navigation}
+          activeTab={activeTab}
+          textInput={textInput}
+          topicID={topicID}
           scrollY={scrollY}
           paddingTop={HEADER_HEIGHT_WITH_PADDING + SLIDE_HEIGHT + tabsHeight}
         />
@@ -87,10 +93,37 @@ const SearchScreen = ({ navigation }) => {
         <View style={{ width: '100%', height: DROPDOWNS_HEIGHT }}>
           <View style={styles.dropdownContainer}>
             <View style={styles.dropdownBoxLeft}>
-              <View style={styles.dropdown} />
+              <View style={styles.dropdown}>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => navigation.navigate('SelectSearchTopicsModal', { setTopic })}
+                >
+                  <Text style={{ ...defaultStyles.defaultMedium, color: colors.blueGray }}>{topicSelectText}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={topicID ? () => clearTopic() : () => navigation.navigate('SelectSearchTopicsModal', { setTopic })}
+                  hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
+                >
+                  <Ionicons name={topicID ? 'md-close' : 'md-arrow-dropdown'} size={topicID ? 16 : 22} color={colors.blueGray} />
+                </TouchableOpacity>
+              </View>
             </View>
+
             <View style={styles.dropdownBoxRight}>
-              <View style={styles.dropdown} />
+              <View style={styles.dropdown}>
+                <TouchableOpacity
+                  style={{ flex: 1 }}
+                  onPress={() => navigation.navigate('SelectSearchTopicsModal', { setTopic })}
+                >
+                  <Text style={{ ...defaultStyles.defaultMedium, color: colors.blueGray }}>{locationSelectText}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={lat ? () => clearTopic() : () => navigation.navigate('SelectSearchTopicsModal', { setTopic })}
+                  hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
+                >
+                  <Ionicons name={lat ? 'md-close' : 'md-arrow-dropdown'} size={lat ? 16 : 22} color={colors.blueGray} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
@@ -98,7 +131,12 @@ const SearchScreen = ({ navigation }) => {
         <SearchTabs activeTab={activeTab} setActiveTab={setActiveTab} height={tabsHeight} />
       </Animated.View>
       <View style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
-        <HeaderSearch user={userLoggedIn} handleLeft={() => navigation.goBack()} />
+        <HeaderSearch
+          user={userLoggedIn}
+          handleLeft={() => navigation.goBack()}
+          textInput={textInput}
+          setTextInput={setTextInput}
+        />
       </View>
     </View>
   );
@@ -138,6 +176,9 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 8,
     backgroundColor: colors.searchGray,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
   },
 });
 

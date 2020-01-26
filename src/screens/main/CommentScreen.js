@@ -76,44 +76,6 @@ const CommentScreen = ({ navigation }) => {
 
   const loading = loadingUser || loadingPost;
 
-  if (errorUser) return <Error error={errorUser} />;
-  if (errorPost) return <Error error={errorPost} />;
-
-  const handleSubmit = async () => {
-    const message = validateInputs();
-    // if missing a required field, Alert user
-    if (message) {
-      Alert.alert('Please add a comment or image', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
-      return;
-    }
-    if (commentImage) {
-      await uploadImage();
-    }
-    createComment();
-  };
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <HeaderWhite
-          handleLeft={navigation.goBack}
-          handleRight={handleSubmit}
-          textLeft="Back"
-          textRight="Reply"
-          title="Comment"
-        />
-        <Loader loading={loading} full={false} />
-      </View>
-    );
-  }
-
-  const { singlePost: post } = dataPost;
-
-  // const [getPossibleMentions, { loading: loadingMentions, error: errorMentions, data: dataMentions }] = useLazyQuery(
-  //   ALL_USERS_QUERY
-  // );
-
-  // const parentPostObject = isUpdate ? null : { connect: { id: parentPost.id } }; // dont want to attach comment to a parentPost if it has a parentUpdate
   const parentPostObject = { connect: { id: parentPost.id } }; // dont want to attach comment to a parentPost if it has a parentUpdate
 
   // MUTATIONS
@@ -142,156 +104,24 @@ const CommentScreen = ({ navigation }) => {
     },
   });
 
-  // EFFECTS
-  // useEffect(() => {
-  // scrollViewRef.current.scrollResponderScrollToEnd();    // give me errors sometimes
-  // }, [showMentionList]);
-
-  // Mentions stuff
-
-  // const mentionAttemptFunction = (input, cursorSelection) => {
-  //   const whiteRegEx = /\s/g;
-  //   const mentionRegEx = /\s@\w*$/g; // ends with 'whitespace-@-zeroormorecharacters'
-  //   const { start, end } = cursorSelection;
-  //   const singleCursor = start === end;
-  //   const stringBefore = input.slice(0, start); // slice off everything after the cursor
-  //   const isMention = mentionRegEx.test(stringBefore);
-  //   const nextCharacter = input[start];
-  //   const nextIsWhite = whiteRegEx.test(nextCharacter) || nextCharacter === undefined; // check if next character is white or undefined (end of line)
-  //   return !!(singleCursor && nextIsWhite && isMention);
-  // };
-
-  // const mentionCompare = (a, b) => {
-  //   const aa = a.start;
-  //   const bb = b.start;
-  //   if (aa < bb) return -1;
-  //   return 1;
-  // };
-
-  // const handleMentionSelect = user => {
-  //   // know cursor position //selection.start
-  //   const cursor = selection.start;
-
-  //   // get position of @
-  //   const beforeCursor = comment.slice(0, cursor);
-  //   const atSymbolLocation = beforeCursor.lastIndexOf('@');
-
-  //   // remove everthing back to the @ symbol
-  //   const beforeMention = comment.slice(0, atSymbolLocation);
-  //   const afterMention = comment.slice(cursor, comment.length);
-
-  //   // insert name into the comment
-  //   const trimmedName = user.name.trim();
-  //   const newComment = beforeMention.concat(trimmedName, afterMention, ' ');
-
-  //   // log mention into mention logs
-  //   const newMention = {
-  //     start: atSymbolLocation,
-  //     end: atSymbolLocation + trimmedName.length - 1,
-  //     length: trimmedName.length,
-  //     name: trimmedName,
-  //     id: user.id,
-  //   };
-
-  //   const newMentions = [...mentions, newMention];
-  //   const sortedMentions = newMentions.sort(mentionCompare);
-  //   console.log(sortedMentions);
-
-  //   // save mention data into array
-  //   setMentions(sortedMentions);
-
-  //   // convert to formattedComment, save to state
-  //   setComment(newComment);
-  // };
-
-  // const formatText = rawText => {
-  //   if (mentions.length < 1) return rawText;
-
-  //   const subStrings = [];
-
-  //   mentions.forEach((mention, i) => {
-  //     const isLast = mentions.length === i + 1;
-
-  //     // make substrings of new formatted text w/ mentions
-  //     if (i === 0) {
-  //       // before mention
-  //       subStrings.push(rawText.substring(0, mention.start));
-  //       // mention
-  //       subStrings.push(`@[${mention.name}](${mention.id})`);
-  //       // after mention
-  //       // if last mention...go to end. If another mention...go to start of that one.
-  //       subStrings.push(rawText.substring(mention.end, isLast ? rawText.length : mentions[i + 1].start));
-  //     } else {
-  //       // mention
-  //       subStrings.push(`@[${mention.name}](${mention.id})`);
-  //       // after mention
-  //       // if last mention...go to end. If another mention...go to start of that one.
-  //       subStrings.push(rawText.substring(mention.end, isLast ? rawText.length : mentions[i + 1].start));
-  //     }
-
-  //     // concat together substrings
-  //     const formattedText = subStrings.toString();
-  //     console.log(formattedText);
-  //   });
-  // };
-
-  const onChangeText = val => {
-    // console.log('selection state', selection);
-    // console.log(val);
-    // console.log(mentions);
-
-    // const isMentionAttempt = mentionAttemptFunction(val, selection);
-
-    // if (isMentionAttempt) {
-    //   setShowMentionList(true);
-    //   getPossibleMentions();
-    // } else {
-    //   setShowMentionList(false);
-    // }
-
-    // convert to formattedComment, save to state
-
-    setComment(val);
-  };
-
-  // const renderFormatedText = () => {
-  //   // convert formatedComment to displayComment
-
-  //   const mentionRegEx = /(@\[\w[\w\s]+\]\(\w{25}\))/g;
-  //   const mentionRegExName = /@\[(\w[\w\s]+)\]\(\w{25}\)/g;
-
-  //   // split the comment into slices of Text & Mentions
-  //   const commentSplit = comment.split(mentionRegEx);
-
-  //   return commentSplit.map((segment, i) => {
-  //     // check if segment is a mention
-  //     const isMention = mentionRegEx.test(segment);
-
-  //     if (isMention) {
-  //       const name = mentionRegExName.exec(segment);
-  //       return (
-  //         <Text key={i} style={{ ...defaultStyles.defaultMedium, color: colors.iosBlue }}>
-  //           {name[1]}
-  //         </Text>
-  //       );
-  //     }
-
-  //     return (
-  //       <Text key={i} style={defaultStyles.defaultText}>
-  //         {segment}
-  //       </Text>
-  //     );
-  //   });
-  // };
-
   // CUSTOM FUNCTIONS
 
-  // must pass this to camera roll modal
-  // const handleMediaSelect = (uri, type) => {
-  //   if (type === 'image') {
-  //     setCommentImage(uri);
-  //   }
-  // };
+  const handleSubmit = async () => {
+    const message = validateInputs();
+    // if missing a required field, Alert user
+    if (message) {
+      Alert.alert('Please add a comment or image', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+      return;
+    }
+    if (commentImage) {
+      await uploadImage();
+    }
+    createComment();
+  };
+
+  const onChangeText = val => {
+    setComment(val);
+  };
 
   const uploadImage = async () => {
     setUploading(true);
@@ -307,21 +137,6 @@ const CommentScreen = ({ navigation }) => {
       ]);
     }
   };
-
-  // const uploadImage = async () => {
-  //   setUploading(true);
-  //   try {
-  //     const urls = await imageUpload(userLoggedIn.id, [commentImage]);
-  //     setUploading(false);
-  //     setCommentImage(urls[0]);
-  //   } catch (e) {
-  //     setUploading(false);
-  //     setCommentImage('');
-  //     Alert.alert('Oh no!', 'We could not upload your picture at this time. Try again later!', [
-  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
-  //     ]);
-  //   }
-  // };
 
   const handleCameraIconPress = () => {
     ImagePicker.openPicker({
@@ -339,6 +154,8 @@ const CommentScreen = ({ navigation }) => {
     if (!comment && !commentImage) return 'Oops';
     return null;
   };
+
+  // RENDER FUNCTIONS
 
   const renderPost = () => {
     // if its just a stand-alone Post
@@ -402,35 +219,25 @@ const CommentScreen = ({ navigation }) => {
 
   const loadingSubmit = uploading || loadingCreate;
 
-  // const renderPossibleMentions = () => {
-  //   if (loadingMentions) return <Loader loading={loadingMentions} full={false} />;
+  if (errorUser) return <Error error={errorUser} />;
+  if (errorPost) return <Error error={errorPost} />;
 
-  //   if (dataMentions && dataMentions.users) {
-  //     const possibleMentions = dataMentions.users;
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <HeaderWhite
+          handleLeft={navigation.goBack}
+          handleRight={handleSubmit}
+          textLeft="Back"
+          textRight="Reply"
+          title="Comment"
+        />
+        <Loader loading={loading} full={false} />
+      </View>
+    );
+  }
 
-  //     return possibleMentions.map(user => {
-  //       return (
-  //         <TouchableOpacity key={user.id} onPress={() => handleMentionSelect(user)}>
-  //           <View style={styles.mentionListItem}>
-  //             <View style={styles.mentionListItemPic}>
-  //               <ProfilePic size={30} navigation={navigation} user={user} />
-  //             </View>
-  //             <View style={styles.mentionListItemDetails}>
-  //               <Text style={defaultStyles.largeMedium}>{user.name}</Text>
-  //               <Text style={defaultStyles.defaultText}>{user.location}</Text>
-  //             </View>
-  //           </View>
-  //         </TouchableOpacity>
-  //       );
-  //     });
-  //   }
-
-  //   return (
-  //     <View>
-  //       <Text>No matching users</Text>
-  //     </View>
-  //   );
-  // };
+  const { singlePost: post } = dataPost;
 
   return (
     <View style={styles.container}>

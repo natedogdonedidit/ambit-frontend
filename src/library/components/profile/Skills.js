@@ -41,9 +41,10 @@ const Skills = ({ navigation, skills, setSkills, height = 44, editable = false }
   };
 
   const renderSkills = () => {
+    console.log('skills', skills);
     if (!skills) return null;
     return skills.map((skill, i) => (
-      <View key={i} style={i === skills.length - 1 ? { ...styles.skillNoBorder, height } : { ...styles.skill, height }}>
+      <View key={i} style={i === skills.length - 1 ? { ...styles.skillDoubleBorder, height } : { ...styles.skill, height }}>
         <Text style={{ ...styles.skillText, ...defaultStyles.defaultText }}>{skill.skill}</Text>
         {skill.isExpert ? (
           <View style={styles.expertView}>
@@ -77,12 +78,16 @@ const styles = StyleSheet.create({
   skill: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
   },
-  skillNoBorder: {
+  skillDoubleBorder: {
     flexDirection: 'row',
     alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   skillText: {
     flexGrow: 1,

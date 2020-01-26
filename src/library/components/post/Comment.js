@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   content: {
-    paddingBottom: 4,
+    paddingBottom: 6,
   },
   media: {
     width: '100%',

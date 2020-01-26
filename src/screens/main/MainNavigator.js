@@ -35,6 +35,7 @@ import NewPostModal from './modals/post/NewPostModal';
 import SelectGoalModal from './modals/post/SelectGoalModal';
 import SelectGoalFieldModal from './modals/post/SelectGoalFieldModal';
 import SelectPostTopicsModal from './modals/post/SelectPostTopicsModal';
+import SelectSearchTopicsModal from './modals/post/SelectSearchTopicsModal';
 import EditLocationModal from './modals/general/EditLocationModal';
 import EditLocationRadiusModal from './modals/general/EditLocationRadiusModal';
 import EditProfileModal from './modals/profile/EditProfileModal';
@@ -301,6 +302,14 @@ const MainNavWithModal = createStackNavigator(
         gestureEnabled: false,
       },
     },
+    SelectSearchTopicsModal: {
+      screen: SelectSearchTopicsModal,
+      // navigationOptions: {
+      //   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      //   gestureEnabled: false,
+      // },
+    },
+
     EditLocationModal: {
       screen: EditLocationModal,
     },
