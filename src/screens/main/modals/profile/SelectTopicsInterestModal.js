@@ -73,7 +73,7 @@ const SelectTopicsInterestModal = ({ navigation }) => {
         },
       },
       update: (proxy, { data: dataReturned }) => {
-        console.log('datareturned', dataReturned);
+        // console.log('datareturned', dataReturned);
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {

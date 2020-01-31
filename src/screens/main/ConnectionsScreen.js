@@ -1,79 +1,58 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, RefreshControl, Animated, Dimensions } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useSafeArea } from 'react-native-safe-area-context';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import HeaderTopic from 'library/components/headers/HeaderTopic';
+import HeaderSuggestions from 'library/components/headers/HeaderSuggestions';
 import Error from 'library/components/UI/Error';
+import Loader from 'library/components/UI/Loader';
 
-import TopicsTimeline from 'library/components/timelines/TopicsTimeline';
-import SubTopicsSelector from 'library/components/timelines/SubTopicsSelector';
-import { getFullTopicFromID } from 'library/utils';
+import ConnectionsList from 'library/components/lists/ConnectionsList';
 
-const HEADER_HEIGHT = 44;
-const BANNER_HEIGHT = 0;
+import FullWidthTabs from 'library/components/UI/FullWidthTabs';
+import { HEADER_HEIGHT } from 'styles/constants';
 
-const TopicScreen = ({ navigation }) => {
-  // PARAMS
-  const topicID = navigation.getParam('topicID');
-  const subTopic = navigation.getParam('subTopic', null);
-  const activeTopic = getFullTopicFromID(topicID);
+const TABS_HEIGHT = 42;
+const SLIDE_HEIGHT = HEADER_HEIGHT;
+const TABS = ['For you', 'Local'];
+
+const ConnectionsScreen = ({ navigation }) => {
+  // ROUTE PARAMS
 
   // STATE
-  const [activeSubTopic, setActiveSubTopic] = useState(subTopic || activeTopic.topicID);
   const [scrollY] = useState(new Animated.Value(0));
+  const [activeTab, setActiveTab] = useState(TABS[0]);
 
-  // REFS & CONTEXT
+  // OTHER HOOKS
   const insets = useSafeArea();
-  // const { height, width } = Dimensions.get('window');
 
-  // CONSTANTS
-  const tabsHeight = 46;
-  const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
-
-  // ///////////////////////////
   // QUERIES
-  // ///////////////////////////
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   if (errorUser) return <Error error={errorUser} />;
+  if (loadingUser) return <Loader backgroundColor={colors.lightGray} loading={loadingUser} />;
   const { userLoggedIn } = dataUser;
 
-  // ///////////////////////////
+  // CONSTANTS
+
   // CUSTOM FUNCTIONS
-  // ///////////////////////////
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <View style={{ flex: 1 }}>
-        <TopicsTimeline
-          activeTopic={activeTopic}
-          activeSubTopic={activeSubTopic}
-          userLoggedIn={userLoggedIn}
+        <ConnectionsList
           navigation={navigation}
           scrollY={scrollY}
-          paddingTop={SLIDE_HEIGHT + tabsHeight}
+          paddingTop={SLIDE_HEIGHT + TABS_HEIGHT}
+          activeTab={activeTab}
         />
       </View>
 
       {/* Absolute positioned stoff */}
-      <View style={styles.newPostButtonAbsolute}>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => {
-            navigation.navigate('NewPostModal', { userLoggedIn });
-          }}
-        >
-          <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
-            <Icon name="pen" size={18} color="white" />
-          </View>
-        </TouchableOpacity>
-      </View>
 
       <Animated.View
         // this contains the Header, Banner, and Tabs. They all slide up together clamped at SLIDE_HEIGHT
@@ -100,47 +79,30 @@ const TopicScreen = ({ navigation }) => {
             paddingTop: insets.top,
           }}
         >
-          <HeaderTopic
+          <HeaderSuggestions
             user={userLoggedIn}
             handleMiddle={() => null}
-            handleRight={() => navigation.navigate('Search', { topicToSearch: activeTopic.topicID })}
+            handleRight={() => navigation.navigate('Search')}
             navigation={navigation}
-            height={HEADER_HEIGHT}
-            topicName={activeTopic.name}
-          />
-          <View
-            // custom banner (optional)
-            style={{ width: '100%', height: BANNER_HEIGHT, backgroundColor: 'tomato' }}
           />
         </Animated.View>
+
         <View
           style={{
-            // backgroundColor: colors.lightLightGray,
             backgroundColor: 'white',
             borderBottomColor: colors.borderBlack,
             borderBottomWidth: StyleSheet.hairlineWidth,
           }}
         >
-          <SubTopicsSelector
-            activeTopic={activeTopic}
-            activeSubTopic={activeSubTopic}
-            setActiveSubTopic={setActiveSubTopic}
-            height={tabsHeight}
-          />
+          <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={TABS_HEIGHT} />
         </View>
       </Animated.View>
 
       {/* Gives a solid background to the StatusBar */}
       <View
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          width: '100%',
+          ...styles.statusBar,
           height: insets.top,
-          // backgroundColor: colors.lightLightGray,
-          backgroundColor: 'white',
         }}
       />
     </SafeAreaView>
@@ -152,6 +114,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.lightGray,
     overflow: 'hidden',
+  },
+  statusBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    backgroundColor: 'white',
   },
   scrollView: {
     flex: 1,
@@ -177,4 +147,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopicScreen;
+export default ConnectionsScreen;

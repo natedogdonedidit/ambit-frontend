@@ -43,7 +43,7 @@ const MyHatsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title="My Hats" />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 20 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
         <TopicsOfInvest navigation={navigation} userLoggedIn={userLoggedIn} />
         <TopicsOfFreelance navigation={navigation} userLoggedIn={userLoggedIn} />
         <TopicsOfMentor navigation={navigation} userLoggedIn={userLoggedIn} />

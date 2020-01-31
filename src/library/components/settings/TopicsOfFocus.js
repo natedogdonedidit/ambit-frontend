@@ -105,7 +105,7 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
     <View style={styles.section}>
       <Text style={{ ...defaultStyles.headerMedium, paddingBottom: 10 }}>Topics of focus</Text>
       <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
-        These are topics you are focused on building{'\n'}your career goals around (3 max)
+        These are topics you are focused on building{'\n'}your career goals around
       </Text>
       {topics.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
       <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>Add some topics</ButtonDefault>
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   section: {
     paddingHorizontal: 15,
     paddingVertical: 20,
-    marginTop: 20,
+    marginTop: 40,
     backgroundColor: colors.white,
     alignItems: 'center',
   },

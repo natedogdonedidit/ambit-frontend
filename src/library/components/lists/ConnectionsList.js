@@ -1,22 +1,20 @@
 import React from 'react';
-import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import topicQueries from 'library/queries/TOPIC_POSTS_QUERY'; // comes in as an object
+import mapTabToQuery from 'library/queries/CONNECTION_QUERIES'; // comes in as an object
 import Loader from 'library/components/UI/Loader';
 
-import PostGroupTL from 'library/components/post/PostGroupTL';
+import SuggestedConnection from './SuggestedConnection';
 
-const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, paddingTop }) => {
+const ConnectionsList = ({ activeTab, navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
-
-  // turn the topicID into a query (ALL_CAPS)
-  const activeQuery = activeSubTopic.toUpperCase();
+  const activeQuery = mapTabToQuery(activeTab);
 
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(topicQueries[activeQuery], {
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(activeQuery, {
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
@@ -30,8 +28,11 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
     return (
-      <View style={styles.timeline}>
-        <Text style={{ textAlign: 'center', width: '100%', color: 'red' }}>Error loading posts</Text>
+      <View style={{ ...styles.timeline, paddingTop: paddingTop + 10, paddingBottom: 20 }}>
+        <Text style={{ textAlign: 'center', width: '100%', color: 'red' }}>Error loading connections</Text>
+        <TouchableOpacity onPress={refetch}>
+          <Text>Refetch</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -40,7 +41,8 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
     return <Loader backgroundColor={colors.lightGray} />;
   }
 
-  const posts = data.postsTopic.edges || [];
+  const users = data.usersForYou || [];
+  // console.log(users);
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
@@ -58,7 +60,7 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         style={styles.timeline}
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-            Sorry, no posts yet for this topic
+            Sorry, no suggested connections
           </Text>
         }
         onScroll={Animated.event(
@@ -73,37 +75,10 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
           ],
           { useNativeDriver: true }
         )}
-        data={posts}
+        data={users}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
-          return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
-        }}
-        onEndReachedThreshold={1.2}
-        onEndReached={info => {
-          // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
-          if (data.postsTopic.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
-            fetchMore({
-              query: activeQuery,
-              variables: {
-                cursor: data.postsTopic.pageInfo.endCursor,
-                topic: activeTopic,
-              },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                const newEdges = fetchMoreResult.postsTopic.edges;
-                const { pageInfo } = fetchMoreResult.postsTopic;
-
-                return newEdges.length
-                  ? {
-                      postsTopic: {
-                        __typename: previousResult.postsTopic.__typename,
-                        edges: [...previousResult.postsTopic.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
-                  : previousResult;
-              },
-            });
-          }
+          return <SuggestedConnection item={item} navigation={navigation} />;
         }}
       />
       {/* This is the loading animation */}
@@ -153,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopicsTimeline;
+export default ConnectionsList;

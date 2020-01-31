@@ -8,8 +8,8 @@ const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uplo
 
 const ProfilePic = ({
   navigation, // required
-  size = 40,
   user, // required
+  size = 40,
   disableVideo = false,
   disableClick = false,
   border = false,
@@ -60,6 +60,7 @@ const ProfilePic = ({
     grayBox: {
       width: '100%',
       height: '100%',
+      backgroundColor: colors.iconGray,
     },
     introBorder: {
       backgroundColor: colors.purp,

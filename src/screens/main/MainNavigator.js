@@ -8,16 +8,16 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import { forVerticalIOSCustom } from 'library/utils/types.tsx';
 
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import CustomDrawer from 'library/components/CustomDrawer';
 import AccountScreen from './AccountScreen';
 import SettingsScreen from './SettingsScreen';
 import HomeScreen from './HomeScreen';
-import SuggestionsScreen from './SuggestionsScreen';
+import ConnectionsScreen from './ConnectionsScreen';
 import MessagesScreen from './MessagesScreen';
-import JobsScreen from './JobsScreen';
+import NotificationsScreen from './NotificationsScreen';
 import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
 import UpdateScreen from './UpdateScreen';
@@ -33,6 +33,7 @@ import StoryModal from './modals/stories/StoryModal';
 import CreateIntroModal from './modals/stories/CreateIntroModal';
 import NewPostModal from './modals/post/NewPostModal';
 import SelectGoalModal from './modals/post/SelectGoalModal';
+import SelectGoalModalSearch from './modals/search/SelectGoalModalSearch';
 import SelectGoalFieldModal from './modals/post/SelectGoalFieldModal';
 import SelectPostTopicsModal from './modals/post/SelectPostTopicsModal';
 import SelectSearchTopicsModal from './modals/post/SelectSearchTopicsModal';
@@ -97,9 +98,9 @@ const HomeStack = createStackNavigator(
   }
 );
 
-const JobsStack = createStackNavigator(
+const PeopleStack = createStackNavigator(
   {
-    Jobs: JobsScreen,
+    Connections: ConnectionsScreen,
     Profile: {
       screen: ProfileScreen,
     },
@@ -111,16 +112,16 @@ const JobsStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'Jobs',
+    initialRouteName: 'Connections',
     defaultNavigationOptions: ({ navigation }) => ({
       headerShown: false,
     }),
   }
 );
 
-const PeopleStack = createStackNavigator(
+const NotificationsStack = createStackNavigator(
   {
-    Suggestions: SuggestionsScreen,
+    Notifications: NotificationsScreen,
     Profile: {
       screen: ProfileScreen,
     },
@@ -132,7 +133,7 @@ const PeopleStack = createStackNavigator(
     },
   },
   {
-    initialRouteName: 'Suggestions',
+    initialRouteName: 'Notifications',
     defaultNavigationOptions: ({ navigation }) => ({
       headerShown: false,
     }),
@@ -164,7 +165,7 @@ const TabNavigator = createBottomTabNavigator(
   {
     Home: HomeStack,
     People: PeopleStack,
-    Jobs: JobsStack,
+    Notifications: NotificationsStack,
     Inbox: InboxStack,
   },
   {
@@ -178,24 +179,24 @@ const TabNavigator = createBottomTabNavigator(
         if (routeName === 'Home') {
           iconName = `home`;
         } else if (routeName === 'People') {
-          iconName = `account-search`;
+          iconName = `user-friends`;
+        } else if (routeName === 'Notifications') {
+          iconName = `bell`;
         } else if (routeName === 'Inbox') {
-          iconName = `email-outline`;
-        } else if (routeName === 'Jobs') {
-          iconName = `briefcase-search-outline`;
+          iconName = `envelope`;
         }
 
         // You can return any component that you like here!
         return (
           <>
-            <Icon name={iconName} size={25} color={tintColor} />
+            <Icon name={iconName} size={22} color={tintColor} solid />
           </>
         );
       },
     }),
     tabBarOptions: {
       activeTintColor: colors.purp,
-      inactiveTintColor: 'rgba(64, 64, 64, 0.2)',
+      inactiveTintColor: colors.iconGray,
       showLabel: false,
     },
   }
@@ -213,7 +214,7 @@ const AccountStack = createStackNavigator(
       },
       headerLeft: (
         <Icon
-          name="account-circle"
+          name="user-circle"
           size={25}
           color={colors.purp}
           style={{ paddingLeft: 15 }}
@@ -237,7 +238,7 @@ const SettingsStack = createStackNavigator(
       },
       headerLeft: (
         <Icon
-          name="account-circle"
+          name="user-circle"
           size={25}
           color={colors.purp}
           style={{ paddingLeft: 15 }}
@@ -304,10 +305,9 @@ const MainNavWithModal = createStackNavigator(
     },
     SelectSearchTopicsModal: {
       screen: SelectSearchTopicsModal,
-      // navigationOptions: {
-      //   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-      //   gestureEnabled: false,
-      // },
+    },
+    SelectGoalModalSearch: {
+      screen: SelectGoalModalSearch,
     },
 
     EditLocationModal: {

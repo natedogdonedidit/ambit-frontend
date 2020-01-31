@@ -7,7 +7,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
 
-const TopicsList = ({ activeTopic, navigation, scrollY, paddingTop }) => {
+const TopicsList = ({ navigation, scrollY, paddingTop }) => {
   return (
     <View style={{ flex: 1 }}>
       <Animated.FlatList

@@ -17,7 +17,7 @@ const HeaderTopic = ({ navigation, handleMiddle, handleRight, user, height = 44,
         <Ionicons name="ios-arrow-back" size={26} color={colors.iconDark} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
-        <Text style={{ ...defaultStyles.headerTopic, color: colors.blueGray }}>{topicName}</Text>
+        <Text style={{ ...defaultStyles.headerSmall }}>{topicName}</Text>
       </TouchableOpacity>
       <View style={styles.rightSide}>
         <TouchableOpacity onPress={handleRight}>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, SafeAreaView, Text, TextInput, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -11,6 +12,7 @@ import Error from 'library/components/UI/Error';
 import Comment from 'library/components/post/Comment';
 import Post from 'library/components/post/Post';
 import Update from 'library/components/post/Update';
+import { getGoalInfo } from 'library/utils';
 
 const PostScreen = ({ navigation }) => {
   // ////////////////////////////////////////////////////////////////
@@ -35,8 +37,9 @@ const PostScreen = ({ navigation }) => {
     );
   }
   const currentTime = new Date();
-  const post = data.singlePost || null;
-  // console.log(post);
+  const post = data.singlePost.post || null;
+  const matches = data.singlePost.matches || [];
+  console.log(post);
 
   // CUSTOM FUNCTIONS
   const renderPost = () => {
@@ -134,6 +137,19 @@ const PostScreen = ({ navigation }) => {
       <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
 
       <ScrollView style={styles.scrollView}>
+        {matches.length > 0 && (
+          <View style={{ ...styles.showMatchesButton, backgroundColor: colors.iconGray }}>
+            <View style={{ width: 20 }} />
+            <View style={{ flex: 1 }}>
+              <Text style={{ textAlign: 'center', ...defaultStyles.defaultBold, color: 'white' }}>
+                We found {matches.length} potential connections for your goal!
+              </Text>
+            </View>
+            <View style={{ width: 20 }}>
+              <Ionicons name="ios-arrow-forward" size={20} color="white" style={{ alignSelf: 'flex-end' }} />
+            </View>
+          </View>
+        )}
         {!loading && renderPost()}
         {!loading && renderUpdates()}
         {!loading && <View style={styles.commentsView}>{renderComments()}</View>}
@@ -161,6 +177,22 @@ const styles = StyleSheet.create({
   commentsView: {
     width: '100%',
     marginBottom: 15,
+  },
+  // for matches component
+  showMatchesButton: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.goalPeach,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    marginTop: 10,
+    marginBottom: 5,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
 });
 

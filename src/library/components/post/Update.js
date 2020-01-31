@@ -94,7 +94,7 @@ const Update = ({
     <View style={styles.updateContainer}>
       <View style={hideTopLine ? styles.updateNoLine : styles.update}>
         <View style={styles.leftColumn}>
-          <ProfilePic navigation={navigation} user={post.owner} size={30} disableVideo />
+          <ProfilePic navigation={navigation} user={post.owner} size={30} />
           {showLine && <View style={styles.threadLine} />}
         </View>
         <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>

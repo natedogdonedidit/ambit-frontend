@@ -15,7 +15,7 @@ const HeaderHome = ({ navigation, handleMiddle, handleRight, user }) => {
         <ProfilePic user={user} size={30} disableVideo disableClick />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
-        <Text style={{ ...defaultStyles.ambitLogo }}>Ambit</Text>
+        <Text style={{ ...defaultStyles.headerSmall }}>Connections</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
         <Icon name="search" size={18} color={colors.iconDark} />

@@ -110,24 +110,26 @@ const PostGroupTL = ({
 
   // if there are updates
   return (
-    <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
-      <Post
-        post={post}
-        currentTime={currentTime}
-        navigation={navigation}
-        showLine
-        hideButtons={hideButtons}
-        showDetails={showDetails}
-      />
-      <View style={styles.post}>
-        <View style={styles.leftColumn}>
-          <ProfilePic user={post.owner} navigation={navigation} disableVideo size={30} />
+    <>
+      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <Post
+          post={post}
+          currentTime={currentTime}
+          navigation={navigation}
+          showLine
+          hideButtons={hideButtons}
+          showDetails={showDetails}
+        />
+        <View style={styles.post}>
+          <View style={styles.leftColumn}>
+            <ProfilePic user={post.owner} navigation={navigation} disableVideo size={30} />
+          </View>
+          <View style={styles.rightColumn}>
+            <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Show latest updates</Text>
+          </View>
         </View>
-        <View style={styles.rightColumn}>
-          <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Show latest updates</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </>
   );
 };
 

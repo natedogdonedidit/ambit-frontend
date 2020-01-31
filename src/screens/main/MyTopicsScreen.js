@@ -38,7 +38,7 @@ const MyTopicsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title="My Topics" />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 20 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
         <TopicsOfFocus navigation={navigation} userLoggedIn={userLoggedIn} />
         <TopicsOfInterest navigation={navigation} userLoggedIn={userLoggedIn} />
       </ScrollView>

@@ -296,11 +296,10 @@ const EditProfileModal = ({ navigation }) => {
                 multiline
                 textAlignVertical="top"
                 scrollEnabled
-                autoCorrect={false}
                 autoCompleteType="off"
               />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('MyTopics', { userLoggedIn: user })}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('MyTopics', { userLoggedIn: user })}>
               <View style={{ ...styles.hatRowTop }}>
                 <View style={styles.hatTitle}>
                   <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Select my topics</Text>
@@ -314,7 +313,7 @@ const EditProfileModal = ({ navigation }) => {
                   <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Select my hats</Text>
                 </View>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

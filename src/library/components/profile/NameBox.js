@@ -66,7 +66,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       {user.headline && <Text style={{ ...defaultStyles.defaultMute, ...styles.headline }}>{user.headline}</Text>}
       {renderStats()}
       {user.bio && <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>}
-      {(useOpenToBox || !!user.website) && (
+      {(useOpenToBox || !!user.website || !!user.location) && (
         <View style={styles.detailsBox}>
           {renderLocation()}
           {renderWebsite()}

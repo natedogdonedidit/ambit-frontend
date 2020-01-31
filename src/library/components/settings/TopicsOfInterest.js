@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   section: {
     paddingHorizontal: 15,
     paddingVertical: 20,
-    marginTop: 20,
+    marginTop: 40,
     backgroundColor: colors.white,
     alignItems: 'center',
   },

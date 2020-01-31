@@ -21,18 +21,19 @@ const HeaderSearch = ({ user, handleLeft, handleRight, textInput, setTextInput }
         </TouchableOpacity>
 
         <View style={styles.middle}>
+          <Icon name="search" size={15} color={colors.iconDark} />
           <TextInput
-            style={{ ...styles.searchBarView, ...defaultStyles.defaultMedium, color: colors.blueGray }}
+            style={{ ...styles.searchBarView, ...defaultStyles.largeText, color: colors.darkGray }}
             onChangeText={val => setTextInput(val)}
             value={textInput}
-            placeholder="Search for keywords, people, goals"
-            maxLength={30}
+            placeholder="Search Ambit"
+            maxLength={50}
           />
         </View>
 
-        <TouchableOpacity style={styles.rightSide} onPress={handleRight}>
+        {/* <TouchableOpacity style={styles.rightSide} onPress={handleRight}>
           <Ionicons name="ios-rocket" size={24} color={colors.iconGray} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -66,8 +67,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.searchGray,
-    height: 40,
+    height: 34,
     borderRadius: 20,
+    paddingHorizontal: 15,
   },
   rightSide: {
     width: 35,
@@ -76,9 +78,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchBarView: {
-    width: '100%',
+    flex: 1,
     // backgroundColor: colors.searchGray,
-    paddingHorizontal: 20,
+    paddingLeft: 10,
   },
 });
 

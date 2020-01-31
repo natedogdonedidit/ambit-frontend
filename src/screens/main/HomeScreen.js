@@ -16,24 +16,20 @@ import LocalTimeline from 'library/components/timelines/LocalTimeline';
 import TopicsList from 'library/components/timelines/TopicsList';
 
 import TimelineTabs from 'library/components/timelines/TimelineTabs';
-import TopicsSelector from 'library/components/timelines/TopicsSelector';
 import { HEADER_HEIGHT } from 'styles/constants';
 
 const BANNER_HEIGHT = 0;
+const TABS_HEIGHT = 42;
+const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
 
 const HomeScreen = ({ navigation }) => {
-  // ////////////////////////////////////////////////////////////////
   // ROUTE PARAMS
-  // const goToTimeline = navigation.getParam('goToTimeline');
 
-  // ////////////////////////////////////////////////////////////////
   // STATE
   const [activeTimeline, setActiveTimeline] = useState(0);
-  const [activeTopic, setActiveTopic] = useState('Trending');
   const [scrollY] = useState(new Animated.Value(0));
   const [scrollX] = useState(new Animated.Value(0));
 
-  // ///////////////////////////////////////////////////////////////
   // OTHER HOOKS
   const insets = useSafeArea();
   const { width } = Dimensions.get('window');
@@ -45,33 +41,13 @@ const HomeScreen = ({ navigation }) => {
     if (value === width * 2) setActiveTimeline(2);
   });
 
-  // const willFocusSubscription = navigation.addListener('didFocus', () => {
-  //   // this kinda works
-  //   // console.log('switching timelines');
-  //   if (goToTimeline === 0 || goToTimeline === 1 || goToTimeline === 2) {
-  //     setActiveTimeline(goToTimeline);
-  //     // console.log('switching timelines');
-  //   }
-  // });
-
-  // willFocusSubscription.remove();
-
-  // ////////////////////////////////////////////////////////////////
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   if (errorUser) return <Error error={errorUser} />;
   const { userLoggedIn } = dataUser;
 
-  // ////////////////////////////////////////////////////////////////
   // CONSTANTS
-  const tabs1Height = 42;
-  const tabs2Height = 0;
-  // if (activeTimeline === 2) tabs2Height = 46; // turn on to use topicsSelector
-  const tabsHeight = tabs1Height + tabs2Height;
 
-  const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
-
-  // ////////////////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
   const onScrollHorizontal = Animated.event(
     [
@@ -111,7 +87,7 @@ const HomeScreen = ({ navigation }) => {
               borderRightColor: colors.borderBlack,
             }}
           >
-            <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT + tabsHeight} />
+            <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT + TABS_HEIGHT} />
           </View>
           <View
             style={{
@@ -124,7 +100,7 @@ const HomeScreen = ({ navigation }) => {
               userLoggedIn={userLoggedIn}
               navigation={navigation}
               scrollY={scrollY}
-              paddingTop={SLIDE_HEIGHT + tabsHeight}
+              paddingTop={SLIDE_HEIGHT + TABS_HEIGHT}
             />
           </View>
           <View
@@ -135,11 +111,10 @@ const HomeScreen = ({ navigation }) => {
             }}
           >
             <TopicsList
-              activeTopic={activeTopic}
               userLoggedIn={userLoggedIn}
               navigation={navigation}
               scrollY={scrollY}
-              paddingTop={SLIDE_HEIGHT + tabsHeight}
+              paddingTop={SLIDE_HEIGHT + TABS_HEIGHT}
             />
           </View>
         </Animated.ScrollView>
@@ -189,7 +164,6 @@ const HomeScreen = ({ navigation }) => {
             handleMiddle={() => null}
             handleRight={() => navigation.navigate('Search')}
             navigation={navigation}
-            height={HEADER_HEIGHT}
           />
           <View
             // custom banner (optional)
@@ -207,40 +181,19 @@ const HomeScreen = ({ navigation }) => {
           <TimelineTabs
             activeTimeline={activeTimeline}
             setActiveTimeline={setActiveTimeline}
-            height={tabs1Height}
+            height={TABS_HEIGHT}
             scrollX={scrollX}
             width={width}
             horizontalScrollRef={horizontalScrollRef}
           />
         </View>
-        {/* {activeTimeline === 2 && ( // turn on to use topicsSelector
-          <View
-            style={{
-              backgroundColor: 'white',
-              borderBottomColor: colors.borderBlack,
-              borderBottomWidth: StyleSheet.hairlineWidth,
-            }}
-          >
-            <TopicsSelector
-              navigation={navigation}
-              activeTopic={activeTopic}
-              setActiveTopic={setActiveTopic}
-              height={tabs2Height}
-            />
-          </View>
-        )} */}
       </Animated.View>
 
       {/* Gives a solid background to the StatusBar */}
       <View
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          width: '100%',
+          ...styles.statusBar,
           height: insets.top,
-          backgroundColor: 'white',
         }}
       />
     </SafeAreaView>
@@ -252,6 +205,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.lightGray,
     overflow: 'hidden',
+  },
+  statusBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    width: '100%',
+    backgroundColor: 'white',
   },
   scrollView: {
     flex: 1,

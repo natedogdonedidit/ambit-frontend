@@ -69,7 +69,7 @@ const TimelineTabs = ({ activeTimeline, setActiveTimeline, height, scrollX, hori
           left: 0,
           width: UNDERLINE_WIDTH,
           height: UNDERLINE_HEIGHT,
-          paddingHorizontal: 15,
+          // paddingHorizontal: 15,
           transform: [
             {
               translateX: scrollX.interpolate({
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabText: {
-    ...defaultStyles.largeMedium,
+    ...defaultStyles.largeSemibold,
     color: colors.blueGray,
   },
   tabSelectedText: {

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, SafeAreaView, Text, Animated } from 'react-native';
 
-const JobsScreen = props => {
+const NotificationsScreen = props => {
   // navigation
   const { navigation } = props;
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ textAlign: 'center' }}>Jobs Screen</Text>
+      <Text style={{ textAlign: 'center' }}>Notifications Screen</Text>
     </SafeAreaView>
   );
 };
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default JobsScreen;
+export default NotificationsScreen;

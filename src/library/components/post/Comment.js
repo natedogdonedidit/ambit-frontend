@@ -95,7 +95,7 @@ const Comment = ({
         ]}
       >
         <View style={[styles.leftColumn]}>
-          <ProfilePic user={comment.owner} size={30} intro={comment.owner.intro} navigation={navigation} />
+          <ProfilePic user={comment.owner} size={30} navigation={navigation} />
           {showLine && <View style={[{ ...styles.threadLine }]} />}
         </View>
         <View style={[styles.rightColumn, showLine && { paddingBottom: 24 }]}>

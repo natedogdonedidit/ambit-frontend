@@ -4,23 +4,24 @@ import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import selectSearchQuery from 'library/queries/SEARCH_QUERIES';
+import SEARCH_POSTS_QUERY from 'library/queries/SEARCH_POSTS_QUERY';
 import Loader from 'library/components/UI/Loader';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
-const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput, topicID }) => {
-  const activeQuery = selectSearchQuery(activeTab);
-
+const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput, goal, topicID, locationLat, locationLon }) => {
   // STATE
 
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(activeQuery, {
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(SEARCH_POSTS_QUERY, {
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
     variables: {
       text: textInput,
+      goal,
       topicID,
+      lat: locationLat,
+      lon: locationLon,
     },
   });
 
@@ -87,8 +88,8 @@ const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput,
         contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
         style={styles.timeline}
         ListEmptyComponent={
-          <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-            Sorry, no posts to display at this time
+          <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', padding: 40 }}>
+            Nothing matches your search criteria.{`\n`} Try something else!
           </Text>
         }
         onScroll={Animated.event(
@@ -141,7 +142,7 @@ const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput,
         }}
       />
       {/* This is the loading animation */}
-      <Animated.View
+      {/* <Animated.View
         style={{
           position: 'absolute',
           top: -400,
@@ -175,14 +176,14 @@ const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput,
             animating={refetching}
           />
         </View>
-      </Animated.View>
+      </Animated.View> */}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   timeline: {
-    backgroundColor: colors.lightGray,
+    // backgroundColor: colors.lightGray,
     // height: '100%',
     flex: 1,
     width: '100%',
