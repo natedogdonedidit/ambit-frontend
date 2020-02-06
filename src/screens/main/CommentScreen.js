@@ -21,7 +21,7 @@ import { postPicUpload, imageUpload } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import HeaderWhite from 'library/components/headers/HeaderWhite';
+import HeaderBack from 'library/components/headers/HeaderBack';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -225,23 +225,17 @@ const CommentScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <HeaderWhite
-          handleLeft={navigation.goBack}
-          handleRight={handleSubmit}
-          textLeft="Back"
-          textRight="Reply"
-          title="Comment"
-        />
+        <HeaderBack navigation={navigation} handleRight={handleSubmit} textRight="Reply" title="Comment" />
         <Loader loading={loading} full={false} />
       </View>
     );
   }
 
-  const { singlePost: post } = dataPost;
+  const { post } = dataPost.singlePost;
 
   return (
     <View style={styles.container}>
-      <HeaderWhite handleLeft={navigation.goBack} handleRight={handleSubmit} textLeft="Back" textRight="Reply" title="Comment" />
+      <HeaderBack navigation={navigation} handleRight={handleSubmit} textRight="Reply" title="Comment" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <View style={{ flex: 1 }}>
           <ScrollView ref={scrollViewRef} style={{ flex: 1 }}>
@@ -332,7 +326,6 @@ const CommentScreen = ({ navigation }) => {
             </View>
           </InputAccessoryView> */}
       </KeyboardAvoidingView>
-
       {loadingSubmit && <Loader loading={loadingSubmit} />}
     </View>
   );

@@ -91,7 +91,11 @@ const Comment = ({
         style={[
           styles.comment,
           !isSubComment &&
-            !hideTopLine && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderBlack, paddingTop: 12 },
+            !hideTopLine && {
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              borderBottomColor: colors.borderBlack,
+              paddingTop: 12,
+            },
         ]}
       >
         <View style={[styles.leftColumn]}>
@@ -174,13 +178,12 @@ const styles = StyleSheet.create({
   commentContainer: {
     width: '100%',
     backgroundColor: 'white',
-    paddingLeft: 10,
-    paddingRight: 10,
   },
   comment: {
     width: '100%',
     flexDirection: 'row',
     paddingTop: 5,
+    paddingRight: 12,
     marginTop: 0,
     backgroundColor: 'white',
   },
@@ -197,14 +200,14 @@ const styles = StyleSheet.create({
   },
   leftColumn: {
     alignItems: 'center',
-    width: 48,
+    width: 64,
+    paddingLeft: 4,
   },
   rightColumn: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
     paddingBottom: 10,
-    paddingLeft: 8,
   },
   topRow: {
     flexDirection: 'row',

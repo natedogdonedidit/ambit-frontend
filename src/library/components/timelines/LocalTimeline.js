@@ -106,7 +106,7 @@ const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
         onRefresh={onRefresh}
         refreshing={refetching}
         // initialNumToRender={10} // speeds up load time
-        contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         ListHeaderComponent={
           <View style={{ ...styles.locationSelect }}>
             <View style={styles.leftColumn}>
@@ -246,7 +246,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 8,
     backgroundColor: 'white',
-    marginTop: 5,
+    marginTop: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   leftColumn: {
     flexDirection: 'column',

@@ -31,6 +31,7 @@ export const LoggedInUser = gql`
     firstName
     lastName
     headline
+    bio
     email
     profilePic
     location
@@ -138,6 +139,7 @@ export const ListPosts = gql`
     subField {
       id
       name
+      topicID
     }
     topics {
       id

@@ -52,6 +52,7 @@ const ProfilePic = ({
       borderRadius: whiteWidth / 2,
       borderWidth,
       borderColor: 'white',
+      backgroundColor: 'white',
     },
     profilePic: {
       width: '100%',
@@ -74,12 +75,51 @@ const ProfilePic = ({
       borderWidth: extraBorder,
       borderColor: 'white',
     },
+    introBorderBackground: {
+      backgroundColor: 'white',
+      justifyContent: 'center',
+      alignItems: 'center',
+
+      width: colorWidth,
+      height: colorWidth,
+
+      borderRadius: colorWidth / 2,
+      borderWidth: extraBorder,
+      borderColor: 'white',
+    },
   });
 
   if (!user) {
     return (
       <View style={border ? styles.whiteBorder : styles.noBorder}>
         <View style={styles.grayBox} />
+      </View>
+    );
+  }
+
+  if (hasIntro && !disableVideo) {
+    return (
+      <View style={styles.introBorderBackground}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.introBorder}
+          onPress={() =>
+            navigation.navigate('StoryModal', {
+              owner: user,
+              story: user.intro,
+            })
+          }
+        >
+          <View style={styles.whiteBorder}>
+            <Image
+              style={styles.profilePic}
+              resizeMode="cover"
+              source={{
+                uri: user.profilePic || profilePicExample,
+              }}
+            />
+          </View>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -124,19 +164,21 @@ const ProfilePic = ({
   }
 
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={() => navigation.navigate('Profile', { profileId: user.id })}>
-      <View>
-        <View style={border ? styles.whiteBorder : styles.noBorder}>
-          <Image
-            style={{ ...styles.profilePic }}
-            resizeMode="cover"
-            source={{
-              uri: user.profilePic || profilePicExample,
-            }}
-          />
-        </View>
-      </View>
-    </TouchableOpacity>
+    <View style={border ? styles.whiteBorder : styles.noBorder}>
+      <TouchableOpacity
+        style={border ? styles.whiteBorder : styles.noBorder}
+        activeOpacity={0.9}
+        onPress={() => navigation.navigate('Profile', { profileId: user.id })}
+      >
+        <Image
+          style={{ ...styles.profilePic }}
+          resizeMode="cover"
+          source={{
+            uri: user.profilePic || profilePicExample,
+          }}
+        />
+      </TouchableOpacity>
+    </View>
   );
 };
 

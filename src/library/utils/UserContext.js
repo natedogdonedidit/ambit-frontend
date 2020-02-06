@@ -2,7 +2,7 @@
 
 import React, { useState, createContext } from 'react'
 import { Alert } from 'react-native';
-// import { useQuery } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 
 import { getToken, signIn, signOut } from 'library/utils/authUtil'
 // import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -11,6 +11,7 @@ const UserContext = createContext();
 
 const UserContextProvider = (props) => {
   const [currentUserId, setCurrentUserId] = useState(null)
+  const client = useApolloClient();
   // const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
 
   const loginCTX = async (loginData) => {
@@ -33,7 +34,12 @@ const UserContextProvider = (props) => {
       // 1. attempt to sign out (remove JWT token from storage)
       await signOut();
       console.log('Cleared login token from storage, user logged out!');
-      // 2. clear user in context
+
+      // 2. clear apollo store
+      await client.clearStore();
+      console.log('Cleared apollo store')
+      
+      // 3. clear user in context
       setCurrentUserId(null)
       console.log('Cleared user from context')
     } catch (e) {

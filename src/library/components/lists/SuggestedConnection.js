@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
@@ -16,20 +16,28 @@ const SuggestedConnection = ({ navigation, item }) => {
       style={styles.container}
       onPress={() => navigation.navigate('Profile', { profileId: user.id })}
     >
-      <View style={styles.profilePicView}>
-        <ProfilePic navigation={navigation} user={user} size={54} />
-      </View>
-      <View style={styles.rightSide}>
-        <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-        <Text style={defaultStyles.defaultText}>{user.headline}</Text>
-        <Text style={defaultStyles.defaultText}>{user.location}</Text>
-
-        {reason.text && (
-          <View style={styles.reasonRow}>
-            <Icon name={reason.icon} solid size={12} color={colors.blueGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
-            <Text style={{ ...defaultStyles.defaultMuteItalic }}>{reason.text}</Text>
-          </View>
-        )}
+      <View style={styles.connection}>
+        <View style={styles.profilePicView}>
+          <ProfilePic navigation={navigation} user={user} />
+        </View>
+        <View style={styles.rightSide}>
+          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
+          {user.headline && <Text style={defaultStyles.defaultMute}>{user.headline}</Text>}
+          {/* {user.location && <Text style={defaultStyles.defaultMute}>{user.location}</Text>} */}
+          {user.bio && <Text style={{ ...defaultStyles.defaultText, paddingTop: 8 }}>{user.bio}</Text>}
+          {reason.text && (
+            <View style={styles.reasonRow}>
+              <Icon
+                name={reason.icon}
+                solid
+                size={12}
+                color={colors.blueGray}
+                style={{ alignSelf: 'flex-start', paddingRight: 5, paddingTop: 2 }}
+              />
+              <Text style={{ ...defaultStyles.defaultMuteItalic }}>{reason.text}</Text>
+            </View>
+          )}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -37,21 +45,30 @@ const SuggestedConnection = ({ navigation, item }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    paddingRight: 15,
-    paddingVertical: 10,
     backgroundColor: 'white',
-    marginTop: 8,
+  },
+  connection: {
+    flexDirection: 'row',
+    paddingVertical: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   profilePicView: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 80,
+    width: 64,
     alignSelf: 'flex-start',
+    paddingLeft: 4,
+    // paddingRight: 15,
+  },
+  rightSide: {
+    flex: 1,
+    paddingRight: 15,
   },
   reasonRow: {
     flexDirection: 'row',
     marginTop: 10,
+    // left: -18,
   },
 });
 

@@ -124,9 +124,9 @@ const PostGroupTL = ({
           <View style={styles.leftColumn}>
             <ProfilePic user={post.owner} navigation={navigation} disableVideo size={30} />
           </View>
-          <View style={styles.rightColumn}>
+          <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Post', { post })} style={styles.rightColumn}>
             <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Show latest updates</Text>
-          </View>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     </>
@@ -143,6 +143,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     paddingLeft: 10,
     paddingRight: 12,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   leftColumn: {
     alignItems: 'center',

@@ -1,13 +1,22 @@
 import gql from 'graphql-tag';
 import { DetailPost, LoggedInUser } from 'library/queries/_fragments';
 
-export default SINGLE_POST_QUERY = gql`
-  query SINGLE_POST_QUERY($id: ID!) {
-    singlePost(id: $id) {
+export default ACTIVE_GOALS_MATCHES_QUERY = gql`
+  query ACTIVE_GOALS_MATCHES_QUERY {
+    activeGoalsUser {
       post {
         ...DetailPost
       }
       matches {
+        user {
+          ...LoggedInUser
+        }
+        reason {
+          text
+          icon
+        }
+      }
+      match {
         user {
           ...LoggedInUser
         }

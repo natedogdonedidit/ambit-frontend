@@ -1,20 +1,18 @@
 import React from 'react';
-import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, FlatList, SectionList, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import mapTabToQuery from 'library/queries/CONNECTION_QUERIES'; // comes in as an object
+import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY'; // comes in as an object
 import Loader from 'library/components/UI/Loader';
 
+import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 import SuggestedConnection from './SuggestedConnection';
 
-const ConnectionsList = ({ activeTab, navigation, scrollY, paddingTop }) => {
-  const currentTime = new Date();
-  const activeQuery = mapTabToQuery(activeTab);
-
+const ConnectionsList = ({ navigation }) => {
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(activeQuery, {
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(ALL_CONNECTIONS_QUERY, {
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
@@ -28,9 +26,9 @@ const ConnectionsList = ({ activeTab, navigation, scrollY, paddingTop }) => {
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
     return (
-      <View style={{ ...styles.timeline, paddingTop: paddingTop + 10, paddingBottom: 20 }}>
+      <View style={{ ...styles.timeline, paddingTop: +10, paddingBottom: 20 }}>
         <Text style={{ textAlign: 'center', width: '100%', color: 'red' }}>Error loading connections</Text>
-        <TouchableOpacity onPress={refetch}>
+        <TouchableOpacity onPress={() => refetch()}>
           <Text>Refetch</Text>
         </TouchableOpacity>
       </View>
@@ -41,7 +39,8 @@ const ConnectionsList = ({ activeTab, navigation, scrollY, paddingTop }) => {
     return <Loader backgroundColor={colors.lightGray} />;
   }
 
-  const users = data.usersForYou || [];
+  const activeGoalsWithMatches = data.allConnections.postsWithMatches || [];
+  const matches = data.allConnections.matches || [];
   // console.log(users);
 
   // CUSTOM FUNCTIONS
@@ -52,79 +51,63 @@ const ConnectionsList = ({ activeTab, navigation, scrollY, paddingTop }) => {
   // RENDER
   return (
     <View style={{ flex: 1 }}>
-      <Animated.FlatList
-        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
+      <SectionList
+        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} />}
         onRefresh={onRefresh}
         refreshing={refetching}
-        contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingTop: 8, paddingBottom: 20 }}
         style={styles.timeline}
+        keyExtractor={(item, index) => item + index}
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no suggested connections
           </Text>
         }
-        onScroll={Animated.event(
-          [
-            {
-              nativeEvent: {
-                contentOffset: {
-                  y: scrollY,
-                },
-              },
-            },
-          ],
-          { useNativeDriver: true }
+        sections={[
+          {
+            name: 'Goals',
+            title: 'Based on your goals',
+            data: activeGoalsWithMatches,
+          },
+          {
+            name: 'Users',
+            title: 'Based on your topics',
+            data: matches,
+          },
+        ]}
+        renderSectionHeader={({ section }) => (
+          <View style={styles.sectionHeader}>
+            <Text style={defaultStyles.hugeHeavy}>{section.title}</Text>
+          </View>
         )}
-        data={users}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => {
-          return <SuggestedConnection item={item} navigation={navigation} />;
+        renderItem={({ item, section }) => {
+          if (section.name === 'Goals') return <ActiveGoalMatchesItem item={item} navigation={navigation} />;
+          if (section.name === 'Users') return <SuggestedConnection item={item} navigation={navigation} />;
+          return null;
+        }}
+        SectionSeparatorComponent={({ trailingSection, trailingItem }) => {
+          if (trailingSection && !trailingItem) return <View style={{ height: 8 }} />;
+          return null;
         }}
       />
-      {/* This is the loading animation */}
-      <Animated.View
-        style={{
-          position: 'absolute',
-          top: -400,
-          left: 0,
-          width: '100%',
-          height: paddingTop + 7 + 400,
-          justifyContent: 'flex-end',
-          transform: [
-            {
-              translateY: scrollY.interpolate({
-                inputRange: [-800, 0],
-                outputRange: [800, 0],
-                extrapolate: 'clamp',
-              }),
-            },
-          ],
-        }}
-      >
-        <View style={{ width: '100%', height: 60 }}>
-          <ActivityIndicator
-            style={{
-              width: '100%',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'transparent',
-            }}
-            size="small"
-            color={colors.purp}
-            animating={refetching}
-          />
-        </View>
-      </Animated.View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   timeline: {
-    backgroundColor: colors.lightGray,
     flex: 1,
     width: '100%',
+  },
+  sectionHeader: {
+    // marginTop: 8,
+    backgroundColor: colors.white,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
 });
 

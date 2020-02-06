@@ -13,7 +13,7 @@ import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
-import Goal from 'library/components/UI/Goal2';
+import Goal from 'library/components/UI/Goal';
 import Heart from 'library/components/UI/icons/Heart';
 import Comment from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
@@ -89,7 +89,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
   };
 
   return (
-    <View style={styles.postContainer}>
+    <View style={[{ ...styles.postContainer }, showLine && { borderBottomWidth: 0 }]}>
       <View style={styles.post}>
         <View style={styles.leftColumn}>
           <ProfilePic user={post.owner} navigation={navigation} />
@@ -207,14 +207,14 @@ const styles = StyleSheet.create({
   postContainer: {
     width: '100%',
     backgroundColor: 'white',
-    paddingLeft: 10,
     paddingRight: 12,
-    marginTop: 5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   post: {
     width: '100%',
     flexDirection: 'row',
-    paddingTop: 12,
+    paddingTop: 15,
     backgroundColor: 'white',
   },
   threadLine: {
@@ -229,15 +229,16 @@ const styles = StyleSheet.create({
   },
   leftColumn: {
     alignItems: 'center',
-    width: 48,
+    paddingLeft: 4,
+    width: 64,
   },
   rightColumn: {
     flex: 1,
-    flexDirection: 'column',
+    // flexDirection: 'column', defaults to this
     alignItems: 'stretch',
     // paddingTop: 4,
-    paddingLeft: 8,
-    paddingBottom: 10,
+    // paddingLeft: 8,
+    paddingBottom: 15,
   },
   topRow: {
     flexDirection: 'row',
@@ -255,6 +256,7 @@ const styles = StyleSheet.create({
   goalView: {
     flexDirection: 'row',
     paddingBottom: 12,
+    // backgroundColor: 'pink',
   },
   content: {
     paddingBottom: 12,

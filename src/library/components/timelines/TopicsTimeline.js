@@ -54,8 +54,11 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
         refreshing={refetching}
-        contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
+        ListHeaderComponent={
+          <View style={{ height: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
+        }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no posts yet for this topic

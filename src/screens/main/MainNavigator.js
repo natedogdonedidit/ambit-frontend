@@ -20,6 +20,7 @@ import MessagesScreen from './MessagesScreen';
 import NotificationsScreen from './NotificationsScreen';
 import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
+import PostMatchesScreen from './PostMatchesScreen';
 import UpdateScreen from './UpdateScreen';
 import CommentScreen from './CommentScreen';
 import UpdatePostScreen from './UpdatePostScreen';
@@ -68,6 +69,9 @@ const HomeStack = createStackNavigator(
     Post: {
       screen: PostScreen,
     },
+    PostMatches: {
+      screen: PostMatchesScreen,
+    },
     Update: {
       screen: UpdateScreen,
     },
@@ -107,6 +111,9 @@ const PeopleStack = createStackNavigator(
     Post: {
       screen: PostScreen,
     },
+    PostMatches: {
+      screen: PostMatchesScreen,
+    },
     Update: {
       screen: UpdateScreen,
     },
@@ -128,6 +135,9 @@ const NotificationsStack = createStackNavigator(
     Post: {
       screen: PostScreen,
     },
+    PostMatches: {
+      screen: PostMatchesScreen,
+    },
     Update: {
       screen: UpdateScreen,
     },
@@ -148,6 +158,9 @@ const InboxStack = createStackNavigator(
     },
     Post: {
       screen: PostScreen,
+    },
+    PostMatches: {
+      screen: PostMatchesScreen,
     },
     Update: {
       screen: UpdateScreen,

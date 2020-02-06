@@ -20,7 +20,7 @@ const HeaderBack = ({ navigation, handleRight, textRight, title }) => {
       </View>
 
       <View style={styles.middle}>
-        <Text style={{ ...defaultStyles.headerTitle, ...styles.headerText }}>{title}</Text>
+        <Text style={{ ...defaultStyles.headerSmall, ...styles.headerText }}>{title}</Text>
       </View>
 
       <View style={styles.rightSide}>

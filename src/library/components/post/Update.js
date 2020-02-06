@@ -208,14 +208,13 @@ const styles = StyleSheet.create({
   updateContainer: {
     width: '100%',
     backgroundColor: 'white',
-    paddingLeft: 10,
-    paddingRight: 10,
   },
   update: {
     width: '100%',
     flexDirection: 'row',
     backgroundColor: 'white',
     paddingTop: 12,
+    paddingRight: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderBlack,
   },
@@ -237,14 +236,14 @@ const styles = StyleSheet.create({
   },
   leftColumn: {
     alignItems: 'center',
-    width: 48,
+    width: 64,
+    paddingLeft: 4,
   },
   rightColumn: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'stretch',
     paddingBottom: 10,
-    paddingLeft: 8,
   },
   updateNumber: {
     alignSelf: 'flex-start',

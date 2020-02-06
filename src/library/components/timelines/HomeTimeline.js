@@ -74,8 +74,11 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         refreshing={refetching}
         // initialNumToRender={10} // speeds up load time
         // contentContainerStyle={{ paddingBottom: 20 }}
-        contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
+        ListHeaderComponent={
+          <View style={{ height: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
+        }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no posts to display at this time

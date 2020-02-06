@@ -195,6 +195,11 @@ const styles = StyleSheet.create({
     fontSize: huge,
     fontFamily: 'SFProText-Bold',
   },
+  hugeHeavy: {
+    color: colors.black,
+    fontSize: huge,
+    fontFamily: 'SFProDisplay-Heavy',
+  },
 
   headerHat: {
     color: colors.black,
@@ -206,6 +211,11 @@ const styles = StyleSheet.create({
     fontSize: huge,
     fontFamily: 'SFProText-Bold',
   },
+  headerSection: {
+    color: colors.black,
+    fontSize: large,
+    fontFamily: 'SFProText-Heavy',
+  },
   headerTopic: {
     color: colors.black,
     fontSize: 18,
@@ -213,8 +223,8 @@ const styles = StyleSheet.create({
   },
   headerSmall: {
     color: colors.black,
-    fontSize: 18,
-    fontFamily: 'SFProDisplay-Bold',
+    fontSize: 19,
+    fontFamily: 'SFProDisplay-Heavy',
   },
   headerMedium: {
     color: colors.black,

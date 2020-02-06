@@ -8,22 +8,20 @@ import defaultStyles from 'styles/defaultStyles';
 // import { moneyGoals, helpGoals, networkGoals, answersGoals, hireGoals } from 'library/utils/lists';
 import { getGoalInfo } from 'library/utils';
 
-const Goal = ({ goal, onPress }) => {
+const Goal = ({ goal, subField, onPress }) => {
   return (
     // color background w/ black text
     <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
-      <View style={styles.whiteBack}>
-        <View
-          style={{
-            ...styles.goalView,
-            backgroundColor: getGoalInfo(goal, 'secondaryColor'),
-            // borderColor: getGoalInfo(goal, 'primaryColor'),
-          }}
-        >
-          <View style={{ paddingRight: 10 }}>
-            <Icon name={getGoalInfo(goal, 'logo')} size={15} color={getGoalInfo(goal, 'primaryColor')} solid />
-          </View>
-          <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(goal, 'primaryColor') }}>{goal}</Text>
+      <View style={{ ...styles.goalView, backgroundColor: getGoalInfo(goal, 'secondaryColor') }}>
+        <View style={styles.iconView}>
+          <Icon name={getGoalInfo(goal, 'logo')} size={15} color={getGoalInfo(goal, 'primaryColor')} solid />
+        </View>
+        <View style={styles.textView}>
+          <Text>
+            <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
+            <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
+            <Text style={{ ...defaultStyles.defaultMedium }}>{subField}</Text>
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -40,15 +38,23 @@ const styles = StyleSheet.create({
     // ...defaultStyles.shadowGoal,
   },
   goalView: {
-    height: 32,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.darkGray,
-    paddingHorizontal: 15,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: colors.grayButton,
   },
+  iconView: {
+    justifyContent: 'center',
+    paddingRight: 10,
+  },
+  textView: {},
+
+  // old
   goalText: {},
   imageIcon: {
     width: 15,

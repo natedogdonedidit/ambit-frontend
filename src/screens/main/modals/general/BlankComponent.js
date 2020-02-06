@@ -16,7 +16,10 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
-const EditNameModal = () => {
+const EditNameModal = ({ navigation }) => {
+  // ROUTE PARAMS
+  const userLoggedIn = navigation.getParam('userLoggedIn');
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <HeaderWhite handleLeft={null} handleRight={null} textLeft="Cancel" textRight="" title="Title" />

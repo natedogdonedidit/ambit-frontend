@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Text, TextInput, Alert, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import HeaderWhite from 'library/components/headers/HeaderWhite';
+import HeaderBack from 'library/components/headers/HeaderBack';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import Comment from 'library/components/post/Comment';
 import Post from 'library/components/post/Post';
 import Update from 'library/components/post/Update';
+import SuggestedConnection from 'library/components/lists/SuggestedConnection';
+import TextButton from 'library/components/UI/buttons/TextButton';
 import { getGoalInfo } from 'library/utils';
+import { UserContext } from 'library/utils/UserContext';
 
 const PostScreen = ({ navigation }) => {
-  // ////////////////////////////////////////////////////////////////
   // ROUTE PARAMS
   const postToQuery = navigation.getParam('post', null); // all the data from parent post down to updates
 
-  // ////////////////////////////////////////////////////////////////
   // QUERIES
-
   // this could be optimized to retrieve the comments seperately
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
+    // fetchPolicy: 'cache-and-network',
+    // notifyOnNetworkStatusChange: true,
     variables: { id: postToQuery.id },
   });
 
@@ -31,22 +32,63 @@ const PostScreen = ({ navigation }) => {
   if (loading) {
     return (
       <View style={styles.container}>
-        <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
-        <Loader loading={loading} full={false} />
+        <HeaderBack navigation={navigation} title={postToQuery.goal ? 'Goal' : 'Post'} />
+        <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
       </View>
     );
   }
   const currentTime = new Date();
+  const { currentUserId } = useContext(UserContext);
+
   const post = data.singlePost.post || null;
-  const matches = data.singlePost.matches || [];
-  console.log(post);
+  const matches = data.singlePost.matches || null;
+  const isMyPost = post.owner.id === currentUserId;
 
   // CUSTOM FUNCTIONS
   const renderPost = () => {
     return (
-      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+      <View style={{}}>
+        <View style={{ height: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
         <Post post={post} currentTime={currentTime} navigation={navigation} showDetails />
-      </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const renderMatches = () => {
+    if (!matches || !isMyPost) return null;
+
+    if (matches.length < 1) {
+      return (
+        <>
+          <View style={styles.sectionHeader}>
+            <Text style={defaultStyles.headerSmall}>Matches</Text>
+          </View>
+          <View style={styles.emptyComponent}>
+            <Text style={{ ...defaultStyles.defaultMuteItalic, textAlign: 'center' }}>No matches yet...check back later!</Text>
+          </View>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <View style={styles.sectionHeader}>
+          <Text style={defaultStyles.headerSmall}>Matches</Text>
+          {matches.length > 3 && (
+            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('PostMatches', { matches })}>
+              Show All
+            </TextButton>
+          )}
+        </View>
+        {matches.map((item, i) => {
+          if (i > 2) return null;
+          return (
+            <View key={item.user.id}>
+              <SuggestedConnection item={item} navigation={navigation} />
+            </View>
+          );
+        })}
+      </>
     );
   };
 
@@ -85,16 +127,7 @@ const PostScreen = ({ navigation }) => {
   const renderComments = () => {
     const { comments } = post;
 
-    if (comments.length < 1) {
-      return (
-        <>
-          <View style={styles.sectionHeader}>
-            <Text style={defaultStyles.headerSmall}>Comments</Text>
-            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2 }}>No comments yet</Text>
-          </View>
-        </>
-      );
-    }
+    if (comments.length < 1) return null;
 
     return (
       <>
@@ -134,25 +167,12 @@ const PostScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Post" />
-
-      <ScrollView style={styles.scrollView}>
-        {matches.length > 0 && (
-          <View style={{ ...styles.showMatchesButton, backgroundColor: colors.iconGray }}>
-            <View style={{ width: 20 }} />
-            <View style={{ flex: 1 }}>
-              <Text style={{ textAlign: 'center', ...defaultStyles.defaultBold, color: 'white' }}>
-                We found {matches.length} potential connections for your goal!
-              </Text>
-            </View>
-            <View style={{ width: 20 }}>
-              <Ionicons name="ios-arrow-forward" size={20} color="white" style={{ alignSelf: 'flex-end' }} />
-            </View>
-          </View>
-        )}
-        {!loading && renderPost()}
-        {!loading && renderUpdates()}
-        {!loading && <View style={styles.commentsView}>{renderComments()}</View>}
+      <HeaderBack navigation={navigation} title={post.goal ? 'Goal' : 'Post'} />
+      <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
+        {renderPost()}
+        {renderMatches()}
+        {renderUpdates()}
+        {renderComments()}
       </ScrollView>
     </View>
   );
@@ -167,32 +187,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightGray,
   },
   sectionHeader: {
-    justifyContent: 'center',
-    alignItems: 'flex-start',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 15,
-    marginTop: 15,
-    backgroundColor: 'white',
-  },
-  commentsView: {
-    width: '100%',
-    marginBottom: 15,
-  },
-  // for matches component
-  showMatchesButton: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.goalPeach,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
     marginTop: 10,
-    marginBottom: 5,
+    backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
+  },
+  emptyComponent: {
+    backgroundColor: colors.white,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
+    padding: 16,
   },
 });
 

@@ -11,7 +11,7 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
   return (
     <View style={{ flex: 1 }}>
       <Animated.FlatList
-        contentContainerStyle={{ paddingTop: paddingTop + 7, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingTop: paddingTop + 8, paddingBottom: 20 }}
         style={styles.timeline}
         showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
