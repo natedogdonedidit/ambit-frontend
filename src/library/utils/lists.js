@@ -167,16 +167,12 @@ export const goalsList = [
   },
 ];
 
-// export const moneyGoals = ['Find investors'];
-// export const helpGoals = ['Find freelancers', 'Find agencies'];
-// export const networkGoals = ['Network', 'Get coffee', 'Find a mentor', 'Find business partners'];
-// export const answersGoals = ['Get advice', 'Get feedback'];
-// export const hireGoals = ['Hire employees', 'Hire for startup'];
-
 export const freelanceList = [
   {
     name: 'Software & Tech',
     topicID: 'freelance_software',
+    icon: 'code',
+    color: colors.peach,
     children: [
       {
         name: 'Web Development',
@@ -215,6 +211,8 @@ export const freelanceList = [
   {
     name: 'Engineering',
     topicID: 'freelance_engineering',
+    icon: 'drafting-compass',
+    color: colors.peach,
     children: [
       {
         name: 'Mechanical Engineering',
@@ -249,6 +247,8 @@ export const freelanceList = [
   {
     name: 'Graphics & Design',
     topicID: 'freelance_design',
+    icon: 'paint-brush',
+    color: colors.peach,
     children: [
       {
         name: 'Logo Design',
@@ -283,6 +283,8 @@ export const freelanceList = [
   {
     name: 'Music & Audio',
     topicID: 'freelance_musicaudio',
+    icon: 'music',
+    color: colors.peach,
     children: [
       {
         name: 'Voice Over',
@@ -309,6 +311,8 @@ export const freelanceList = [
   {
     name: 'Video & Animation',
     topicID: 'freelance_videoanimation',
+    icon: 'film',
+    color: colors.peach,
     children: [
       {
         name: 'Explainer Videos',
@@ -343,6 +347,8 @@ export const freelanceList = [
   {
     name: 'Sales & Marketing',
     topicID: 'freelance_salesmarketing',
+    icon: 'comment-dollar',
+    color: colors.peach,
     children: [
       {
         name: 'Social Media Marketing',
@@ -373,6 +379,8 @@ export const freelanceList = [
   {
     name: 'Business',
     topicID: 'freelance_business',
+    icon: 'user-tie',
+    color: colors.peach,
     children: [
       {
         name: 'Virtual Assistant',
@@ -423,6 +431,8 @@ export const freelanceList = [
   {
     name: 'Writing',
     topicID: 'freelance_writing',
+    icon: 'feather',
+    color: colors.peach,
     children: [
       {
         name: 'Editing & Proofreading',
@@ -460,22 +470,32 @@ export const investList = [
   {
     name: 'Startup',
     topicID: 'invest_startup',
+    icon: 'rocket',
+    color: colors.green,
   },
   {
     name: 'Venture Capital',
     topicID: 'invest_venturecapital',
+    icon: 'dollar-sign',
+    color: colors.green,
   },
   {
     name: 'Real Estate',
     topicID: 'invest_realestate',
+    icon: 'home',
+    color: colors.green,
   },
   {
     name: 'Hedge Fund',
     topicID: 'invest_hedgefund',
+    icon: 'chart-line',
+    color: colors.green,
   },
   {
     name: 'Other',
     topicID: 'invest_other',
+    icon: 'comment-dollar',
+    color: colors.green,
   },
 ];
 
@@ -485,6 +505,7 @@ export const topicsList = [
     name: 'Technology',
     topicID: 'topics_technology',
     icon: 'bolt',
+    color: colors.yellow,
     children: [
       {
         name: 'Software',
@@ -540,6 +561,7 @@ export const topicsList = [
     name: 'Science',
     topicID: 'topics_science',
     icon: 'atom',
+    color: colors.purple,
     children: [
       {
         name: 'Physics',
@@ -575,6 +597,7 @@ export const topicsList = [
     name: 'Creatives',
     topicID: 'topics_creatives',
     icon: 'palette',
+    color: colors.green,
     children: [
       {
         name: 'Photography',
@@ -606,6 +629,7 @@ export const topicsList = [
     name: 'Entertainment',
     topicID: 'topics_entertainment',
     icon: 'film',
+    color: colors.orange,
     children: [
       {
         name: 'Music',
@@ -633,6 +657,7 @@ export const topicsList = [
     name: 'Business',
     topicID: 'topics_business',
     icon: 'user-tie',
+    color: colors.blueGray,
     children: [
       {
         name: 'Entrepreneurship',
@@ -684,6 +709,7 @@ export const topicsList = [
     name: 'Finance & Markets',
     topicID: 'topics_finance',
     icon: 'chart-line',
+    color: colors.green,
     children: [
       {
         name: 'Stock Market',
@@ -711,6 +737,7 @@ export const topicsList = [
     name: 'Marketing',
     topicID: 'topics_marketing',
     icon: 'hashtag',
+    color: colors.twitterBlue,
     children: [
       {
         name: 'Social Media Marketing',
@@ -730,6 +757,7 @@ export const topicsList = [
     name: 'Health & Wellness',
     topicID: 'topics_health',
     icon: 'heartbeat',
+    color: colors.red,
     children: [
       {
         name: 'Fitness',
@@ -753,6 +781,7 @@ export const topicsList = [
     name: 'Content Creators',
     topicID: 'topics_content',
     icon: 'thumbs-up',
+    color: colors.blue,
     children: [
       {
         name: 'Social Media',
@@ -780,6 +809,7 @@ export const topicsList = [
     name: 'News & Politics',
     topicID: 'topics_news',
     icon: 'newspaper',
+    color: colors.blueGray,
     children: [
       {
         name: 'Politics',
@@ -799,24 +829,28 @@ export const topicsList = [
     name: 'Sports',
     topicID: 'topics_sports',
     icon: 'football-ball',
+    color: colors.brown,
     children: [],
   },
   {
     name: 'Real Estate',
     topicID: 'topics_realestate',
     icon: 'home',
+    color: colors.orange,
     children: [],
   },
   {
     name: 'Education',
     topicID: 'topics_education',
     icon: 'graduation-cap',
+    color: colors.black,
     children: [],
   },
   {
     name: 'Industry',
     topicID: 'topics_industry',
     icon: 'cogs',
+    color: colors.purple,
     children: [
       {
         name: 'Food & Bev',
@@ -1449,364 +1483,3 @@ export const allTopics = [
     topicID: 'invest_other',
   },
 ];
-
-// export const topicsList = [
-//   {
-//     topic: 'Technology',
-//     subTopics: [
-//       'Software',
-//       'Hardware',
-//       'Semiconductors',
-//       'Cloud Computing',
-//       'Gaming',
-//       'AR/VR',
-//       'Crypto',
-//       'AI',
-//       'Automation',
-//       'IT & Networking',
-//       'Aerospace & Aviation',
-//       'Automotive',
-//     ],
-//   },
-//   {
-//     topic: 'Science',
-//     subTopics: ['Physics', 'Chemistry', 'Biology', 'Biotechnology', 'Anthropology', 'Renewable Energy', 'Astrophysics'],
-//   },
-
-//   {
-//     topic: 'Creatives',
-//     subTopics: ['Photography', 'Graphic Design', 'UI/UX', 'Videography', 'Fashion & Apparel', 'Makeup & Beauty', 'Visual Art'],
-//   },
-//   {
-//     topic: 'Entertainment',
-//     subTopics: ['Music', 'Acting', 'Comedy', 'Motion Pictures', 'Writing', 'Streaming Services'],
-//   },
-//   {
-//     topic: 'Business',
-//     subTopics: [
-//       'Entreprenuership',
-//       'Small Business',
-//       'Large Business',
-//       'Startup',
-//       'HR',
-//       'Management',
-//       'Sales',
-//       'Operation',
-//       'Manufacturing',
-//     ],
-//   },
-//   {
-//     topic: 'Finance & Markets',
-//     subTopics: ['Banking', 'Stock Market', 'Insurance', 'Wealth Management', 'Day Trading'],
-//   },
-//   {
-//     topic: 'Marketing',
-//     subTopics: ['Advertising', 'Social Media Marketing', 'Branding'],
-//   },
-//   {
-//     topic: 'Health & Wellness',
-//     subTopics: ['Fitness', 'Nutrition', 'Medicine', 'Physical Therapy'],
-//   },
-//   {
-//     topic: 'Content Creators',
-//     subTopics: ['Social Media', 'Blogging', 'Podcasting', 'YouTube', 'Streaming'],
-//   },
-//   {
-//     topic: 'News & Politics',
-//     subTopics: ['Politics', 'Journalism', 'Law & Policy'],
-//   },
-//   {
-//     topic: 'Food Services',
-//     subTopics: [],
-//   },
-//   {
-//     topic: 'Sports',
-//     subTopics: [],
-//   },
-//   {
-//     topic: 'Real Estate',
-//     subTopics: [],
-//   },
-//   {
-//     topic: 'Education',
-//     subTopics: [],
-//   },
-//   {
-//     topic: 'Industry',
-//     subTopics: ['E-commerce & Retail', 'Travel & Hospitality', 'Non-profit', 'Construction'],
-//   },
-// ];
-
-// export const freelanceList = [
-//   {
-//     category: 'Software & Tech',
-//     logo: 'code',
-//     list: [
-//       'Web Development',
-//       'Mobile Apps',
-//       'Game Development',
-//       'E-Commerce Development',
-//       'Backend / Database',
-//       'IT & Networking',
-//       'Data Science & Analytics',
-//       'Other',
-//     ],
-//   },
-//   {
-//     category: 'Engineering',
-//     logo: 'drafting-compass',
-//     list: [
-//       'Mechanical Engineering',
-//       'Electrical Engineering',
-//       'Chemical Engineering',
-//       'Civil & Structural Engineering',
-//       'Product Design',
-//       '3D Modeling & CAD',
-//       'Other',
-//     ],
-//   },
-//   {
-//     category: 'Graphics & Design',
-//     logo: 'paint-brush',
-//     list: ['Logo Design', 'Brand Design', 'Web & Mobile Design', 'Graphic Design', 'Game Design', 'Photoshop', 'Other'],
-//   },
-//   {
-//     category: 'Music & Audio',
-//     logo: 'music',
-//     list: ['Voice Over', 'Mixing & Mastering', 'Producers', 'Singer-Songwriters', 'Other'],
-//   },
-//   {
-//     category: 'Video & Animation',
-//     logo: 'film',
-//     list: ['Explainer Videos', 'Video Editing', 'Video Production', 'Intros & Outros', 'Animations', 'Short Video Ads', 'Other'],
-//   },
-//   {
-//     category: 'Sales & Marketing',
-//     logo: 'comment-dollar',
-//     list: [
-//       'Social Media Marketing',
-//       'Digital Marketing',
-//       'Marketing Strategy',
-//       'E-Commerce Sales',
-//       'Lead Generation & Sales',
-//       'Other',
-//     ],
-//   },
-//   {
-//     category: 'Business',
-//     logo: 'user-tie',
-//     list: [
-//       'Virtual Assistant',
-//       'Data Entry',
-//       'Accounting',
-//       'Legal Consulting',
-//       'Financial Consulting',
-//       'Business Consulting',
-//       'Branding Services',
-//       'Project Management',
-//       'Market Research',
-//       'Customer Service',
-//       'Other',
-//     ],
-//   },
-//   {
-//     category: 'Writing',
-//     logo: 'feather',
-//     list: [
-//       'Editing & Proofreading',
-//       'Content Writing',
-//       'Ghostwriting',
-//       'Business Writing',
-//       'Creative Writing',
-//       'Technical Writing',
-//       'Other',
-//     ],
-//   },
-// ];
-
-// export const investmentMarkets = ['Startup', 'Venture Capital', 'Real Estate', 'Hedge Fund', 'Other'];
-
-const industriesOld = [
-  // 'Tech',
-  // 'Arts',
-  'Entertainment',
-  'Banking',
-  'Consulting',
-  // 'Creatives',
-  'Media & Journalism',
-  'Music',
-  'VC & Investment',
-  'Fashion',
-  'Education & Academia',
-  'Government & Politics',
-  'Sales',
-  // 'Marketing',
-  'PR',
-  // 'Advertising',
-  'Real Estate',
-  'Insurance',
-  'Law & Policy',
-  'Counselling',
-  'Medicine & Health',
-  'Police & Military',
-  'Construction',
-  'Food & Beverage',
-  'Travel & Hospitality',
-  'Manufacturing',
-  'Other',
-  // // expanded list
-  'Accounting',
-  // 'Airlines/Aviation',
-  // 'Alternative Dispute Resolution',
-  // 'Alternative Medicine',
-  // 'Animation',
-  // 'Apparel & Fashion',
-  'Architecture & Planning',
-  'Arts and Crafts',
-  'Automotive',
-  'Aviation & Aerospace',
-  // 'Banking',
-  'Biotechnology',
-  // 'Broadcast Media',
-  // 'Building Materials',
-  // 'Business Supplies and Equipment',
-  // 'Capital Markets',
-  // 'Chemicals',
-  // 'Civic & Social Organization',
-  'Civil Engineering',
-  'Software & Technology',
-  'Gaming',
-  // 'Commercial Real Estate',
-  // 'Computer & Network Security',
-  // 'Computer Games',
-  // 'Computer Hardware',
-  // 'Computer Networking',
-  // 'Computer Software',
-  // 'Construction',
-  // 'Consumer Electronics',
-  // 'Consumer Goods',
-  // 'Consumer Services',
-  // 'Cosmetics',
-  // 'Dairy',
-  // 'Defense & Space',
-  // 'Design',
-  // 'Education Management',
-  // 'E-Learning',
-  // 'Electrical/Electronic Manufacturing',
-  // 'Entertainment',
-  // 'Environmental Services',
-  // 'Events Services',
-  // 'Executive Office',
-  // 'Facilities Services',
-  'Farming',
-  'Financial Services',
-  // 'Fine Art',
-  // 'Fishery',
-  // 'Food & Beverages',
-  // 'Food Production',
-  // 'Fund-Raising',
-  // 'Furniture',
-  'Gambling & Casinos',
-  // 'Glass',
-  // 'Ceramics & Concrete',
-  // 'Government Administration',
-  // 'Government Relations',
-  'Graphic Design',
-  // 'Health',
-  'Wellness and Fitness',
-  // 'Higher Education',
-  // 'Hospital & Health Care',
-  // 'Hospitality',
-  'Human Resources',
-  // 'Import and Export',
-  // 'Individual & Family Services',
-  'Industrial Automation',
-  // 'Information Services',
-  // 'Information Technology and Services',
-  // 'Insurance',
-  // 'International Affairs',
-  // 'International Trade and Development',
-  // 'Internet',
-  // 'Investment Banking',
-  // 'Investment Management',
-  // 'Judiciary',
-  // 'Law Enforcement',
-  // 'Law Practice',
-  // 'Legal Services',
-  // 'Legislative Office',
-  // 'Leisure',
-  // 'Travel & Tourism',
-  // 'Libraries',
-  'Logistics and Supply Chain',
-  // 'Luxury Goods & Jewelry',
-  // 'Machinery',
-  // 'Management Consulting',
-  // 'Maritime',
-  // 'Market Research',
-  'Marketing and Advertising',
-  // 'Mechanical or Industrial Engineering',
-  // 'Media Production',
-  // 'Medical Devices',
-  // 'Medical Practice',
-  // 'Mental Health Care',
-  // 'Military',
-  // 'Mining & Metals',
-  'Motion Pictures and Film',
-  // 'Museums and Institutions',
-  // 'Music',
-  // 'Nanotechnology',
-  // 'Newspapers',
-  // 'Non-Profit Organization Management',
-  'Oil & Energy',
-  // 'Online Media',
-  // 'Outsourcing/Offshoring',
-  // 'Package/Freight Delivery',
-  // 'Packaging and Containers',
-  // 'Paper & Forest Products',
-  // 'Performing Arts',
-  // 'Pharmaceuticals',
-  // 'Philanthropy',
-  'Photography',
-  // 'Plastics',
-  // 'Political Organization',
-  // 'Primary/Secondary Education',
-  // 'Printing',
-  // 'Professional Training & Coaching',
-  // 'Program Development',
-  // 'Public Policy',
-  // 'Public Relations and Communications',
-  // 'Public Safety',
-  // 'Publishing',
-  // 'Railroad Manufacture',
-  // 'Ranching',
-  // 'Real Estate',
-  // 'Recreational Facilities and Services',
-  // 'Religious Institutions',
-  // 'Renewables & Environment',
-  // 'Research',
-  // 'Restaurants',
-  'Retail',
-  // 'Security and Investigations',
-  // 'Semiconductors',
-  // 'Shipbuilding',
-  // 'Sporting Goods',
-  'Sports',
-  'Staffing and Recruiting',
-  // 'Supermarkets',
-  'Telecommunications',
-  'Textiles',
-  // 'Think Tanks',
-  // 'Tobacco',
-  // 'Translation and Localization',
-  // 'Transportation/Trucking/Railroad',
-  // 'Utilities',
-  // 'Venture Capital & Private Equity',
-  'Veterinary',
-  // 'Warehousing',
-  // 'Wholesale',
-  // 'Wine and Spirits',
-  // 'Wireless',
-  'Writing and Editing',
-];
-
-// export const industryList = industries.sort();

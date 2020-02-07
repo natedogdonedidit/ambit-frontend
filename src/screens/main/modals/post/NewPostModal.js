@@ -9,13 +9,10 @@ import {
   TextInput,
   KeyboardAvoidingView,
   TouchableOpacity,
-  SafeAreaView,
-  // Image,
   InputAccessoryView,
 } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import Image from 'react-native-scalable-image';
@@ -34,19 +31,15 @@ import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 
-// import Goal from 'library/components/UI/Goal';
-// import GoalField from 'library/components/UI/GoalField';
-
 const NewPostModal = ({ navigation }) => {
-  // ////////////////////////////////////////////////////////////////
   // ROUTE PARAMS
   const userLoggedIn = navigation.getParam('userLoggedIn');
+  const topicsPassedIn = navigation.getParam('topicsPassedIn', []);
 
-  // ////////////////////////////////////////////////////////////////
   // STATE
   const [goal, setGoal] = useState('');
   const [subField, setSubField] = useState('');
-  const [topics, setTopics] = useState([]);
+  const [topics, setTopics] = useState(topicsPassedIn);
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState('');
@@ -58,11 +51,9 @@ const NewPostModal = ({ navigation }) => {
 
   const [uploading, setUploading] = useState(false);
 
-  // ////////////////////////////////////////////////////////////////
   // HOOKS
   const { currentUserId } = useContext(UserContext);
 
-  // ////////////////////////////////////////////////////////////////
   // MUTATIONS
   const [createPost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
     variables: {
@@ -105,7 +96,6 @@ const NewPostModal = ({ navigation }) => {
 
   const loading = loadingCreate || uploading;
 
-  // ////////////////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
   const handleBack = () => {
     navigation.goBack();
@@ -142,24 +132,6 @@ const NewPostModal = ({ navigation }) => {
     } else {
       navigation.navigate('SelectPostTopicsModal', { setTopics, setSubField, topics });
     }
-
-    // if (!goal) {
-    //   navigation.navigate('SelectPostTopicsModal', { setTopics, topics });
-    // } else {
-    //   navigation.navigate('SelectPostTopicsModal', { setTopics, topics, multiple: true });
-    // }
-
-    // if (!goal) {
-    //   // when we just want to change the Topic
-    //   navigation.navigate('SelectGoalFieldModal', { setGoal, setTopics, setSubField, topics });
-    //   // } else {
-    //   //   navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField, topicSelection: true });
-    //   // }
-    //   // } else if (goal.modalType === 'topic') {
-    //   //   navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField });
-    // } else {
-    //   navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField, topicsOnly: true });
-    // }
   };
 
   const clearGoal = () => {

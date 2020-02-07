@@ -8,10 +8,13 @@ import defaultStyles from 'styles/defaultStyles';
 // import { moneyGoals, helpGoals, networkGoals, answersGoals, hireGoals } from 'library/utils/lists';
 import { getGoalInfo } from 'library/utils';
 
-const Goal = ({ goal, subField, onPress }) => {
+const Goal = ({ navigation, goal, subField, onPress }) => {
   return (
     // color background w/ black text
-    <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate('Search', { goalToSearch: getGoalInfo(goal), topicToSearch: subField.topicID || null })}
+      activeOpacity={0.6}
+    >
       <View style={{ ...styles.goalView, backgroundColor: getGoalInfo(goal, 'secondaryColor') }}>
         <View style={styles.iconView}>
           <Icon name={getGoalInfo(goal, 'logo')} size={15} color={getGoalInfo(goal, 'primaryColor')} solid />
@@ -20,7 +23,7 @@ const Goal = ({ goal, subField, onPress }) => {
           <Text>
             <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
             <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
-            <Text style={{ ...defaultStyles.defaultMedium }}>{subField}</Text>
+            <Text style={{ ...defaultStyles.defaultMedium }}>{subField.name}</Text>
           </Text>
         </View>
       </View>

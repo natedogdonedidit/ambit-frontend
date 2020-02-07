@@ -66,7 +66,10 @@ const TopicScreen = ({ navigation }) => {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            navigation.navigate('NewPostModal', { userLoggedIn });
+            navigation.navigate('NewPostModal', {
+              userLoggedIn,
+              topicsPassedIn: [{ topicID: activeSubTopic || activeTopic.topicID }],
+            });
           }}
         >
           <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
@@ -103,7 +106,7 @@ const TopicScreen = ({ navigation }) => {
           <HeaderTopic
             user={userLoggedIn}
             handleMiddle={() => null}
-            handleRight={() => navigation.navigate('Search', { topicToSearch: activeTopic.topicID })}
+            handleRight={() => navigation.navigate('Search', { topicToSearch: activeSubTopic || activeTopic.topicID })}
             navigation={navigation}
             height={HEADER_HEIGHT}
             topicName={activeTopic.name}

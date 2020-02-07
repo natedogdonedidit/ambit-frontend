@@ -10,37 +10,25 @@ import FreelanceList from 'library/components/lists/FreelanceList';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const SelectGoalFieldModal = ({ navigation }) => {
-  const goal = navigation.getParam('goal', null);
-
+const SelectSearchTopicsModal = ({ navigation }) => {
   // PARAMS
-  const setGoal = navigation.getParam('setGoal');
-  const setTopics = navigation.getParam('setTopics');
-  const setSubField = navigation.getParam('setSubField');
+  const goal = navigation.getParam('goal');
+  const setTopic = navigation.getParam('setTopic');
 
   // STATE
   const [selectedCategories, setSelectedCategories] = useState('');
-  const [activeSubfield, setActiveSubfield] = useState('');
-  const [warning, setWarning] = useState('');
+  const [activeTopic, setActiveTopic] = useState('');
 
-  if (!goal) navigation.navigate('NewPostModal');
+  // CONSTANTS
+  const heading = 'Select a topic to search';
 
   const handleTopicSelect = selectedTopicID => {
-    setGoal(goal);
-    setSubField(selectedTopicID);
-    setActiveSubfield(selectedTopicID);
-
-    // if its a topic type goal - then set topic also
-    if (goal.modalType === 'topic') {
-      // if its a topic type goal - then set topic also
-      setTopics([{ topicID: selectedTopicID }]);
-    } else {
-      // if its NOT topic type goal - clear out previous selected topics
-      setTopics([]);
-    }
+    // if there is a goal - select one topic only
+    setActiveTopic(selectedTopicID);
+    setTopic(selectedTopicID);
 
     // navigate back after a short delay
-    const timeout = setTimeout(() => navigation.navigate('NewPostModal'), 300);
+    const timeout = setTimeout(() => navigation.goBack(), 300);
   };
 
   const handleCategorySelect = category => {
@@ -60,7 +48,7 @@ const SelectGoalFieldModal = ({ navigation }) => {
     if (goal.modalType === 'specialist') {
       return (
         <FreelanceList
-          activeTopicIDs={[activeSubfield]}
+          activeTopicIDs={[activeTopic]}
           selectedCategories={selectedCategories}
           handleTopicSelect={handleTopicSelect}
           handleCategorySelect={handleCategorySelect}
@@ -69,12 +57,12 @@ const SelectGoalFieldModal = ({ navigation }) => {
     }
 
     if (goal.modalType === 'invest') {
-      return <InvestList activeTopicIDs={[activeSubfield]} handleTopicSelect={handleTopicSelect} />;
+      return <InvestList activeTopicIDs={[activeTopic]} handleTopicSelect={handleTopicSelect} />;
     }
 
     return (
       <TopicsList
-        activeTopicIDs={[activeSubfield]}
+        activeTopicIDs={[activeTopic]}
         selectedCategories={selectedCategories}
         handleTopicSelect={handleTopicSelect}
         handleCategorySelect={handleCategorySelect}
@@ -87,17 +75,16 @@ const SelectGoalFieldModal = ({ navigation }) => {
       <View style={styles.container}>
         <HeaderBackBlank
           navigation={navigation}
-          title={warning}
           rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
         />
 
         <ScrollView style contentContainerStyle={styles.scrollView}>
           <View style={{ width: '100%', paddingHorizontal: 5 }}>
             <View style={styles.mainTitle}>
-              <Text style={defaultStyles.headerMedium}>{goal.heading}</Text>
+              <Text style={defaultStyles.headerMedium}>{heading}</Text>
             </View>
             <View style={styles.subTitle}>
-              <Text style={defaultStyles.defaultMute}>This info will be used to connect you with the right people</Text>
+              <Text style={defaultStyles.defaultMute}>Your will only see search results from this topic</Text>
             </View>
           </View>
           {renderList()}
@@ -107,7 +94,7 @@ const SelectGoalFieldModal = ({ navigation }) => {
   );
 };
 
-export default SelectGoalFieldModal;
+export default SelectSearchTopicsModal;
 
 const styles = StyleSheet.create({
   container: {

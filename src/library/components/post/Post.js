@@ -135,7 +135,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
           {post.isGoal && (
             <View style={styles.goalView}>
-              <Goal goal={post.goal} subField={post.subField.name} />
+              <Goal navigation={navigation} goal={post.goal} subField={post.subField} />
             </View>
           )}
 

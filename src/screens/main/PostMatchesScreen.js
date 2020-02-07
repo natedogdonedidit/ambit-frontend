@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 
 import HeaderBack from 'library/components/headers/HeaderBack';
 
@@ -37,7 +37,7 @@ const PostMatchesScreen = ({ navigation }) => {
           <Text style={defaultStyles.headerSmall}>Matches</Text>
         </View>
         {matches.map((item, i) => {
-          if (i > 2) return null;
+          // if (i > 2) return null;
           return (
             <View key={item.user.id}>
               <SuggestedConnection item={item} navigation={navigation} />

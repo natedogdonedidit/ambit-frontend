@@ -1,13 +1,12 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { investList } from 'library/utils/lists';
-import HeaderBack from 'library/components/headers/HeaderBack';
+import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
+import InvestList from 'library/components/lists/InvestList';
 
 import EDIT_TOPICS_INVEST_MUTATION from 'library/mutations/EDIT_TOPICS_INVEST_MUTATION';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -82,72 +81,26 @@ const SelectTopicsInvestModal = ({ navigation }) => {
     });
   };
 
-  // ////////////////////////////////////////
-  // RENDER FUNCTIONS
-  const renderList = () => {
-    return investList.map((mainTopic, i) => {
-      const { name, topicID } = mainTopic;
-
-      const isSelected = topicsIDonly.includes(topicID);
-
-      return (
-        <View key={`${topicID}-${i}`} style={styles.categorySection}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-            <View style={{ ...styles.mainRow }}>
-              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.green, paddingRight: 15, flex: 1 }}>{name}</Text>
-              {isSelected ? (
-                <View style={styles.addedButton}>
-                  <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-                </View>
-              ) : (
-                <View style={styles.addButton}>
-                  <Text style={{ ...defaultStyles.defaultMedium, color: colors.green }}>Add</Text>
-                </View>
-              )}
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    });
-  };
-
   return (
-    <View style={styles.container}>
-      <HeaderBack navigation={navigation} title="" />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}>
-        <View
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 50,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: colors.goalGreen,
-            marginTop: 10,
-            marginBottom: 15,
-          }}
-        >
-          {/* <Icon name="briefcase" size={40} color={colors.green} /> */}
-          <Icon name="comment-dollar" size={40} color={colors.green} />
-        </View>
-        <View style={{ width: '100%' }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text
-              style={{
-                ...defaultStyles.headerMedium,
-              }}
-            >
-              Select your target investment markets
-            </Text>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={styles.container}>
+        <HeaderBackBlank
+          navigation={navigation}
+          rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
+        />
+
+        <ScrollView style contentContainerStyle={styles.scrollView}>
+          <View style={{ width: '100%', paddingHorizontal: 5 }}>
+            <View style={styles.mainTitle}>
+              <Text style={defaultStyles.headerMedium}>Select your target investment markets</Text>
+            </View>
+            <View style={styles.subTitle}>
+              <Text style={defaultStyles.defaultMute}>We will send you investment opporunities from these markets</Text>
+            </View>
           </View>
-
-          <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>
-            We will send you investment opporunities from these markets
-          </Text>
-        </View>
-
-        <View style={styles.listView}>{renderList()}</View>
-      </ScrollView>
+          <InvestList activeTopicIDs={topicsIDonly} handleTopicSelect={handleTopicSelect} />
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -157,52 +110,115 @@ export default SelectTopicsInvestModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
   },
-  listView: {
-    flex: 1,
-    width: '100%',
-    paddingTop: 30,
+  scrollView: {
+    paddingBottom: 20,
+    paddingTop: 10,
+    paddingHorizontal: 10,
   },
-  categorySection: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
-  },
-  mainRow: {
+  mainTitle: {
     flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 8,
+  },
+  subTitle: {
     width: '100%',
-    height: 48,
-    alignItems: 'center',
-    paddingRight: 10,
-  },
-  subTopicsView: {
-    paddingLeft: 15,
-  },
-  subRow: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 48,
-    alignItems: 'center',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
-  },
-  // add button
-  addButton: {
-    height: 30,
-    width: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: colors.green,
-    opacity: 0.9,
-  },
-  addedButton: {
-    height: 30,
-    width: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    backgroundColor: colors.green,
+    paddingBottom: 20,
   },
 });
+
+//   return (
+//     <View style={styles.container}>
+//       <HeaderBack navigation={navigation} title="" />
+//       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}>
+//         <View
+//           style={{
+//             width: 100,
+//             height: 100,
+//             borderRadius: 50,
+//             justifyContent: 'center',
+//             alignItems: 'center',
+//             backgroundColor: colors.goalGreen,
+//             marginTop: 10,
+//             marginBottom: 15,
+//           }}
+//         >
+//           {/* <Icon name="briefcase" size={40} color={colors.green} /> */}
+//           <Icon name="comment-dollar" size={40} color={colors.green} />
+//         </View>
+//         <View style={{ width: '100%' }}>
+//           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+//             <Text
+//               style={{
+//                 ...defaultStyles.headerMedium,
+//               }}
+//             >
+//               Select your target investment markets
+//             </Text>
+//           </View>
+
+//           <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>
+//             We will send you investment opporunities from these markets
+//           </Text>
+//         </View>
+
+//         <View style={styles.listView}>{renderList()}</View>
+//       </ScrollView>
+//     </View>
+//   );
+// };
+
+// export default SelectTopicsInvestModal;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: colors.white,
+//   },
+//   listView: {
+//     flex: 1,
+//     width: '100%',
+//     paddingTop: 30,
+//   },
+//   categorySection: {
+//     borderTopWidth: StyleSheet.hairlineWidth,
+//     borderColor: colors.borderBlack,
+//   },
+//   mainRow: {
+//     flexDirection: 'row',
+//     width: '100%',
+//     height: 48,
+//     alignItems: 'center',
+//     paddingRight: 10,
+//   },
+//   subTopicsView: {
+//     paddingLeft: 15,
+//   },
+//   subRow: {
+//     flexDirection: 'row',
+//     width: '100%',
+//     height: 48,
+//     alignItems: 'center',
+//     borderTopWidth: StyleSheet.hairlineWidth,
+//     borderColor: colors.borderBlack,
+//   },
+//   // add button
+//   addButton: {
+//     height: 30,
+//     width: 70,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderRadius: 15,
+//     borderWidth: 1,
+//     borderColor: colors.green,
+//     opacity: 0.9,
+//   },
+//   addedButton: {
+//     height: 30,
+//     width: 70,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     borderRadius: 15,
+//     backgroundColor: colors.green,
+//   },
+// });

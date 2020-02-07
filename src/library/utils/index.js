@@ -285,9 +285,10 @@ export const timeDifferenceGoal = (laterDate, earlierDate) => {
 };
 
 export const getGoalInfo = (goal, field) => {
-  const item = goalsList.find(i => i.name === goal);
-  if (!item) return '';
-  return item[field];
+  const fullGoal = goalsList.find(i => i.name === goal);
+  if (!fullGoal) return '';
+  if (!field) return fullGoal;
+  return fullGoal[field];
 };
 
 // will return an object { topicID: 'text', name: 'text' }

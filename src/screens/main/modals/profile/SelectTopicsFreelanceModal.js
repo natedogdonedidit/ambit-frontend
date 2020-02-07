@@ -6,8 +6,8 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { freelanceList } from 'library/utils/lists';
-import HeaderBack from 'library/components/headers/HeaderBack';
+import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
+import FreelanceList from 'library/components/lists/FreelanceList';
 
 import EDIT_TOPICS_FREELANCE_MUTATION from 'library/mutations/EDIT_TOPICS_FREELANCE_MUTATION';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -96,110 +96,31 @@ const SelectTopicsFreelanceModal = ({ navigation }) => {
     }
   };
 
-  // ////////////////////////////////////////
-  // RENDER FUNCTIONS
-  const renderList = () => {
-    return freelanceList.map((mainTopic, i) => {
-      const { name, topicID, children } = mainTopic;
-
-      const isSelected = topicsIDonly.includes(topicID);
-      const isExpanded = selectedCategories.includes(topicID);
-
-      return (
-        <View key={`${topicID}-${i}`} style={styles.categorySection}>
-          <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(topicID)}>
-            <View style={{ ...styles.mainRow }}>
-              <Text style={{ ...defaultStyles.hugeSemibold, color: colors.peach, paddingRight: 15, flex: 1 }}>{name}</Text>
-              <Ionicons name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'} size={24} color={colors.iconGray} />
-            </View>
-          </TouchableOpacity>
-          {isExpanded && children.length > 0 && (
-            <View style={styles.subTopicsView}>
-              <TouchableOpacity key={`${i}-${topicID}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-                <View style={{ ...styles.subRow }}>
-                  <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>
-                    {name} (general)
-                  </Text>
-                  {isSelected ? (
-                    <View style={styles.addedButton}>
-                      <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-                    </View>
-                  ) : (
-                    <View style={styles.addButton}>
-                      <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
-                    </View>
-                  )}
-                </View>
-              </TouchableOpacity>
-              {renderSubtopics(children)}
-            </View>
-          )}
-        </View>
-      );
-    });
-  };
-
-  const renderSubtopics = subTopics => {
-    return subTopics.map((subTopic, i) => {
-      const { name, topicID } = subTopic;
-      const isSelected = topicsIDonly.includes(topicID);
-
-      return (
-        <TouchableOpacity key={`${subTopic}-${i + 10}`} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-          <View style={{ ...styles.subRow }}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingRight: 15, flex: 1 }}>{name}</Text>
-            {isSelected ? (
-              <View style={styles.addedButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-              </View>
-            ) : (
-              <View style={styles.addButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
-      );
-    });
-  };
-
   return (
-    <View style={styles.container}>
-      <HeaderBack navigation={navigation} title="" />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}>
-        <View
-          style={{
-            width: 100,
-            height: 100,
-            borderRadius: 50,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: colors.goalPeach,
-            marginTop: 10,
-            marginBottom: 15,
-          }}
-        >
-          {/* <Icon name="briefcase" size={40} color={colors.peach} /> */}
-          <Icon name="briefcase" size={40} color={colors.peach} />
-        </View>
-        <View style={{ width: '100%' }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text
-              style={{
-                ...defaultStyles.headerMedium,
-              }}
-            >
-              Select your freelance specialties
-            </Text>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={styles.container}>
+        <HeaderBackBlank
+          navigation={navigation}
+          rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
+        />
+
+        <ScrollView style contentContainerStyle={styles.scrollView}>
+          <View style={{ width: '100%', paddingHorizontal: 5 }}>
+            <View style={styles.mainTitle}>
+              <Text style={defaultStyles.headerMedium}>Select your freelance specialties</Text>
+            </View>
+            <View style={styles.subTitle}>
+              <Text style={defaultStyles.defaultMute}>We will send you freelance opporunities in these areas</Text>
+            </View>
           </View>
-
-          <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>
-            We will send you freelance opporunities in these areas
-          </Text>
-        </View>
-
-        <View style={styles.listView}>{renderList()}</View>
-      </ScrollView>
+          <FreelanceList
+            activeTopicIDs={topicsIDonly}
+            selectedCategories={selectedCategories}
+            handleTopicSelect={handleTopicSelect}
+            handleCategorySelect={handleCategorySelect}
+          />
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -209,52 +130,19 @@ export default SelectTopicsFreelanceModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
   },
-  listView: {
-    flex: 1,
-    width: '100%',
-    paddingTop: 30,
+  scrollView: {
+    paddingBottom: 20,
+    paddingTop: 10,
+    paddingHorizontal: 10,
   },
-  categorySection: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
-  },
-  mainRow: {
+  mainTitle: {
     flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 8,
+  },
+  subTitle: {
     width: '100%',
-    height: 48,
-    alignItems: 'center',
-    paddingRight: 10,
-  },
-  subTopicsView: {
-    paddingLeft: 15,
-  },
-  subRow: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 48,
-    alignItems: 'center',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
-  },
-  // add button
-  addButton: {
-    height: 30,
-    width: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: colors.peach,
-    opacity: 0.9,
-  },
-  addedButton: {
-    height: 30,
-    width: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    backgroundColor: colors.peach,
+    paddingBottom: 20,
   },
 });

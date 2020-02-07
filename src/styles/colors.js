@@ -31,14 +31,17 @@ const colors = {
 
   // goal text
   // blue: 'rgba(14,57,237,1)',
+  red: 'rgba(255,59,48,1)', // ios
   blue: 'rgba(0,122,255,1)', // ios
-  purple: 'rgba(65,63,193,1)', // ios
+  purple: 'rgba(175,82,222,1)', // ios
   // peach: 'rgba(252,27,15,1)',
   peach: 'rgba(255,59,48,1)', // ios
   // green: 'rgba(10,141,42,1)',
   green: 'rgba(52,199,89,1)', // ios
   orange: 'rgba(255, 149, 0, 1)', // ios
   yellow: 'rgba(255, 204, 0, 1)', // ios
+  twitterBlue: 'rgba(0, 172, 237, 1)',
+  brown: 'rgba(139, 69, 19, 1)',
 
   // goal backgrounds
   goalBlue: 'rgba(0,35,229,0.1)', // ios

@@ -29,14 +29,14 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
         data={topicsList}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
-          const { name, topicID, icon, children } = item;
+          const { name, topicID, icon, color } = item;
 
           return (
             <View key={topicID} style={styles.categorySection}>
               <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Topic', { topicID })}>
                 <View style={{ ...styles.mainRow }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 50 }}>
-                    <Icon name={icon || 'bolt'} size={18} color={colors.blueGray} style={{ opacity: 0.6 }} />
+                    <Icon name={icon || 'bolt'} size={18} color={color || colors.iconGray} solid />
                   </View>
 
                   <Text
