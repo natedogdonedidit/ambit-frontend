@@ -67,7 +67,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // ////////////////////////
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Animated.FlatList
         refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
@@ -77,7 +77,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
         ListHeaderComponent={
-          <View style={{ height: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
+          <View style={{ height: 15, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
         }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
@@ -184,6 +184,13 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    borderLeftWidth: StyleSheet.hairlineWidth,
+    borderLeftColor: colors.borderBlack,
+    borderRightWidth: StyleSheet.hairlineWidth,
+    borderRightColor: colors.borderBlack,
+  },
   timeline: {
     backgroundColor: colors.lightGray,
     // height: '100%',

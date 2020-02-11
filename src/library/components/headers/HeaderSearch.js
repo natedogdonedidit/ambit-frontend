@@ -21,7 +21,7 @@ const HeaderSearch = ({ user, handleLeft, handleRight, textInput, setTextInput }
         </TouchableOpacity>
 
         <View style={styles.middle}>
-          <Icon name="search" size={15} color={colors.iconDark} />
+          <Icon name="search" size={15} color={colors.black} />
           <TextInput
             style={{ ...styles.searchBarView, ...defaultStyles.largeText, color: colors.darkGray }}
             onChangeText={val => setTextInput(val)}
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     // borderBottomWidth: StyleSheet.hairlineWidth,
     // borderBottomColor: colors.borderBlack,
-    backgroundColor: colors.lightLightGray,
+    backgroundColor: colors.white,
   },
   // top portion
   header: {

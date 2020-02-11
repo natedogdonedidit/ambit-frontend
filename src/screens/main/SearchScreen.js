@@ -94,10 +94,10 @@ const SearchScreen = ({ navigation }) => {
         textInput={textInput}
         setTextInput={setTextInput}
       />
-      <View style={{ width: '100%', height: DROPDOWNS_HEIGHT, backgroundColor: colors.lightLightGray }}>
+      <View style={{ width: '100%', height: DROPDOWNS_HEIGHT, backgroundColor: colors.white }}>
         <ScrollView
           style={{ width: '100%' }}
-          contentContainerStyle={{ ...styles.selectors }}
+          contentContainerStyle={styles.selectors}
           horizontal
           showsHorizontalScrollIndicator={false}
         >

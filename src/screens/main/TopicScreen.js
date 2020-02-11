@@ -73,7 +73,7 @@ const TopicScreen = ({ navigation }) => {
           }}
         >
           <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
-            <Icon name="pen" size={18} color="white" />
+            <Icon name="pencil-alt" size={24} color="white" />
           </View>
         </TouchableOpacity>
       </View>

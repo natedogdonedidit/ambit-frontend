@@ -55,7 +55,7 @@ const ConnectionsList = ({ navigation }) => {
         refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} />}
         onRefresh={onRefresh}
         refreshing={refetching}
-        contentContainerStyle={{ paddingTop: 8, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingTop: 15, paddingBottom: 20 }}
         style={styles.timeline}
         keyExtractor={(item, index) => item + index}
         ListEmptyComponent={
@@ -77,7 +77,7 @@ const ConnectionsList = ({ navigation }) => {
         ]}
         renderSectionHeader={({ section }) => (
           <View style={styles.sectionHeader}>
-            <Text style={defaultStyles.hugeHeavy}>{section.title}</Text>
+            <Text style={{ ...defaultStyles.hugeHeavy }}>{section.title}</Text>
           </View>
         )}
         renderItem={({ item, section }) => {
@@ -86,7 +86,7 @@ const ConnectionsList = ({ navigation }) => {
           return null;
         }}
         SectionSeparatorComponent={({ trailingSection, trailingItem }) => {
-          if (trailingSection && !trailingItem) return <View style={{ height: 8 }} />;
+          if (trailingSection && !trailingItem) return <View style={{ height: 15 }} />;
           return null;
         }}
       />

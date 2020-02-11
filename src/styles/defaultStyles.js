@@ -238,8 +238,8 @@ const styles = StyleSheet.create({
   },
   ambitLogo: {
     color: colors.purp,
-    fontSize: 22,
-    fontFamily: 'SFProDisplay-Semibold',
+    fontSize: 26,
+    fontFamily: 'Poppins-SemiBold',
   },
   paddingBottomNav: {
     paddingBottom: 50,

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -18,34 +18,55 @@ import TopicsList from 'library/components/timelines/TopicsList';
 import TimelineTabs from 'library/components/timelines/TimelineTabs';
 import { HEADER_HEIGHT } from 'styles/constants';
 
-const SLIDE_HEIGHT = HEADER_HEIGHT - StyleSheet.hairlineWidth;
+const BANNER_HEIGHT = 0;
+const TABS_HEIGHT = 42;
+const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
 
 const HomeScreen = ({ navigation }) => {
+  // ROUTE PARAMS
+
   // STATE
   const [activeTimeline, setActiveTimeline] = useState(0);
   const [scrollY] = useState(new Animated.Value(0));
+  const [scrollX] = useState(new Animated.Value(0));
 
   // OTHER HOOKS
   const insets = useSafeArea();
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
 
+  scrollX.addListener(({ value }) => {
+    if (value === 0) setActiveTimeline(0);
+    if (value === width * 1) setActiveTimeline(1);
+    if (value === width * 2) setActiveTimeline(2);
+  });
+
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   if (errorUser) return <Error error={errorUser} />;
   const { userLoggedIn } = dataUser;
 
-  const handleTopicsButton = () => {
-    console.log(horizontalScrollRef.current);
-    // horizontalScrollRef.current.scrollTo({ x: 1 * width });
-    horizontalScrollRef.current.scrollToEnd();
-  };
+  // CONSTANTS
+
+  // CUSTOM FUNCTIONS
+  const onScrollHorizontal = Animated.event(
+    [
+      {
+        nativeEvent: {
+          contentOffset: {
+            x: scrollX,
+          },
+        },
+      },
+    ],
+    { useNativeDriver: true }
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <View style={{ flex: 1 }}>
-        <ScrollView
+        <Animated.ScrollView
           // horizontal scrollView
           ref={horizontalScrollRef}
           style={{ flex: 1 }} // must give a fixed height here of the onEndReached doesnt work in FlatLists
@@ -55,14 +76,48 @@ const HomeScreen = ({ navigation }) => {
           decelerationRate="fast"
           showsHorizontalScrollIndicator={false}
           scrollEventThrottle={100}
+          onScroll={onScrollHorizontal}
         >
-          <View style={{ width }}>
-            <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
+          <View
+            style={{
+              width,
+              borderLeftWidth: StyleSheet.hairlineWidth,
+              borderLeftColor: colors.borderBlack,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderRightColor: colors.borderBlack,
+            }}
+          >
+            <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT + TABS_HEIGHT} />
           </View>
-          <View style={{ width }}>
-            <TopicsList userLoggedIn={userLoggedIn} navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
+          <View
+            style={{
+              width,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderRightColor: colors.borderBlack,
+            }}
+          >
+            <LocalTimeline
+              userLoggedIn={userLoggedIn}
+              navigation={navigation}
+              scrollY={scrollY}
+              paddingTop={SLIDE_HEIGHT + TABS_HEIGHT}
+            />
           </View>
-        </ScrollView>
+          <View
+            style={{
+              width,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderRightColor: colors.borderBlack,
+            }}
+          >
+            <TopicsList
+              userLoggedIn={userLoggedIn}
+              navigation={navigation}
+              scrollY={scrollY}
+              paddingTop={SLIDE_HEIGHT + TABS_HEIGHT}
+            />
+          </View>
+        </Animated.ScrollView>
       </View>
 
       {/* Absolute positioned stoff */}
@@ -74,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
-            <Icon name="pencil-alt" size={24} color="white" />
+            <Icon name="pen" size={18} color="white" />
           </View>
         </TouchableOpacity>
       </View>
@@ -107,10 +162,31 @@ const HomeScreen = ({ navigation }) => {
           <HeaderHome
             user={userLoggedIn}
             handleMiddle={() => null}
+            handleRight={() => navigation.navigate('Search')}
             navigation={navigation}
-            handleTopicsButton={handleTopicsButton}
+          />
+          <View
+            // custom banner (optional)
+            style={{ width: '100%', height: BANNER_HEIGHT, backgroundColor: 'tomato' }}
           />
         </Animated.View>
+
+        <View
+          style={{
+            backgroundColor: 'white',
+            borderBottomColor: colors.borderBlack,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+          }}
+        >
+          <TimelineTabs
+            activeTimeline={activeTimeline}
+            setActiveTimeline={setActiveTimeline}
+            height={TABS_HEIGHT}
+            scrollX={scrollX}
+            width={width}
+            horizontalScrollRef={horizontalScrollRef}
+          />
+        </View>
       </Animated.View>
 
       {/* Gives a solid background to the StatusBar */}

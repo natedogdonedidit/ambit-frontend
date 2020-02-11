@@ -14,17 +14,21 @@ const HeaderTopic = ({ navigation, handleMiddle, handleRight, user, height = 44,
   return (
     <View style={{ ...styles.container, height }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>
-        <Ionicons name="ios-arrow-back" size={26} color={colors.iconDark} />
+        <Ionicons name="ios-arrow-back" size={28} color={colors.purp} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.headerSmall }}>{topicName}</Text>
       </TouchableOpacity>
       <View style={styles.rightSide}>
-        <TouchableOpacity onPress={handleRight}>
-          <Icon name="star" solid size={18} color={colors.yellow} style={{ paddingRight: 12 }} />
+        <TouchableOpacity onPress={() => null} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
+          <View style={styles.iconCircleBlank}>
+            <Icon name="star" solid size={20} color={colors.yellow} />
+          </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleRight}>
-          <Icon name="search" size={18} color={colors.iconDark} />
+        <TouchableOpacity onPress={handleRight} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
+          <View style={styles.iconCircle}>
+            <Icon name="search" size={16} color={colors.black} />
+          </View>
         </TouchableOpacity>
       </View>
     </View>
@@ -56,6 +60,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  iconCircle: {
+    height: 34,
+    width: 34,
+    marginLeft: 5,
+    borderRadius: 17,
+    backgroundColor: colors.systemGray5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconCircleBlank: {
+    height: 34,
+    width: 34,
+    marginLeft: 8,
+    borderRadius: 17,
+    // backgroundColor: colors.yellow,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

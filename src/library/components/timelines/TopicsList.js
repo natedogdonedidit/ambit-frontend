@@ -9,9 +9,9 @@ import { topicsList } from 'library/utils/lists';
 
 const TopicsList = ({ navigation, scrollY, paddingTop }) => {
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <Animated.FlatList
-        contentContainerStyle={{ paddingTop: paddingTop + 8, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingTop: paddingTop + 15, paddingBottom: 20 }}
         style={styles.timeline}
         showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
@@ -65,6 +65,11 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    borderRightWidth: StyleSheet.hairlineWidth,
+    borderRightColor: colors.borderBlack,
+  },
   categorySection: {
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,

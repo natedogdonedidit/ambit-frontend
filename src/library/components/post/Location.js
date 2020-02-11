@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 24,
-    borderRadius: 6,
+    borderRadius: 10,
     paddingHorizontal: 9,
     backgroundColor: colors.grayButton,
     marginRight: 6,

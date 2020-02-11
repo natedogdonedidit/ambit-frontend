@@ -18,7 +18,9 @@ const HeaderMatches = ({ navigation, handleMiddle, handleRight, user }) => {
         <Text style={{ ...defaultStyles.headerSmall, color: colors.black }}>Matches</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-        <Icon name="search" size={18} color={colors.iconDark} />
+        <View style={styles.iconCircle}>
+          <Icon name="search" size={16} color={colors.black} />
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -31,7 +33,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingLeft: 12,
+    paddingRight: 10,
     backgroundColor: 'white',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
@@ -48,6 +51,15 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  iconCircle: {
+    height: 34,
+    width: 34,
+    marginLeft: 5,
+    borderRadius: 17,
+    backgroundColor: colors.systemGray5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
