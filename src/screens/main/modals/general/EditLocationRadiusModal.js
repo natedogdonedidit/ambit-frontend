@@ -65,11 +65,13 @@ const EditLocationRadiusModal = ({ navigation }) => {
       const response = await fetch(url);
       if (response.status === 200) {
         const responseJson = await response.json();
+        // console.log(responseJson);
         if (responseJson.response) {
           const loc = `${responseJson.response.view[0].result[0].location.address.city}, ${responseJson.response.view[0].result[0].location.address.state}`;
           const lat = responseJson.response.view[0].result[0].location.displayPosition.latitude;
           const lon = responseJson.response.view[0].result[0].location.displayPosition.longitude;
-          return { location: loc, locationLat: lat, locationLon: lon };
+          const id = responseJson.response.view[0].result[0].location.locationId;
+          return { location: loc, locationID: id, locationLat: lat, locationLon: lon };
         }
       }
       return null;

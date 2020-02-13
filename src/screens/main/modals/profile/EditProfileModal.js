@@ -1,22 +1,18 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,
-  Modal,
-  SafeAreaView,
   View,
   Text,
   Image,
   TextInput,
   TouchableOpacity,
   Alert,
-  ImageBackground,
   KeyboardAvoidingView,
   ScrollView,
   Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
-import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
@@ -50,6 +46,7 @@ const EditProfileModal = ({ navigation }) => {
   const [lastName, setLastName] = useState(user.lastName);
   const [headline, setHeadline] = useState(user.headline || headlineDefault);
   const [location, setLocation] = useState(user.location);
+  const [locationID, setLocationID] = useState(user.locationID);
   const [locationLat, setLocationLat] = useState(user.locationLat);
   const [locationLon, setLocationLon] = useState(user.locationLon);
   const [bio, setBio] = useState(user.bio);
@@ -69,6 +66,7 @@ const EditProfileModal = ({ navigation }) => {
         website,
         headline,
         location,
+        locationID,
         locationLat,
         locationLon,
         profilePic,
@@ -160,6 +158,7 @@ const EditProfileModal = ({ navigation }) => {
   const handleLocationSelect = locObject => {
     if (locObject) {
       setLocation(locObject.location);
+      setLocationID(locObject.locationID);
       setLocationLat(locObject.locationLat);
       setLocationLon(locObject.locationLon);
     }

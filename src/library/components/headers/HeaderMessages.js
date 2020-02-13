@@ -8,17 +8,19 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { HEADER_HEIGHT } from 'styles/constants';
 
-const HeaderHome = ({ navigation, handleMiddle, handleRight, user }) => {
+const HeaderMessages = ({ navigation, handleMiddle, handleRight, user }) => {
   return (
     <View style={{ ...styles.container }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
         <ProfilePic user={user} size={30} disableVideo disableClick />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
-        <Text style={{ ...defaultStyles.ambitLogo }}>Ambit</Text>
+        <Text style={{ ...defaultStyles.headerSmall, color: colors.black }}>Inbox</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-        <Icon name="search" size={18} color={colors.iconDark} />
+        {/* <View style={styles.iconCircle}> */}
+        <Icon name="cog" size={20} color={colors.iconDark} />
+        {/* </View> */}
       </TouchableOpacity>
     </View>
   );
@@ -31,10 +33,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingLeft: 12,
+    paddingRight: 12,
     backgroundColor: 'white',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: colors.borderBlack,
   },
   leftSide: {
     width: 60,
@@ -49,6 +52,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  iconCircle: {
+    height: 34,
+    width: 34,
+    marginLeft: 5,
+    borderRadius: 17,
+    backgroundColor: colors.systemGray5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
-export default HeaderHome;
+export default HeaderMessages;

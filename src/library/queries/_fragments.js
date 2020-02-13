@@ -8,6 +8,9 @@ export const MinimalUser = gql`
     profilePic
     headline
     location
+    locationID
+    locationLat
+    locationLon
     intro {
       id
       title
@@ -35,6 +38,7 @@ export const LoggedInUser = gql`
     email
     profilePic
     location
+    locationID
     locationLat
     locationLon
     topicsFocus {
@@ -90,6 +94,9 @@ export const FullExperience = gql`
     endDateMonth
     endDateYear
     location
+    locationID
+    locationLat
+    locationLon
     currentRole
   }
 `;
@@ -104,6 +111,9 @@ export const FullEducation = gql`
     endDateMonth
     endDateYear
     location
+    locationID
+    locationLat
+    locationLon
     currentRole
   }
 `;
@@ -150,6 +160,9 @@ export const ListPosts = gql`
       }
     }
     location
+    locationID
+    locationLat
+    locationLon
     content
     images
     video
@@ -295,4 +308,41 @@ export const DetailedUser = gql`
   ${FullSkills}
   ${FullExperience}
   ${FullEducation}
+`;
+
+export const AllChats = gql`
+  fragment AllChats on Chat {
+    id
+    updatedAt
+    users {
+      ...LoggedInUser
+    }
+    latestMessage {
+      content
+    }
+  }
+  ${LoggedInUser}
+`;
+
+export const DetailedChat = gql`
+  fragment DetailedChat on Chat {
+    id
+    updatedAt
+    users {
+      ...LoggedInUser
+    }
+    messages {
+      id
+      createdAt
+      from {
+        id
+        firstName
+        lastName
+        name
+        profilePic
+      }
+      content
+    }
+  }
+  ${LoggedInUser}
 `;

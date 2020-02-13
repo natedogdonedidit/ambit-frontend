@@ -236,7 +236,7 @@ PODS:
     - React
   - RNCMaskedView (0.1.1):
     - React
-  - RNGestureHandler (1.4.1):
+  - RNGestureHandler (1.5.6):
     - React
   - RNImageCropPicker (0.26.1):
     - QBImagePickerController
@@ -411,7 +411,7 @@ SPEC CHECKSUMS:
   ReactCommon: a6a294e7028ed67b926d29551aa9394fd989c24c
   RNCAsyncStorage: 621bad7a889b5bf1583a52547f2dcd3a4d1ff15e
   RNCMaskedView: 6200428cc4fb088ee7ae64a648e39bd8f4e70b41
-  RNGestureHandler: 4cb47a93019c1a201df2644413a0a1569a51c8aa
+  RNGestureHandler: 911d3b110a7a233a34c4f800e7188a84b75319c6
   RNImageCropPicker: e1d8c3381e5b05a1bdcd13ea57a4f1c020a09cef
   RNReanimated: 6abbbae2e5e72609d85aabd92a982a94566885f1
   RNScreens: f28b48b8345f2f5f39ed6195518291515032a788

@@ -15,7 +15,7 @@ const GoalsList = ({ handleGoalSelect }) => {
       <TouchableOpacity key={goal.name} activeOpacity={0.8} onPress={() => handleGoalSelect(goal)}>
         <View style={[styles.mainRow, i === goalsList.length - 1 && styles.addBottomBorder]}>
           <View style={styles.iconView}>
-            <Icon name={goal.logo} solid size={20} color={goal.primaryColor} style={{}} />
+            <Icon name={goal.icon} solid size={20} color={goal.primaryColor} style={{}} />
           </View>
 
           <Text style={styles.mainRowText}>{goal.name}</Text>

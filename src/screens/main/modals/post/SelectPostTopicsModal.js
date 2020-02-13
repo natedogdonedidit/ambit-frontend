@@ -14,7 +14,7 @@ const SelectPostTopicsModal = ({ navigation }) => {
   // PARAMS
   const goal = navigation.getParam('goal', {
     heading: '',
-    logo: '',
+    icon: '',
     primaryColor: colors.blue,
     secondaryColor: colors.blue,
     modalType: 'none',

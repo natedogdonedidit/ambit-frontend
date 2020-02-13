@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
     // justifyContent: 'flex-start',
     // alignItems: 'center',
     backgroundColor: colors.white,
+    borderBottomColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   tab: {
     height: '100%',

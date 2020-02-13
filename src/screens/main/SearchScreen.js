@@ -23,15 +23,19 @@ const SearchScreen = ({ navigation }) => {
   // PARAMS
   const goalToSearch = navigation.getParam('goalToSearch', null);
   const topicToSearch = navigation.getParam('topicToSearch', '');
+  const locationToSearch = navigation.getParam('locationToSearch', null);
+  const locationLatToSearch = navigation.getParam('locationLatToSearch', null);
+  const locationLonToSearch = navigation.getParam('locationLonToSearch', null);
 
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
   const [textInput, setTextInput] = useState('');
   const [goal, setGoal] = useState(goalToSearch || null);
   const [topicID, setTopic] = useState(topicToSearch);
-  const [location, setLocation] = useState(null);
-  const [locationLat, setLocationLat] = useState(null);
-  const [locationLon, setLocationLon] = useState(null);
+  const [location, setLocation] = useState(locationToSearch);
+  const [locationID, setLocationID] = useState(null);
+  const [locationLat, setLocationLat] = useState(locationLatToSearch);
+  const [locationLon, setLocationLon] = useState(locationLonToSearch);
   const [activeTab, setActiveTab] = useState('Top');
 
   // OTHER HOOKS
@@ -59,6 +63,7 @@ const SearchScreen = ({ navigation }) => {
 
   const clearGoal = () => {
     setGoal(null);
+    setTopic('');
   };
 
   const clearTopic = () => {
@@ -69,12 +74,14 @@ const SearchScreen = ({ navigation }) => {
     setLocation(null);
     setLocationLat(null);
     setLocationLon(null);
+    setLocationID(null);
   };
 
   // must pass this to location modal
   const handleLocationSelect = locObject => {
     if (locObject) {
       setLocation(locObject.location);
+      setLocationID(locObject.locationID);
       setLocationLat(locObject.locationLat);
       setLocationLon(locObject.locationLon);
     }

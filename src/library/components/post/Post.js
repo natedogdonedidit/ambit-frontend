@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { timeDifference, getGoalInfo } from 'library/utils';
+import { timeDifference } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
@@ -147,7 +147,14 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
             <View style={styles.topics}>
               {post.topics.length > 0 &&
                 post.topics.map(topic => <Topic key={topic.id} navigation={navigation} topicToShow={topic} />)}
-              {!!post.location && <Location navigation={navigation} location={post.location} />}
+              {!!post.location && (
+                <Location
+                  navigation={navigation}
+                  location={post.location}
+                  locationLat={post.locationLat}
+                  locationLon={post.locationLon}
+                />
+              )}
             </View>
           )}
 

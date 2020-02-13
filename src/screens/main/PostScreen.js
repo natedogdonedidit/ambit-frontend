@@ -20,6 +20,10 @@ const PostScreen = ({ navigation }) => {
   // ROUTE PARAMS
   const postToQuery = navigation.getParam('post', null); // all the data from parent post down to updates
 
+  // HOOKS
+  const currentTime = new Date();
+  const { currentUserId } = useContext(UserContext);
+
   // QUERIES
   // this could be optimized to retrieve the comments seperately
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
@@ -37,8 +41,6 @@ const PostScreen = ({ navigation }) => {
       </View>
     );
   }
-  const currentTime = new Date();
-  const { currentUserId } = useContext(UserContext);
 
   const post = data.singlePost.post || null;
   const matches = data.singlePost.matches || null;

@@ -40,12 +40,11 @@ const CustomDrawer = ({ navigation }) => {
           <ProfilePic user={userLoggedIn} size={30} navigation={navigation} disableVideo />
           <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.firstName}!</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>My Profile</Text>
-            </View>
-          </TouchableOpacity> */}
-
+        <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>My Profile</Text>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('CreateIntroModal', { userLoggedIn });

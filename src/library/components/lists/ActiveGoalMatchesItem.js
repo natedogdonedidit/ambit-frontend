@@ -34,7 +34,7 @@ const ActiveGoalMatchesItem = ({ navigation, item }) => {
       onPress={() => navigation.navigate('PostMatches', { post, matches })}
     >
       <View style={styles.iconView}>
-        <Icon name={getGoalInfo(post.goal, 'logo')} size={24} color={getGoalInfo(post.goal, 'primaryColor')} solid />
+        <Icon name={getGoalInfo(post.goal, 'icon')} size={24} color={getGoalInfo(post.goal, 'primaryColor')} solid />
       </View>
       <View style={styles.rightSide}>
         <Text>

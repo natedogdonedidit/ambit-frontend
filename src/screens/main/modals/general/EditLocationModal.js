@@ -1,15 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
-  Alert,
-} from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
@@ -54,11 +44,13 @@ const EditLocationModal = ({ navigation }) => {
       const response = await fetch(url);
       if (response.status === 200) {
         const responseJson = await response.json();
+        // console.log(responseJson);
         if (responseJson.response) {
           const loc = `${responseJson.response.view[0].result[0].location.address.city}, ${responseJson.response.view[0].result[0].location.address.state}`;
           const lat = responseJson.response.view[0].result[0].location.displayPosition.latitude;
           const lon = responseJson.response.view[0].result[0].location.displayPosition.longitude;
-          return { location: loc, locationLat: lat, locationLon: lon };
+          const id = responseJson.response.view[0].result[0].location.locationId;
+          return { location: loc, locationID: id, locationLat: lat, locationLon: lon };
         }
       }
       return null;
@@ -84,6 +76,7 @@ const EditLocationModal = ({ navigation }) => {
   const handleSelect = async id => {
     try {
       const locObject = await getSingleLocationFromAPI(id);
+      // console.log(locObject);
       if (!locObject) {
         Alert.alert('Oh no!', 'We could not get that location at this time. Try again later!', [
           { text: 'OK', onPress: () => console.log('OK Pressed') },

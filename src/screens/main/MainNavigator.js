@@ -17,6 +17,7 @@ import SettingsScreen from './SettingsScreen';
 import HomeScreen from './HomeScreen';
 import ConnectionsScreen from './ConnectionsScreen';
 import MessagesScreen from './MessagesScreen';
+import ChatScreen from './ChatScreen';
 import NotificationsScreen from './NotificationsScreen';
 import ProfileScreen from './ProfileScreen';
 import PostScreen from './PostScreen';
@@ -153,6 +154,9 @@ const NotificationsStack = createStackNavigator(
 const InboxStack = createStackNavigator(
   {
     Messages: MessagesScreen,
+    Chat: {
+      screen: ChatScreen,
+    },
     Profile: {
       screen: ProfileScreen,
     },
@@ -173,6 +177,20 @@ const InboxStack = createStackNavigator(
     }),
   }
 );
+
+// required for GiftedChat TextInput whitespace offset issue
+InboxStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  for (let i = 0; i < navigation.state.routes.length; i++) {
+    if (navigation.state.routes[i].routeName === 'Chat') {
+      tabBarVisible = false;
+    }
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 
 const TabNavigator = createBottomTabNavigator(
   {

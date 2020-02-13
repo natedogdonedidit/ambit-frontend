@@ -45,6 +45,7 @@ const NewPostModal = ({ navigation }) => {
   const [video, setVideo] = useState('');
   const [pitch, setPitch] = useState('');
   const [location, setLocation] = useState(userLoggedIn.location);
+  const [locationID, setLocationID] = useState(userLoggedIn.locationID);
   const [locationLat, setLocationLat] = useState(userLoggedIn.locationLat);
   const [locationLon, setLocationLon] = useState(userLoggedIn.locationLon);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -64,6 +65,7 @@ const NewPostModal = ({ navigation }) => {
         subField: subField ? { connect: { topicID: subField } } : null,
         topics: topics.length > 0 ? { connect: topics } : null,
         location,
+        locationID,
         locationLat,
         locationLon,
         content,
@@ -207,6 +209,7 @@ const NewPostModal = ({ navigation }) => {
   const handleLocationSelect = locObject => {
     if (locObject) {
       setLocation(locObject.location);
+      setLocationID(locObject.locationID);
       setLocationLat(locObject.locationLat);
       setLocationLon(locObject.locationLon);
     }
@@ -320,7 +323,7 @@ const NewPostModal = ({ navigation }) => {
       return (
         <>
           <View style={styles.leftSide}>
-            <Icon name={goal.logo} solid size={20} color={goal.primaryColor} />
+            <Icon name={goal.icon} solid size={20} color={goal.primaryColor} />
           </View>
           <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>{goal.name}</Text>
           <TouchableOpacity
@@ -337,7 +340,7 @@ const NewPostModal = ({ navigation }) => {
     return (
       <>
         <View style={styles.leftSide}>
-          <Icon name={goal.logo} solid size={20} color={goal.primaryColor} />
+          <Icon name={goal.icon} solid size={20} color={goal.primaryColor} />
         </View>
         <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
           <Text>

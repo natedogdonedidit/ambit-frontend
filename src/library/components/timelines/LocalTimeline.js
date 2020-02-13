@@ -1,16 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  Text,
-  ScrollView,
-  StatusBar,
-  FlatList,
-  Animated,
-  RefreshControl,
-  ActivityIndicator,
-} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator } from 'react-native';
 import { useQuery } from 'react-apollo';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -23,6 +12,7 @@ import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
 const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
+  const [locationID, setLocationID] = useState(userLoggedIn.locationID);
   const [locationLat, setLocationLat] = useState(userLoggedIn.locationLat || 37.77713);
   const [locationLon, setLocationLon] = useState(userLoggedIn.locationLon || -122.41964);
   const [location, setLocation] = useState(userLoggedIn.location || 'San Francisco, CA');
@@ -90,6 +80,7 @@ const LocalTimeline = ({ userLoggedIn, navigation, scrollY, paddingTop }) => {
   const handleLocationSelect = locObject => {
     if (locObject) {
       setLocation(locObject.location);
+      setLocationID(locObject.locationID);
       setLocationLat(locObject.locationLat);
       setLocationLon(locObject.locationLon);
     }

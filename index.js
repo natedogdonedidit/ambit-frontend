@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AppRegistry, Platform } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-boost';
@@ -10,6 +10,9 @@ import { UserContextProvider } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
 import AppContainer from './App';
 import { name as appName } from './app.json';
+
+// eslint-disable-next-line no-undef
+GLOBAL.Blob = null; // required so Network Inspect works on RNdebugger
 
 const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors) graphQLErrors.map(({ message }) => console.log(message));
@@ -32,8 +35,8 @@ const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/',
     // ios: 'http://10.0.2.2:4000/',
-    // ios: 'http://192.168.0.87:4000', // home
-    ios: 'http://192.168.123.162:4000', // work
+    ios: 'http://192.168.0.87:4000', // home
+    // ios: 'http://192.168.123.223:4000', // work
     // android: 'http://10.0.2.2:4000/',
     // android: 'http://127.0.0.1:4000/',
   }),
