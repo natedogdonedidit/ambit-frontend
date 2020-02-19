@@ -1,18 +1,23 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useQuery } from '@apollo/react-hooks';
 // import { useSafeArea } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { HEADER_HEIGHT } from 'styles/constants';
+import CURRENT_USER_QUERY_HEADER from 'library/queries/CURRENT_USER_QUERY_HEADER';
 
-const HeaderMessages = ({ navigation, handleMiddle, handleRight, user }) => {
+const HeaderMessages = ({ navigation, handleMiddle, handleRight }) => {
+  const { loading, error, data } = useQuery(CURRENT_USER_QUERY_HEADER);
+  const { userLoggedIn } = data;
+
   return (
     <View style={{ ...styles.container }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
-        <ProfilePic user={user} size={30} disableVideo disableClick />
+        <ProfilePic user={userLoggedIn} size={30} disableVideo disableClick />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.headerSmall, color: colors.black }}>Inbox</Text>
@@ -36,8 +41,8 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     paddingRight: 12,
     backgroundColor: 'white',
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   leftSide: {
     width: 60,

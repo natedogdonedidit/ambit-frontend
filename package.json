@@ -14,9 +14,13 @@
     "@react-native-community/cameraroll": "^1.2.1",
     "@react-native-community/cli": "^2.9.0",
     "@react-native-community/masked-view": "^0.1.1",
-    "apollo-boost": "^0.4.4",
-    "apollo-link-context": "^1.0.18",
-    "apollo-link-error": "^1.1.11",
+    "apollo-cache-inmemory": "^1.6.5",
+    "apollo-client": "^2.6.8",
+    "apollo-link": "^1.2.13",
+    "apollo-link-context": "^1.0.19",
+    "apollo-link-error": "^1.1.12",
+    "apollo-link-http": "^1.5.16",
+    "apollo-link-ws": "^1.0.19",
     "date-fns": "^2.0.0",
     "graphql": "^14.4.2",
     "graphql-anywhere": "^4.2.4",
@@ -43,7 +47,8 @@
     "react-navigation": "^4.0.10",
     "react-navigation-drawer": "^2.2.2",
     "react-navigation-stack": "^2.0.0-alpha.25",
-    "react-navigation-tabs": "^2.5.6"
+    "react-navigation-tabs": "^2.5.6",
+    "subscriptions-transport-ws": "^0.9.16"
   },
   "devDependencies": {
     "@babel/core": "7.5.5",

@@ -10,7 +10,8 @@ import ALL_CHATS_QUERY from 'library/queries/ALL_CHATS_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import FullWidthTabs from 'library/components/UI/FullWidthTabs';
-import ChatListItem from 'library/components/messages/ChatListItem';
+import ChatListItem from 'library/components/chat/ChatListItem';
+import { sortChats } from 'library/utils';
 
 const MessagesScreen = ({ navigation }) => {
   // CONSTANTS
@@ -23,48 +24,56 @@ const MessagesScreen = ({ navigation }) => {
   const currentTime = new Date();
 
   // QUERIES
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
-  if (errorUser) return <Error error={errorUser} />;
-  if (loadingUser) return <Loader backgroundColor={colors.lightGray} loading={loadingUser} />;
-  const { userLoggedIn } = dataUser;
-
-  const { loading: loadingChats, error, data, refetch, networkStatus } = useQuery(ALL_CHATS_QUERY, {
+  const { loading: loadingUser, error: errorUser, data: dataUser, refetch, networkStatus } = useQuery(CURRENT_USER_QUERY, {
     notifyOnNetworkStatusChange: true,
   });
-
   const refetching = networkStatus === 4;
   const loading = networkStatus === 1;
 
-  if (error) return <Error error={error} />;
-  if (loading) {
+  if (errorUser) return <Error error={errorUser} />;
+  if (loading)
     return (
       <SafeAreaView style={styles.container}>
-        <HeaderMessages
-          user={userLoggedIn}
-          handleMiddle={() => null}
-          handleRight={() => navigation.navigate('Search')}
-          navigation={navigation}
-        />
-        <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} />
+        <HeaderMessages handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
+        {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
         <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
       </SafeAreaView>
     );
-  }
+  const { userLoggedIn } = dataUser;
 
-  const chats = data.allMyChats || [];
-  // console.log(chats);
+  // const { loading: loadingChats, error, data, refetch, networkStatus } = useQuery(ALL_CHATS_QUERY, {
+  //   fetchPolicy: 'cache-and-network',
+  //   notifyOnNetworkStatusChange: true,
+  // });
+
+  // const refetching = networkStatus === 4;
+  // const loading = networkStatus === 1;
+
+  // if (error) return <Error error={error} />;
+  // if (loading) {
+  //   return (
+  //     <SafeAreaView style={styles.container}>
+  //       <HeaderMessages
+  //         user={userLoggedIn}
+  //         handleMiddle={() => null}
+  //         handleRight={() => navigation.navigate('Search')}
+  //         navigation={navigation}
+  //       />
+  //       {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
+  //       <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
+  //     </SafeAreaView>
+  //   );
+  // }
+
+  const chats = userLoggedIn.chats || [];
+  chats.sort(sortChats); // sort chats by date
 
   // CUSTOM FUNCTIONS
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderMessages
-        user={userLoggedIn}
-        handleMiddle={() => null}
-        handleRight={() => navigation.navigate('Search')}
-        navigation={navigation}
-      />
-      <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} />
+      <HeaderMessages handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
+      {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
       <FlatList
         // refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={refetch}
@@ -77,7 +86,7 @@ const MessagesScreen = ({ navigation }) => {
         }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-            Sorry, no posts to display at this time
+            Sorry, no chats to display at this time
           </Text>
         }
         data={chats}

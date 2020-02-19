@@ -1,18 +1,23 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useQuery } from '@apollo/react-hooks';
 // import { useSafeArea } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import CURRENT_USER_QUERY_HEADER from 'library/queries/CURRENT_USER_QUERY_HEADER';
 import { HEADER_HEIGHT } from 'styles/constants';
 
-const HeaderHome = ({ navigation, handleMiddle, user, handleTopicsButton }) => {
+const HeaderHome = ({ navigation, handleMiddle, handleTopicsButton }) => {
+  const { loading, error, data } = useQuery(CURRENT_USER_QUERY_HEADER);
+  const { userLoggedIn } = data;
+
   return (
     <View style={{ ...styles.container }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
-        <ProfilePic user={user} size={30} disableVideo disableClick />
+        <ProfilePic user={userLoggedIn} size={30} disableVideo disableClick />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.ambitLogo }}>ambit.</Text>

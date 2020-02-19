@@ -94,6 +94,9 @@ const HomeStack = createStackNavigator(
     MyHats: {
       screen: MyHatsScreen,
     },
+    Chat: {
+      screen: ChatScreen,
+    },
   },
   {
     initialRouteName: 'Home',
@@ -102,6 +105,19 @@ const HomeStack = createStackNavigator(
     }),
   }
 );
+// required for GiftedChat TextInput whitespace offset issue
+HomeStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  for (let i = 0; i < navigation.state.routes.length; i++) {
+    if (navigation.state.routes[i].routeName === 'Chat') {
+      tabBarVisible = false;
+    }
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 
 const PeopleStack = createStackNavigator(
   {
@@ -118,6 +134,9 @@ const PeopleStack = createStackNavigator(
     Update: {
       screen: UpdateScreen,
     },
+    Chat: {
+      screen: ChatScreen,
+    },
   },
   {
     initialRouteName: 'Connections',
@@ -126,6 +145,19 @@ const PeopleStack = createStackNavigator(
     }),
   }
 );
+// required for GiftedChat TextInput whitespace offset issue
+PeopleStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  for (let i = 0; i < navigation.state.routes.length; i++) {
+    if (navigation.state.routes[i].routeName === 'Chat') {
+      tabBarVisible = false;
+    }
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 
 const NotificationsStack = createStackNavigator(
   {
@@ -142,6 +174,9 @@ const NotificationsStack = createStackNavigator(
     Update: {
       screen: UpdateScreen,
     },
+    Chat: {
+      screen: ChatScreen,
+    },
   },
   {
     initialRouteName: 'Notifications',
@@ -150,6 +185,19 @@ const NotificationsStack = createStackNavigator(
     }),
   }
 );
+// required for GiftedChat TextInput whitespace offset issue
+NotificationsStack.navigationOptions = ({ navigation }) => {
+  let tabBarVisible = true;
+  for (let i = 0; i < navigation.state.routes.length; i++) {
+    if (navigation.state.routes[i].routeName === 'Chat') {
+      tabBarVisible = false;
+    }
+  }
+
+  return {
+    tabBarVisible,
+  };
+};
 
 const InboxStack = createStackNavigator(
   {

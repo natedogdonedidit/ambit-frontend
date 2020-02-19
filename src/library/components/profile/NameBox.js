@@ -96,7 +96,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
             <SmallGrayButton onPress={() => null} buttonStyle={{ marginRight: 10 }}>
               Meet
             </SmallGrayButton>
-            <MessageButton />
+            <MessageButton onPress={() => navigation.navigate('Chat', { otherUserPassedIn: user })} />
           </>
         )}
       </View>

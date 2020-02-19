@@ -1,11 +1,23 @@
 import React, { useEffect } from 'react';
 import { AppRegistry, Platform } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
-import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-boost';
-import { setContext } from 'apollo-link-context';
-import { onError } from 'apollo-link-error';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+// APOLLO SETUP BEFORE SUBSCRIPTIONS
+// import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-boost';
+// import { onError } from 'apollo-link-error';
+// import { setContext } from 'apollo-link-context';
+
+// APOLLO SETUP AFTER SUBSCRIPTIONS
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
+import { setContext } from 'apollo-link-context';
+import { WebSocketLink } from 'apollo-link-ws';
+import { ApolloLink, split } from 'apollo-link';
+import { getMainDefinition } from 'apollo-utilities';
+
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UserContextProvider } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
 import AppContainer from './App';
@@ -31,22 +43,43 @@ const authLink = setContext(async (req, { headers }) => {
   };
 });
 
+// Create an http link:
 const httpLink = new HttpLink({
   uri: Platform.select({
-    // ios: 'http://localhost:4000/',
-    // ios: 'http://10.0.2.2:4000/',
-    ios: 'http://192.168.0.87:4000', // home
-    // ios: 'http://192.168.123.223:4000', // work
-    // android: 'http://10.0.2.2:4000/',
-    // android: 'http://127.0.0.1:4000/',
+    // ios: 'http://localhost:4000/', // simulator
+    ios: 'http://192.168.123.106:4000', // work
+    // ios: 'http://192.168.0.87:4000', // home
   }),
 });
 
-// combine backend URL with headers
-// const link = authLink.concat(httpLink);
+// Create a WebSocket link:
+const wsLink = new WebSocketLink({
+  uri: Platform.select({
+    // ios: 'ws://localhost:4000/', // simulator
+    ios: 'ws://192.168.123.106:4000', // work
+    // ios: 'ws://192.168.0.87:4000', // home
+  }),
+  options: {
+    reconnect: true,
+  },
+});
+
+// using the ability to split links, you can send data to each link
+// depending on what kind of operation is being sent
+const link = split(
+  // split based on operation type
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+  },
+  wsLink,
+  httpLink
+);
+
+// create apollo client
 const client = new ApolloClient({
   connectToDevTools: true,
-  link: ApolloLink.from([errorLink, authLink, httpLink]),
+  link: ApolloLink.from([errorLink, authLink, link]),
   cache: new InMemoryCache({
     // dataIdFromObject: o => o.id,
   }),

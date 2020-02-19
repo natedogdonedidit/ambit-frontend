@@ -10,8 +10,8 @@ import { getGoalInfo } from 'library/utils';
 
 const ActiveGoalMatchesItem = ({ navigation, item }) => {
   const { post, matches } = item;
-  console.log(post);
-  console.log(matches);
+  // console.log(post);
+  // console.log(matches);
 
   if (!matches || matches.length < 1) return null;
 

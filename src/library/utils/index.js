@@ -45,6 +45,14 @@ export const sortExperiences = (a, b) => {
   return 1;
 };
 
+export const sortChats = (a, b) => {
+  if (a.latestMessage.createdAt > b.latestMessage.createdAt) {
+    return -1;
+  }
+
+  return 1;
+};
+
 export async function requestCameraRollPermission() {
   try {
     const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {

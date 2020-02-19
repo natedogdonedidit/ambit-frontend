@@ -26,21 +26,44 @@ export const MinimalUser = gql`
   }
 `;
 
-export const LoggedInUser = gql`
-  fragment LoggedInUser on User {
+export const MessageFragment = gql`
+  fragment MessageFragment on Message {
     id
     createdAt
-    name
+    from {
+      id
+      firstName
+      lastName
+      name
+      profilePic
+    }
+    content
+  }
+`;
+
+export const BasicChat = gql`
+  fragment BasicChat on Chat {
+    id
+    updatedAt
+    users {
+      ...MinimalUser
+    }
+    latestMessage {
+      createdAt
+      content
+    }
+  }
+  ${MinimalUser}
+`;
+
+export const LoggedInUser = gql`
+  fragment LoggedInUser on User {
+    ...MinimalUser
+    createdAt
     firstName
     lastName
-    headline
     bio
     email
-    profilePic
-    location
-    locationID
-    locationLat
-    locationLon
     topicsFocus {
       topicID
       name
@@ -61,19 +84,27 @@ export const LoggedInUser = gql`
       topicID
       name
     }
-    intro {
-      id
-      title
-      items {
-        id
-        type
-        url
-        link
-        text
-        duration
-      }
+    chats {
+      ...BasicChat
     }
   }
+  ${MinimalUser}
+  ${BasicChat}
+`;
+
+export const DetailedChat = gql`
+  fragment DetailedChat on Chat {
+    id
+    updatedAt
+    users {
+      ...LoggedInUser
+    }
+    messages {
+      ...MessageFragment
+    }
+  }
+  ${LoggedInUser}
+  ${MessageFragment}
 `;
 
 export const FullSkills = gql`
@@ -308,41 +339,4 @@ export const DetailedUser = gql`
   ${FullSkills}
   ${FullExperience}
   ${FullEducation}
-`;
-
-export const AllChats = gql`
-  fragment AllChats on Chat {
-    id
-    updatedAt
-    users {
-      ...LoggedInUser
-    }
-    latestMessage {
-      content
-    }
-  }
-  ${LoggedInUser}
-`;
-
-export const DetailedChat = gql`
-  fragment DetailedChat on Chat {
-    id
-    updatedAt
-    users {
-      ...LoggedInUser
-    }
-    messages {
-      id
-      createdAt
-      from {
-        id
-        firstName
-        lastName
-        name
-        profilePic
-      }
-      content
-    }
-  }
-  ${LoggedInUser}
 `;

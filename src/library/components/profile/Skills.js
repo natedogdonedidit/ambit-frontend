@@ -41,7 +41,7 @@ const Skills = ({ navigation, skills, setSkills, height = 44, editable = false }
   };
 
   const renderSkills = () => {
-    console.log('skills', skills);
+    // console.log('skills', skills);
     if (!skills) return null;
     return skills.map((skill, i) => (
       <View key={i} style={i === skills.length - 1 ? { ...styles.skillDoubleBorder, height } : { ...styles.skill, height }}>

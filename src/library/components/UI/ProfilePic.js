@@ -23,9 +23,11 @@ const ProfilePic = ({
 
   // const hasPitch = !!pitch;
   let hasIntro = false;
-  if (user.intro) {
-    if (user.intro.items.length > 0) {
-      hasIntro = true;
+  if (user) {
+    if (user.intro) {
+      if (user.intro.items.length > 0) {
+        hasIntro = true;
+      }
     }
   }
 

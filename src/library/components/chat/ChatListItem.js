@@ -9,25 +9,25 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 
 const ChatListItem = ({ navigation, chat, userLoggedIn, currentTime }) => {
   const users = chat.users.filter(user => user.id !== userLoggedIn.id);
-  const user = users[0];
+  const otherUser = users[0];
   // console.log(chat);
 
-  const updatedAt = new Date(chat.updatedAt);
+  const updatedAt = new Date(chat.latestMessage.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, updatedAt);
 
   return (
     <TouchableOpacity
       activeOpacity={0.7}
       style={styles.container}
-      onPress={() => navigation.navigate('Chat', { chatPassedIn: chat })}
+      onPress={() => navigation.navigate('Chat', { otherUserPassedIn: otherUser })}
     >
       <View style={styles.chat}>
         <View style={styles.leftSide}>
-          <ProfilePic navigation={navigation} user={user} />
+          <ProfilePic navigation={navigation} user={otherUser} />
         </View>
         <View style={styles.rightSide}>
           <View style={styles.topRow}>
-            <Text style={{ ...defaultStyles.largeSemibold }}>{user.name}</Text>
+            <Text style={{ ...defaultStyles.largeSemibold }}>{otherUser.name}</Text>
             <Text style={defaultStyles.defaultMute}>
               {timeDiff} {period}
             </Text>
