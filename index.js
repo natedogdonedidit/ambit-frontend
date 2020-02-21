@@ -47,7 +47,7 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/', // simulator
-    ios: 'http://192.168.123.106:4000', // work
+    ios: 'http://192.168.123.52:4000', // work
     // ios: 'http://192.168.0.87:4000', // home
   }),
 });
@@ -56,7 +56,7 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/', // simulator
-    ios: 'ws://192.168.123.106:4000', // work
+    ios: 'ws://192.168.123.52:4000', // work
     // ios: 'ws://192.168.0.87:4000', // home
   }),
   options: {
@@ -82,6 +82,11 @@ const client = new ApolloClient({
   link: ApolloLink.from([errorLink, authLink, link]),
   cache: new InMemoryCache({
     // dataIdFromObject: o => o.id,
+    cacheRedirects: {
+      Query: {
+        singlePost: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'Post', id: args.id }),
+      },
+    },
   }),
   onError: ({ networkError, graphQLErrors }) => {
     console.log('graphQLErrors', graphQLErrors);

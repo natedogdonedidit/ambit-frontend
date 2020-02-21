@@ -167,8 +167,8 @@ export const UpdateFragment = gql`
 `;
 
 // POSTS FRAGMENTS
-export const ListPosts = gql`
-  fragment ListPosts on Post {
+export const BasicPost = gql`
+  fragment BasicPost on Post {
     id
     createdAt
     lastUpdated
@@ -262,7 +262,7 @@ export const CommentFragment = gql`
 
 export const DetailPost = gql`
   fragment DetailPost on Post {
-    ...ListPosts
+    ...BasicPost
     comments {
       ...CommentFragment
     }
@@ -272,51 +272,9 @@ export const DetailPost = gql`
       }
     }
   }
-  ${ListPosts}
-  ${MinimalUser}
+  ${BasicPost}
   ${CommentFragment}
 `;
-
-// export const DetailUpdate = gql`
-//   fragment DetailUpdate on Post {
-//     id
-//     createdAt
-//     parentPost {
-//       ...ListPosts
-//     }
-//     content
-//     image
-//     likesCount
-//     likedByMe
-//     commentsCount
-//     sharesCount
-//     comments {
-//       id
-//       createdAt
-//       owner {
-//         ...MinimalUser
-//       }
-//       content
-//       image
-//       likesCount
-//       likedByMe
-//       commentsCount
-//       comments {
-//         id
-//         createdAt
-//         owner {
-//           ...MinimalUser
-//         }
-//         content
-//         image
-//         likesCount
-//         likedByMe
-//       }
-//     }
-//   }
-//   ${ListPosts}
-//   ${MinimalUser}
-// `;
 
 export const DetailedUser = gql`
   fragment DetailedUser on User {

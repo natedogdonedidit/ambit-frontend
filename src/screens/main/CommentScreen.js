@@ -231,7 +231,7 @@ const CommentScreen = ({ navigation }) => {
     );
   }
 
-  const { post } = dataPost.singlePost;
+  const post = dataPost.singlePost;
 
   return (
     <View style={styles.container}>

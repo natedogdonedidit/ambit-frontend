@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { ListPosts } from 'library/queries/_fragments';
+import { BasicPost } from 'library/queries/_fragments';
 
 // QUERY NAME MUST MATCH TOPICID!!!!!
 
@@ -9,7 +9,7 @@ const TOPICS_TECHNOLOGY = gql`
     postsTopic(topicID: "topics_technology", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -18,7 +18,7 @@ const TOPICS_TECHNOLOGY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_SOFTWARE = gql`
@@ -26,7 +26,7 @@ const TOPICS_TECHNOLOGY_SOFTWARE = gql`
     postsTopic(topicID: "topics_technology_software", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -35,7 +35,7 @@ const TOPICS_TECHNOLOGY_SOFTWARE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_HARDWARE = gql`
@@ -43,7 +43,7 @@ const TOPICS_TECHNOLOGY_HARDWARE = gql`
     postsTopic(topicID: "topics_technology_hardware", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -52,7 +52,7 @@ const TOPICS_TECHNOLOGY_HARDWARE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_SEMICONDUCTORS = gql`
@@ -60,7 +60,7 @@ const TOPICS_TECHNOLOGY_SEMICONDUCTORS = gql`
     postsTopic(topicID: "topics_technology_semiconductors", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -69,7 +69,7 @@ const TOPICS_TECHNOLOGY_SEMICONDUCTORS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_CLOUDCOMPUTING = gql`
@@ -77,7 +77,7 @@ const TOPICS_TECHNOLOGY_CLOUDCOMPUTING = gql`
     postsTopic(topicID: "topics_technology_cloudcomputing", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -86,7 +86,7 @@ const TOPICS_TECHNOLOGY_CLOUDCOMPUTING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_GAMING = gql`
@@ -94,7 +94,7 @@ const TOPICS_TECHNOLOGY_GAMING = gql`
     postsTopic(topicID: "topics_technology_gaming", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -103,7 +103,7 @@ const TOPICS_TECHNOLOGY_GAMING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_VRAR = gql`
@@ -111,7 +111,7 @@ const TOPICS_TECHNOLOGY_VRAR = gql`
     postsTopic(topicID: "topics_technology_vrar", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -120,7 +120,7 @@ const TOPICS_TECHNOLOGY_VRAR = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_CRYPTO = gql`
@@ -128,7 +128,7 @@ const TOPICS_TECHNOLOGY_CRYPTO = gql`
     postsTopic(topicID: "topics_technology_crypto", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -137,7 +137,7 @@ const TOPICS_TECHNOLOGY_CRYPTO = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_AI = gql`
@@ -145,7 +145,7 @@ const TOPICS_TECHNOLOGY_AI = gql`
     postsTopic(topicID: "topics_technology_ai", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -154,7 +154,7 @@ const TOPICS_TECHNOLOGY_AI = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_AUTOMATION = gql`
@@ -162,7 +162,7 @@ const TOPICS_TECHNOLOGY_AUTOMATION = gql`
     postsTopic(topicID: "topics_technology_automation", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -171,7 +171,7 @@ const TOPICS_TECHNOLOGY_AUTOMATION = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_ITNETWORKING = gql`
@@ -179,7 +179,7 @@ const TOPICS_TECHNOLOGY_ITNETWORKING = gql`
     postsTopic(topicID: "topics_technology_itnetworking", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -188,7 +188,7 @@ const TOPICS_TECHNOLOGY_ITNETWORKING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_AEROSPACEAVIATION = gql`
@@ -196,7 +196,7 @@ const TOPICS_TECHNOLOGY_AEROSPACEAVIATION = gql`
     postsTopic(topicID: "topics_technology_aerospaceaviation", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -205,7 +205,7 @@ const TOPICS_TECHNOLOGY_AEROSPACEAVIATION = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_TECHNOLOGY_AUTOMOTIVE = gql`
@@ -213,7 +213,7 @@ const TOPICS_TECHNOLOGY_AUTOMOTIVE = gql`
     postsTopic(topicID: "topics_technology_automotive", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -222,7 +222,7 @@ const TOPICS_TECHNOLOGY_AUTOMOTIVE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // SCIENCE
@@ -231,7 +231,7 @@ const TOPICS_SCIENCE = gql`
     postsTopic(topicID: "topics_science", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -240,7 +240,7 @@ const TOPICS_SCIENCE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_SCIENCE_PHYSICS = gql`
@@ -248,7 +248,7 @@ const TOPICS_SCIENCE_PHYSICS = gql`
     postsTopic(topicID: "topics_science_physics", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -257,7 +257,7 @@ const TOPICS_SCIENCE_PHYSICS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_SCIENCE_BIOTECHNOLOGY = gql`
@@ -265,7 +265,7 @@ const TOPICS_SCIENCE_BIOTECHNOLOGY = gql`
     postsTopic(topicID: "topics_science_biotechnology", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -274,7 +274,7 @@ const TOPICS_SCIENCE_BIOTECHNOLOGY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_SCIENCE_ASTROPHYSICS = gql`
@@ -282,7 +282,7 @@ const TOPICS_SCIENCE_ASTROPHYSICS = gql`
     postsTopic(topicID: "topics_science_astrophysics", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -291,7 +291,7 @@ const TOPICS_SCIENCE_ASTROPHYSICS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_SCIENCE_CHEMISTRY = gql`
@@ -299,7 +299,7 @@ const TOPICS_SCIENCE_CHEMISTRY = gql`
     postsTopic(topicID: "topics_science_chemistry", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -308,7 +308,7 @@ const TOPICS_SCIENCE_CHEMISTRY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_SCIENCE_BIOLOGY = gql`
@@ -316,7 +316,7 @@ const TOPICS_SCIENCE_BIOLOGY = gql`
     postsTopic(topicID: "topics_science_biology", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -325,7 +325,7 @@ const TOPICS_SCIENCE_BIOLOGY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_SCIENCE_ANTHROPOLOGY = gql`
@@ -333,7 +333,7 @@ const TOPICS_SCIENCE_ANTHROPOLOGY = gql`
     postsTopic(topicID: "topics_science_anthropology", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -342,7 +342,7 @@ const TOPICS_SCIENCE_ANTHROPOLOGY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 const TOPICS_SCIENCE_RENEWABLEENERGY = gql`
@@ -350,7 +350,7 @@ const TOPICS_SCIENCE_RENEWABLEENERGY = gql`
     postsTopic(topicID: "topics_science_renewableenergy", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -359,7 +359,7 @@ const TOPICS_SCIENCE_RENEWABLEENERGY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // CREATIVES
@@ -368,7 +368,7 @@ const TOPICS_CREATIVES = gql`
     postsTopic(topicID: "topics_creatives", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -377,14 +377,14 @@ const TOPICS_CREATIVES = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CREATIVES_PHOTOGRAPHY = gql`
   query TOPICS_CREATIVES_PHOTOGRAPHY($cursor: String) {
     postsTopic(topicID: "topics_creatives_photography", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -393,14 +393,14 @@ const TOPICS_CREATIVES_PHOTOGRAPHY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CREATIVES_VIDEOGRAPHY = gql`
   query TOPICS_CREATIVES_VIDEOGRAPHY($cursor: String) {
     postsTopic(topicID: "topics_creatives_videography", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -409,14 +409,14 @@ const TOPICS_CREATIVES_VIDEOGRAPHY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CREATIVES_UIUX = gql`
   query TOPICS_CREATIVES_UIUX($cursor: String) {
     postsTopic(topicID: "topics_creatives_uiux", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -425,14 +425,14 @@ const TOPICS_CREATIVES_UIUX = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CREATIVES_GRAPHICDESIGN = gql`
   query TOPICS_CREATIVES_GRAPHICDESIGN($cursor: String) {
     postsTopic(topicID: "topics_creatives_graphicdesign", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -441,14 +441,14 @@ const TOPICS_CREATIVES_GRAPHICDESIGN = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CREATIVES_VISUALART = gql`
   query TOPICS_CREATIVES_VISUALART($cursor: String) {
     postsTopic(topicID: "topics_creatives_visualart", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -457,14 +457,14 @@ const TOPICS_CREATIVES_VISUALART = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CREATIVES_FASHIONAPPAREL = gql`
   query TOPICS_CREATIVES_FASHIONAPPAREL($cursor: String) {
     postsTopic(topicID: "topics_creatives_fashionapparel", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -473,7 +473,7 @@ const TOPICS_CREATIVES_FASHIONAPPAREL = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // ENTERTAINMENT
@@ -482,7 +482,7 @@ const TOPICS_ENTERTAINMENT = gql`
     postsTopic(topicID: "topics_entertainment", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -491,14 +491,14 @@ const TOPICS_ENTERTAINMENT = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_ENTERTAINMENT_MUSIC = gql`
   query TOPICS_ENTERTAINMENT_MUSIC($cursor: String) {
     postsTopic(topicID: "topics_entertainment_music", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -507,14 +507,14 @@ const TOPICS_ENTERTAINMENT_MUSIC = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_ENTERTAINMENT_ACTING = gql`
   query TOPICS_ENTERTAINMENT_ACTING($cursor: String) {
     postsTopic(topicID: "topics_entertainment_acting", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -523,14 +523,14 @@ const TOPICS_ENTERTAINMENT_ACTING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_ENTERTAINMENT_COMEDY = gql`
   query TOPICS_ENTERTAINMENT_COMEDY($cursor: String) {
     postsTopic(topicID: "topics_entertainment_comedy", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -539,14 +539,14 @@ const TOPICS_ENTERTAINMENT_COMEDY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_ENTERTAINMENT_MOTIONPICTURE = gql`
   query TOPICS_ENTERTAINMENT_MOTIONPICTURE($cursor: String) {
     postsTopic(topicID: "topics_entertainment_motionpicture", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -555,14 +555,14 @@ const TOPICS_ENTERTAINMENT_MOTIONPICTURE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_ENTERTAINMENT_WRITING = gql`
   query TOPICS_ENTERTAINMENT_WRITING($cursor: String) {
     postsTopic(topicID: "topics_entertainment_writing", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -571,7 +571,7 @@ const TOPICS_ENTERTAINMENT_WRITING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // BUSINESS
@@ -580,7 +580,7 @@ const TOPICS_BUSINESS = gql`
     postsTopic(topicID: "topics_business", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -589,14 +589,14 @@ const TOPICS_BUSINESS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_ENTREPRENEURSHIP = gql`
   query TOPICS_BUSINESS_ENTREPRENEURSHIP($cursor: String) {
     postsTopic(topicID: "topics_business_entrepreneurship", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -605,14 +605,14 @@ const TOPICS_BUSINESS_ENTREPRENEURSHIP = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_SMALLBUSINESS = gql`
   query TOPICS_BUSINESS_SMALLBUSINESS($cursor: String) {
     postsTopic(topicID: "topics_business_smallbusiness", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -621,14 +621,14 @@ const TOPICS_BUSINESS_SMALLBUSINESS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_LARGEBUSINESS = gql`
   query TOPICS_BUSINESS_LARGEBUSINESS($cursor: String) {
     postsTopic(topicID: "topics_business_largebusiness", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -637,14 +637,14 @@ const TOPICS_BUSINESS_LARGEBUSINESS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_STARTUPS = gql`
   query TOPICS_BUSINESS_STARTUPS($cursor: String) {
     postsTopic(topicID: "topics_business_startups", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -653,14 +653,14 @@ const TOPICS_BUSINESS_STARTUPS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_HR = gql`
   query TOPICS_BUSINESS_HR($cursor: String) {
     postsTopic(topicID: "topics_business_hr", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -669,14 +669,14 @@ const TOPICS_BUSINESS_HR = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_ACCOUNTING = gql`
   query TOPICS_BUSINESS_ACCOUNTING($cursor: String) {
     postsTopic(topicID: "topics_business_accounting", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -685,14 +685,14 @@ const TOPICS_BUSINESS_ACCOUNTING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_LOGISTICS = gql`
   query TOPICS_BUSINESS_LOGISTICS($cursor: String) {
     postsTopic(topicID: "topics_business_logistics", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -701,14 +701,14 @@ const TOPICS_BUSINESS_LOGISTICS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_MANUFACTURING = gql`
   query TOPICS_BUSINESS_MANUFACTURING($cursor: String) {
     postsTopic(topicID: "topics_business_manufacturing", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -717,14 +717,14 @@ const TOPICS_BUSINESS_MANUFACTURING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_SALES = gql`
   query TOPICS_BUSINESS_SALES($cursor: String) {
     postsTopic(topicID: "topics_business_sales", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -733,14 +733,14 @@ const TOPICS_BUSINESS_SALES = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_OPERATIONS = gql`
   query TOPICS_BUSINESS_OPERATIONS($cursor: String) {
     postsTopic(topicID: "topics_business_operations", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -749,14 +749,14 @@ const TOPICS_BUSINESS_OPERATIONS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_BUSINESS_MANAGEMENT = gql`
   query TOPICS_BUSINESS_MANAGEMENT($cursor: String) {
     postsTopic(topicID: "topics_business_management", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -765,7 +765,7 @@ const TOPICS_BUSINESS_MANAGEMENT = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // FINANCE
@@ -774,7 +774,7 @@ const TOPICS_FINANCE = gql`
     postsTopic(topicID: "topics_finance", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -783,14 +783,14 @@ const TOPICS_FINANCE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_FINANCE_STOCKMARKET = gql`
   query TOPICS_FINANCE_STOCKMARKET($cursor: String) {
     postsTopic(topicID: "topics_finance_stockmarket", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -799,14 +799,14 @@ const TOPICS_FINANCE_STOCKMARKET = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_FINANCE_DAYTRADING = gql`
   query TOPICS_FINANCE_DAYTRADING($cursor: String) {
     postsTopic(topicID: "topics_finance_daytrading", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -815,14 +815,14 @@ const TOPICS_FINANCE_DAYTRADING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_FINANCE_WEALTHMANAGEMENT = gql`
   query TOPICS_FINANCE_WEALTHMANAGEMENT($cursor: String) {
     postsTopic(topicID: "topics_finance_wealthmanagement", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -831,14 +831,14 @@ const TOPICS_FINANCE_WEALTHMANAGEMENT = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_FINANCE_BANKING = gql`
   query TOPICS_FINANCE_BANKING($cursor: String) {
     postsTopic(topicID: "topics_finance_banking", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -847,14 +847,14 @@ const TOPICS_FINANCE_BANKING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_FINANCE_INSURANCE = gql`
   query TOPICS_FINANCE_INSURANCE($cursor: String) {
     postsTopic(topicID: "topics_finance_insurance", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -863,7 +863,7 @@ const TOPICS_FINANCE_INSURANCE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // MARKETING
@@ -872,7 +872,7 @@ const TOPICS_MARKETING = gql`
     postsTopic(topicID: "topics_marketing", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -881,14 +881,14 @@ const TOPICS_MARKETING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_MARKETING_SOCIALMEDIAMARKETING = gql`
   query TOPICS_MARKETING_SOCIALMEDIAMARKETING($cursor: String) {
     postsTopic(topicID: "topics_marketing_socialmediamarketing", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -897,14 +897,14 @@ const TOPICS_MARKETING_SOCIALMEDIAMARKETING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_MARKETING_ADVERTISING = gql`
   query TOPICS_MARKETING_ADVERTISING($cursor: String) {
     postsTopic(topicID: "topics_marketing_advertising", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -913,14 +913,14 @@ const TOPICS_MARKETING_ADVERTISING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_MARKETING_BRANDING = gql`
   query TOPICS_MARKETING_BRANDING($cursor: String) {
     postsTopic(topicID: "topics_marketing_branding", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -929,7 +929,7 @@ const TOPICS_MARKETING_BRANDING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // HEALTH & WELLNESS
@@ -938,7 +938,7 @@ const TOPICS_HEALTH = gql`
     postsTopic(topicID: "topics_health", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -947,14 +947,14 @@ const TOPICS_HEALTH = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_HEALTH_FITNESS = gql`
   query TOPICS_HEALTH_FITNESS($cursor: String) {
     postsTopic(topicID: "topics_health_fitness", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -963,14 +963,14 @@ const TOPICS_HEALTH_FITNESS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_HEALTH_NUTRITION = gql`
   query TOPICS_HEALTH_NUTRITION($cursor: String) {
     postsTopic(topicID: "topics_health_nutrition", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -979,14 +979,14 @@ const TOPICS_HEALTH_NUTRITION = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_HEALTH_MEDICINE = gql`
   query TOPICS_HEALTH_MEDICINE($cursor: String) {
     postsTopic(topicID: "topics_health_medicine", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -995,14 +995,14 @@ const TOPICS_HEALTH_MEDICINE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_HEALTH_PHYSICALTHERAPY = gql`
   query TOPICS_HEALTH_PHYSICALTHERAPY($cursor: String) {
     postsTopic(topicID: "topics_health_physicaltherapy", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1011,7 +1011,7 @@ const TOPICS_HEALTH_PHYSICALTHERAPY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // CONTENT CREATORS
@@ -1020,7 +1020,7 @@ const TOPICS_CONTENT = gql`
     postsTopic(topicID: "topics_content", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1029,14 +1029,14 @@ const TOPICS_CONTENT = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CONTENT_SOCIALMEDIA = gql`
   query TOPICS_CONTENT_SOCIALMEDIA($cursor: String) {
     postsTopic(topicID: "topics_content_socialmedia", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1045,14 +1045,14 @@ const TOPICS_CONTENT_SOCIALMEDIA = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CONTENT_BLOGGING = gql`
   query TOPICS_CONTENT_BLOGGING($cursor: String) {
     postsTopic(topicID: "topics_content_blogging", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1061,14 +1061,14 @@ const TOPICS_CONTENT_BLOGGING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CONTENT_PODCASTING = gql`
   query TOPICS_CONTENT_PODCASTING($cursor: String) {
     postsTopic(topicID: "topics_content_podcasting", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1077,14 +1077,14 @@ const TOPICS_CONTENT_PODCASTING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CONTENT_YOUTUBE = gql`
   query TOPICS_CONTENT_YOUTUBE($cursor: String) {
     postsTopic(topicID: "topics_content_youtube", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1093,14 +1093,14 @@ const TOPICS_CONTENT_YOUTUBE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_CONTENT_STREAMING = gql`
   query TOPICS_CONTENT_STREAMING($cursor: String) {
     postsTopic(topicID: "topics_content_streaming", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1109,7 +1109,7 @@ const TOPICS_CONTENT_STREAMING = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // NEWS & POLITICS
@@ -1118,7 +1118,7 @@ const TOPICS_NEWS = gql`
     postsTopic(topicID: "topics_news", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1127,14 +1127,14 @@ const TOPICS_NEWS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_NEWS_POLITICS = gql`
   query TOPICS_NEWS_POLITICS($cursor: String) {
     postsTopic(topicID: "topics_news_politics", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1143,14 +1143,14 @@ const TOPICS_NEWS_POLITICS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_NEWS_JOURNALISM = gql`
   query TOPICS_NEWS_JOURNALISM($cursor: String) {
     postsTopic(topicID: "topics_news_journalism", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1159,14 +1159,14 @@ const TOPICS_NEWS_JOURNALISM = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_NEWS_LAWPOLICY = gql`
   query TOPICS_NEWS_LAWPOLICY($cursor: String) {
     postsTopic(topicID: "topics_news_lawpolicy", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1175,7 +1175,7 @@ const TOPICS_NEWS_LAWPOLICY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // SPORTS
@@ -1184,7 +1184,7 @@ const TOPICS_SPORTS = gql`
     postsTopic(topicID: "topics_sports", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1193,7 +1193,7 @@ const TOPICS_SPORTS = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // REAL ESTATE
@@ -1202,7 +1202,7 @@ const TOPICS_REALESTATE = gql`
     postsTopic(topicID: "topics_realestate", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1211,7 +1211,7 @@ const TOPICS_REALESTATE = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // EDUCATION
@@ -1220,7 +1220,7 @@ const TOPICS_EDUCATION = gql`
     postsTopic(topicID: "topics_education", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1229,7 +1229,7 @@ const TOPICS_EDUCATION = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 // INDUSTRY
@@ -1238,7 +1238,7 @@ const TOPICS_INDUSTRY = gql`
     postsTopic(topicID: "topics_industry", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1247,14 +1247,14 @@ const TOPICS_INDUSTRY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_INDUSTRY_FOODBEV = gql`
   query TOPICS_INDUSTRY_FOODBEV($cursor: String) {
     postsTopic(topicID: "topics_industry_foodbev", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1263,14 +1263,14 @@ const TOPICS_INDUSTRY_FOODBEV = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_INDUSTRY_ECOMMERCERETAIL = gql`
   query TOPICS_INDUSTRY_ECOMMERCERETAIL($cursor: String) {
     postsTopic(topicID: "topics_industry_ecommerceretail", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1279,14 +1279,14 @@ const TOPICS_INDUSTRY_ECOMMERCERETAIL = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_INDUSTRY_CONSTRUCTION = gql`
   query TOPICS_INDUSTRY_CONSTRUCTION($cursor: String) {
     postsTopic(topicID: "topics_industry_construction", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1295,14 +1295,14 @@ const TOPICS_INDUSTRY_CONSTRUCTION = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_INDUSTRY_NONPROFIT = gql`
   query TOPICS_INDUSTRY_NONPROFIT($cursor: String) {
     postsTopic(topicID: "topics_industry_nonprofit", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1311,14 +1311,14 @@ const TOPICS_INDUSTRY_NONPROFIT = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 const TOPICS_INDUSTRY_TRAVELHOSPITALITY = gql`
   query TOPICS_INDUSTRY_TRAVELHOSPITALITY($cursor: String) {
     postsTopic(topicID: "topics_industry_travelhospitality", after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -1327,7 +1327,7 @@ const TOPICS_INDUSTRY_TRAVELHOSPITALITY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 export default {

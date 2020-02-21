@@ -22,7 +22,6 @@ import Topic from 'library/components/post/Topic';
 import Location from 'library/components/post/Location';
 
 const Post = ({ post, currentTime, navigation, showDetails = false, showLine = false, hideButtons = false }) => {
-  // ////////////////////////////////////////////////////////////////
   // MUTATIONS - like, share, delete
   const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
     variables: {
@@ -63,7 +62,6 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
       ]),
   });
 
-  // ////////////////////////////////////////////////////////////////
   // HOOKS & VARIABLES
   const { currentUserId } = useContext(UserContext);
   const isMyPost = post.owner.id === currentUserId;

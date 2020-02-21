@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import HeaderWhite from 'library/components/headers/HeaderWhite';
+import HeaderBack from 'library/components/headers/HeaderBack';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import CREATE_UPDATE_MUTATION from 'library/mutations/CREATE_UPDATE_MUTATION';
@@ -60,13 +60,7 @@ const UpdatePostScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderWhite
-        handleLeft={() => navigation.goBack()}
-        handleRight={() => handleUpdate()}
-        textLeft="Back"
-        textRight="Update"
-        title="Update Post"
-      />
+      <HeaderBack navigation={navigation} handleRight={handleUpdate} textRight="Update" title="Update Post" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView>
           <PostGroupTL
@@ -94,7 +88,6 @@ const UpdatePostScreen = ({ navigation }) => {
                   value={updateText}
                   autoFocus
                   autoCompleteType="off"
-                  autoCorrect={false}
                   multiline
                   scrollEnabled={false}
                   textAlignVertical="top"

@@ -1,12 +1,12 @@
 import gql from 'graphql-tag';
-import { ListPosts } from 'library/queries/_fragments';
+import { BasicPost } from 'library/queries/_fragments';
 
 export default GLOBAL_POSTS_QUERY = gql`
   query GLOBAL_POSTS_QUERY($cursor: String) {
     postsGlobal(after: $cursor) {
       edges {
         node {
-          ...ListPosts
+          ...BasicPost
         }
       }
       pageInfo {
@@ -15,5 +15,5 @@ export default GLOBAL_POSTS_QUERY = gql`
       }
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;

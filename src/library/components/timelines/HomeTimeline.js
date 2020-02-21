@@ -24,11 +24,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // 4: refetch
   // 7: no loading, no refetch, everything OK!
 
-  // console.log('loading', loadingQuery);
-  // console.log('error', error);
-  // console.log('data', data);
-  // console.log('networkStatus', networkStatus);
-
   // ///////////////////
   // LOADING STATES
   // ///////////////////

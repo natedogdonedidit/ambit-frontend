@@ -8,11 +8,10 @@ import HeaderBack from 'library/components/headers/HeaderBack';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
-import Comment from 'library/components/post/Comment';
+import PostComments from 'library/components/post/PostComments';
 import Post from 'library/components/post/Post';
+import PostMatches from 'library/components/post/PostMatches';
 import Update from 'library/components/post/Update';
-import SuggestedConnection from 'library/components/lists/SuggestedConnection';
-import TextButton from 'library/components/UI/buttons/TextButton';
 import { getGoalInfo } from 'library/utils';
 import { UserContext } from 'library/utils/UserContext';
 
@@ -27,8 +26,6 @@ const PostScreen = ({ navigation }) => {
   // QUERIES
   // this could be optimized to retrieve the comments seperately
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
-    // fetchPolicy: 'cache-and-network',
-    // notifyOnNetworkStatusChange: true,
     variables: { id: postToQuery.id },
   });
 
@@ -42,8 +39,7 @@ const PostScreen = ({ navigation }) => {
     );
   }
 
-  const post = data.singlePost.post || null;
-  const matches = data.singlePost.matches || null;
+  const post = data.singlePost || null;
   const isMyPost = post.owner.id === currentUserId;
 
   // CUSTOM FUNCTIONS
@@ -53,44 +49,6 @@ const PostScreen = ({ navigation }) => {
         <View style={{ height: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
         <Post post={post} currentTime={currentTime} navigation={navigation} showDetails />
       </View>
-    );
-  };
-
-  const renderMatches = () => {
-    if (!matches || !isMyPost) return null;
-
-    if (matches.length < 1) {
-      return (
-        <>
-          <View style={styles.sectionHeader}>
-            <Text style={defaultStyles.headerSmall}>Matches</Text>
-          </View>
-          <View style={styles.emptyComponent}>
-            <Text style={{ ...defaultStyles.defaultMuteItalic, textAlign: 'center' }}>No matches yet...check back later!</Text>
-          </View>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <View style={styles.sectionHeader}>
-          <Text style={defaultStyles.headerSmall}>Matches</Text>
-          {matches.length > 3 && (
-            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('PostMatches', { matches })}>
-              Show All
-            </TextButton>
-          )}
-        </View>
-        {matches.map((item, i) => {
-          if (i > 2) return null;
-          return (
-            <View key={item.user.id}>
-              <SuggestedConnection item={item} navigation={navigation} />
-            </View>
-          );
-        })}
-      </>
     );
   };
 
@@ -126,55 +84,14 @@ const PostScreen = ({ navigation }) => {
     );
   };
 
-  const renderComments = () => {
-    const { comments } = post;
-
-    if (comments.length < 1) return null;
-
-    return (
-      <>
-        <View style={styles.sectionHeader}>
-          <Text style={defaultStyles.headerSmall}>Comments</Text>
-        </View>
-        {comments.map(comment => {
-          // if its a direct comment on the post
-          if (!comment.parentComment && !comment.parentUpdate) {
-            // if there are subComments
-            if (comment.comments.length > 0) {
-              return (
-                <View key={comment.id}>
-                  <Comment comment={comment} navigation={navigation} currentTime={currentTime} hideTopMargin />
-                  {comment.comments.map((subComment, k) => (
-                    <Comment
-                      key={subComment.id}
-                      comment={subComment}
-                      navigation={navigation}
-                      currentTime={currentTime}
-                      isSubComment
-                      showLine={comment.comments.length - 1 !== k}
-                    />
-                  ))}
-                </View>
-              );
-            }
-
-            // if there are no sub comments
-            return <Comment key={comment.id} comment={comment} navigation={navigation} currentTime={currentTime} hideTopMargin />;
-          }
-          return null;
-        })}
-      </>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title={post.goal ? 'Goal' : 'Post'} />
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
         {renderPost()}
-        {renderMatches()}
+        {isMyPost && <PostMatches navigation={navigation} post={post} />}
         {renderUpdates()}
-        {renderComments()}
+        <PostComments navigation={navigation} post={post} />
       </ScrollView>
     </View>
   );

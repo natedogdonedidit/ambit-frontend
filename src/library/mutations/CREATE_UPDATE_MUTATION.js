@@ -1,13 +1,13 @@
 import gql from 'graphql-tag';
-import { ListPosts } from 'library/queries/_fragments';
+import { BasicPost } from 'library/queries/_fragments';
 
 const CREATE_UPDATE_MUTATION = gql`
   mutation CREATE_UPDATE_MUTATION($postId: ID!, $update: UpdateCreateWithoutParentPostInput!) {
     createUpdate(postId: $postId, update: $update) {
-      ...ListPosts
+      ...BasicPost
     }
   }
-  ${ListPosts}
+  ${BasicPost}
 `;
 
 export default CREATE_UPDATE_MUTATION;
