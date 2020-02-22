@@ -5,12 +5,14 @@ import { useQuery } from '@apollo/react-hooks';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
+import HeaderBack from 'library/components/headers/HeaderBack';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import Comment from 'library/components/post/Comment';
 import Post from 'library/components/post/Post';
 import Update from 'library/components/post/Update';
+import PostComments from 'library/components/post/PostComments';
 
 const UpdateScreen = ({ navigation }) => {
   // PARAMS
@@ -27,6 +29,14 @@ const UpdateScreen = ({ navigation }) => {
   });
 
   if (error) return <Error error={error} />;
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <HeaderBack navigation={navigation} title="Update" />
+        <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
+      </View>
+    );
+  }
   const currentTime = new Date();
   const post = data.singlePost || null;
   const update = post ? post.updates[updateInd] : null;
@@ -51,77 +61,15 @@ const UpdateScreen = ({ navigation }) => {
     );
   };
 
-  const renderComments = () => {
-    const { comments } = update;
-
-    if (comments.length < 1) {
-      return (
-        <>
-          <View
-            style={{
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              paddingVertical: 12,
-              paddingHorizontal: 15,
-              marginTop: 15,
-              backgroundColor: 'white',
-              // borderBottomWidth: StyleSheet.hairlineWidth,
-              // borderBottomColor: colors.borderBlack,
-            }}
-          >
-            <Text style={defaultStyles.headerSmall}>Comments</Text>
-            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2 }}>No comments yet</Text>
-          </View>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            paddingVertical: 12,
-            paddingHorizontal: 15,
-            marginTop: 15,
-            backgroundColor: 'white',
-            // borderBottomWidth: StyleSheet.hairlineWidth,
-            // borderBottomColor: colors.borderBlack,
-          }}
-        >
-          <Text style={defaultStyles.headerSmall}>Comments</Text>
-        </View>
-        {comments.map(comment => {
-          if (!comment.parentComment) {
-            if (comment.comments.length > 0) {
-              return (
-                <View key={comment.id}>
-                  <Comment comment={comment} navigation={navigation} currentTime={currentTime} />
-                  {comment.comments.map((subComment, k) => (
-                    <Comment
-                      key={subComment.id}
-                      comment={subComment}
-                      navigation={navigation}
-                      currentTime={currentTime}
-                      isSubComment
-                    />
-                  ))}
-                </View>
-              );
-            }
-
-            return <Comment key={comment.id} comment={comment} navigation={navigation} currentTime={currentTime} />;
-          }
-          return null;
-        })}
-      </>
-    );
-  };
-
   return (
     <View style={styles.container}>
-      <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Update" />
+      <HeaderBack navigation={navigation} title="Update" />
+      <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
+        {renderUpdate()}
+        <PostComments navigation={navigation} post={post} updateInd={updateInd} />
+      </ScrollView>
+
+      {/* <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={() => null} textLeft="Back" textRight="" title="Update" />
       {loading ? (
         <Loader loading={loading} full={false} />
       ) : (
@@ -129,7 +77,7 @@ const UpdateScreen = ({ navigation }) => {
           {!loading && renderUpdate()}
           {!loading && <View style={styles.commentsView}>{renderComments()}</View>}
         </ScrollView>
-      )}
+      )} */}
     </View>
   );
 };

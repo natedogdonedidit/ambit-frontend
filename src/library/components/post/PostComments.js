@@ -10,7 +10,7 @@ import Comment from 'library/components/post/Comment';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 
-const PostComments = ({ navigation, post }) => {
+const PostComments = ({ navigation, post, updateInd = null }) => {
   // QUERIES
   const { loading, error, data } = useQuery(POST_COMMENTS_QUERY, {
     variables: { id: post.id },
@@ -18,22 +18,40 @@ const PostComments = ({ navigation, post }) => {
 
   if (error) return <Error error={error} />;
   if (loading) {
-    return null;
-    // return (
-    //   <View style={styles.container}>
-    //     <View style={styles.sectionHeader}>
-    //       <Text style={defaultStyles.headerSmall}>Comments</Text>
-    //     </View>
-    //     <View style={styles.whiteView}>
-    //       <Loader size="small" loading={loading} full backgroundColor={colors.white} />
-    //     </View>
-    //   </View>
-    // );
+    return (
+      <View style={styles.container}>
+        <View style={styles.sectionHeader}>
+          <Text style={defaultStyles.headerSmall}>Comments</Text>
+        </View>
+        <View style={styles.whiteView}>
+          <Loader size="small" loading={loading} full backgroundColor={colors.white} />
+        </View>
+      </View>
+    );
   }
 
-  const comments = data.singlePost.comments || [];
+  let comments = [];
 
-  if (comments.length < 1) return null;
+  if (updateInd >= 0 && updateInd !== null) {
+    comments = data.singlePost.updates[updateInd].comments;
+  } else {
+    comments = data.singlePost.comments;
+  }
+
+  if (!comments) comments = [];
+
+  if (comments.length < 1) {
+    return (
+      <>
+        <View style={styles.sectionHeader}>
+          <Text style={defaultStyles.headerSmall}>Comments</Text>
+        </View>
+        <View style={styles.emptyComponent}>
+          <Text style={{ ...defaultStyles.defaultMuteItalic, textAlign: 'center' }}>Be the first to comment!</Text>
+        </View>
+      </>
+    );
+  }
 
   const currentTime = new Date();
 

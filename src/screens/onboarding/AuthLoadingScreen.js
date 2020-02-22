@@ -9,10 +9,13 @@ import { getToken, signOut } from 'library/utils/authUtil';
 
 const AuthLoadingScreen = props => {
   const { navigation } = props;
+
+  const { currentUserId, setCurrentUserId } = useContext(UserContext);
+
+  // QUERIES
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
     fetchPolicy: 'network-only',
   });
-  const { setCurrentUserId } = useContext(UserContext);
 
   useEffect(() => {
     const fetchToken = async () => {

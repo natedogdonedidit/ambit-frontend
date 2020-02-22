@@ -41,34 +41,8 @@ const MessagesScreen = ({ navigation }) => {
     );
   const { userLoggedIn } = dataUser;
 
-  // const { loading: loadingChats, error, data, refetch, networkStatus } = useQuery(ALL_CHATS_QUERY, {
-  //   fetchPolicy: 'cache-and-network',
-  //   notifyOnNetworkStatusChange: true,
-  // });
-
-  // const refetching = networkStatus === 4;
-  // const loading = networkStatus === 1;
-
-  // if (error) return <Error error={error} />;
-  // if (loading) {
-  //   return (
-  //     <SafeAreaView style={styles.container}>
-  //       <HeaderMessages
-  //         user={userLoggedIn}
-  //         handleMiddle={() => null}
-  //         handleRight={() => navigation.navigate('Search')}
-  //         navigation={navigation}
-  //       />
-  //       {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
-  //       <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
-  //     </SafeAreaView>
-  //   );
-  // }
-
   const chats = userLoggedIn.chats || [];
   chats.sort(sortChats); // sort chats by date
-
-  // CUSTOM FUNCTIONS
 
   return (
     <SafeAreaView style={styles.container}>

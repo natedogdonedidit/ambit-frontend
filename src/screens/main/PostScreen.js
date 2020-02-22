@@ -89,8 +89,8 @@ const PostScreen = ({ navigation }) => {
       <HeaderBack navigation={navigation} title={post.goal ? 'Goal' : 'Post'} />
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
         {renderPost()}
-        {isMyPost && <PostMatches navigation={navigation} post={post} />}
         {renderUpdates()}
+        {isMyPost && <PostMatches navigation={navigation} post={post} />}
         <PostComments navigation={navigation} post={post} />
       </ScrollView>
     </View>

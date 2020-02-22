@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
   updateContainer: {
     width: '100%',
     backgroundColor: 'white',
+    paddingRight: 12,
   },
   update: {
     width: '100%',
@@ -226,13 +227,13 @@ const styles = StyleSheet.create({
   },
   threadLine: {
     flex: 1,
-    width: 3,
+    width: 2,
     marginTop: 5,
     borderTopLeftRadius: 1.5,
     borderTopRightRadius: 1.5,
     borderBottomLeftRadius: 1.5,
     borderBottomRightRadius: 1.5,
-    backgroundColor: colors.systemGray5,
+    backgroundColor: colors.iconGray,
   },
   leftColumn: {
     alignItems: 'center',

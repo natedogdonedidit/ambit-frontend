@@ -167,6 +167,29 @@ export const UpdateFragment = gql`
 `;
 
 // POSTS FRAGMENTS
+export const MinimalPost = gql`
+  fragment MinimalPost on Post {
+    id
+    createdAt
+    lastUpdated
+    owner {
+      ...MinimalUser
+    }
+    isGoal
+    goal
+    subField {
+      id
+      name
+      topicID
+    }
+    content
+    images
+    video
+    pitch
+  }
+  ${MinimalUser}
+`;
+
 export const BasicPost = gql`
   fragment BasicPost on Post {
     id
@@ -297,4 +320,33 @@ export const DetailedUser = gql`
   ${FullSkills}
   ${FullExperience}
   ${FullEducation}
+`;
+
+export const NotificationFragment = gql`
+  fragment NotificationFragment on Notification {
+    id
+    createdAt
+    target {
+      ...MinimalUser
+    }
+    style
+    user {
+      ...MinimalUser
+    }
+    users {
+      ...MinimalUser
+    }
+    post {
+      ...MinimalPost
+    }
+    update {
+      id
+    }
+    comment {
+      id
+    }
+    seen
+  }
+  ${MinimalUser}
+  ${MinimalPost}
 `;
