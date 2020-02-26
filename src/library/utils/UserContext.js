@@ -4,7 +4,7 @@ import React, { useState, createContext } from 'react'
 import { Alert } from 'react-native';
 import { useApolloClient } from '@apollo/react-hooks';
 
-import { getToken, signIn, signOut } from 'library/utils/authUtil'
+import { signIn, signOut } from 'library/utils/authUtil'
 // import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const UserContext = createContext();

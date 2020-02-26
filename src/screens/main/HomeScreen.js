@@ -1,69 +1,37 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useRef } from 'react';
 import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 import { useSafeArea } from 'react-native-safe-area-context';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
-import NEW_NOTIFICATION_SUBSCRIPTION from 'library/subscriptions/NEW_NOTIFICATION_SUBSCRIPTION';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { UserContext } from 'library/utils/UserContext';
 
 import HeaderHome from 'library/components/headers/HeaderHome';
 import Error from 'library/components/UI/Error';
 
 import HomeTimeline from 'library/components/timelines/HomeTimeline';
-import LocalTimeline from 'library/components/timelines/LocalTimeline';
 import TopicsList from 'library/components/timelines/TopicsList';
 
-import TimelineTabs from 'library/components/timelines/TimelineTabs';
 import { HEADER_HEIGHT } from 'styles/constants';
 
 const SLIDE_HEIGHT = HEADER_HEIGHT - StyleSheet.hairlineWidth;
 
 const HomeScreen = ({ navigation }) => {
   // STATE
-  const [activeTimeline, setActiveTimeline] = useState(0);
   const [scrollY] = useState(new Animated.Value(0));
 
   // OTHER HOOKS
   const insets = useSafeArea();
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
-  const { currentUserId } = useContext(UserContext);
+  // const { currentUserId } = useContext(UserContext);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   if (errorUser) return <Error error={errorUser} />;
   const { userLoggedIn } = dataUser;
-
-  // get all notifications & subscribe to more (might be a better locations for initial loading queries!!)
-  const { subscribeToMore: subscribeToMoreNotifications } = useQuery(NOTIFICATIONS_QUERY);
-  const more = () => {
-    if (currentUserId) {
-      console.log(`subscribing to more notifications for ${currentUserId}`);
-      subscribeToMoreNotifications({
-        document: NEW_NOTIFICATION_SUBSCRIPTION,
-        variables: { id: currentUserId },
-        updateQuery: (previousData, { subscriptionData }) => {
-          // console.log('subscriptionData', subscriptionData);
-          // console.log('previousData', previousData);
-          if (!subscriptionData.data) return previousData;
-          const newNotifation = subscriptionData.data.newNotification;
-          // console.log('newMessage', newMessage);
-          const newList = [newNotifation, ...previousData.myNotifications];
-          return {
-            myNotifications: newList,
-          };
-        },
-      });
-    }
-  };
-  useEffect(() => {
-    more();
-  }, [currentUserId]);
 
   const handleTopicsButton = () => {
     console.log(horizontalScrollRef.current);

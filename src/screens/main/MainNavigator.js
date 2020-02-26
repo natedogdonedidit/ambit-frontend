@@ -1,17 +1,19 @@
-import React from 'react';
-import Animated, { Easing } from 'react-native-reanimated';
+import React, { useEffect, useContext } from 'react';
+// import Animated, { Easing } from 'react-native-reanimated';
 // import { TransitionPresets } from 'react-navigation';
 
-import { createStackNavigator, TransitionPresets, TransitionSpecs, CardStyleInterpolators } from 'react-navigation-stack';
+import { createStackNavigator, TransitionPresets, CardStyleInterpolators } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import { forVerticalIOSCustom } from 'library/utils/types.tsx';
-
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Bell from 'library/components/UI/Bell';
+import BellDot from 'library/components/UI/BellDot';
 
 import colors from 'styles/colors';
 import CustomDrawer from 'library/components/CustomDrawer';
+import withTopLevelQueries from 'library/utils/withTopLevelQueries';
 import AccountScreen from './AccountScreen';
 import SettingsScreen from './SettingsScreen';
 import HomeScreen from './HomeScreen';
@@ -61,9 +63,11 @@ import EditStoryItemPopup from './modals/stories/EditStoryItemPopup';
 
 // const { cond, interpolate } = Animated;
 
+const HomeScreenWithTopLevelQueries = withTopLevelQueries(HomeScreen);
+
 const HomeStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Home: HomeScreenWithTopLevelQueries,
     Profile: {
       screen: ProfileScreen,
     },
@@ -242,37 +246,39 @@ InboxStack.navigationOptions = ({ navigation }) => {
 
 const TabNavigator = createBottomTabNavigator(
   {
-    Home: HomeStack,
-    People: PeopleStack,
-    Notifications: NotificationsStack,
-    Inbox: InboxStack,
+    Home: {
+      screen: HomeStack,
+      navigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused, horizontal, tintColor }) => <Icon name="home" size={22} color={tintColor} solid />,
+      }),
+    },
+    People: {
+      screen: PeopleStack,
+      navigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused, horizontal, tintColor }) => <Icon name="user-friends" size={22} color={tintColor} solid />,
+      }),
+    },
+    NotificationsTab: {
+      screen: NotificationsStack,
+      navigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused, horizontal, tintColor }) => {
+          const unSeen = navigation.getParam('unSeen', 0);
+          console.log(`unSeen in navigator: ${unSeen}`);
+          if (unSeen > 0) return <BellDot color={tintColor} />;
+          return <Bell color={tintColor} />;
+        },
+      }),
+    },
+    Inbox: {
+      screen: InboxStack,
+      navigationOptions: ({ navigation }) => ({
+        tabBarIcon: ({ focused, horizontal, tintColor }) => <Icon name="envelope" size={22} color={tintColor} solid />,
+      }),
+    },
   },
   {
     initialRouteName: 'Home',
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, horizontal, tintColor }) => {
-        const { routeName } = navigation.state;
-        // console.log(navigation);
-
-        let iconName;
-        if (routeName === 'Home') {
-          iconName = `home`;
-        } else if (routeName === 'People') {
-          iconName = `user-friends`;
-        } else if (routeName === 'Notifications') {
-          iconName = `bell`;
-        } else if (routeName === 'Inbox') {
-          iconName = `envelope`;
-        }
-
-        // You can return any component that you like here!
-        return (
-          <>
-            <Icon name={iconName} size={22} color={tintColor} solid />
-          </>
-        );
-      },
-    }),
+    defaultNavigationOptions: ({ navigation }) => ({}),
     tabBarOptions: {
       activeTintColor: colors.purp,
       inactiveTintColor: colors.iconGray,
@@ -470,27 +476,6 @@ const MainNavWithModal = createStackNavigator(
         gestureEnabled: false,
       },
     },
-    // SelectFreelanceModal: {
-    //   screen: SelectFreelanceModal,
-    //   navigationOptions: {
-    //     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-    //     gestureEnabled: false,
-    //   },
-    // },
-    // SelectInvestorModal: {
-    //   screen: SelectInvestorModal,
-    //   navigationOptions: {
-    //     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-    //     gestureEnabled: false,
-    //   },
-    // },
-    // SelectMentorModal: {
-    //   screen: SelectMentorModal,
-    //   navigationOptions: {
-    //     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-    //     gestureEnabled: false,
-    //   },
-    // },
     YearModal: {
       screen: YearModal,
       navigationOptions: {
