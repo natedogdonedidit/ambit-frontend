@@ -1,69 +1,34 @@
-import React from 'react';
-import { useScreens } from 'react-native-screens';
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
-import { createStackNavigator, HeaderBackButton } from 'react-navigation-stack';
+import React, { useContext } from 'react';
 
-import MainNavigator from './src/screens/main/MainNavigator';
-import AuthLoadingScreen from './src/screens/onboarding/AuthLoadingScreen';
-import BenefitsScreen1 from './src/screens/onboarding/BenefitsScreen1';
-import BenefitsScreen2 from './src/screens/onboarding/BenefitsScreen2';
-import BenefitsScreen3 from './src/screens/onboarding/BenefitsScreen3';
-import OnboardingScreen1 from './src/screens/onboarding/OnboardingScreen1';
-import OnboardingScreen2 from './src/screens/onboarding/OnboardingScreen2';
-import OnboardingScreen3 from './src/screens/onboarding/OnboardingScreen3';
-import LoginScreen from './src/screens/onboarding/LoginScreen';
-import CreateAccountScreen from './src/screens/onboarding/CreateAccountScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-useScreens();
+import SplashScreen from 'library/components/UI/SplashScreen';
+import { UserContext } from 'library/utils/UserContext';
 
-const AuthNavigator = createSwitchNavigator(
-  {
-    AuthLoading: AuthLoadingScreen,
-    Benefits1: BenefitsScreen1,
-    Benefits2: BenefitsScreen2,
-    Benefits3: BenefitsScreen3,
-    Login: LoginScreen,
-    CreateAccount: CreateAccountScreen,
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: '#5A50CC',
-      headerStyle: {
-        backgroundColor: '#fff',
-      },
-    }),
-    initialRouteName: 'AuthLoading',
+import AuthStack from 'navigators/AuthStack';
+import MainStack from 'navigators/MainStack';
+
+const Stack = createStackNavigator();
+
+const AppNavigator = () => {
+  const { currentUserId, loadingApp } = useContext(UserContext);
+
+  if (loadingApp) {
+    return <SplashScreen />;
   }
-);
 
-const OnboardingNavigator = createStackNavigator(
-  {
-    Onboarding1: OnboardingScreen1,
-    Onboarding2: OnboardingScreen2,
-    Onboarding3: OnboardingScreen3,
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      headerTintColor: '#5A50CC',
-      headerStyle: {
-        backgroundColor: '#fff',
-      },
-      initialRouteName: 'Onboarding1',
-    }),
-  }
-);
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName={currentUserId ? 'MainStack' : 'AuthStack'} headerMode="none">
+        {currentUserId ? (
+          <Stack.Screen name="MainStack" component={MainStack} />
+        ) : (
+          <Stack.Screen name="AuthStack" component={AuthStack} />
+        )}
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
 
-const AppSwitchNavigator = createSwitchNavigator(
-  {
-    Auth: AuthNavigator,
-    Onboarding: OnboardingNavigator,
-    Main: MainNavigator,
-  },
-  {
-    initialRouteName: 'Auth',
-  }
-);
-
-const AppContainer = createAppContainer(AppSwitchNavigator);
-
-export default AppContainer;
+export default AppNavigator;

@@ -6,10 +6,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import GrayButton from 'library/components/UI/buttons/GrayButton';
 
-const EditSkillsPopup = ({ navigation }) => {
-  const skillDelete = navigation.getParam('skillDelete');
-  const skillChangeOrder = navigation.getParam('skillChangeOrder');
-  const flipExpert = navigation.getParam('flipExpert');
+const EditSkillsPopup = ({ navigation, route }) => {
+  const { skillDelete, skillChangeOrder, flipExpert } = route.params;
 
   return (
     <View style={styles.container}>

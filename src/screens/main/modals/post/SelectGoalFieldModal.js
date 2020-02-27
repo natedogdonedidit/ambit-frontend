@@ -10,13 +10,8 @@ import FreelanceList from 'library/components/lists/FreelanceList';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const SelectGoalFieldModal = ({ navigation }) => {
-  const goal = navigation.getParam('goal', null);
-
-  // PARAMS
-  const setGoal = navigation.getParam('setGoal');
-  const setTopics = navigation.getParam('setTopics');
-  const setSubField = navigation.getParam('setSubField');
+const SelectGoalFieldModal = ({ navigation, route }) => {
+  const { goal, setGoal, setTopics, setSubField } = route.params;
 
   // STATE
   const [selectedCategories, setSelectedCategories] = useState('');

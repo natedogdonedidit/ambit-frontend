@@ -10,18 +10,18 @@ import defaultStyles from 'styles/defaultStyles';
 
 const TOPIC_LIMIT = 3;
 
-const SelectPostTopicsModal = ({ navigation }) => {
+const SelectPostTopicsModal = ({ navigation, route }) => {
   // PARAMS
-  const goal = navigation.getParam('goal', {
-    heading: '',
-    icon: '',
-    primaryColor: colors.blue,
-    secondaryColor: colors.blue,
-    modalType: 'none',
-  });
-  const setTopics = navigation.getParam('setTopics');
-  const setSubField = navigation.getParam('setSubField');
-  const topicsPassedIn = navigation.getParam('topics', []);
+  const {
+    goal = {
+      heading: '',
+      icon: '',
+      primaryColor: colors.blue,
+      secondaryColor: colors.blue,
+      modalType: 'none',
+    },
+  } = route.params;
+  const { setTopics, setSubField, topicsPassedIn = [] } = route.params;
 
   // STATE
   const [selectedCategories, setSelectedCategories] = useState('');

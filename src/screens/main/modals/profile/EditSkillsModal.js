@@ -25,8 +25,8 @@ import defaultStyles from 'styles/defaultStyles';
 import TextButton from 'library/components/UI/buttons/TextButton';
 import Skills from 'library/components/profile/Skills';
 
-const EditSkillsModal = ({ navigation }) => {
-  const user = navigation.getParam('user');
+const EditSkillsModal = ({ navigation, route }) => {
+  const { user } = route.params;
 
   // remove id and __typename from skills
   const oldSkills = user.skills

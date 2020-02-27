@@ -6,10 +6,9 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
-const EditLocationModal = ({ navigation }) => {
+const EditLocationModal = ({ navigation, route }) => {
   // make sure these params get passed in!!
-  const initialLocation = navigation.getParam('initialLocation');
-  const handleLocationSelect = navigation.getParam('handleLocationSelect');
+  const { initialLocation, handleLocationSelect } = route.params;
 
   const didMountRef = useRef(false);
   const [locationInput, setLocationInput] = useState(initialLocation);

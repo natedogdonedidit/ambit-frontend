@@ -8,8 +8,8 @@ import defaultStyles from 'styles/defaultStyles';
 import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import GoalsList from 'library/components/lists/GoalsList';
 
-const SelectGoalModalSearch = ({ navigation }) => {
-  const handleGoalSelect = navigation.getParam('handleGoalSelect');
+const SelectGoalModalSearch = ({ navigation, route }) => {
+  const { handleGoalSelect } = route.params;
 
   const onGoalSelect = goal => {
     handleGoalSelect(goal);

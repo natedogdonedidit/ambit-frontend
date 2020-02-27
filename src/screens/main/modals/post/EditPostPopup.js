@@ -6,11 +6,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import GrayButton from 'library/components/UI/buttons/GrayButton';
 
-const EditPostPopup = ({ navigation }) => {
-  const post = navigation.getParam('post');
-  const isMyPost = navigation.getParam('isMyPost', false);
-  const type = navigation.getParam('type', '');
-  const deleteFunction = navigation.getParam('deleteFunction');
+const EditPostPopup = ({ navigation, route }) => {
+  const { post, isMyPost = false, type = '', deleteFunction } = route.params;
 
   return (
     <View style={styles.container}>

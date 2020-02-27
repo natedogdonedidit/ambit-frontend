@@ -5,8 +5,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { years } from 'library/utils/lists';
 
-const YearModal = ({ navigation }) => {
-  const handleSelect = navigation.getParam('handleSelect');
+const YearModal = ({ navigation, route }) => {
+  const { handleSelect } = route.params;
 
   const renderDates = () => {
     return years.map((year, i) => (

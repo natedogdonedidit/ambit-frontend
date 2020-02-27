@@ -10,13 +10,13 @@ const BenefitsScreen1 = props => {
   // navigation
   const { navigation } = props;
 
-  useEffect(() => {
-    const timer = setTimeout(() => navigation.navigate('Benefits2'), 2000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => navigation.navigate('Benefits2'), 2000);
 
-    return function cleanup() {
-      clearTimeout(timer);
-    };
-  });
+  //   return function cleanup() {
+  //     clearTimeout(timer);
+  //   };
+  // });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

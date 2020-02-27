@@ -31,10 +31,9 @@ import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 
-const NewPostModal = ({ navigation }) => {
+const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
-  const userLoggedIn = navigation.getParam('userLoggedIn');
-  const topicsPassedIn = navigation.getParam('topicsPassedIn', []);
+  const { userLoggedIn, topicsPassedIn = [] } = route.params;
 
   // STATE
   const [goal, setGoal] = useState('');

@@ -19,13 +19,9 @@ import { getTopicFromID } from 'library/utils';
 
 const DROPDOWNS_HEIGHT = 40;
 
-const SearchScreen = ({ navigation }) => {
+const SearchScreen = ({ navigation, route }) => {
   // PARAMS
-  const goalToSearch = navigation.getParam('goalToSearch', null);
-  const topicToSearch = navigation.getParam('topicToSearch', '');
-  const locationToSearch = navigation.getParam('locationToSearch', null);
-  const locationLatToSearch = navigation.getParam('locationLatToSearch', null);
-  const locationLonToSearch = navigation.getParam('locationLonToSearch', null);
+  const { goalToSearch, topicToSearch, locationToSearch, locationLatToSearch, locationLonToSearch } = route.params;
 
   // STATE
   const [scrollY] = useState(new Animated.Value(0));

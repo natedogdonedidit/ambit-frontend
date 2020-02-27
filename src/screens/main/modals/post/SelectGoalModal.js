@@ -8,10 +8,8 @@ import GoalsList from 'library/components/lists/GoalsList';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const SelectGoalModal = ({ navigation }) => {
-  const setGoal = navigation.getParam('setGoal');
-  const setTopics = navigation.getParam('setTopics');
-  const setSubField = navigation.getParam('setSubField');
+const SelectGoalModal = ({ navigation, route }) => {
+  const { setGoal, setTopics, setSubField } = route.params;
 
   const handleGoalSelect = goal => {
     navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField });

@@ -15,9 +15,9 @@ import Update from 'library/components/post/Update';
 import { getGoalInfo } from 'library/utils';
 import { UserContext } from 'library/utils/UserContext';
 
-const PostScreen = ({ navigation }) => {
+const PostScreen = ({ navigation, route }) => {
   // ROUTE PARAMS
-  const postToQuery = navigation.getParam('post', null); // all the data from parent post down to updates
+  const { post: postToQuery } = route.params; // all the data from parent post down to updates
 
   // HOOKS
   const currentTime = new Date();

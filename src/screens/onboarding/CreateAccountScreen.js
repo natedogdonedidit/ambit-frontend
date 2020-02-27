@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
 import { useMutation } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';

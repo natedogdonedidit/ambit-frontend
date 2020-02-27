@@ -14,13 +14,13 @@ import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import Loader from 'library/components/UI/Loader';
 import ThreadLine from 'library/components/UI/ThreadLine';
 
-const UpdatePostScreen = ({ navigation }) => {
+const UpdatePostScreen = ({ navigation, route }) => {
   // state declaration
   const [updateText, setUpdateText] = useState('');
   const [updateImage, setUpdateImage] = useState('');
 
   // constants
-  const post = navigation.getParam('post', 'No post');
+  const { post } = route.params;
 
   // MUTATIONS
   const [createUpdate, { loading: loadingUpdate }] = useMutation(CREATE_UPDATE_MUTATION, {

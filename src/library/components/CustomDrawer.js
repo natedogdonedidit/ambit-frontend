@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
-import { DrawerItems, SafeAreaView } from 'react-navigation';
+import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity, SafeAreaView } from 'react-native';
+// import { DrawerItems, SafeAreaView } from 'react-navigation';
 import { useQuery } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -19,13 +19,13 @@ const CustomDrawer = ({ navigation }) => {
   if (error) return <Text>{`Error! ${error}`}</Text>;
 
   const { userLoggedIn } = data;
+  if (!userLoggedIn) return null;
 
   const handleLogout = async () => {
     try {
       // attempt to sign out (remove JWT token to storage)
       await logoutCTX();
-      // should make sure user is cleared from Cache CURRENT_USER_QUERY
-      navigation.navigate('Auth');
+      navigation.closeDrawer();
     } catch (e) {
       // AsyncStorage errors would lead us here
       console.log('ERROR LOGGING OUT:', e.message);

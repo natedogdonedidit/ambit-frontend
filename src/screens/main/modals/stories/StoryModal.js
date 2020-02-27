@@ -10,10 +10,9 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 
 const IMAGE_DURATION = 2;
 
-const StoryModal = ({ navigation }) => {
-  const owner = navigation.getParam('owner');
-  const isPreview = navigation.getParam('isPreview', false);
-  const { title, items } = navigation.getParam('story', { title: '', items: [] });
+const StoryModal = ({ navigation, route }) => {
+  const { owner, isPreview = false, story = { title: '', items: [] } } = route.params;
+  const { title, items } = story;
 
   const videoRef = useRef(null);
   const { height, width } = Dimensions.get('window');

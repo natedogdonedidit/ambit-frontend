@@ -37,10 +37,9 @@ const BLANK_EXPERIENCE = {
   currentRole: false,
 };
 
-const EditExperienceModal = ({ navigation }) => {
+const EditExperienceModal = ({ navigation, route }) => {
   // params passed in
-  const isNew = navigation.getParam('isNew', false);
-  const experience = navigation.getParam('experience', BLANK_EXPERIENCE);
+  const { isNew = false, experience = BLANK_EXPERIENCE } = route.params;
 
   // context
   const { currentUserId } = useContext(UserContext);

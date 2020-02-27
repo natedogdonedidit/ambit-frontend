@@ -37,10 +37,9 @@ const BLANK_EXPERIENCE = {
   currentRole: false,
 };
 
-const EditEducationModal = ({ navigation }) => {
+const EditEducationModal = ({ navigation, route }) => {
   // params passed in
-  const isNew = navigation.getParam('isNew', false);
-  const education = navigation.getParam('education', BLANK_EXPERIENCE);
+  const { isNew = false, education = BLANK_EXPERIENCE } = route.params;
 
   // context
   const { currentUserId } = useContext(UserContext);

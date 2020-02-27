@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
-import { HeaderBackButton } from 'react-navigation-stack';
+// import { NavigationEvents } from 'react-navigation';
+// import { HeaderBackButton } from 'react-navigation-stack';
 import { useMutation } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
@@ -46,16 +46,8 @@ const LoginScreen = props => {
     try {
       // 1. send login request to backend
       const res = await login();
-
       // 2. store token in storage, save user in CTX
       await loginCTX(res.data.login);
-
-      // 3. clear state
-      setEmail('');
-      setPassword('');
-
-      // 4. navigate to Main app
-      navigation.navigate('Main');
     } catch (e) {
       // Backend GraphQL errors would lead us here
       console.log('ERROR LOGGING IN TO BACKEND:', e.message);
@@ -109,7 +101,7 @@ const LoginScreen = props => {
 
         {renderErrors()}
 
-        <NavigationEvents
+        {/* <NavigationEvents
           onDidFocus={() => {
             setEmail('');
             setPassword('');
@@ -118,7 +110,7 @@ const LoginScreen = props => {
             setEmail('');
             setPassword('');
           }}
-        />
+        /> */}
       </View>
     </SafeAreaView>
   );
@@ -174,11 +166,11 @@ const styles = StyleSheet.create({
   },
 });
 
-LoginScreen.navigationOptions = ({ navigation }) => {
-  return {
-    title: 'Login',
-    headerLeft: <HeaderBackButton onPress={() => navigation.navigate('Tabs')} />,
-  };
-};
+// LoginScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     title: 'Login',
+//     headerLeft: <HeaderBackButton onPress={() => navigation.navigate('Tabs')} />,
+//   };
+// };
 
 export default LoginScreen;

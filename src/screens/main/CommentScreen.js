@@ -37,15 +37,12 @@ import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 import Post from 'library/components/post/Post';
 import Comment from 'library/components/post/Comment';
 
-const CommentScreen = ({ navigation }) => {
+const CommentScreen = ({ navigation, route }) => {
   const scrollViewRef = useRef(null);
   // const inputRef = useRef(null);
 
   // params
-  const clicked = navigation.getParam('clicked', null); // the content that was clicked (post, update, or comment)
-  const updateInd = navigation.getParam('updateInd', null);
-  const isUpdate = navigation.getParam('isUpdate', false); // if commenting on an Update
-  const isComment = navigation.getParam('isComment', false); // if commenting on a Comment
+  const { clicked, updateInd, isUpdate = false, isComment = false } = route.params;
 
   // state declaration\
   // const [comment, setComment] = useState(isComment ? `@[${clicked.owner.name}](${clicked.owner.id}) ` : '');

@@ -11,8 +11,8 @@ import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
-const EditAboutModal = ({ navigation }) => {
-  const user = navigation.getParam('user');
+const EditAboutModal = ({ navigation, route }) => {
+  const { user } = route.params;
 
   const [about, setAbout] = useState(user.about);
 

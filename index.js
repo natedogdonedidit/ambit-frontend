@@ -1,11 +1,7 @@
-import React, { useEffect } from 'react';
+import 'react-native-gesture-handler'; // required by React Navigation docs
+import React from 'react';
 import { AppRegistry, Platform } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
-
-// APOLLO SETUP BEFORE SUBSCRIPTIONS
-// import { ApolloClient, HttpLink, InMemoryCache, ApolloLink } from 'apollo-boost';
-// import { onError } from 'apollo-link-error';
-// import { setContext } from 'apollo-link-context';
 
 // APOLLO SETUP AFTER SUBSCRIPTIONS
 import { ApolloClient } from 'apollo-client';
@@ -20,7 +16,7 @@ import { getMainDefinition } from 'apollo-utilities';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UserContextProvider } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
-import AppContainer from './App';
+import AppNavigator from './App';
 import { name as appName } from './app.json';
 
 // eslint-disable-next-line no-undef
@@ -47,7 +43,7 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     ios: 'http://localhost:4000/', // simulator
-    // ios: 'http://192.168.123.86:4000', // work
+    // ios: 'http://192.168.123.220:4000', // work
     // ios: 'http://192.168.0.87:4000', // home
     // ios: 'http://192.168.1.28:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
@@ -58,7 +54,7 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     ios: 'ws://localhost:4000/', // simulator
-    // ios: 'ws://192.168.123.86:4000', // work
+    // ios: 'ws://192.168.123.220:4000', // work
     // ios: 'ws://192.168.0.87:4000', // home
     // ios: 'ws://192.168.1.28:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
@@ -103,7 +99,7 @@ const App = () => {
     <ApolloProvider client={client}>
       <SafeAreaProvider>
         <UserContextProvider>
-          <AppContainer />
+          <AppNavigator />
         </UserContextProvider>
       </SafeAreaProvider>
     </ApolloProvider>

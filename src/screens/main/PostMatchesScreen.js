@@ -8,10 +8,9 @@ import defaultStyles from 'styles/defaultStyles';
 import SuggestedConnection from 'library/components/lists/SuggestedConnection';
 import Post from 'library/components/post/Post';
 
-const PostMatchesScreen = ({ navigation }) => {
+const PostMatchesScreen = ({ navigation, route }) => {
   // PARAMS
-  const post = navigation.getParam('post', null);
-  const matches = navigation.getParam('matches', []);
+  const { post, matches = [] } = route.params;
 
   const currentTime = new Date();
 

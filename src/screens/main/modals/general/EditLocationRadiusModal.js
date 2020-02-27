@@ -16,12 +16,9 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
-const EditLocationRadiusModal = ({ navigation }) => {
+const EditLocationRadiusModal = ({ navigation, route }) => {
   // make sure these params get passed in!!
-  const initialLocation = navigation.getParam('initialLocation');
-  const handleLocationSelect = navigation.getParam('handleLocationSelect');
-  const radius = navigation.getParam('radius');
-  const setRadius = navigation.getParam('setRadius');
+  const { initialLocation, handleLocationSelect, radius, setRadius } = route.params;
 
   const didMountRef = useRef(false);
   const [locationInput, setLocationInput] = useState(initialLocation);

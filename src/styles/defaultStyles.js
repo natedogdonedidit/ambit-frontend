@@ -241,6 +241,11 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontFamily: 'Poppins-SemiBold',
   },
+  ambitLogoSplash: {
+    color: colors.purp,
+    fontSize: 34,
+    fontFamily: 'Poppins-SemiBold',
+  },
   paddingBottomNav: {
     paddingBottom: 50,
   },

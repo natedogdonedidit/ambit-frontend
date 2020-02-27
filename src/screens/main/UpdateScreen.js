@@ -14,10 +14,9 @@ import Post from 'library/components/post/Post';
 import Update from 'library/components/post/Update';
 import PostComments from 'library/components/post/PostComments';
 
-const UpdateScreen = ({ navigation }) => {
+const UpdateScreen = ({ navigation, route }) => {
   // PARAMS
-  const postToQuery = navigation.getParam('post', null); // all the data from parent post down to updates
-  const updateInd = navigation.getParam('updateInd', 0);
+  const { postToQuery, updateInd = 0 } = route.params;
 
   // CONSTANTS
 

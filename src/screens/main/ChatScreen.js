@@ -12,9 +12,9 @@ import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import { UserContext } from 'library/utils/UserContext';
 
-const ChatScreen = ({ navigation }) => {
+const ChatScreen = ({ navigation, route }) => {
   // PARAMS
-  const otherUserPassedIn = navigation.getParam('otherUserPassedIn', null);
+  const { otherUserPassedIn } = route.params;
 
   // HOOKS
   const { currentUserId } = useContext(UserContext);

@@ -10,10 +10,9 @@ import FreelanceList from 'library/components/lists/FreelanceList';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const SelectSearchTopicsModal = ({ navigation }) => {
+const SelectSearchTopicsModal = ({ navigation, route }) => {
   // PARAMS
-  const goal = navigation.getParam('goal');
-  const setTopic = navigation.getParam('setTopic');
+  const { goal, setTopic } = route.params;
 
   // STATE
   const [selectedCategories, setSelectedCategories] = useState('');

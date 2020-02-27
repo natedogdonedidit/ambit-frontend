@@ -5,8 +5,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { months } from 'library/utils/lists';
 
-const MonthModal = ({ navigation }) => {
-  const handleSelect = navigation.getParam('handleSelect');
+const MonthModal = ({ navigation, route }) => {
+  const { handleSelect } = route.params;
 
   const renderDates = () => {
     return months.map((month, i) => (

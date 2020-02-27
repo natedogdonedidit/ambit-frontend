@@ -16,9 +16,9 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
-const EditNameModal = ({ navigation }) => {
+const EditNameModal = ({ navigation, route }) => {
   // ROUTE PARAMS
-  const userLoggedIn = navigation.getParam('userLoggedIn');
+  const { userLoggedIn } = route.params;
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

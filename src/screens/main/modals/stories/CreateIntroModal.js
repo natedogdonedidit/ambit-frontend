@@ -26,8 +26,8 @@ import { introPicUpload, introVideoUpload } from 'library/utils';
 import EDIT_INTRO_MUTATION from 'library/mutations/EDIT_INTRO_MUTATION';
 import Loader from 'library/components/UI/Loader';
 
-const CreateIntroModal = ({ navigation }) => {
-  const user = navigation.getParam('userLoggedIn');
+const CreateIntroModal = ({ navigation, route }) => {
+  const { userLoggedIn: user } = route.params;
   // remove id and __typename from intro items
   const currentIntroItems = user.intro
     ? user.intro.items.map(item => {

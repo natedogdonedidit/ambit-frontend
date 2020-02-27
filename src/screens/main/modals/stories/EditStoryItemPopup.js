@@ -6,11 +6,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import GrayButton from 'library/components/UI/buttons/GrayButton';
 
-const EditStoryItemPopup = ({ navigation }) => {
-  const itemIndex = navigation.getParam('itemIndex');
-  const storyLength = navigation.getParam('storyLength');
-  const removeStoryItem = navigation.getParam('removeStoryItem');
-  const changeOrder = navigation.getParam('changeOrder');
+const EditStoryItemPopup = ({ navigation, route }) => {
+  const { itemIndex, storyLength, removeStoryItem, changeOrder } = route.params;
 
   return (
     <View style={styles.container}>

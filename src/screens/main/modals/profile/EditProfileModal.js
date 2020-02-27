@@ -31,8 +31,8 @@ import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 
 const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
 
-const EditProfileModal = ({ navigation }) => {
-  const user = navigation.getParam('user');
+const EditProfileModal = ({ navigation, route }) => {
+  const { user } = route.params;
 
   // headline
   const experienceSorted = user.experience.sort(sortExperiences);

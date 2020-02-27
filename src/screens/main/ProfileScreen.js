@@ -12,11 +12,11 @@ import ProfileComponent from 'library/components/profile/ProfileComponent';
 const OUTSIDE_HEADER_HEIGHT = 0;
 const OUTSIDE_HEADER_SCROLL = 0;
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation, route }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
-  // CONTEXT & USER CHECK
-  const profileId = navigation.getParam('profileId', 'NO-ID');
+  // PARAMS
+  const { profileId } = route.params;
 
   // QUERIES
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {

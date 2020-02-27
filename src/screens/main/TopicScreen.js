@@ -18,10 +18,9 @@ import { getFullTopicFromID } from 'library/utils';
 const HEADER_HEIGHT = 44;
 const BANNER_HEIGHT = 0;
 
-const TopicScreen = ({ navigation }) => {
+const TopicScreen = ({ navigation, route }) => {
   // PARAMS
-  const topicID = navigation.getParam('topicID');
-  const subTopic = navigation.getParam('subTopic', null);
+  const { topicID, subTopic } = route.params;
   const activeTopic = getFullTopicFromID(topicID);
 
   // STATE
