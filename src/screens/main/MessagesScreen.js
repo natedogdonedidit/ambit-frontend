@@ -6,7 +6,6 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderMessages from 'library/components/headers/HeaderMessages';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import ALL_CHATS_QUERY from 'library/queries/ALL_CHATS_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import FullWidthTabs from 'library/components/UI/FullWidthTabs';
@@ -41,8 +40,8 @@ const MessagesScreen = ({ navigation }) => {
     );
   const { userLoggedIn } = dataUser;
 
-  const chats = userLoggedIn.chats || [];
-  chats.sort(sortChats); // sort chats by date
+  const groups = userLoggedIn.groups || [];
+  groups.sort(sortChats); // sort groups by date
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,7 +62,7 @@ const MessagesScreen = ({ navigation }) => {
             Sorry, no chats to display at this time
           </Text>
         }
-        data={chats}
+        data={groups}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
           // console.log(item);

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import 'react-native-gesture-handler'; // required by React Navigation docs
 import React from 'react';
 import { AppRegistry, Platform } from 'react-native';
@@ -5,7 +6,7 @@ import { ApolloProvider } from 'react-apollo';
 
 // APOLLO SETUP AFTER SUBSCRIPTIONS
 import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache, defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { onError } from 'apollo-link-error';
 import { setContext } from 'apollo-link-context';
@@ -42,9 +43,9 @@ const authLink = setContext(async (req, { headers }) => {
 // Create an http link:
 const httpLink = new HttpLink({
   uri: Platform.select({
-    ios: 'http://localhost:4000/', // simulator
-    // ios: 'http://192.168.123.220:4000', // work
-    // ios: 'http://192.168.0.87:4000', // home
+    // ios: 'http://localhost:4000/', // simulator
+    // ios: 'http://192.168.123.142:4000', // work
+    ios: 'http://192.168.0.87:4000', // home
     // ios: 'http://192.168.1.28:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
   }),
@@ -53,9 +54,9 @@ const httpLink = new HttpLink({
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
   uri: Platform.select({
-    ios: 'ws://localhost:4000/', // simulator
-    // ios: 'ws://192.168.123.220:4000', // work
-    // ios: 'ws://192.168.0.87:4000', // home
+    // ios: 'ws://localhost:4000/', // simulator
+    // ios: 'ws://192.168.123.142:4000', // work
+    ios: 'ws://192.168.0.87:4000', // home
     // ios: 'ws://192.168.1.28:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
   }),
@@ -82,9 +83,28 @@ const client = new ApolloClient({
   link: ApolloLink.from([errorLink, authLink, link]),
   cache: new InMemoryCache({
     // dataIdFromObject: o => o.id,
+    dataIdFromObject: object => {
+      switch (object.__typename) {
+        case 'MessageConnection':
+          // console.log('in dataIdFromObject', object);
+          if (object.id) {
+            return `MessageConnection:${object.id}`;
+          }
+          return `MessageConnection:${object.edges[0].node.to.id}`;
+
+        default:
+          return defaultDataIdFromObject(object);
+      }
+    },
     cacheRedirects: {
       Query: {
         singlePost: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'Post', id: args.id }),
+        group: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'Group', id: args.id }),
+        // messages: (_, args, { getCacheKey }) => `GroupC:${args.groupID}`,
+        messages: (_, args, { getCacheKey }) => {
+          // console.log('in cacheredirect', args.groupID);
+          return getCacheKey({ __typename: 'MessageConnection', id: `${args.groupID}` });
+        },
       },
     },
   }),

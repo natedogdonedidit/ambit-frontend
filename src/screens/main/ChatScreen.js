@@ -19,7 +19,7 @@ const ChatScreen = ({ navigation, route }) => {
   // HOOKS
   const { currentUserId } = useContext(UserContext);
 
-  // get the list of chats of the logged in user
+  // get the list of groups of the logged in user
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
 
   if (errorUser) return <Error error={errorUser} />;
@@ -32,16 +32,16 @@ const ChatScreen = ({ navigation, route }) => {
     );
   }
   const { userLoggedIn } = dataUser;
-  const { chats } = userLoggedIn;
+  const { groups } = userLoggedIn;
   // console.log('userLoggedIn', userLoggedIn);
-  // console.log('chats', chats);
+  // console.log('groups', groups);
 
-  const chat = chats.find(c => {
+  const group = groups.find(c => {
     // get the other user in the chat
     const otherUser = c.users.find(user => user.id !== currentUserId);
     // console.log('otherUser', otherUser);
 
-    // see if it equals the userPassedIn, if it does return the chat
+    // see if it equals the userPassedIn, if it does return the group
     return otherUser.id === otherUserPassedIn.id;
   });
 
@@ -50,7 +50,7 @@ const ChatScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title={otherUserPassedIn.name} />
-      <ChatBox navigation={navigation} chatPassedIn={chat} userLoggedIn={userLoggedIn} otherUserPassedIn={otherUserPassedIn} />
+      <ChatBox navigation={navigation} groupPassedIn={group} userLoggedIn={userLoggedIn} otherUserPassedIn={otherUserPassedIn} />
     </View>
   );
 };

@@ -1,10 +1,13 @@
 import React, { useContext, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useSubscription } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
 import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
+import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
+import MESSAGES_CONNECTION_ALL from 'library/queries/MESSAGES_CONNECTION_ALL';
 import NEW_NOTIFICATION_SUBSCRIPTION from 'library/subscriptions/NEW_NOTIFICATION_SUBSCRIPTION';
+import MESSAGE_SUBSCRIPTION from 'library/subscriptions/MESSAGE_SUBSCRIPTION';
 
 import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY';
 
@@ -43,8 +46,11 @@ const Stack = createStackNavigator();
 const MainStack = () => {
   const { setUnseenNotifications, currentUserId } = useContext(UserContext);
 
-  // CONNECTIONS QUERY
+  // ////////////////////////////////////////
+  // LOAD INITIAL QUERIES HERE
+  // ////////////////////////////////////////
   useQuery(ALL_CONNECTIONS_QUERY);
+  useQuery(MESSAGES_CONNECTION_ALL);
 
   // NOTIFICATIONS QUERY
   const {
@@ -57,7 +63,6 @@ const MainStack = () => {
   const ok = networkStatusNotifications === 7;
 
   const moreNotifications = () => {
-    console.log(`subscribing to more notifications for ${currentUserId}`);
     subscribeToMoreNotifications({
       document: NEW_NOTIFICATION_SUBSCRIPTION,
       variables: { id: currentUserId },
@@ -95,6 +100,36 @@ const MainStack = () => {
       }
     }
   }, [notificationsData]);
+
+  // SUBSCRIBE TO NEW MESSAGES IN GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
+  useSubscription(MESSAGE_SUBSCRIPTION, {
+    variables: { id: currentUserId },
+    onSubscriptionData: ({ client, subscriptionData }) => {
+      const { newMessageToMe } = subscriptionData.data;
+      try {
+        const previousData = client.readQuery({
+          query: MESSAGES_CONNECTION,
+          variables: { groupID: newMessageToMe.to.id },
+        });
+
+        const newEdges = [{ node: newMessageToMe, __typename: 'MessageEdge' }, ...previousData.messages.edges];
+
+        client.writeQuery({
+          query: MESSAGES_CONNECTION,
+          variables: { groupID: newMessageToMe.to.id },
+          data: {
+            messages: { ...previousData.messages, edges: newEdges },
+          },
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+  });
+
+  // SUBSCRIBE TO NEW GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
+
+  // UPDATE # OF UNSEEN MESSAGES EVERYTIME NEW MESSAGE DATA COMES IN
 
   return (
     <Stack.Navigator initialRouteName="MainDrawer" mode="modal" headerMode="none">

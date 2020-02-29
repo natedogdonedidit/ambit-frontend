@@ -1,13 +1,13 @@
 import gql from 'graphql-tag';
-import { DetailedChat } from 'library/queries/_fragments';
+import { MessageFragment } from 'library/queries/_fragments';
 
 const CREATE_MESSAGE_MUTATION = gql`
-  mutation CREATE_POST_MUTATION($message: MessageCreateInput!) {
+  mutation CREATE_MESSAGE_MUTATION($message: MessageCreateInput!) {
     createMessage(message: $message) {
-      ...DetailedChat
+      ...MessageFragment
     }
   }
-  ${DetailedChat}
+  ${MessageFragment}
 `;
 
 export default CREATE_MESSAGE_MUTATION;

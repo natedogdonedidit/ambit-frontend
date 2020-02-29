@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { UserContext } from 'library/utils/UserContext';
 
 import HomeStack from 'navigators/HomeStack';
@@ -14,8 +15,14 @@ import colors from 'styles/colors';
 
 const Tabs = createBottomTabNavigator();
 
-const TabsNavigator = () => {
+const TabsNavigator = ({ navigation }) => {
   const { unseenNotifications } = useContext(UserContext);
+
+  // const activeRoute = useRoute();
+  // console.log(activeRoute);
+
+  // add listener? setOptions?
+  // console.log(navigation);
 
   return (
     <Tabs.Navigator
@@ -47,7 +54,10 @@ const TabsNavigator = () => {
       <Tabs.Screen
         name="InboxStack"
         component={InboxStack}
-        options={{ tabBarIcon: ({ focused, color, size }) => <Icon name="envelope" size={22} color={color} solid /> }}
+        options={{
+          // tabBarVisible: activeRoute.name !== 'Chat',
+          tabBarIcon: ({ focused, color, size }) => <Icon name="envelope" size={22} color={color} solid />,
+        }}
       />
     </Tabs.Navigator>
   );

@@ -1,25 +1,18 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, View, SafeAreaView, Alert } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Alert } from 'react-native';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import colors from 'styles/colors';
-import defaultStyles from 'styles/defaultStyles';
-import HeaderBack from 'library/components/headers/HeaderBack';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import FULL_CHAT_QUERY from 'library/queries/FULL_CHAT_QUERY';
 import CREATE_MESSAGE_MUTATION from 'library/mutations/CREATE_MESSAGE_MUTATION';
-import MESSAGE_ADDED_SUBSCRIPTION from 'library/subscriptions/MESSAGE_ADDED_SUBSCRIPTION';
+import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
+import GROUP_QUERY from 'library/queries/GROUP_QUERY';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
-import { UserContext } from 'library/utils/UserContext';
 
-const ChatBox = ({ navigation, userLoggedIn, chatPassedIn = null, otherUserPassedIn }) => {
-  // HOOKS
-  // const currentTime = new Date();
-  // const { currentUserId } = useContext(UserContext);
-
+const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, otherUserPassedIn }) => {
   // MUTATIONS
   const [createMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
     refetchQueries: () => [{ query: CURRENT_USER_QUERY }],
@@ -32,66 +25,108 @@ const ChatBox = ({ navigation, userLoggedIn, chatPassedIn = null, otherUserPasse
     },
   });
 
-  // QUERIES
-  const { loading: loadingChat, error, data, refetch, networkStatus: networkStatusFullChat, subscribeToMore } = useQuery(
-    FULL_CHAT_QUERY,
-    {
-      notifyOnNetworkStatusChange: true,
-      variables: { id: chatPassedIn ? chatPassedIn.id : null },
-    }
-  );
+  // QUERIES - this needs updated...should not fetch messages anymore. And maybe should grab chat from User in Cache?
+  const { loading: loadingGroup, error: errorGroup, data: dataGroup } = useQuery(GROUP_QUERY, {
+    notifyOnNetworkStatusChange: true,
+    variables: { id: groupPassedIn ? groupPassedIn.id : null },
+  });
+
+  // const [getMessages, { error: errorMessages, data, fetchMore, networkStatus, subscribeToMore, called }] = useLazyQuery(
+  const { error: errorMessages, data, fetchMore, networkStatus } = useQuery(MESSAGES_CONNECTION, {
+    notifyOnNetworkStatusChange: true,
+    variables: { groupID: groupPassedIn ? groupPassedIn.id : null },
+  });
 
   // console.log(networkStatus);
   // networkStatus states:
   // 1: loading
+  // 2: variables changed
   // 3: fetchMore
   // 4: refetch
   // 7: no loading, no refetch, everything OK!
 
-  const more = () =>
-    subscribeToMore({
-      document: MESSAGE_ADDED_SUBSCRIPTION,
-      variables: { chatID: chatPassedIn ? chatPassedIn.id : '' },
-      updateQuery: (previousData, { subscriptionData }) => {
-        // console.log('subscriptionData', subscriptionData);
-        if (!subscriptionData.data) return previousData;
-        const newMessage = subscriptionData.data.messageAdded;
-        // console.log('newMessage', newMessage);
-        // if (mutation !== 'CREATE_MESSAGE_MUTATION') return previousData;
-        const newMessagesList = [newMessage, ...previousData.fullChat.messages];
-        return {
-          fullChat: { ...previousData.fullChat, messages: newMessagesList },
-        };
-      },
-    });
-
-  useEffect(() => {
-    if (chatPassedIn) {
-      if (chatPassedIn.id) {
-        // console.log('subscibing to', chatPassedIn.id);
-        more();
-      }
-    }
-  }, []);
-
-  const refetching = networkStatusFullChat === 4;
-  const loading = networkStatusFullChat === 1;
-
-  if (error) return <Error error={error} />;
-  if (loading) {
+  if (errorMessages) return <Error error={errorMessages} />;
+  if (errorGroup) return <Error error={errorGroup} />;
+  if (loadingGroup) {
     return (
       <View style={styles.container}>
-        <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
+        <Loader loading={loadingGroup} full={false} backgroundColor={colors.lightGray} />
       </View>
     );
   }
 
   // PREPARE DATE FOR GIFTED CHAT
-  const { fullChat } = data; // will return null if no chat exists
-  const chatExists = fullChat !== null;
-  const messages = chatExists ? fullChat.messages : [];
-  const messagesFormated = chatExists
-    ? messages.map(message => {
+  const { group } = dataGroup; // will return null if no chat exists
+  // console.log('group', group);
+  const groupExists = group !== null;
+  const currentUserFormated = {
+    _id: userLoggedIn.id,
+    name: userLoggedIn.name,
+    avatar: userLoggedIn.profilePic,
+  };
+
+  const renderBubble = props => {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          left: {
+            backgroundColor: colors.systemGray6,
+          },
+          right: {},
+        }}
+      />
+    );
+  };
+
+  const onSendCreate = async payload => {
+    const newMessage = payload[0];
+
+    await createMessage({
+      variables: {
+        message: {
+          content: newMessage.text,
+          to: { create: { users: { connect: [{ id: userLoggedIn.id }, { id: otherUserPassedIn.id }] } } },
+          from: { connect: { id: newMessage.user._id } },
+        },
+      },
+      // update: (proxy, { data: dataReturned }) => {
+      //   proxy.writeQuery({
+      //     query: GROUP_QUERY,
+      //     data: {
+      //       group: dataReturned.createMessage,
+      //     },
+      //   });
+      // },
+    });
+  };
+
+  // console.log(networkStatus);
+  const loadingMessages = networkStatus === 1 || networkStatus === 2;
+  const fetchingMore = networkStatus === 3;
+  const ok = networkStatus === 7;
+
+  // console.log(!groupExists, loadingMessages);
+
+  if (!groupExists || loadingMessages) {
+    return (
+      <GiftedChat
+        messages={[]}
+        onSend={payload => onSendCreate(payload)}
+        user={currentUserFormated}
+        renderBubble={renderBubble}
+      />
+    );
+  }
+
+  // IF GROUP WAS LOADED SUCCESSFULLY
+  const { messages } = data; // will return null if no chat exists
+  // console.log('messages', messages);
+
+  const messageEdges = groupExists ? messages.edges : [];
+  const messageNodes = messageEdges.map(edge => edge.node);
+  const messagesFormated = groupExists
+    ? messageNodes.map(message => {
         return {
           _id: message.id,
           text: message.content,
@@ -106,144 +141,101 @@ const ChatBox = ({ navigation, userLoggedIn, chatPassedIn = null, otherUserPasse
     : [];
   // console.log('messagesFormated', messagesFormated);
 
-  const currentUserFormated = {
-    _id: userLoggedIn.id,
-    name: userLoggedIn.name,
-    avatar: userLoggedIn.profilePic,
-  };
-  // console.log('currentUserFormated', currentUserFormated);
-
   // CUSTOM FUNCTIONS
   const onSend = async payload => {
     const newMessage = payload[0];
-    // setSending(true);
 
-    // if chat already exists: connect to it
-    // if chat DOES NOT exist: create a new one
-    const chatObject = chatExists
-      ? { connect: { id: chatPassedIn.id } }
-      : { create: { users: { connect: [{ id: userLoggedIn.id }, { id: otherUserPassedIn.id }] } } };
-
-    // if chat exists use optimistic response
-    if (chatExists) {
-      await createMessage({
-        variables: {
-          message: {
-            content: newMessage.text,
-            chat: chatObject,
-            from: { connect: { id: newMessage.user._id } },
-          },
+    await createMessage({
+      variables: {
+        message: {
+          content: newMessage.text,
+          to: { connect: { id: groupPassedIn ? groupPassedIn.id : null } },
+          from: { connect: { id: newMessage.user._id } },
         },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          createMessage: {
-            __typename: 'Chat',
-            ...fullChat,
-            messages: [
-              {
-                __typename: 'Message',
-                id: newMessage._id,
-                createdAt: new Date(),
-                from: {
-                  __typename: 'User',
-                  id: newMessage.user._id,
-                  name: newMessage.user.name,
-                  firstName: '',
-                  lastName: '',
-                  profilePic: newMessage.user.avatar,
-                },
-                content: newMessage.text,
-              },
-              ...fullChat.messages, // older messages
-            ],
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createMessage: {
+          __typename: 'Message',
+          id: newMessage._id,
+          createdAt: new Date(),
+          from: {
+            __typename: 'User',
+            id: newMessage.user._id,
+            name: newMessage.user.name,
+            firstName: '',
+            lastName: '',
+            profilePic: newMessage.user.avatar,
           },
-        },
-        update: (proxy, { data: dataReturned }) => {
-          proxy.writeQuery({
-            query: FULL_CHAT_QUERY,
-            data: {
-              fullChat: dataReturned.createMessage,
+          to: {
+            ...group,
+            __typename: 'Group',
+            latestMessage: {
+              ...group.latestMessage,
+              content: newMessage.text,
             },
-          });
-        },
-      });
-    } else {
-      // do not use optimistic response
-      await createMessage({
-        variables: {
-          message: {
-            content: newMessage.text,
-            chat: chatObject,
-            from: { connect: { id: newMessage.user._id } },
           },
+          hidden: [],
+          seen: [],
+          content: newMessage.text,
         },
-        // optimisticResponse: {
-        //   __typename: 'Mutation',
-        //   createMessage: {
-        //     __typename: 'Chat',
-        //     ...fullChat,
-        //     users: [
+      },
+      update: (proxy, { data: dataReturned }) => {
+        const newMsg = dataReturned.createMessage;
 
-        //     ],
-        //     messages: [
-        //       {
-        //         __typename: 'Message',
-        //         id: newMessage._id,
-        //         createdAt: new Date(),
-        //         from: {
-        //           __typename: 'User',
-        //           id: newMessage.user._id,
-        //           name: newMessage.user.name,
-        //           firstName: '',
-        //           lastName: '',
-        //           profilePic: newMessage.user.avatar,
-        //         },
-        //         content: newMessage.text,
-        //       },
-        //       // ...fullChat.messages, // older messages
-        //     ],
-        //   },
-        // },
-        update: (proxy, { data: dataReturned }) => {
-          proxy.writeQuery({
-            query: FULL_CHAT_QUERY,
-            data: {
-              fullChat: dataReturned.createMessage,
-            },
-          });
-        },
-      });
-    }
+        const previousData = proxy.readQuery({
+          query: MESSAGES_CONNECTION,
+          variables: { groupID: newMsg.to.id },
+        });
 
-    // setSending(false);
-  };
+        const newEdges = [{ node: newMsg, __typename: 'MessageEdge' }, ...previousData.messages.edges];
 
-  const renderBubble = props => {
-    return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          left: {
-            backgroundColor: colors.systemGray6,
-            // marginBottom: 6,
+        proxy.writeQuery({
+          query: MESSAGES_CONNECTION,
+          variables: { groupID: newMsg.to.id },
+          data: {
+            messages: { ...previousData.messages, edges: newEdges },
           },
-          right: {
-            // marginBottom: 6,
-          },
-        }}
-      />
-    );
+        });
+      },
+    });
   };
 
   return (
     <View style={styles.container}>
-      {/* <HeaderBack navigation={navigation} title={otherUserPassedIn.name} /> */}
       <GiftedChat
         messages={messagesFormated}
         onSend={payload => onSend(payload)}
         user={currentUserFormated}
-        // textInputProps={{}}
         renderBubble={renderBubble}
+        loadEarlier={messages.pageInfo.hasNextPage}
+        isLoadingEarlier={fetchingMore}
+        onLoadEarlier={() => {
+          if (messages.pageInfo.hasNextPage && ok) {
+            fetchMore({
+              query: MESSAGES_CONNECTION,
+              variables: {
+                groupID: groupPassedIn ? groupPassedIn.id : null,
+                cursor: messages.pageInfo.endCursor,
+                first: 30,
+              },
+              updateQuery: (previousResult, { fetchMoreResult }) => {
+                const newEdges = fetchMoreResult.messages.edges;
+                const { pageInfo } = fetchMoreResult.messages;
+
+                return newEdges.length
+                  ? {
+                      messages: {
+                        __typename: previousResult.messages.__typename,
+                        edges: [...previousResult.messages.edges, ...newEdges],
+                        pageInfo,
+                      },
+                    }
+                  : previousResult;
+              },
+            });
+          }
+        }}
       />
     </View>
   );

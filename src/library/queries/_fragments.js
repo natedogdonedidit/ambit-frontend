@@ -26,23 +26,8 @@ export const MinimalUser = gql`
   }
 `;
 
-export const MessageFragment = gql`
-  fragment MessageFragment on Message {
-    id
-    createdAt
-    from {
-      id
-      firstName
-      lastName
-      name
-      profilePic
-    }
-    content
-  }
-`;
-
-export const BasicChat = gql`
-  fragment BasicChat on Chat {
+export const GroupFragment = gql`
+  fragment GroupFragment on Group {
     id
     updatedAt
     users {
@@ -52,8 +37,36 @@ export const BasicChat = gql`
       createdAt
       content
     }
+    hidden {
+      id
+    }
   }
   ${MinimalUser}
+`;
+
+export const MessageFragment = gql`
+  fragment MessageFragment on Message {
+    id
+    createdAt
+    to {
+      ...GroupFragment
+    }
+    from {
+      id
+      firstName
+      lastName
+      name
+      profilePic
+    }
+    content
+    seen {
+      id
+    }
+    hidden {
+      id
+    }
+  }
+  ${GroupFragment}
 `;
 
 export const LoggedInUser = gql`
@@ -84,28 +97,28 @@ export const LoggedInUser = gql`
       topicID
       name
     }
-    chats {
-      ...BasicChat
+    groups {
+      ...GroupFragment
     }
   }
   ${MinimalUser}
-  ${BasicChat}
+  ${GroupFragment}
 `;
 
-export const DetailedChat = gql`
-  fragment DetailedChat on Chat {
-    id
-    updatedAt
-    users {
-      ...LoggedInUser
-    }
-    messages {
-      ...MessageFragment
-    }
-  }
-  ${LoggedInUser}
-  ${MessageFragment}
-`;
+// export const DetailedChat = gql`
+//   fragment DetailedChat on Chat {
+//     id
+//     updatedAt
+//     users {
+//       ...LoggedInUser
+//     }
+//     messages {
+//       ...MessageFragment
+//     }
+//   }
+//   ${LoggedInUser}
+//   ${MessageFragment}
+// `;
 
 export const FullSkills = gql`
   fragment FullSkills on Skill {

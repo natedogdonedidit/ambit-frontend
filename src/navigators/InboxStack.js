@@ -18,7 +18,7 @@ const InboxStack = () => {
       <Stack.Screen name="Post" component={PostScreen} />
       <Stack.Screen name="PostMatches" component={PostMatchesScreen} />
       <Stack.Screen name="Update" component={UpdateScreen} />
-      <Stack.Screen name="Chat" component={ChatScreen} />
+      <Stack.Screen name="Chat" component={ChatScreen} options={{ tabBarVisible: false }} />
     </Stack.Navigator>
   );
 };
