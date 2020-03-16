@@ -6,10 +6,11 @@ import { useSafeArea } from 'react-native-safe-area-context';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { HEADER_HEIGHT } from 'styles/constants';
+import Loader from 'library/components/UI/Loader';
 
 import TextButton from 'library/components/UI/buttons/TextButton';
 
-const HeaderBack = ({ navigation, handleRight, textRight, title }) => {
+const HeaderBackLoader = ({ navigation, handleRight, textRight, title, loading }) => {
   const insets = useSafeArea();
   return (
     <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
@@ -24,9 +25,13 @@ const HeaderBack = ({ navigation, handleRight, textRight, title }) => {
       </View>
 
       <View style={styles.rightSide}>
-        <TextButton textStyle={styles.rightText} onPress={handleRight}>
-          {textRight}
-        </TextButton>
+        {loading ? (
+          <Loader loading={loading} size="small" paddingLeft={40} />
+        ) : (
+          <TextButton textStyle={styles.rightText} onPress={handleRight}>
+            {textRight}
+          </TextButton>
+        )}
       </View>
     </View>
   );
@@ -80,4 +85,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HeaderBack;
+export default HeaderBackLoader;

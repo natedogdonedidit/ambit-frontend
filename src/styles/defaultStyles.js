@@ -71,11 +71,6 @@ const styles = StyleSheet.create({
     fontSize: reg,
     fontFamily: 'SFProText-RegularItalic',
   },
-  defaultRegularMute: {
-    color: colors.blueGray,
-    fontSize: reg,
-    fontFamily: 'SFProText-Regular',
-  },
   defaultThin: {
     color: colors.black,
     fontSize: reg,
@@ -108,6 +103,11 @@ const styles = StyleSheet.create({
     fontFamily: 'SFProText-Bold',
   },
   // LARGE, 15px
+  largeMute: {
+    color: colors.blueGray,
+    fontSize: large,
+    fontFamily: 'SFProText-Regular',
+  },
   largeMuteItalic: {
     color: colors.blueGray,
     fontSize: large,

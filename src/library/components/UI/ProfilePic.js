@@ -19,7 +19,8 @@ const ProfilePic = ({
   // sizes
   // small = 30
   // medium = 40
-  // large = 70
+  // large = 50
+  // x-large = 70
 
   // const hasPitch = !!pitch;
   let hasIntro = false;

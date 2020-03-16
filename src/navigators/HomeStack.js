@@ -16,7 +16,14 @@ import MyHatsScreen from 'screens/main/MyHatsScreen';
 
 const Stack = createStackNavigator();
 
-const HomeStack = () => {
+const HomeStack = ({ navigation, route }) => {
+  // hides the tabs in Chat screen
+  if (route.state) {
+    navigation.setOptions({
+      tabBarVisible: route.state.routes ? !(route.state.routes[route.state.routes.length - 1].name === 'Chat') : null,
+    });
+  }
+
   return (
     <Stack.Navigator initialRouteName="Home" headerMode="none">
       <Stack.Screen name="Home" component={HomeScreen} />

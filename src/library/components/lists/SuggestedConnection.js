@@ -18,7 +18,7 @@ const SuggestedConnection = ({ navigation, item }) => {
     >
       <View style={styles.connection}>
         <View style={styles.profilePicView}>
-          <ProfilePic navigation={navigation} user={user} />
+          <ProfilePic size={46} navigation={navigation} user={user} />
         </View>
         <View style={styles.rightSide}>
           <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   profilePicView: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 64,
+    width: 76,
     alignSelf: 'flex-start',
     paddingLeft: 4,
     // paddingRight: 15,

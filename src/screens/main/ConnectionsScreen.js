@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, SafeAreaView, View, StatusBar, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
-import { useSafeArea } from 'react-native-safe-area-context';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';

@@ -97,7 +97,15 @@ const SearchScreen = ({ navigation, route }) => {
         textInput={textInput}
         setTextInput={setTextInput}
       />
-      <View style={{ width: '100%', height: DROPDOWNS_HEIGHT, backgroundColor: colors.white }}>
+      <View
+        style={{
+          width: '100%',
+          height: DROPDOWNS_HEIGHT,
+          backgroundColor: colors.white,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderBottomColor: colors.borderBlack,
+        }}
+      >
         <ScrollView
           style={{ width: '100%' }}
           contentContainerStyle={styles.selectors}

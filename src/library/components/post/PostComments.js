@@ -60,13 +60,22 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
       <View style={styles.sectionHeader}>
         <Text style={defaultStyles.headerSmall}>Comments</Text>
       </View>
-      {comments.map(comment => {
+      {comments.map((comment, i) => {
         // if its a direct comment on the post
         if (!comment.parentComment && !comment.parentUpdate) {
           // if there are subComments
           if (comment.comments.length > 0) {
             return (
-              <View key={comment.id}>
+              <View
+                key={comment.id}
+                style={[
+                  styles.commentContainer,
+                  i !== comments.length - 1 && {
+                    borderBottomColor: colors.borderBlack,
+                    borderBottomWidth: StyleSheet.hairlineWidth,
+                  },
+                ]}
+              >
                 <Comment comment={comment} navigation={navigation} currentTime={currentTime} hideTopMargin />
                 {comment.comments.map((subComment, k) => (
                   <Comment
@@ -122,4 +131,5 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderBlack,
     height: 60,
   },
+  commentContainer: {},
 });

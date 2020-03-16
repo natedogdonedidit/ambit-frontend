@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   View,
-  SafeAreaView,
   Text,
   TextInput,
   Alert,
@@ -49,9 +48,9 @@ const CommentScreen = ({ navigation, route }) => {
   const [comment, setComment] = useState('');
   const [commentImage, setCommentImage] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [mentions, setMentions] = useState([]);
+  // const [mentions, setMentions] = useState([]);
   const [selection, setSelection] = useState({ start: 0, end: 0 });
-  const [showMentionList, setShowMentionList] = useState(false);
+  // const [showMentionList, setShowMentionList] = useState(false);
 
   // constants
   const currentTime = new Date();
@@ -73,7 +72,7 @@ const CommentScreen = ({ navigation, route }) => {
 
   const loading = loadingUser || loadingPost;
 
-  const parentPostObject = { connect: { id: parentPost.id } }; // dont want to attach comment to a parentPost if it has a parentUpdate
+  const parentPostObject = { connect: { id: parentPost.id } };
 
   // MUTATIONS
   const [createComment, { loading: loadingCreate }] = useMutation(CREATE_COMMENT_MUTATION, {

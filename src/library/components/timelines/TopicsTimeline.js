@@ -57,7 +57,12 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
         ListHeaderComponent={
-          <View style={{ height: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
+          <View
+            style={[
+              { height: 15 },
+              posts.length > 0 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack },
+            ]}
+          />
         }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>

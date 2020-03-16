@@ -7,13 +7,16 @@ import { timeDifference } from 'library/utils';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const ChatListItem = ({ navigation, chat, userLoggedIn, currentTime }) => {
-  const users = chat.users.filter(user => user.id !== userLoggedIn.id);
+const ChatListItem = ({ navigation, group, userLoggedIn, currentTime }) => {
+  const users = group.users.filter(user => user.id !== userLoggedIn.id);
   const otherUser = users[0];
-  // console.log(chat);
+  // console.log(group);
 
-  const updatedAt = new Date(chat.latestMessage.createdAt);
+  const updatedAt = new Date(group.latestMessage.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, updatedAt);
+
+  const unReadMessageGroupIDs = userLoggedIn.unReadMessages.map(unRead => unRead.to.id);
+  const hasUnread = unReadMessageGroupIDs.includes(group.id);
 
   return (
     <TouchableOpacity
@@ -21,9 +24,9 @@ const ChatListItem = ({ navigation, chat, userLoggedIn, currentTime }) => {
       style={styles.container}
       onPress={() => navigation.navigate('Chat', { otherUserPassedIn: otherUser })}
     >
-      <View style={styles.chat}>
+      <View style={styles.group}>
         <View style={styles.leftSide}>
-          <ProfilePic navigation={navigation} user={otherUser} />
+          <ProfilePic size={46} navigation={navigation} user={otherUser} />
         </View>
         <View style={styles.rightSide}>
           <View style={styles.topRow}>
@@ -32,8 +35,12 @@ const ChatListItem = ({ navigation, chat, userLoggedIn, currentTime }) => {
               {timeDiff} {period}
             </Text>
           </View>
-
-          <Text style={{ ...defaultStyles.defaultText }}>{chat.latestMessage.content}</Text>
+          <View style={styles.bottomRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ ...defaultStyles.largeMute }}>{group.latestMessage.content}</Text>
+            </View>
+            <View style={{ width: 20, justifyContent: 'center' }}>{hasUnread && <View style={styles.redDot} />}</View>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -44,7 +51,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
   },
-  chat: {
+  group: {
     flexDirection: 'row',
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -53,7 +60,7 @@ const styles = StyleSheet.create({
   leftSide: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 64,
+    width: 76,
     paddingLeft: 4,
   },
   rightSide: {
@@ -64,7 +71,19 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingBottom: 8,
+  },
+  bottomRow: {
+    width: '100%',
+    flexDirection: 'row',
     paddingBottom: 5,
+  },
+  redDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: colors.peach,
+    alignSelf: 'center',
   },
 });
 

@@ -33,24 +33,29 @@ const ChatScreen = ({ navigation, route }) => {
   }
   const { userLoggedIn } = dataUser;
   const { groups } = userLoggedIn;
-  // console.log('userLoggedIn', userLoggedIn);
-  // console.log('groups', groups);
 
+  // get Group based on otherUserPassedIn
   const group = groups.find(c => {
     // get the other user in the chat
     const otherUser = c.users.find(user => user.id !== currentUserId);
-    // console.log('otherUser', otherUser);
 
     // see if it equals the userPassedIn, if it does return the group
     return otherUser.id === otherUserPassedIn.id;
   });
 
-  // console.log('chat', chat);
+  const unReadMessageGroupIDs = userLoggedIn.unReadMessages.map(unRead => unRead.to.id);
+  const hasUnread = group ? unReadMessageGroupIDs.includes(group.id) : false;
 
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title={otherUserPassedIn.name} />
-      <ChatBox navigation={navigation} groupPassedIn={group} userLoggedIn={userLoggedIn} otherUserPassedIn={otherUserPassedIn} />
+      <ChatBox
+        navigation={navigation}
+        groupPassedIn={group}
+        userLoggedIn={userLoggedIn}
+        otherUserPassedIn={otherUserPassedIn}
+        hasUnread={hasUnread}
+      />
     </View>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
@@ -66,7 +67,7 @@ const MessagesScreen = ({ navigation }) => {
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
           // console.log(item);
-          return <ChatListItem navigation={navigation} userLoggedIn={userLoggedIn} chat={item} currentTime={currentTime} />;
+          return <ChatListItem navigation={navigation} userLoggedIn={userLoggedIn} group={item} currentTime={currentTime} />;
         }}
       />
     </SafeAreaView>

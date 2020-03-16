@@ -10,7 +10,14 @@ import UpdateScreen from 'screens/main/UpdateScreen';
 
 const Stack = createStackNavigator();
 
-const InboxStack = () => {
+const InboxStack = ({ navigation, route }) => {
+  // hides the tabs in Chat screen
+  if (route.state) {
+    navigation.setOptions({
+      tabBarVisible: route.state.routes ? !(route.state.routes[route.state.routes.length - 1].name === 'Chat') : null,
+    });
+  }
+
   return (
     <Stack.Navigator initialRouteName="Messages" headerMode="none">
       <Stack.Screen name="Messages" component={MessagesScreen} />

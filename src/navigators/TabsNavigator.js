@@ -9,14 +9,14 @@ import NotificationsStack from 'navigators/NotificationsStack';
 import InboxStack from 'navigators/InboxStack';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Bell from 'library/components/UI/Bell';
-import BellDot from 'library/components/UI/BellDot';
+import BellDot from 'library/components/UI/icons/BellDot';
+import EnvelopeDot from 'library/components/UI/icons/EnvelopeDot';
 import colors from 'styles/colors';
 
 const Tabs = createBottomTabNavigator();
 
 const TabsNavigator = ({ navigation }) => {
-  const { unseenNotifications } = useContext(UserContext);
+  const { unReadNotifications, unReadMessages } = useContext(UserContext);
 
   // const activeRoute = useRoute();
   // console.log(activeRoute);
@@ -43,20 +43,14 @@ const TabsNavigator = ({ navigation }) => {
         name="NotificationsStack"
         component={NotificationsStack}
         options={{
-          tabBarIcon: ({ focused, color, size }) => {
-            if (unseenNotifications > 0) {
-              return <BellDot color={color} />;
-            }
-            return <Bell color={color} />;
-          },
+          tabBarIcon: ({ focused, color, size }) => <BellDot color={color} unReadNotifications={unReadNotifications} />,
         }}
       />
       <Tabs.Screen
         name="InboxStack"
         component={InboxStack}
         options={{
-          // tabBarVisible: activeRoute.name !== 'Chat',
-          tabBarIcon: ({ focused, color, size }) => <Icon name="envelope" size={22} color={color} solid />,
+          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessages} />,
         }}
       />
     </Tabs.Navigator>

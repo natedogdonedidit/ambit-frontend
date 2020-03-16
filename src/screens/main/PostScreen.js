@@ -4,8 +4,10 @@ import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import HeaderBackLoader from 'library/components/headers/HeaderBackLoader';
 import HeaderBack from 'library/components/headers/HeaderBack';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
+import POST_MATCHES_QUERY from 'library/queries/POST_MATCHES_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import PostComments from 'library/components/post/PostComments';
@@ -24,7 +26,11 @@ const PostScreen = ({ navigation, route }) => {
   const { currentUserId } = useContext(UserContext);
 
   // QUERIES
-  // this could be optimized to retrieve the comments seperately
+  const { loading: loadingMatches, data: dataMatches } = useQuery(POST_MATCHES_QUERY, {
+    variables: { id: postToQuery.id },
+  });
+  const matches = dataMatches ? dataMatches.singlePostMatches : [];
+
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
     variables: { id: postToQuery.id },
   });
@@ -41,6 +47,7 @@ const PostScreen = ({ navigation, route }) => {
 
   const post = data.singlePost || null;
   const isMyPost = post.owner.id === currentUserId;
+  const showMatchesLoader = isMyPost && !!post.goal && loadingMatches;
 
   // CUSTOM FUNCTIONS
   const renderPost = () => {
@@ -56,17 +63,8 @@ const PostScreen = ({ navigation, route }) => {
     if (post.updates.length < 1) return null;
 
     return (
-      <>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'flex-start',
-            paddingVertical: 12,
-            paddingHorizontal: 15,
-            marginTop: 15,
-            backgroundColor: 'white',
-          }}
-        >
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
           <Text style={defaultStyles.headerSmall}>Updates</Text>
         </View>
         {post.updates.map((update, i) => {
@@ -74,23 +72,37 @@ const PostScreen = ({ navigation, route }) => {
             <TouchableOpacity
               key={update.id}
               activeOpacity={1}
-              onPress={() => navigation.navigate('Update', { post, updateInd: i })}
+              onPress={() => navigation.navigate('Update', { updatePassedIn: update })}
             >
-              <Update post={post} update={update} currentTime={currentTime} navigation={navigation} updateInd={i} isStandalone />
+              <Update
+                post={post}
+                update={update}
+                currentTime={currentTime}
+                navigation={navigation}
+                updateInd={i}
+                isStandalone
+                showBottomLine={i !== post.updates.length - 1}
+              />
             </TouchableOpacity>
           );
         })}
-      </>
+      </View>
     );
   };
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} title={post.goal ? 'Goal' : 'Post'} />
+      <HeaderBackLoader
+        navigation={navigation}
+        title={post.goal ? 'Goal' : 'Post'}
+        loading={showMatchesLoader}
+        handleRight={loadingMatches || !isMyPost || !post.goal ? null : () => navigation.navigate('PostMatches', { matches })}
+        textRight={loadingMatches || !isMyPost || !post.goal ? '' : `${matches.length || ''} Matches`}
+      />
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
         {renderPost()}
         {renderUpdates()}
-        {isMyPost && <PostMatches navigation={navigation} post={post} />}
+        {/* {shouldGetMatches && <PostMatches navigation={navigation} post={post} />} */}
         <PostComments navigation={navigation} post={post} />
       </ScrollView>
     </View>
@@ -105,16 +117,20 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: colors.lightGray,
   },
+  section: {
+    marginTop: 10,
+    backgroundColor: 'white',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
+  },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 15,
-    marginTop: 10,
-    backgroundColor: 'white',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
   },

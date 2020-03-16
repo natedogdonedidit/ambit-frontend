@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Animated } from 'react-native';
+import { StyleSheet, View, Animated } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';

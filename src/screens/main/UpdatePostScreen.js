@@ -1,5 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react';
-import { StyleSheet, View, SafeAreaView, Text, TextInput, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, TextInput, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';

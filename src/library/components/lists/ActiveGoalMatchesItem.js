@@ -70,8 +70,9 @@ const styles = StyleSheet.create({
   iconView: {
     justifyContent: 'flex-start',
     alignItems: 'center',
+    width: 76,
     paddingTop: 5,
-    width: 70,
+    paddingLeft: 5,
   },
   rightSide: {
     flex: 1,

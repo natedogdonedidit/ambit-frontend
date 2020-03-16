@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
@@ -11,8 +11,11 @@ import GROUP_QUERY from 'library/queries/GROUP_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
+import { UserContext } from 'library/utils/UserContext';
 
 const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, otherUserPassedIn }) => {
+  const { clearUnReadMessagesForGroup } = useContext(UserContext);
+
   // MUTATIONS
   const [createMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
     refetchQueries: () => [{ query: CURRENT_USER_QUERY }],
@@ -28,14 +31,20 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
   // QUERIES - this needs updated...should not fetch messages anymore. And maybe should grab chat from User in Cache?
   const { loading: loadingGroup, error: errorGroup, data: dataGroup } = useQuery(GROUP_QUERY, {
     notifyOnNetworkStatusChange: true,
-    variables: { id: groupPassedIn ? groupPassedIn.id : null },
+    variables: { id: groupPassedIn.id },
   });
 
   // const [getMessages, { error: errorMessages, data, fetchMore, networkStatus, subscribeToMore, called }] = useLazyQuery(
   const { error: errorMessages, data, fetchMore, networkStatus } = useQuery(MESSAGES_CONNECTION, {
     notifyOnNetworkStatusChange: true,
-    variables: { groupID: groupPassedIn ? groupPassedIn.id : null },
+    variables: { groupID: groupPassedIn.id },
   });
+
+  useEffect(() => {
+    if (groupPassedIn.id) {
+      clearUnReadMessagesForGroup(groupPassedIn.id);
+    }
+  }, [groupPassedIn.id]);
 
   // console.log(networkStatus);
   // networkStatus states:
@@ -57,7 +66,6 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
 
   // PREPARE DATE FOR GIFTED CHAT
   const { group } = dataGroup; // will return null if no chat exists
-  // console.log('group', group);
   const groupExists = group !== null;
   const currentUserFormated = {
     _id: userLoggedIn.id,
@@ -149,7 +157,7 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
       variables: {
         message: {
           content: newMessage.text,
-          to: { connect: { id: groupPassedIn ? groupPassedIn.id : null } },
+          to: { connect: { id: groupPassedIn.id } },
           from: { connect: { id: newMessage.user._id } },
         },
       },
@@ -169,11 +177,6 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
           },
           to: {
             ...group,
-            __typename: 'Group',
-            latestMessage: {
-              ...group.latestMessage,
-              content: newMessage.text,
-            },
           },
           hidden: [],
           seen: [],

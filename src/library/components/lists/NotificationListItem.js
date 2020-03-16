@@ -4,45 +4,171 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { timeDifference } from 'library/utils';
+import { timeDifference, getGoalInfo } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
 const NotificationListItem = ({ navigation, notification }) => {
-  const { style, createdAt } = notification;
+  const { style, createdAt, user, users, post, update, comment } = notification;
 
-  // for dates
+  // CONSTANTS for dates
   const currentTime = new Date();
   const created = new Date(createdAt);
   const { timeDiff, period } = timeDifference(currentTime, created);
-  // const formatedDate = format(created, 'M/d/yy h:mm a');
 
-  if (style === 'LIKE_POST') {
-    const { user, post } = notification;
+  // CUSTOM FUNCTIONS
+  const getNotificationOnPress = () => {
+    if (style === 'LIKE_POST') {
+      return navigation.navigate('Post', { post });
+    }
+    if (style === 'LIKE_GOAL') {
+      return navigation.navigate('Post', { post });
+    }
+    if (style === 'LIKE_UPDATE') {
+      return navigation.navigate('Update', { updatePassedIn: update });
+    }
+    if (style === 'LIKE_COMMENT') {
+      const isOnPost = !!comment.parentPost;
+      const isOnUpdate = !!comment.parentUpdate;
 
-    return (
-      <TouchableOpacity activeOpacity={0.7} style={styles.container} onPress={() => navigation.navigate('Post', { post })}>
-        <View style={styles.connection}>
-          <View style={styles.profilePicView}>
-            <ProfilePic navigation={navigation} user={user} />
-          </View>
-          <View style={styles.rightSide}>
-            <View style={styles.headlineRow}>
-              <Text>
-                <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-                <Text style={defaultStyles.largeRegular}> liked your post</Text>
-              </Text>
+      if (isOnPost) return navigation.navigate('Post', { post: comment.parentPost });
+      if (isOnUpdate) return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
+
+      return null;
+    }
+    if (style === 'COMMENT_GOAL') {
+      return navigation.navigate('Post', { post: comment.parentPost });
+    }
+    if (style === 'COMMENT_POST') {
+      return navigation.navigate('Post', { post: comment.parentPost });
+    }
+    if (style === 'COMMENT_UPDATE') {
+      console.log(comment);
+      return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
+    }
+
+    return null;
+  };
+
+  const getNotificationTitle = () => {
+    if (style === 'LIKE_POST') {
+      return (
+        <Text>
+          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.largeLight}> liked your post</Text>
+        </Text>
+      );
+    }
+    if (style === 'LIKE_GOAL') {
+      return (
+        <Text>
+          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.largeLight}> liked your goal</Text>
+          <Text>
+            <Text style={{ ...defaultStyles.largeLight }}> to</Text>
+            <Text
+              style={{ ...defaultStyles.largeSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}
+            >{` ${post.goal}`}</Text>
+            <Text style={{ ...defaultStyles.largeLight }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
+            <Text style={{ ...defaultStyles.largeSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>
+              {post.subField.name}
+            </Text>
+          </Text>
+        </Text>
+      );
+    }
+    if (style === 'LIKE_UPDATE') {
+      return (
+        <Text>
+          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.largeLight}> liked your update</Text>
+        </Text>
+      );
+    }
+    if (style === 'LIKE_COMMENT') {
+      return (
+        <Text>
+          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.largeLight}> liked your comment</Text>
+        </Text>
+      );
+    }
+    if (style === 'COMMENT_GOAL') {
+      return (
+        <Text>
+          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.largeLight}> commented on your goal</Text>
+        </Text>
+      );
+    }
+    if (style === 'COMMENT_POST') {
+      return (
+        <Text>
+          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.largeLight}> commented on your post</Text>
+        </Text>
+      );
+    }
+    if (style === 'COMMENT_UPDATE') {
+      return (
+        <Text>
+          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.largeLight}> commented on your update</Text>
+        </Text>
+      );
+    }
+
+    return '';
+  };
+
+  const getNotificationContent = () => {
+    if (style === 'LIKE_POST') {
+      return post.content;
+    }
+    if (style === 'LIKE_GOAL') {
+      return post.content;
+    }
+    if (style === 'LIKE_UPDATE') {
+      return update.content;
+    }
+    if (style === 'LIKE_COMMENT') {
+      return comment.content;
+    }
+    if (style === 'COMMENT_GOAL') {
+      return comment.content;
+    }
+    if (style === 'COMMENT_POST') {
+      return comment.content;
+    }
+    if (style === 'COMMENT_UPDATE') {
+      return comment.content;
+    }
+
+    return '';
+  };
+
+  // RETURN STATEMENT PULLS DATA FROM ABOVE FUNCTIONS
+  return (
+    <TouchableOpacity activeOpacity={0.7} style={styles.container} onPress={getNotificationOnPress}>
+      <View style={styles.connection}>
+        <View style={styles.profilePicView}>
+          <ProfilePic size={46} navigation={navigation} user={user} />
+        </View>
+        <View style={styles.rightSide}>
+          <View style={styles.headlineRow}>
+            <View style={{ flex: 1 }}>{getNotificationTitle()}</View>
+            <View style={{ paddingLeft: 5 }}>
               <Text style={{ ...defaultStyles.smallMute }}>
                 {timeDiff}
                 {period}
               </Text>
             </View>
-
-            <Text style={defaultStyles.defaultMute}>{post.content}</Text>
           </View>
+
+          <Text style={defaultStyles.defaultMute}>{getNotificationContent()}</Text>
         </View>
-      </TouchableOpacity>
-    );
-  }
+      </View>
+    </TouchableOpacity>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -58,7 +184,7 @@ const styles = StyleSheet.create({
   profilePicView: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 64,
+    width: 76,
     alignSelf: 'flex-start',
     paddingLeft: 4,
     // paddingRight: 15,

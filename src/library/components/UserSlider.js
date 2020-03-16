@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, View, SafeAreaView, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 
 import { UserContext } from 'library/utils/UserContext';
 // import ScrollProfilePic from 'library/components/UI/ScrollProfilePic';

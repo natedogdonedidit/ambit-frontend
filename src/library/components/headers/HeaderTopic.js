@@ -1,16 +1,12 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, Text, TouchableOpacity, Animated, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, Animated, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import { useSafeArea } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import ProfilePic from 'library/components/UI/ProfilePic';
 
 const HeaderTopic = ({ navigation, handleMiddle, handleRight, user, height = 44, topicName }) => {
-  // const insets = useSafeArea();
-
   return (
     <View style={{ ...styles.container, height }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>

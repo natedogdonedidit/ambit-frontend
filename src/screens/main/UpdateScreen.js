@@ -16,7 +16,7 @@ import PostComments from 'library/components/post/PostComments';
 
 const UpdateScreen = ({ navigation, route }) => {
   // PARAMS
-  const { postToQuery, updateInd = 0 } = route.params;
+  const { updatePassedIn } = route.params;
 
   // CONSTANTS
 
@@ -24,7 +24,7 @@ const UpdateScreen = ({ navigation, route }) => {
   // this could be optimized to only retrieve comments of clicked on Post/Update
   // right now it queries ALL comments in the Post & down stream updates
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
-    variables: { id: postToQuery.id },
+    variables: { id: updatePassedIn.parentPost.id },
   });
 
   if (error) return <Error error={error} />;
@@ -38,7 +38,8 @@ const UpdateScreen = ({ navigation, route }) => {
   }
   const currentTime = new Date();
   const post = data.singlePost || null;
-  const update = post ? post.updates[updateInd] : null;
+  const update = post ? post.updates.find(u => u.id === updatePassedIn.id) : null;
+  const updateInd = update ? post.updates.findIndex(u => u.id === updatePassedIn.id) : 0;
 
   // CUSTOM FUNCTIONS
   const renderUpdate = () => {

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity, SafeAreaView } from 'react-native';
-// import { DrawerItems, SafeAreaView } from 'react-navigation';
+import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 

@@ -26,7 +26,7 @@ const Update = ({
   showDetails = false,
   showLine = false,
   hideButtons = false,
-  hideTopLine = false,
+  showBottomLine = false,
   updateInd,
 }) => {
   // ////////////////////////////////////////////////////////////////
@@ -91,8 +91,13 @@ const Update = ({
   };
 
   return (
-    <View style={styles.updateContainer}>
-      <View style={hideTopLine ? styles.updateNoLine : styles.update}>
+    <View
+      style={[
+        styles.updateContainer,
+        showBottomLine && { borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth },
+      ]}
+    >
+      <View style={styles.update}>
         <View style={styles.leftColumn}>
           <ProfilePic navigation={navigation} user={post.owner} size={30} />
           {showLine && <View style={styles.threadLine} />}
@@ -208,7 +213,8 @@ const styles = StyleSheet.create({
   updateContainer: {
     width: '100%',
     backgroundColor: 'white',
-    paddingRight: 12,
+    // borderTopWidth: StyleSheet.hairlineWidth,
+    // borderTopColor: colors.borderBlack,
   },
   update: {
     width: '100%',
@@ -216,15 +222,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: 12,
     paddingRight: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.borderBlack,
   },
-  updateNoLine: {
-    width: '100%',
-    flexDirection: 'row',
-    backgroundColor: 'white',
-    paddingTop: 5,
-  },
+  // updateLine: {
+  //   width: '100%',
+  //   flexDirection: 'row',
+  //   backgroundColor: 'white',
+  //   paddingTop: 5,
+  // },
   threadLine: {
     flex: 1,
     width: 2,

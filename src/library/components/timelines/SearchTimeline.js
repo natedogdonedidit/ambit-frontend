@@ -87,6 +87,14 @@ const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput,
         // contentContainerStyle={{ paddingBottom: 20 }}
         contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
         style={styles.timeline}
+        ListHeaderComponent={
+          <View
+            style={[
+              { height: 15 },
+              posts.length > 0 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack },
+            ]}
+          />
+        }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', padding: 40 }}>
             Nothing matches your search criteria.{`\n`} Try something else!

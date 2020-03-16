@@ -90,7 +90,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
     <View style={[{ ...styles.postContainer }, showLine && { borderBottomWidth: 0 }]}>
       <View style={styles.post}>
         <View style={styles.leftColumn}>
-          <ProfilePic user={post.owner} navigation={navigation} />
+          <ProfilePic size={46} user={post.owner} navigation={navigation} />
           {showLine && <View style={styles.threadLine} />}
         </View>
         <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 12 }]}>
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   leftColumn: {
     alignItems: 'center',
     paddingLeft: 4,
-    width: 64,
+    width: 76,
   },
   rightColumn: {
     flex: 1,

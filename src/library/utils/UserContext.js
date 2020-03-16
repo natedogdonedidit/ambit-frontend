@@ -8,6 +8,7 @@ import { signIn, signOut, getToken } from 'library/utils/authUtil'
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
 import CLEAR_NOTIFICATIONS_MUTATION from 'library/mutations/CLEAR_NOTIFICATIONS_MUTATION';
+import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSAGES_MUTATION';
 
 const UserContext = createContext();
 
@@ -15,13 +16,15 @@ const UserContextProvider = (props) => {
   const [loadingToken, setLoadingToken] = useState(true);
   const [loadingApp, setLoadingApp] = useState(true);
   const [currentUserId, setCurrentUserId] = useState(null)
-  const [unseenNotifications, setUnseenNotifications] = useState(false)
+  const [unReadNotifications, setUnReadNotifications] = useState(0)
+  const [unReadMessages, setUnReadMessages] = useState(0)
 
   const client = useApolloClient();
 
   // USER QUERY
   const [getCurrentUser, { loading: loadingUser, error, data: dataUser }] = useLazyQuery(CURRENT_USER_QUERY, {
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
+    // fetchPolicy: 'network-only',
   });
 
   // FOR CLEARING NOTIFICATIONS
@@ -31,6 +34,23 @@ const UserContextProvider = (props) => {
         query: NOTIFICATIONS_QUERY,
         data: {
           myNotifications: dataReturned.clearMyNotifications,
+        },
+      });
+    },
+    onError: e => {
+      console.log(e);
+    },
+  });
+
+  // FOR CLEARING NOTIFICATIONS
+  const [clearUnReadMessages] = useMutation(CLEAR_UNREAD_MESSAGES_MUTATION, {
+    // optimisticResponse:
+    update: (proxy, { data: dataReturned }) => {
+      console.log(dataReturned)
+      proxy.writeQuery({
+        query: CURRENT_USER_QUERY,
+        data: {
+          userLoggedIn: dataReturned.clearUnReadMessages,
         },
       });
     },
@@ -112,15 +132,22 @@ const UserContextProvider = (props) => {
   }
 
   const clearNotifications = () => {
-    if (unseenNotifications) {
-      setUnseenNotifications(false);
+    if (unReadNotifications) {
+      setUnReadNotifications(0);
       clearMyNotifications()
+    }
+  }
+
+  const clearUnReadMessagesForGroup = (groupID) => {
+    if (unReadMessages) {
+      // clear on backend synchronously 
+      clearUnReadMessages({ variables: { groupID }})
     }
   }
 
   return (
     <UserContext.Provider
-      value={{ loadingApp, currentUserId, setCurrentUserId, loginCTX, logoutCTX, unseenNotifications, setUnseenNotifications, clearNotifications }}
+      value={{ loadingApp, currentUserId, setCurrentUserId, loginCTX, logoutCTX, unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages, clearUnReadMessagesForGroup }}
     >
       {props.children}
     </UserContext.Provider>

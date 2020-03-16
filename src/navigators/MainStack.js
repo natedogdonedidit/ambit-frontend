@@ -4,6 +4,7 @@ import { useQuery, useSubscription } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
 import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 import MESSAGES_CONNECTION_ALL from 'library/queries/MESSAGES_CONNECTION_ALL';
 import NEW_NOTIFICATION_SUBSCRIPTION from 'library/subscriptions/NEW_NOTIFICATION_SUBSCRIPTION';
@@ -44,13 +45,19 @@ import EditStoryItemPopup from 'screens/main/modals/stories/EditStoryItemPopup';
 const Stack = createStackNavigator();
 
 const MainStack = () => {
-  const { setUnseenNotifications, currentUserId } = useContext(UserContext);
+  const { setUnReadNotifications, setUnReadMessages, currentUserId } = useContext(UserContext);
 
   // ////////////////////////////////////////
   // LOAD INITIAL QUERIES HERE
   // ////////////////////////////////////////
   useQuery(ALL_CONNECTIONS_QUERY);
-  useQuery(MESSAGES_CONNECTION_ALL);
+  const { refetch: refetchMessageConnections } = useQuery(MESSAGES_CONNECTION_ALL);
+
+  // CURRENT USER QUERY (USED TO COUNT UNREAD MESSAGES & REFETCH GROUPS)
+  const { data: userData, networkStatus: networkStatusUser, refetch: refetchUser } = useQuery(CURRENT_USER_QUERY, {
+    notifyOnNetworkStatusChange: true,
+  });
+  const userOk = networkStatusUser === 7;
 
   // NOTIFICATIONS QUERY
   const {
@@ -60,7 +67,7 @@ const MainStack = () => {
   } = useQuery(NOTIFICATIONS_QUERY, {
     notifyOnNetworkStatusChange: true,
   });
-  const ok = networkStatusNotifications === 7;
+  const notificationsOk = networkStatusNotifications === 7;
 
   const moreNotifications = () => {
     subscribeToMoreNotifications({
@@ -85,18 +92,18 @@ const MainStack = () => {
 
   // UPDATE # OF UNSEEN NOTIFICATIONS EVERYTIME NEW NOTIFICATIONS DATA COMES IN
   useEffect(() => {
-    if (ok && notificationsData.myNotifications) {
+    if (notificationsOk && notificationsData.myNotifications) {
       // get # of unseen
       const { myNotifications } = notificationsData;
-      const unSeen = myNotifications.reduce((num, notification) => {
+      const unRead = myNotifications.reduce((num, notification) => {
         if (!notification.seen) return num + 1;
         return num;
       }, 0);
 
-      if (unSeen > 0) {
-        setUnseenNotifications(true);
+      if (unRead > 0) {
+        setUnReadNotifications(unRead);
       } else {
-        setUnseenNotifications(false);
+        setUnReadNotifications(0);
       }
     }
   }, [notificationsData]);
@@ -104,32 +111,53 @@ const MainStack = () => {
   // SUBSCRIBE TO NEW MESSAGES IN GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
   useSubscription(MESSAGE_SUBSCRIPTION, {
     variables: { id: currentUserId },
-    onSubscriptionData: ({ client, subscriptionData }) => {
+    onSubscriptionData: async ({ client, subscriptionData }) => {
+      console.log('subscriptionData', subscriptionData);
       const { newMessageToMe } = subscriptionData.data;
       try {
-        const previousData = client.readQuery({
+        const previousData = await client.readQuery({
           query: MESSAGES_CONNECTION,
           variables: { groupID: newMessageToMe.to.id },
         });
 
-        const newEdges = [{ node: newMessageToMe, __typename: 'MessageEdge' }, ...previousData.messages.edges];
+        // IF MESSAGE CONNECTION DOES NOT EXIST YET WE WILL ENTER CATCH STATEMENT
 
-        client.writeQuery({
-          query: MESSAGES_CONNECTION,
-          variables: { groupID: newMessageToMe.to.id },
-          data: {
-            messages: { ...previousData.messages, edges: newEdges },
-          },
-        });
+        if (previousData && newMessageToMe) {
+          const newEdges = [{ node: newMessageToMe, __typename: 'MessageEdge' }, ...previousData.messages.edges];
+
+          client.writeQuery({
+            query: MESSAGES_CONNECTION,
+            variables: { groupID: newMessageToMe.to.id },
+            data: {
+              messages: { ...previousData.messages, edges: newEdges },
+            },
+          });
+        }
       } catch (e) {
-        console.error(e);
+        console.log('new message from a chat that was not fetched yet');
+        refetchMessageConnections();
       }
+
+      // ADD THE MESSAGE TO UNREAD MESSAGES
+      refetchUser();
     },
   });
 
   // SUBSCRIBE TO NEW GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
 
-  // UPDATE # OF UNSEEN MESSAGES EVERYTIME NEW MESSAGE DATA COMES IN
+  // UPDATE # OF UNSEEN MESSAGES EVERYTIME NEW USER DATA COMES IN
+  useEffect(() => {
+    if (userOk && userData.userLoggedIn) {
+      // get # of unseen
+      const unRead = userData.userLoggedIn.unReadMessages.length;
+
+      if (unRead > 0) {
+        setUnReadMessages(unRead);
+      } else {
+        setUnReadMessages(0);
+      }
+    }
+  }, [userData]);
 
   return (
     <Stack.Navigator initialRouteName="MainDrawer" mode="modal" headerMode="none">

@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useContext } from 'react';
-import { StyleSheet, View, SafeAreaView, FlatList, Text } from 'react-native';
+import { StyleSheet, View, FlatList, Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
@@ -55,7 +56,15 @@ const NotificationsScreen = ({ navigation }) => {
         style={styles.flatList}
         contentContainerStyle={styles.flatListContainer}
         ListHeaderComponent={
-          <View style={{ height: 15, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
+          <View
+            style={[
+              { height: 15 },
+              myNotifications.length > 0 && {
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                borderBottomColor: colors.borderBlack,
+              },
+            ]}
+          />
         }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>No notifications</Text>

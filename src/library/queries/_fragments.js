@@ -34,8 +34,12 @@ export const GroupFragment = gql`
       ...MinimalUser
     }
     latestMessage {
+      id
       createdAt
       content
+      hidden {
+        id
+      }
     }
     hidden {
       id
@@ -59,9 +63,6 @@ export const MessageFragment = gql`
       profilePic
     }
     content
-    seen {
-      id
-    }
     hidden {
       id
     }
@@ -100,9 +101,13 @@ export const LoggedInUser = gql`
     groups {
       ...GroupFragment
     }
+    unReadMessages {
+      ...MessageFragment
+    }
   }
   ${MinimalUser}
   ${GroupFragment}
+  ${MessageFragment}
 `;
 
 // export const DetailedChat = gql`
@@ -175,6 +180,9 @@ export const UpdateFragment = gql`
     sharesCount
     parentPost {
       id
+      owner {
+        id
+      }
     }
   }
 `;
@@ -262,6 +270,9 @@ export const CommentFragment = gql`
     }
     parentUpdate {
       id
+      parentPost {
+        id
+      }
     }
     content
     image
@@ -353,13 +364,15 @@ export const NotificationFragment = gql`
       ...MinimalPost
     }
     update {
-      id
+      ...UpdateFragment
     }
     comment {
-      id
+      ...CommentFragment
     }
     seen
   }
   ${MinimalUser}
   ${MinimalPost}
+  ${UpdateFragment}
+  ${CommentFragment}
 `;
