@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { DetailPost, LoggedInUser } from 'library/queries/_fragments';
+import { DetailPost, MinimalUser } from 'library/queries/_fragments';
 
 export default ALL_CONNECTIONS_QUERY = gql`
   query ALL_CONNECTIONS_QUERY {
@@ -10,7 +10,7 @@ export default ALL_CONNECTIONS_QUERY = gql`
         }
         matches {
           user {
-            ...LoggedInUser
+            ...MinimalUser
           }
           reason {
             text
@@ -20,7 +20,7 @@ export default ALL_CONNECTIONS_QUERY = gql`
       }
       matches {
         user {
-          ...LoggedInUser
+          ...MinimalUser
         }
         reason {
           text
@@ -30,5 +30,5 @@ export default ALL_CONNECTIONS_QUERY = gql`
     }
   }
   ${DetailPost}
-  ${LoggedInUser}
+  ${MinimalUser}
 `;

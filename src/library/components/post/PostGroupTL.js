@@ -18,6 +18,7 @@ const PostGroupTL = ({
   showDetails = false,
   updateInd = null,
   showAll = false,
+  disableVideo = false,
 }) => {
   const hasUpdates = post.updates.length > 0;
 
@@ -27,7 +28,7 @@ const PostGroupTL = ({
       if (i !== post.updates.length - 1) showLine = true;
       if (i === post.updates.length - 1 && showLastLine) showLine = true;
       return (
-        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity key={update.id} activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
           <Update
             post={post}
             update={update}
@@ -37,6 +38,7 @@ const PostGroupTL = ({
             hideButtons={hideButtons}
             showLine={showLine}
             hideTopLine={hideTopLine}
+            disableVideo={disableVideo}
           />
         </TouchableOpacity>
       );
@@ -55,6 +57,7 @@ const PostGroupTL = ({
             showLine
             hideButtons={hideButtons}
             showDetails={showDetails}
+            disableVideo={disableVideo}
           />
         </TouchableOpacity>
         {post.updates.length > 0 && renderAllUpdates()}
@@ -74,6 +77,7 @@ const PostGroupTL = ({
             showLine
             hideButtons={hideButtons}
             showDetails={showDetails}
+            disableVideo={disableVideo}
           />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
@@ -85,6 +89,7 @@ const PostGroupTL = ({
             navigation={navigation}
             hideButtons={hideButtons}
             hideTopLine={hideTopLine}
+            disableVideo={disableVideo}
             showLine
           />
         </TouchableOpacity>
@@ -103,14 +108,15 @@ const PostGroupTL = ({
           showLine={showLastLine}
           hideButtons={hideButtons}
           showDetails={showDetails}
+          disableVideo={disableVideo}
         />
       </TouchableOpacity>
     );
   }
 
-  // if there are updates
+  // if there are updates, show latest one
   return (
-    <>
+    <View style={{ borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }}>
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
         <Post
           post={post}
@@ -119,41 +125,69 @@ const PostGroupTL = ({
           showLine
           hideButtons={hideButtons}
           showDetails={showDetails}
+          disableVideo={disableVideo}
         />
-        <View style={styles.post}>
-          <View style={styles.leftColumn}>
-            <ProfilePic user={post.owner} navigation={navigation} disableVideo size={30} />
-          </View>
-          <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Post', { post })} style={styles.rightColumn}>
-            <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Show latest updates</Text>
-          </TouchableOpacity>
-        </View>
       </TouchableOpacity>
-    </>
+      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <Update
+          post={post}
+          update={post.updates[post.updates.length - 1]}
+          updateInd={post.updates.length - 1}
+          currentTime={currentTime}
+          navigation={navigation}
+          hideButtons={hideButtons}
+          hideTopLine
+          disableVideo
+        />
+      </TouchableOpacity>
+    </View>
   );
+  // return (
+  //   <>
+  //     <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+  //       <Post
+  //         post={post}
+  //         currentTime={currentTime}
+  //         navigation={navigation}
+  //         showLine
+  //         hideButtons={hideButtons}
+  //         showDetails={showDetails}
+  //         disableVideo={disableVideo}
+  //       />
+  //       <View style={styles.showLatestButton}>
+  //         <View style={styles.leftColumn}>
+  //           <ProfilePic size="small" user={post.owner} navigation={navigation} disableVideo />
+  //         </View>
+  //         <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Post', { post })} style={styles.rightColumn}>
+  //           <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Show latest updates</Text>
+  //         </TouchableOpacity>
+  //       </View>
+  //     </TouchableOpacity>
+  //   </>
+  // );
 };
 
 const styles = StyleSheet.create({
-  post: {
+  showLatestButton: {
     width: '100%',
     flexDirection: 'row',
     paddingTop: 5,
     backgroundColor: 'white',
     borderRadius: 3,
     paddingBottom: 10,
-    paddingLeft: 10,
     paddingRight: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
   },
   leftColumn: {
     alignItems: 'center',
-    width: 48,
+    paddingLeft: 4,
+    width: 76,
   },
   rightColumn: {
     flex: 1,
     justifyContent: 'center',
-    paddingLeft: 8,
+    // paddingLeft: 8,
   },
 });
 

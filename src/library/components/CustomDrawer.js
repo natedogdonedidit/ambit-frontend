@@ -37,7 +37,7 @@ const CustomDrawer = ({ navigation }) => {
     <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
       <View>
         <TouchableOpacity style={styles.header} onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
-          <ProfilePic user={userLoggedIn} size={30} navigation={navigation} disableVideo />
+          <ProfilePic user={userLoggedIn} size="small" navigation={navigation} disableVideo />
           <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.firstName}!</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>

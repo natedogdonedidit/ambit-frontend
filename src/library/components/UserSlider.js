@@ -22,7 +22,7 @@ const UserSlider = ({ users, navigation, handleUserChange, profileId }) => {
       return (
         <TouchableOpacity key={i} style={{ paddingRight: 15 }} onPress={() => handleUserChange(user.id)}>
           <View style={profileId === user.id && defaultStyles.shadowSlider}>
-            <ProfilePic user={user} border disableVideo disableClick size={50} />
+            <ProfilePic user={user} border disableVideo disableClick size="medium" />
           </View>
         </TouchableOpacity>
       );

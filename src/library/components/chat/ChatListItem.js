@@ -15,8 +15,11 @@ const ChatListItem = ({ navigation, group, userLoggedIn, currentTime }) => {
   const updatedAt = new Date(group.latestMessage.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, updatedAt);
 
-  const unReadMessageGroupIDs = userLoggedIn.unReadMessages.map(unRead => unRead.to.id);
-  const hasUnread = unReadMessageGroupIDs.includes(group.id);
+  const unReadInThisGroup = userLoggedIn.unReadMessages.filter(message => message.to.id === group.id);
+  const hasUnread = unReadInThisGroup.length > 0;
+
+  // const unReadMessageGroupIDs = userLoggedIn.unReadMessages.map(unRead => unRead.to.id);
+  // const hasUnread = unReadMessageGroupIDs.includes(group.id);
 
   return (
     <TouchableOpacity
@@ -26,7 +29,7 @@ const ChatListItem = ({ navigation, group, userLoggedIn, currentTime }) => {
     >
       <View style={styles.group}>
         <View style={styles.leftSide}>
-          <ProfilePic size={46} navigation={navigation} user={otherUser} />
+          <ProfilePic size="medium" navigation={navigation} user={otherUser} />
         </View>
         <View style={styles.rightSide}>
           <View style={styles.topRow}>

@@ -2,11 +2,13 @@ import React, { useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { UserContext } from 'library/utils/UserContext';
+import { useQuery } from '@apollo/react-hooks';
 
 import HomeStack from 'navigators/HomeStack';
 import PeopleStack from 'navigators/PeopleStack';
 import NotificationsStack from 'navigators/NotificationsStack';
 import InboxStack from 'navigators/InboxStack';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BellDot from 'library/components/UI/icons/BellDot';
@@ -16,13 +18,20 @@ import colors from 'styles/colors';
 const Tabs = createBottomTabNavigator();
 
 const TabsNavigator = ({ navigation }) => {
-  const { unReadNotifications, unReadMessages } = useContext(UserContext);
+  const { unReadNotifications } = useContext(UserContext);
 
-  // const activeRoute = useRoute();
-  // console.log(activeRoute);
+  const { data: userData, networkStatus: networkStatusUser } = useQuery(CURRENT_USER_QUERY, {
+    notifyOnNetworkStatusChange: true,
+  });
 
-  // add listener? setOptions?
-  // console.log(navigation);
+  let unReadMessagesCountt = 0;
+  if (userData) {
+    if (userData.userLoggedIn) {
+      if (userData.userLoggedIn.unReadMessagesCount) {
+        unReadMessagesCountt = userData.userLoggedIn.unReadMessagesCount;
+      }
+    }
+  }
 
   return (
     <Tabs.Navigator
@@ -50,7 +59,7 @@ const TabsNavigator = ({ navigation }) => {
         name="InboxStack"
         component={InboxStack}
         options={{
-          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessages} />,
+          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessagesCountt} />,
         }}
       />
     </Tabs.Navigator>

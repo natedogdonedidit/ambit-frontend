@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
@@ -32,20 +33,31 @@ import Error from 'library/components/UI/Error';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 import Post from 'library/components/post/Post';
 import Comment from 'library/components/post/Comment';
+import SubComment from 'library/components/post/SubComment';
 
 const CommentScreen = ({ navigation, route }) => {
   const scrollViewRef = useRef(null);
   // const inputRef = useRef(null);
 
   // params
-  const { clicked, updateInd, isUpdate = false, isComment = false } = route.params;
+  const {
+    post: parentPost,
+    update,
+    comment,
+    parentComment,
+    isUpdate = false,
+    isComment = false,
+    isSubComment = false,
+  } = route.params;
+  // if you click a subcomment its all fucked up
 
   // state declaration\
   // const [comment, setComment] = useState(isComment ? `@[${clicked.owner.name}](${clicked.owner.id}) ` : '');
-  const [comment, setComment] = useState('');
+  const [content, setContent] = useState('');
   const [commentImage, setCommentImage] = useState('');
   const [uploading, setUploading] = useState(false);
   // const [mentions, setMentions] = useState([]);
@@ -54,13 +66,18 @@ const CommentScreen = ({ navigation, route }) => {
 
   // constants
   const currentTime = new Date();
-  const parentPost = isUpdate || isComment ? clicked.parentPost : clicked;
-  const parentUpdate = isUpdate ? { connect: { id: clicked.id } } : null;
-  const hasParentComment = isComment ? !!clicked.parentComment : null;
+  // const parentPost = isUpdate || isComment ? clicked.parentPost : clicked;
 
-  let parentComment = null;
-  if (isComment && hasParentComment) parentComment = { connect: { id: clicked.parentComment.id } };
-  if (isComment && !hasParentComment) parentComment = { connect: { id: clicked.id } };
+  const parentUpdate = isUpdate ? update : null;
+  let parentCommentForDB = null;
+
+  if (isComment) {
+    if (isSubComment) {
+      parentCommentForDB = parentComment;
+    } else {
+      parentCommentForDB = comment;
+    }
+  }
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -73,25 +90,11 @@ const CommentScreen = ({ navigation, route }) => {
   const loading = loadingUser || loadingPost;
 
   const parentPostObject = { connect: { id: parentPost.id } };
+  const parentUpdateObject = parentUpdate ? { connect: { id: parentUpdate.id } } : null;
+  const parentCommentObject = parentCommentForDB ? { connect: { id: parentCommentForDB.id } } : null;
 
   // MUTATIONS
-  const [createComment, { loading: loadingCreate }] = useMutation(CREATE_COMMENT_MUTATION, {
-    variables: {
-      comment: {
-        content: comment,
-        image: commentImage,
-        owner: {
-          connect: { id: userLoggedIn.id },
-        },
-        parentPost: parentPostObject,
-        parentUpdate,
-        parentComment,
-      },
-    },
-    refetchQueries: () => [{ query: SINGLE_POST_QUERY, variables: { id: parentPost.id } }],
-    onCompleted: () => {
-      navigation.goBack();
-    },
+  const [createComment] = useMutation(CREATE_COMMENT_MUTATION, {
     onError: error => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to create this comment. Try again later!', [
@@ -99,6 +102,21 @@ const CommentScreen = ({ navigation, route }) => {
       ]);
     },
   });
+
+  if (errorUser) return <Error error={errorUser} />;
+  if (errorPost) return <Error error={errorPost} />;
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <HeaderBack navigation={navigation} handleRight={() => null} textRight="Reply" title="Comment" />
+        <Loader loading={loading} full={false} />
+      </View>
+    );
+  }
+
+  const post = dataPost.singlePost;
+  console.log(post);
 
   // CUSTOM FUNCTIONS
 
@@ -112,11 +130,118 @@ const CommentScreen = ({ navigation, route }) => {
     if (commentImage) {
       await uploadImage();
     }
-    createComment();
+    createComment({
+      variables: {
+        comment: {
+          content,
+          image: commentImage,
+          owner: {
+            connect: { id: userLoggedIn.id },
+          },
+          parentPost: parentPostObject,
+          parentUpdate: parentUpdateObject,
+          parentComment: parentCommentObject,
+        },
+      },
+      update: (proxy, { data: dataReturned }) => {
+        const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
+        console.log('dataReturned', dataReturned);
+
+        if (isComment || isSubComment) {
+          if (isUpdate) {
+            // if subComment on comment on update
+            const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
+            const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
+              item => item.id === parentComment.id
+            );
+            const newUpdatesArray = [...previousData.singlePost.updates];
+            // add the new comment to the correct comment of the correct update
+            newUpdatesArray[indexOfUpdate].comments[indexOfParentComment].comments.push(dataReturned.createComment);
+            proxy.writeQuery({
+              query: POST_COMMENTS_QUERY,
+              data: {
+                singlePost: {
+                  ...previousData.singlePost,
+                  updates: newUpdatesArray,
+                },
+              },
+            });
+          } else {
+            // if subComment on comment on post
+            console.log('previousData', previousData);
+            console.log(parentComment);
+            const indexOfParentComment = previousData.singlePost.comments.findIndex(item => item.id === parentComment.id);
+            const newCommentsArray = [...previousData.singlePost.comments];
+
+            // add the new subcomment to the comment array of the parentComment
+            newCommentsArray[indexOfParentComment].comments.push(dataReturned.createComment);
+
+            proxy.writeQuery({
+              query: POST_COMMENTS_QUERY,
+              data: {
+                singlePost: {
+                  ...previousData.singlePost,
+                  comments: newCommentsArray,
+                },
+              },
+            });
+          }
+        } else if (isUpdate) {
+          // if comment on update
+          const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
+          const newUpdatesArray = [...previousData.singlePost.updates];
+          // add the new comment to the correct update comments array
+
+          newUpdatesArray[indexOfUpdate].comments.push(dataReturned.createComment);
+
+          proxy.writeQuery({
+            query: POST_COMMENTS_QUERY,
+            data: {
+              singlePost: {
+                ...previousData.singlePost,
+                updates: newUpdatesArray,
+              },
+            },
+          });
+        } else {
+          // if comment on post
+          proxy.writeQuery({
+            query: POST_COMMENTS_QUERY,
+            data: {
+              singlePost: {
+                ...previousData.singlePost,
+                comments: [...previousData.singlePost.comments, dataReturned.createComment],
+              },
+            },
+          });
+        }
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createComment: {
+          __typename: 'Comment',
+          createdAt: new Date(),
+          owner: userLoggedIn,
+          parentPost: post,
+          parentUpdate,
+          parentComment: parentCommentForDB,
+          content,
+          image: commentImage,
+          likes: [],
+          comments: [],
+          id: Math.random(),
+          likesCount: null,
+          likedByMe: false,
+          commentsCount: null,
+        },
+      },
+      refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } }],
+    });
+    navigation.goBack();
   };
 
   const onChangeText = val => {
-    setComment(val);
+    setContent(val);
   };
 
   const uploadImage = async () => {
@@ -147,7 +272,7 @@ const CommentScreen = ({ navigation, route }) => {
   };
 
   const validateInputs = () => {
-    if (!comment && !commentImage) return 'Oops';
+    if (!content && !commentImage) return 'Oops';
     return null;
   };
 
@@ -163,71 +288,71 @@ const CommentScreen = ({ navigation, route }) => {
       );
     }
 
+    const updateInd = isUpdate ? post.updates.findIndex(u => u.id === parentUpdate.id) : null;
+
     // if showing an update
     return (
-      <PostGroupTL post={post} currentTime={currentTime} navigation={navigation} updateInd={updateInd} hideButtons hideTopLine />
+      <PostGroupTL
+        post={post}
+        currentTime={currentTime}
+        navigation={navigation}
+        updateInd={updateInd}
+        hideButtons
+        hideTopLine
+        disableVideo
+      />
     );
   };
 
   const renderComments = () => {
-    // if the clicked comment is a stand-alone comment
-    if (!hasParentComment) {
+    // if this is a subcomment
+    if (isSubComment) {
+      const subCommentIndex = parentComment.comments.findIndex(com => com.id === comment.id);
+
       return (
-        <Comment comment={clicked} navigation={navigation} currentTime={currentTime} hideButtons hideTopMargin hideTopLine />
+        <>
+          <Comment
+            key={parentComment.id}
+            comment={parentComment}
+            navigation={navigation}
+            currentTime={currentTime}
+            lessPadding
+            hideButtons
+            disableVideo
+          />
+          {parentComment.comments.map((subComment, k) => {
+            if (k <= subCommentIndex) {
+              return (
+                <SubComment
+                  key={subComment.id}
+                  comment={subComment}
+                  navigation={navigation}
+                  currentTime={currentTime}
+                  lessPadding
+                  hideButtons
+                  disableVideo
+                  showLine
+                />
+              );
+            }
+            return null;
+          })}
+        </>
       );
     }
 
-    // // if the clicked comment is a a sub-comment, show all comments
-    const parComment = post.comments.find(com => com.id === clicked.parentComment.id);
-    const subCommentIndex = parComment.comments.findIndex(element => element.id === clicked.id);
-
     return (
-      <>
-        <Comment
-          key={parComment.id}
-          comment={parComment}
-          navigation={navigation}
-          currentTime={currentTime}
-          hideTopLine
-          // isSubComment
-          // showLine
-          hideButtons
-        />
-        {parComment.comments.map((subComment, k) => {
-          if (k <= subCommentIndex) {
-            return (
-              <Comment
-                key={subComment.id}
-                comment={subComment}
-                navigation={navigation}
-                currentTime={currentTime}
-                isSubComment
-                showLine
-                hideButtons
-              />
-            );
-          }
-          return null;
-        })}
-      </>
+      <Comment
+        comment={comment}
+        navigation={navigation}
+        currentTime={currentTime}
+        hideButtons
+        showLine={!isComment}
+        lessPadding
+        disableVideo
+      />
     );
   };
-
-  const loadingSubmit = uploading || loadingCreate;
-
-  if (errorUser) return <Error error={errorUser} />;
-  if (errorPost) return <Error error={errorPost} />;
-
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <HeaderBack navigation={navigation} handleRight={handleSubmit} textRight="Reply" title="Comment" />
-        <Loader loading={loading} full={false} />
-      </View>
-    );
-  }
-
-  const post = dataPost.singlePost;
 
   return (
     <View style={styles.container}>
@@ -238,14 +363,11 @@ const CommentScreen = ({ navigation, route }) => {
             {renderPost()}
             {isComment && renderComments()}
 
-            <View style={[styles.commentInput, isComment && { paddingLeft: 48 }]}>
+            <View style={[styles.commentInput, isComment && { paddingLeft: 44 }]}>
               <View style={styles.leftColumn}>
-                <ProfilePic size={30} navigation={navigation} user={userLoggedIn} disableVideo />
+                <ProfilePic size="small" navigation={navigation} user={userLoggedIn} disableVideo />
               </View>
               <View style={styles.rightColumn}>
-                {/* <Text style={defaultStyles.defaultSemibold} numberOfLines={1}>
-                    {userLoggedIn.name}
-                  </Text> */}
                 <View style={{ paddingTop: 2, paddingBottom: 10 }}>
                   <TextInput
                     style={{ flex: 1, marginRight: 35, ...defaultStyles.largeRegular }}
@@ -261,8 +383,6 @@ const CommentScreen = ({ navigation, route }) => {
                     inputAccessoryViewID="1"
                     // onBlur={() => setShowMentionList(false)}
                   />
-                  {/* {renderFormatedText()} */}
-                  {/* </TextInput> */}
                 </View>
                 {!!commentImage && (
                   <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingRight: 10 }}>
@@ -273,35 +393,16 @@ const CommentScreen = ({ navigation, route }) => {
                       </View>
                     </View>
                   </View>
-
-                  // <View style={styles.media}>
-                  //   <Image style={{ width: '100%', height: 160 }} source={{ uri: commentImage }} resizeMode="cover" />
-                  // </View>
                 )}
               </View>
             </View>
           </ScrollView>
         </View>
 
-        {/* {showMentionList && (
-            <>
-              <View style={{ width: '100%', height: 10, backgroundColor: colors.lightGray }} />
-              <View style={{ flex: 2 }}>
-                <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
-                  <View style={styles.mentionsList}>{renderPossibleMentions()}</View>
-                </ScrollView>
-              </View>
-            </>
-          )} */}
-
         <InputAccessoryView nativeID="1">
           <View style={styles.aboveKeyboard}>
             <View style={styles.aboveKeyboardLeft}>
-              <TouchableOpacity
-                onPress={handleCameraIconPress}
-                // onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
-                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-              >
+              <TouchableOpacity onPress={handleCameraIconPress} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                 <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.6 }} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
@@ -310,19 +411,8 @@ const CommentScreen = ({ navigation, route }) => {
             </View>
           </View>
         </InputAccessoryView>
-
-        {/* <InputAccessoryView nativeID="1">
-            <View style={styles.aboveKeyboard}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('RollModal', { handleMediaSelect, assetType: 'Photos' })}
-                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-              >
-                <Icon name="image" size={24} color={colors.purp} style={{ paddingRight: 10 }} />
-              </TouchableOpacity>
-            </View>
-          </InputAccessoryView> */}
       </KeyboardAvoidingView>
-      {loadingSubmit && <Loader loading={loadingSubmit} />}
+      {uploading && <Loader loading={uploading} />}
     </View>
   );
 };
@@ -336,14 +426,15 @@ const styles = StyleSheet.create({
   commentInput: {
     flexDirection: 'row',
     backgroundColor: 'white',
-    paddingLeft: 10,
+    // paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 5,
     borderRadius: 3,
   },
   leftColumn: {
     alignItems: 'center',
-    width: 48,
+    paddingLeft: 4,
+    width: 76,
   },
   // leftColumnSub: {
   //   alignItems: 'center',
@@ -352,7 +443,7 @@ const styles = StyleSheet.create({
   rightColumn: {
     flex: 1,
     alignItems: 'stretch',
-    paddingLeft: 8,
+    // paddingLeft: 8,
     paddingBottom: 20,
     // paddingRight: 15,
   },
@@ -422,9 +513,5 @@ const styles = StyleSheet.create({
   //   justifyContent: 'center',
   // },
 });
-
-CommentScreen.navigationOptions = {
-  title: 'Comment',
-};
 
 export default CommentScreen;

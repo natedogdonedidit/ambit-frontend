@@ -49,6 +49,7 @@ const colors = {
   goalPeach: 'rgba(255,69,58,0.1)', // ios
   goalGreen: 'rgba(50,215,75,0.1)', // ios
   goalOrange: 'rgba(255, 149, 0, 0.1)', // ios
+  goalYellow: 'rgba(255, 204, 0, 0.1)', // ios
 
   // system grays
   systemGray1: 'rgb(142,142,147)',

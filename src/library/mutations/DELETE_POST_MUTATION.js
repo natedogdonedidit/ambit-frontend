@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 const DELETE_POST_MUTATION = gql`
-  mutation DELETE_POST_MUTATION($owner: ID!, $id: ID!) {
-    deletePost(owner: $owner, id: $id) {
+  mutation DELETE_POST_MUTATION($id: ID!, $ownerID: ID!) {
+    deletePost(id: $id, ownerID: $ownerID) {
       id
     }
   }

@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   InputAccessoryView,
+  YellowBox,
 } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -32,6 +33,7 @@ import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 
 const NewPostModal = ({ navigation, route }) => {
+  YellowBox.ignoreWarnings(['Non-serializable values were found in the navigation state']);
   // ROUTE PARAMS
   const { userLoggedIn, topicsPassedIn = [] } = route.params;
 
@@ -78,11 +80,7 @@ const NewPostModal = ({ navigation, route }) => {
         },
       },
     },
-    refetchQueries: () => [
-      // { query: GLOBAL_POSTS_QUERY },
-      // { query: LOCAL_POSTS_QUERY },
-      // { query: USER_POSTS_QUERY, variables: { id: currentUserId } },
-    ],
+    refetchQueries: () => [{ query: GLOBAL_POSTS_QUERY }, { query: USER_POSTS_QUERY, variables: { id: currentUserId } }],
     // add update here to add post to GLOBAL, NETWORK, AND MYPOST arrays in cache
     onCompleted: () => {
       navigation.goBack();
@@ -117,8 +115,8 @@ const NewPostModal = ({ navigation, route }) => {
     const finalTopicsArray = addMainTopics([...topics]);
 
     await setTopics(finalTopicsArray);
-    console.log('finalTopicsArray', finalTopicsArray);
-    console.log('topics', topics);
+    // console.log('finalTopicsArray', finalTopicsArray);
+    // console.log('topics', topics);
 
     createPost();
   };
@@ -336,6 +334,8 @@ const NewPostModal = ({ navigation, route }) => {
       );
     }
 
+    const topik = getTopicFromID(subField);
+
     return (
       <>
         <View style={styles.leftSide}>
@@ -345,7 +345,7 @@ const NewPostModal = ({ navigation, route }) => {
           <Text>
             <Text style={{ ...defaultStyles.largeMedium }}>{goal.name} </Text>
             <Text style={{ ...defaultStyles.largeLight }}>{goal.adverb} </Text>
-            <Text style={{ ...defaultStyles.largeMedium }}>{getTopicFromID(subField).name}</Text>
+            <Text style={{ ...defaultStyles.largeMedium }}>{topik.name}</Text>
           </Text>
         </View>
         <TouchableOpacity
@@ -387,7 +387,9 @@ const NewPostModal = ({ navigation, route }) => {
 
         <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>
           {topics.map((topic, i) => {
+            console.log(topic.topicID);
             const { name } = getTopicFromID(topic.topicID);
+            console.log(name);
 
             if (i < topics.length - 1) {
               return `${name}, `;

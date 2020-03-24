@@ -53,23 +53,23 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'LIKE_POST') {
       return (
         <Text>
-          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.largeLight}> liked your post</Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> liked your post</Text>
         </Text>
       );
     }
     if (style === 'LIKE_GOAL') {
       return (
         <Text>
-          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.largeLight}> liked your goal</Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> liked your goal</Text>
           <Text>
-            <Text style={{ ...defaultStyles.largeLight }}> to</Text>
+            <Text style={{ ...defaultStyles.defaultLight }}> to</Text>
             <Text
-              style={{ ...defaultStyles.largeSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}
+              style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}
             >{` ${post.goal}`}</Text>
-            <Text style={{ ...defaultStyles.largeLight }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
-            <Text style={{ ...defaultStyles.largeSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>
+            <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
+            <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>
               {post.subField.name}
             </Text>
           </Text>
@@ -79,40 +79,40 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'LIKE_UPDATE') {
       return (
         <Text>
-          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.largeLight}> liked your update</Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultText}> liked your update</Text>
         </Text>
       );
     }
     if (style === 'LIKE_COMMENT') {
       return (
         <Text>
-          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.largeLight}> liked your comment</Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> liked your comment</Text>
         </Text>
       );
     }
     if (style === 'COMMENT_GOAL') {
       return (
         <Text>
-          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.largeLight}> commented on your goal</Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> commented on your goal</Text>
         </Text>
       );
     }
     if (style === 'COMMENT_POST') {
       return (
         <Text>
-          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.largeLight}> commented on your post</Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> commented on your post</Text>
         </Text>
       );
     }
     if (style === 'COMMENT_UPDATE') {
       return (
         <Text>
-          <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.largeLight}> commented on your update</Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> commented on your update</Text>
         </Text>
       );
     }
@@ -151,7 +151,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     <TouchableOpacity activeOpacity={0.7} style={styles.container} onPress={getNotificationOnPress}>
       <View style={styles.connection}>
         <View style={styles.profilePicView}>
-          <ProfilePic size={46} navigation={navigation} user={user} />
+          <ProfilePic size="medium" navigation={navigation} user={user} />
         </View>
         <View style={styles.rightSide}>
           <View style={styles.headlineRow}>

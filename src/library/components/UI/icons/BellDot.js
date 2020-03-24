@@ -11,7 +11,7 @@ const BellDot = ({ color, unReadNotifications }) => {
       <Icon name="bell" size={22} color={color} solid />
       {unReadNotifications > 0 && (
         <View style={styles.dot}>
-          <Text style={{ ...defaultStyles.smallMedium, color: colors.white }}>{unReadNotifications}</Text>
+          <Text style={{ ...defaultStyles.smallMedium, color: colors.white, textAlign: 'center' }}>{unReadNotifications}</Text>
         </View>
       )}
     </View>

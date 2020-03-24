@@ -21,9 +21,9 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
         </View>
         <View style={styles.textView}>
           <Text>
-            <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
+            <Text style={{ ...defaultStyles.defaultText }}>{`${goal}`}</Text>
             <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
-            <Text style={{ ...defaultStyles.defaultMedium }}>{subField.name}</Text>
+            <Text style={{ ...defaultStyles.defaultText }}>{subField.name}</Text>
           </Text>
         </View>
       </View>
@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
   },
   goalView: {
     flexDirection: 'row',
+    // flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -55,7 +56,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingRight: 10,
   },
-  textView: {},
+  textView: {
+    // marginRight: 12,
+  },
 
   // old
   goalText: {},

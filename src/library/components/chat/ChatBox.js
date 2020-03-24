@@ -9,12 +9,14 @@ import CREATE_MESSAGE_MUTATION from 'library/mutations/CREATE_MESSAGE_MUTATION';
 import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 import GROUP_QUERY from 'library/queries/GROUP_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSAGES_MUTATION';
+// import UNREAD_MESSAGES_QUERY from 'library/queries/UNREAD_MESSAGES_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import { UserContext } from 'library/utils/UserContext';
 
 const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, otherUserPassedIn }) => {
-  const { clearUnReadMessagesForGroup } = useContext(UserContext);
+  // const { clearUnReadMessagesForGroup } = useContext(UserContext);
 
   // MUTATIONS
   const [createMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
@@ -39,12 +41,91 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
     notifyOnNetworkStatusChange: true,
     variables: { groupID: groupPassedIn.id },
   });
+  // console.log(networkStatus);
+  const loadingMessages = networkStatus === 1 || networkStatus === 2;
+  const fetchingMore = networkStatus === 3;
+  const ok = networkStatus === 7;
 
+  const [clearUnReadMessages, { loading: clearingUnreadMessages }] = useMutation(CLEAR_UNREAD_MESSAGES_MUTATION, {
+    onError: e => {
+      console.log(e);
+    },
+  });
+
+  // THIS EFFECT CLEARS THE UNREAD MESSAGES AFTER MESSAGES CONNECTION IS LOADED
   useEffect(() => {
     if (groupPassedIn.id) {
-      clearUnReadMessagesForGroup(groupPassedIn.id);
+      // calculate optimistic response
+      const unReadInThisGroup = userLoggedIn.unReadMessages.filter(message => message.to.id === groupPassedIn.id);
+      console.log('unReadInThisGroup', unReadInThisGroup);
+      const numToRemove = unReadInThisGroup.length;
+      const previousCount = userLoggedIn.unReadMessages.length;
+      const newUnReadCount = Math.max((previousCount - numToRemove, 0));
+
+      if (numToRemove > 0 && !clearingUnreadMessages) {
+        console.log('clearing unread messages ', previousCount, numToRemove);
+        clearUnReadMessages({
+          variables: { groupID: groupPassedIn.id },
+          optimisticResponse: {
+            __typename: 'Mutation',
+            clearUnReadMessages: {
+              __typename: 'User',
+              ...userLoggedIn,
+              unReadMessagesCount: newUnReadCount,
+            },
+          },
+          update: (proxy, { data: dataReturned }) => {
+            // console.log(dataReturned)
+
+            // update the unread messages count
+            // proxy.writeQuery({
+            //   query: UNREAD_MESSAGES_QUERY,
+            //   data: {
+            //     unReadMessagesCount: dataReturned.clearUnReadMessages.unReadMessagesCount,
+            //   },
+            // });
+
+            // also, update the CURRENT_USER_QUERY
+            proxy.writeQuery({
+              query: CURRENT_USER_QUERY,
+              data: {
+                userLoggedIn: dataReturned.clearUnReadMessages,
+              },
+            });
+          },
+        });
+      }
     }
-  }, [groupPassedIn.id]);
+  }, [groupPassedIn.id, userLoggedIn.unReadMessages]);
+
+  // useEffect(() => {
+  //   if (groupPassedIn.id) {
+
+  //     // count number to subtract
+
+  //     clearUnReadMessages({
+  //       variables: { groupID: groupPassedIn.id },
+  //       optimisticResponse: {
+  //         __typename: 'Mutation',
+  //         clearUnReadMessages: {
+  //           __typename: 'User',
+  //           unReadMessagesCount: newArrayTopicIDandType,
+  //         },
+  //       },
+  //       update: (proxy, { data: dataReturned }) => {
+  //         // console.log(dataReturned)
+  //         proxy.writeQuery({
+  //           query: UNREAD_MESSAGES_QUERY,
+  //           data: {
+  //             unReadMessagesCount: dataReturned.clearUnReadMessages.unReadMessagesCount,
+  //           },
+  //         });
+  //       },
+  //     })
+
+  //     // clearUnReadMessagesForGroup(groupPassedIn.id);
+  //   }
+  // }, [groupPassedIn.id]);
 
   // console.log(networkStatus);
   // networkStatus states:
@@ -72,6 +153,45 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
     name: userLoggedIn.name,
     avatar: userLoggedIn.profilePic,
   };
+
+  // const clearUnReadMessagesMethod = groupID => {
+  //   // calculate optimistic response
+  //   const unReadInThisGroup = userLoggedIn.unReadMessages.filter(message => message.to.id === groupID);
+  //   const numToRemove = unReadInThisGroup.length;
+  //   const previousCount = userLoggedIn.unReadMessages.length;
+  //   const newUnReadCount = Math.max((previousCount - numToRemove, 0));
+
+  //   clearUnReadMessages({
+  //     variables: { groupID },
+  //     optimisticResponse: {
+  //       __typename: 'Mutation',
+  //       clearUnReadMessages: {
+  //         __typename: 'User',
+  //         ...userLoggedIn,
+  //         unReadMessagesCount: newUnReadCount,
+  //       },
+  //     },
+  //     update: (proxy, { data: dataReturned }) => {
+  //       // console.log(dataReturned)
+
+  //       // update the unread messages count
+  //       // proxy.writeQuery({
+  //       //   query: UNREAD_MESSAGES_QUERY,
+  //       //   data: {
+  //       //     unReadMessagesCount: dataReturned.clearUnReadMessages.unReadMessagesCount,
+  //       //   },
+  //       // });
+
+  //       // also, update the CURRENT_USER_QUERY
+  //       proxy.writeQuery({
+  //         query: CURRENT_USER_QUERY,
+  //         data: {
+  //           userLoggedIn: dataReturned.clearUnReadMessages,
+  //         },
+  //       });
+  //     },
+  //   });
+  // };
 
   const renderBubble = props => {
     return (
@@ -109,11 +229,6 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
     });
   };
 
-  // console.log(networkStatus);
-  const loadingMessages = networkStatus === 1 || networkStatus === 2;
-  const fetchingMore = networkStatus === 3;
-  const ok = networkStatus === 7;
-
   // console.log(!groupExists, loadingMessages);
 
   if (!groupExists || loadingMessages) {
@@ -130,6 +245,9 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
   // IF GROUP WAS LOADED SUCCESSFULLY
   const { messages } = data; // will return null if no chat exists
   // console.log('messages', messages);
+
+  // clear unread here
+  // clearUnReadMessagesMethod(groupPassedIn.id);
 
   const messageEdges = groupExists ? messages.edges : [];
   const messageNodes = messageEdges.map(edge => edge.node);

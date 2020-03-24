@@ -1,16 +1,13 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
 import { format } from 'date-fns';
 
-import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
-import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
-import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Goal from 'library/components/UI/Goal';
@@ -20,8 +17,17 @@ import Chevron from 'library/components/UI/icons/Chevron';
 import Share from 'library/components/UI/icons/Share';
 import Topic from 'library/components/post/Topic';
 import Location from 'library/components/post/Location';
+import GoalStatus from 'library/components/post/GoalStatus';
 
-const Post = ({ post, currentTime, navigation, showDetails = false, showLine = false, hideButtons = false }) => {
+const Post = ({
+  post,
+  currentTime,
+  navigation,
+  showDetails = false,
+  showLine = false,
+  hideButtons = false,
+  disableVideo = false,
+}) => {
   // MUTATIONS - like, share, delete
   const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
     variables: {
@@ -49,24 +55,9 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
     },
   });
 
-  const [deletePost, payloadDelete] = useMutation(DELETE_POST_MUTATION, {
-    variables: {
-      owner: post.owner.id,
-      id: post.id,
-    },
-    refetchQueries: () => [{ query: USER_POSTS_QUERY, variables: { id: post.owner.id } }],
-    onCompleted: () => {},
-    onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
-  });
-
   // HOOKS & VARIABLES
-  const { currentUserId } = useContext(UserContext);
-  const isMyPost = post.owner.id === currentUserId;
   const containsMedia = post.video || post.images.length > 0;
-  const containsTopics = !!post.subField || post.topics.length > 0 || !!post.location;
+  const containsTopics = !!post.subField || post.topics.length > 0;
 
   // for dates
   const createdAt = new Date(post.createdAt);
@@ -75,7 +66,6 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
   // for goal remaining time
   // const lastUpdated = new Date(post.lastUpdated);
 
-  // ////////////////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
 
   const handleLike = () => {
@@ -90,10 +80,10 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
     <View style={[{ ...styles.postContainer }, showLine && { borderBottomWidth: 0 }]}>
       <View style={styles.post}>
         <View style={styles.leftColumn}>
-          <ProfilePic size={46} user={post.owner} navigation={navigation} />
+          <ProfilePic size="medium" user={post.owner} navigation={navigation} disableVideo={disableVideo} />
           {showLine && <View style={styles.threadLine} />}
         </View>
-        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 12 }]}>
+        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
@@ -101,7 +91,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
               hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
             >
               <View style={styles.name}>
-                <Text style={{ ...defaultStyles.largeMedium }} numberOfLines={1}>
+                <Text style={{ ...defaultStyles.largeSemibold }} numberOfLines={1}>
                   {post.owner.name}
                 </Text>
               </View>
@@ -109,11 +99,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
 
             {!hideButtons && (
               <View style={{ position: 'absolute', top: 0, right: 0 }}>
-                <Chevron
-                  onPress={() =>
-                    navigation.navigate('EditPostPopup', { post, isMyPost, deleteFunction: deletePost, type: 'post' })
-                  }
-                />
+                <Chevron onPress={() => navigation.navigate('EditPostPopup', { post })} />
               </View>
             )}
           </View>
@@ -141,11 +127,11 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
             <Text style={defaultStyles.defaultText}>{post.content}</Text>
           </View>
 
-          {containsTopics && (
+          {(containsTopics || showDetails) && (
             <View style={styles.topics}>
               {post.topics.length > 0 &&
                 post.topics.map(topic => <Topic key={topic.id} navigation={navigation} topicToShow={topic} />)}
-              {!!post.location && (
+              {(!!post.location || showDetails) && (
                 <Location
                   navigation={navigation}
                   location={post.location}
@@ -161,6 +147,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
             <>
               <View style={styles.date}>
                 <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{formatedDate}</Text>
+                {!!post.isGoal && <GoalStatus navigation={navigation} post={post} />}
               </View>
               <View style={styles.likesRow}>
                 <View style={{ flexDirection: 'row' }}>
@@ -173,7 +160,7 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <View style={{ paddingLeft: 30 }}>
-                    <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
+                    <Comment onPress={() => navigation.navigate('Comment', { post })} />
                   </View>
                   <View style={{ paddingLeft: 30 }}>
                     <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
@@ -186,18 +173,20 @@ const Post = ({ post, currentTime, navigation, showDetails = false, showLine = f
             </>
           ) : (
             !hideButtons && (
-              <View style={styles.buttons}>
-                <View style={styles.button}>
-                  <Comment onPress={() => navigation.navigate('Comment', { clicked: post })} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
-                </View>
-                <View style={styles.button}>
-                  <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
-                </View>
-                <View style={styles.button}>
-                  <Share onPress={() => null} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={styles.buttons}>
+                  <View style={styles.button}>
+                    <Comment onPress={() => navigation.navigate('Comment', { post })} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
+                  </View>
+                  <View style={styles.button}>
+                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
+                  </View>
+                  <View style={styles.button}>
+                    <Share onPress={() => null} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
+                  </View>
                 </View>
               </View>
             )
@@ -231,6 +220,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 1.5,
     borderBottomRightRadius: 1.5,
     backgroundColor: colors.iconGray,
+    opacity: 0.6,
   },
   leftColumn: {
     alignItems: 'center',
@@ -243,7 +233,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     // paddingTop: 4,
     // paddingLeft: 8,
-    paddingBottom: 15,
+    paddingBottom: 12,
   },
   topRow: {
     flexDirection: 'row',
@@ -256,15 +246,15 @@ const styles = StyleSheet.create({
   },
   headlineRow: {
     flexDirection: 'row',
-    paddingBottom: 12,
+    paddingBottom: 8,
   },
   goalView: {
     flexDirection: 'row',
-    paddingBottom: 12,
+    paddingBottom: 8,
     // backgroundColor: 'pink',
   },
   content: {
-    paddingBottom: 12,
+    paddingBottom: 8,
   },
   topics: {
     flexDirection: 'row',
@@ -276,7 +266,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
-    marginBottom: 12,
+    marginBottom: 8,
     overflow: 'hidden',
   },
   buttons: {
@@ -284,7 +274,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: 70,
+    width: 60,
     flexDirection: 'row',
     alignItems: 'center',
   },

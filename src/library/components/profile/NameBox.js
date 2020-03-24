@@ -101,7 +101,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
         )}
       </View>
       <View style={styles.profilePicView}>
-        <ProfilePic user={user} intro={user.intro} navigation={navigation} size={70} border borderWidth={2.4} />
+        <ProfilePic user={user} intro={user.intro} navigation={navigation} size="large" border borderWidth={2.4} />
       </View>
     </View>
   );

@@ -11,7 +11,7 @@ const EnvelopeDot = ({ color, unReadMessages }) => {
       <Icon name="envelope" size={22} color={color} solid />
       {unReadMessages > 0 && (
         <View style={styles.dot}>
-          <Text style={{ ...defaultStyles.smallMedium, color: colors.white }}>{unReadMessages}</Text>
+          <Text style={{ ...defaultStyles.smallMedium, color: colors.white, textAlign: 'center' }}>{unReadMessages}</Text>
         </View>
       )}
     </View>

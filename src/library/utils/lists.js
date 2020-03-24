@@ -1085,7 +1085,7 @@ export const allTopics = [
   },
   {
     name: 'Wealth Management',
-    topicID: 'topics_business_wealthmanagement',
+    topicID: 'topics_finance_wealthmanagement',
   },
   {
     name: 'Banking',

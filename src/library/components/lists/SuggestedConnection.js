@@ -18,7 +18,7 @@ const SuggestedConnection = ({ navigation, item }) => {
     >
       <View style={styles.connection}>
         <View style={styles.profilePicView}>
-          <ProfilePic size={46} navigation={navigation} user={user} />
+          <ProfilePic size="medium" navigation={navigation} user={user} />
         </View>
         <View style={styles.rightSide}>
           <Text style={defaultStyles.largeSemibold}>{user.name}</Text>

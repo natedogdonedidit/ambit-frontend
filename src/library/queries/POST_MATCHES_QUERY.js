@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
-import { LoggedInUser } from 'library/queries/_fragments';
+import { MinimalUser } from 'library/queries/_fragments';
 
 export default POST_MATCHES_QUERY = gql`
   query POST_MATCHES_QUERY($id: ID!) {
     singlePostMatches(id: $id) {
       user {
-        ...LoggedInUser
+        ...MinimalUser
       }
       reason {
         text
@@ -13,5 +13,5 @@ export default POST_MATCHES_QUERY = gql`
       }
     }
   }
-  ${LoggedInUser}
+  ${MinimalUser}
 `;

@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 const DELETE_COMMENT_MUTATION = gql`
-  mutation DELETE_COMMENT_MUTATION($owner: ID!, $id: ID!) {
-    deleteComment(owner: $owner, id: $id) {
+  mutation DELETE_COMMENT_MUTATION($id: ID!, $ownerID: ID!) {
+    deleteComment(id: $id, ownerID: $ownerID) {
       id
     }
   }

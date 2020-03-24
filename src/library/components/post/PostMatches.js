@@ -37,14 +37,9 @@ const PostMatches = ({ navigation, post }) => {
 
   if (matches.length < 1) {
     return (
-      <>
-        <View style={styles.sectionHeader}>
-          <Text style={defaultStyles.headerSmall}>Matches</Text>
-        </View>
-        <View style={styles.emptyComponent}>
-          <Text style={{ ...defaultStyles.defaultMuteItalic, textAlign: 'center' }}>No matches yet...check back later!</Text>
-        </View>
-      </>
+      <View style={styles.emptyComponent}>
+        <Text style={{ ...defaultStyles.defaultMuteItalic, textAlign: 'center' }}>No matches yet...check back later!</Text>
+      </View>
     );
   }
 

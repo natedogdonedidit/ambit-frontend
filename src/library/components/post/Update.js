@@ -1,16 +1,13 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { format } from 'date-fns';
 import { useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import LIKE_UPDATE_MUTATION from 'library/mutations/LIKE_UPDATE_MUTATION';
-import DELETE_UPDATE_MUTATION from 'library/mutations/DELETE_UPDATE_MUTATION';
-import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Heart from 'library/components/UI/icons/Heart';
@@ -21,15 +18,15 @@ import Chevron from 'library/components/UI/icons/Chevron';
 const Update = ({
   post,
   update,
+  updateInd,
   currentTime,
   navigation,
   showDetails = false,
-  showLine = false,
   hideButtons = false,
-  showBottomLine = false,
-  updateInd,
+  disableVideo = false,
+  showLine = false,
+  hideTopLine = false,
 }) => {
-  // ////////////////////////////////////////////////////////////////
   // MUTATIONS - like, share, delete
   const [likeUpdate, { loading: loadingLike }] = useMutation(LIKE_UPDATE_MUTATION, {
     variables: {
@@ -57,23 +54,7 @@ const Update = ({
     },
   });
 
-  const [deleteUpdate, { loading: loadingDelete }] = useMutation(DELETE_UPDATE_MUTATION, {
-    variables: {
-      owner: post.owner.id,
-      id: update.id,
-    },
-    refetchQueries: () => [{ query: SINGLE_POST_QUERY, variables: { id: update.parentPost.id } }],
-    onCompleted: () => {},
-    onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this update. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
-  });
-
-  // ////////////////////////////////////////////////////////////////
   // HOOKS & VARIABLES
-  const { currentUserId } = useContext(UserContext);
-  const isMyPost = post.owner.id === currentUserId;
   const containsMedia = !!update.image;
   // for dates
   const createdAt = new Date(update.createdAt);
@@ -91,15 +72,10 @@ const Update = ({
   };
 
   return (
-    <View
-      style={[
-        styles.updateContainer,
-        showBottomLine && { borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth },
-      ]}
-    >
+    <View style={hideTopLine ? styles.updateContainerNoLine : styles.updateContainer}>
       <View style={styles.update}>
         <View style={styles.leftColumn}>
-          <ProfilePic navigation={navigation} user={post.owner} size={30} />
+          <ProfilePic navigation={navigation} user={post.owner} size="small" disableVideo={disableVideo} />
           {showLine && <View style={styles.threadLine} />}
         </View>
         <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
@@ -110,7 +86,7 @@ const Update = ({
               hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
             >
               <View style={styles.name}>
-                <Text style={{ ...defaultStyles.defaultSemibold }} numberOfLines={1}>
+                <Text style={{ ...defaultStyles.largeSemibold }} numberOfLines={1}>
                   {post.owner.name}
                 </Text>
               </View>
@@ -118,16 +94,7 @@ const Update = ({
 
             {!hideButtons && (
               <View style={{ position: 'absolute', top: 0, right: 0 }}>
-                <Chevron
-                  onPress={() =>
-                    navigation.navigate('EditPostPopup', {
-                      post: update,
-                      isMyPost,
-                      deleteFunction: deleteUpdate,
-                      type: 'update',
-                    })
-                  }
-                />
+                <Chevron onPress={() => navigation.navigate('EditUpdatePopup', { update })} />
               </View>
             )}
           </View>
@@ -172,7 +139,7 @@ const Update = ({
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <View style={{ paddingLeft: 25 }}>
-                    <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
+                    <Comment onPress={() => navigation.navigate('Comment', { post, update, isUpdate: true })} />
                   </View>
                   <View style={{ paddingLeft: 25 }}>
                     <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
@@ -188,7 +155,7 @@ const Update = ({
               <View style={styles.buttons}>
                 <View style={styles.buttonGroup}>
                   <View style={styles.button}>
-                    <Comment onPress={() => navigation.navigate('Comment', { clicked: update, isUpdate: true, updateInd })} />
+                    <Comment onPress={() => navigation.navigate('Comment', { post, update, isUpdate: true })} />
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
                   </View>
                   <View style={styles.button}>
@@ -213,14 +180,20 @@ const styles = StyleSheet.create({
   updateContainer: {
     width: '100%',
     backgroundColor: 'white',
-    // borderTopWidth: StyleSheet.hairlineWidth,
-    // borderTopColor: colors.borderBlack,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    paddingTop: 12,
+  },
+  updateContainerNoLine: {
+    width: '100%',
+    backgroundColor: 'white',
+    paddingTop: 5,
   },
   update: {
     width: '100%',
     flexDirection: 'row',
     backgroundColor: 'white',
-    paddingTop: 12,
+
     paddingRight: 12,
   },
   // updateLine: {
@@ -238,11 +211,12 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 1.5,
     borderBottomRightRadius: 1.5,
     backgroundColor: colors.iconGray,
+    opacity: 0.6,
   },
   leftColumn: {
     alignItems: 'center',
-    width: 64,
     paddingLeft: 4,
+    width: 76,
   },
   rightColumn: {
     flex: 1,

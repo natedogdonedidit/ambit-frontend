@@ -104,26 +104,12 @@ export const LoggedInUser = gql`
     unReadMessages {
       ...MessageFragment
     }
+    unReadMessagesCount
   }
   ${MinimalUser}
   ${GroupFragment}
   ${MessageFragment}
 `;
-
-// export const DetailedChat = gql`
-//   fragment DetailedChat on Chat {
-//     id
-//     updatedAt
-//     users {
-//       ...LoggedInUser
-//     }
-//     messages {
-//       ...MessageFragment
-//     }
-//   }
-//   ${LoggedInUser}
-//   ${MessageFragment}
-// `;
 
 export const FullSkills = gql`
   fragment FullSkills on Skill {
@@ -270,9 +256,6 @@ export const CommentFragment = gql`
     }
     parentUpdate {
       id
-      parentPost {
-        id
-      }
     }
     content
     image

@@ -17,7 +17,7 @@ const HeaderMessages = ({ navigation, handleMiddle, handleRight }) => {
   return (
     <View style={{ ...styles.container }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
-        <ProfilePic user={userLoggedIn} size={30} disableVideo disableClick />
+        <ProfilePic user={userLoggedIn} size="small" disableVideo disableClick />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.headerSmall, color: colors.black }}>Inbox</Text>

@@ -7,31 +7,31 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import GrayButton from 'library/components/UI/buttons/GrayButton';
 
-import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
-import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
+import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
+import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 import { UserContext } from 'library/utils/UserContext';
 
-const EditPostPopup = ({ navigation, route }) => {
-  const { post } = route.params;
+const EditCommentPopup = ({ navigation, route }) => {
+  const { comment } = route.params;
   const { currentUserId } = useContext(UserContext);
-  const isMyPost = currentUserId === post.owner.id;
+  const isMyPost = currentUserId === comment.owner.id;
 
   // DELETE MUTATIONS
-  const [deletePost] = useMutation(DELETE_POST_MUTATION, {
+  const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION, {
     variables: {
-      id: post.id,
-      ownerID: post.owner.id,
+      id: comment.id,
+      ownerID: comment.owner.id,
     },
-    refetchQueries: () => [{ query: USER_POSTS_QUERY, variables: { id: currentUserId } }],
+    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: comment.parentPost.id } }],
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to delete this comment. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
 
   const handleDelete = () => {
-    deletePost({});
-    navigation.navigate('Home');
+    deleteComment();
+    navigation.goBack();
   };
 
   return (
@@ -48,17 +48,7 @@ const EditPostPopup = ({ navigation, route }) => {
           <View style={styles.handle} />
         </View>
         <View style={styles.modalContent}>
-          {post.isGoal && isMyPost && (
-            <TouchableOpacity onPress={() => navigation.navigate('UpdatePost', { post })}>
-              <View style={styles.row}>
-                <View style={styles.rowIcon}>
-                  <Icon name="edit" size={20} color={colors.iconGray} solid />
-                </View>
-                <Text style={{ ...defaultStyles.hugeLight, ...styles.rowText }}>Add an update</Text>
-              </View>
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity onPress={handleDelete}>
+          <TouchableOpacity onPress={() => null}>
             <View style={styles.row}>
               <View style={styles.rowIcon}>
                 <Icon name="flag" size={20} color={colors.iconGray} />
@@ -72,7 +62,7 @@ const EditPostPopup = ({ navigation, route }) => {
                 <View style={styles.rowIcon}>
                   <Icon name="trash-alt" size={20} color={colors.peach} solid />
                 </View>
-                <Text style={{ ...defaultStyles.hugeLight, ...styles.rowText, color: colors.peach }}>Delete Post</Text>
+                <Text style={{ ...defaultStyles.hugeLight, ...styles.rowText, color: colors.peach }}>Delete Comment</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -86,7 +76,7 @@ const EditPostPopup = ({ navigation, route }) => {
   );
 };
 
-export default EditPostPopup;
+export default EditCommentPopup;
 
 const styles = StyleSheet.create({
   container: {

@@ -26,9 +26,10 @@ const PostMatchesScreen = ({ navigation, route }) => {
     if (matches.length < 1) {
       return (
         <>
-          <View style={styles.sectionHeader}>
-            <Text style={defaultStyles.headerSmall}>Matches</Text>
-            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2 }}>No matches yet</Text>
+          <View style={styles.noMatches}>
+            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2, textAlign: 'center' }}>
+              No matches yet...check back later!
+            </Text>
           </View>
         </>
       );
@@ -59,12 +60,16 @@ const PostMatchesScreen = ({ navigation, route }) => {
       <HeaderBack navigation={navigation} title="Goal Matches" />
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={{
-          paddingBottom: 20,
-          marginTop: 15,
-          borderTopWidth: StyleSheet.hairlineWidth,
-          borderTopColor: colors.borderBlack,
-        }}
+        contentContainerStyle={[
+          {
+            paddingBottom: 20,
+            marginTop: 15,
+          },
+          matches.length > 0 && {
+            borderTopWidth: StyleSheet.hairlineWidth,
+            borderTopColor: colors.borderBlack,
+          },
+        ]}
       >
         {post && <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons />}
         {renderMatches()}
@@ -93,6 +98,11 @@ const styles = StyleSheet.create({
     borderTopColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
+  },
+  noMatches: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

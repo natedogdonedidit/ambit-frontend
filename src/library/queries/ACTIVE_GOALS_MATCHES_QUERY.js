@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { DetailPost, LoggedInUser } from 'library/queries/_fragments';
+import { DetailPost, MinimalUser } from 'library/queries/_fragments';
 
 export default ACTIVE_GOALS_MATCHES_QUERY = gql`
   query ACTIVE_GOALS_MATCHES_QUERY {
@@ -9,7 +9,7 @@ export default ACTIVE_GOALS_MATCHES_QUERY = gql`
       }
       matches {
         user {
-          ...LoggedInUser
+          ...MinimalUser
         }
         reason {
           text
@@ -18,7 +18,7 @@ export default ACTIVE_GOALS_MATCHES_QUERY = gql`
       }
       match {
         user {
-          ...LoggedInUser
+          ...MinimalUser
         }
         reason {
           text
@@ -28,5 +28,5 @@ export default ACTIVE_GOALS_MATCHES_QUERY = gql`
     }
   }
   ${DetailPost}
-  ${LoggedInUser}
+  ${MinimalUser}
 `;

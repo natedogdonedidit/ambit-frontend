@@ -42,22 +42,12 @@ const UserContextProvider = (props) => {
     },
   });
 
-  // FOR CLEARING NOTIFICATIONS
-  const [clearUnReadMessages] = useMutation(CLEAR_UNREAD_MESSAGES_MUTATION, {
-    // optimisticResponse:
-    update: (proxy, { data: dataReturned }) => {
-      console.log(dataReturned)
-      proxy.writeQuery({
-        query: CURRENT_USER_QUERY,
-        data: {
-          userLoggedIn: dataReturned.clearUnReadMessages,
-        },
-      });
-    },
-    onError: e => {
-      console.log(e);
-    },
-  });
+  // FOR CLEARING MESSAGES FOR ONE GROUP
+  // const [clearUnReadMessages] = useMutation(CLEAR_UNREAD_MESSAGES_MUTATION, {
+  //   onError: e => {
+  //     console.log(e);
+  //   },
+  // });
 
   // get user token out of Async Storage
   useEffect(() => {
@@ -138,16 +128,36 @@ const UserContextProvider = (props) => {
     }
   }
 
-  const clearUnReadMessagesForGroup = (groupID) => {
-    if (unReadMessages) {
-      // clear on backend synchronously 
-      clearUnReadMessages({ variables: { groupID }})
-    }
-  }
+  // const clearUnReadMessagesForGroup = (groupID) => {
+
+
+
+  //   if (unReadMessages) {
+  //     // clear on backend synchronously
+  //     clearUnReadMessages({
+  //       variables: { groupID }, optimisticResponse: {
+  //         __typename: 'Mutation',
+  //         clearUnReadMessages: {
+  //           __typename: 'User',
+  //           unReadMessagesCount: newArrayTopicIDandType,
+  //         },
+  //       },
+  //       update: (proxy, { data: dataReturned }) => {
+  //         // console.log(dataReturned)
+  //         proxy.writeQuery({
+  //           query: CURRENT_USER_QUERY,
+  //           data: {
+  //             userLoggedIn: dataReturned.clearUnReadMessages,
+  //           },
+  //         });
+  //       },
+  //     })
+  //   }
+  // }
 
   return (
     <UserContext.Provider
-      value={{ loadingApp, currentUserId, setCurrentUserId, loginCTX, logoutCTX, unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages, clearUnReadMessagesForGroup }}
+      value={{ loadingApp, currentUserId, setCurrentUserId, loginCTX, logoutCTX, unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages }}
     >
       {props.children}
     </UserContext.Provider>

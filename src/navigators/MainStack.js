@@ -38,6 +38,8 @@ import SelectTopicsMentorModal from 'screens/main/modals/profile/SelectTopicsMen
 // popups
 import EditSkillsPopup from 'screens/main/modals/profile/EditSkillsPopup';
 import EditPostPopup from 'screens/main/modals/post/EditPostPopup';
+import EditUpdatePopup from 'screens/main/modals/post/EditUpdatePopup';
+import EditCommentPopup from 'screens/main/modals/post/EditCommentPopup';
 import YearModal from 'screens/main/modals/general/YearModal';
 import MonthModal from 'screens/main/modals/general/MonthModal';
 import EditStoryItemPopup from 'screens/main/modals/stories/EditStoryItemPopup';
@@ -45,7 +47,7 @@ import EditStoryItemPopup from 'screens/main/modals/stories/EditStoryItemPopup';
 const Stack = createStackNavigator();
 
 const MainStack = () => {
-  const { setUnReadNotifications, setUnReadMessages, currentUserId } = useContext(UserContext);
+  const { setUnReadNotifications, currentUserId } = useContext(UserContext);
 
   // ////////////////////////////////////////
   // LOAD INITIAL QUERIES HERE
@@ -112,7 +114,7 @@ const MainStack = () => {
   useSubscription(MESSAGE_SUBSCRIPTION, {
     variables: { id: currentUserId },
     onSubscriptionData: async ({ client, subscriptionData }) => {
-      console.log('subscriptionData', subscriptionData);
+      // console.log('subscriptionData', subscriptionData);
       const { newMessageToMe } = subscriptionData.data;
       try {
         const previousData = await client.readQuery({
@@ -143,24 +145,48 @@ const MainStack = () => {
     },
   });
 
-  // SUBSCRIBE TO NEW GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
-
   // UPDATE # OF UNSEEN MESSAGES EVERYTIME NEW USER DATA COMES IN
-  useEffect(() => {
-    if (userOk && userData.userLoggedIn) {
-      // get # of unseen
-      const unRead = userData.userLoggedIn.unReadMessages.length;
+  // useEffect(() => {
+  //   if (userOk && userData.userLoggedIn) {
+  //     // get # of unseen
+  //     // const unRead = userData.userLoggedIn.unReadMessages.length;
+  //     const unRead = userData.userLoggedIn.unReadMessagesCount;
 
-      if (unRead > 0) {
-        setUnReadMessages(unRead);
-      } else {
-        setUnReadMessages(0);
-      }
-    }
-  }, [userData]);
+  //     if (unRead > 0) {
+  //       setUnReadMessages(unRead);
+  //     } else {
+  //       setUnReadMessages(0);
+  //     }
+  //   }
+  // }, [userData]);
+
+  const halfModalOptions = {
+    cardStyle: { backgroundColor: 'transparent' },
+    cardOverlayEnabled: true,
+    cardStyleInterpolator: ({ current: { progress } }) => ({
+      cardStyle: {
+        opacity: progress.interpolate({
+          inputRange: [0, 0.5, 0.9, 1],
+          outputRange: [0, 0.7, 0.9, 1],
+        }),
+      },
+      overlayStyle: {
+        opacity: progress.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, 0.5],
+          extrapolate: 'clamp',
+        }),
+      },
+    }),
+  };
 
   return (
-    <Stack.Navigator initialRouteName="MainDrawer" mode="modal" headerMode="none">
+    <Stack.Navigator
+      initialRouteName="MainDrawer"
+      // screenOptions={}
+      mode="modal"
+      headerMode="none"
+    >
       <Stack.Screen name="MainDrawer" component={MainDrawer} />
 
       {/* modals */}
@@ -178,9 +204,11 @@ const MainStack = () => {
       <Stack.Screen name="EditProfileModal" component={EditProfileModal} />
       <Stack.Screen name="EditAboutModal" component={EditAboutModal} />
       <Stack.Screen name="EditSkillsModal" component={EditSkillsModal} />
-      <Stack.Screen name="EditSkillsPopup" component={EditSkillsPopup} />
-      <Stack.Screen name="EditPostPopup" component={EditPostPopup} />
-      <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} />
+      <Stack.Screen name="EditSkillsPopup" component={EditSkillsPopup} options={halfModalOptions} />
+      <Stack.Screen name="EditPostPopup" component={EditPostPopup} options={halfModalOptions} />
+      <Stack.Screen name="EditUpdatePopup" component={EditUpdatePopup} options={halfModalOptions} />
+      <Stack.Screen name="EditCommentPopup" component={EditCommentPopup} options={halfModalOptions} />
+      <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} options={halfModalOptions} />
       <Stack.Screen name="EditExperienceModal" component={EditExperienceModal} />
       <Stack.Screen name="EditEducationModal" component={EditEducationModal} />
       <Stack.Screen name="SelectTopicsFocusModal" component={SelectTopicsFocusModal} />
@@ -188,8 +216,8 @@ const MainStack = () => {
       <Stack.Screen name="SelectTopicsFreelanceModal" component={SelectTopicsFreelanceModal} />
       <Stack.Screen name="SelectTopicsInvestModal" component={SelectTopicsInvestModal} />
       <Stack.Screen name="SelectTopicsMentorModal" component={SelectTopicsMentorModal} />
-      <Stack.Screen name="YearModal" component={YearModal} />
-      <Stack.Screen name="MonthModal" component={MonthModal} />
+      <Stack.Screen name="YearModal" component={YearModal} options={halfModalOptions} />
+      <Stack.Screen name="MonthModal" component={MonthModal} options={halfModalOptions} />
     </Stack.Navigator>
   );
 };

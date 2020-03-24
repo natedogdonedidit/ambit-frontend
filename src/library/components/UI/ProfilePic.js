@@ -9,18 +9,22 @@ const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uplo
 const ProfilePic = ({
   navigation, // required
   user, // required
-  size = 40,
+  size = 'medium',
   disableVideo = false,
   disableClick = false,
   border = false,
   borderWidth = 1.4,
   extraBorder = 0, // adds a white ring around outside
 }) => {
-  // sizes
-  // small = 30
-  // medium = 40
-  // large = 50
-  // x-large = 70
+  // set the size of the profile pic
+  let sizePX = 46;
+  if (size === 'small') {
+    sizePX = 36;
+  } else if (size === 'medium') {
+    sizePX = 46;
+  } else if (size === 'large') {
+    sizePX = 70;
+  }
 
   // const hasPitch = !!pitch;
   let hasIntro = false;
@@ -32,15 +36,15 @@ const ProfilePic = ({
     }
   }
 
-  const whiteWidth = size + 2 * borderWidth;
+  const whiteWidth = sizePX + 2 * borderWidth;
   const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
   // const colorWidth = whiteWidth + 2 * 1.4 + 2 * extraBorder;
 
   const styles = StyleSheet.create({
     noBorder: {
-      width: size,
-      height: size,
-      borderRadius: size / 2,
+      width: sizePX,
+      height: sizePX,
+      borderRadius: sizePX / 2,
       overflow: 'hidden',
       backgroundColor: 'white',
     },

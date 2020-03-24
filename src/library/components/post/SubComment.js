@@ -14,11 +14,13 @@ import Heart from 'library/components/UI/icons/Heart';
 import CommentIcon from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
 
-const Comment = ({
+const SubComment = ({
   comment,
+  parentComment,
   currentTime,
   navigation,
   showLine = false,
+  showCurve = false,
   hideButtons = false,
   lessPadding = false,
   disableVideo = false,
@@ -55,8 +57,7 @@ const Comment = ({
   const { currentUserId } = useContext(UserContext);
   const isMyPost = comment.owner.id === currentUserId;
   const containsMedia = !!comment.image;
-  // const hasSubComments = comment.comments ? comment.comments.length > 0 : false;
-  // console.log(`${comment.content} ${hasSubComments}`);
+
   // for dates
   const createdAt = new Date(comment.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
@@ -70,9 +71,12 @@ const Comment = ({
     return <Image style={{ width: '100%', height: 160 }} source={{ uri: comment.image }} resizeMode="cover" />;
   };
 
+  // console.log(comment.content, isSubComment, lessPadding, lessTopPadding);
+
   return (
     <View style={styles.commentContainer}>
-      <View style={[styles.comment, lessPadding && { paddingTop: 5 }]}>
+      {/* <View style={[styles.comment, lessPadding && { paddingTop: 5 }]}> */}
+      <View style={[styles.comment]}>
         <View style={[styles.leftColumn]}>
           <ProfilePic user={comment.owner} size="small" navigation={navigation} disableVideo={disableVideo} />
           {showLine && <View style={[{ ...styles.threadLine }]} />}
@@ -130,8 +134,9 @@ const Comment = ({
                         post: comment.parentPost,
                         update: comment.parentUpdate,
                         comment,
-                        parentComment: comment,
+                        parentComment,
                         isComment: true,
+                        isSubComment: true,
                         isUpdate: !!comment.parentUpdate,
                       })
                     }
@@ -155,8 +160,7 @@ const styles = StyleSheet.create({
   commentContainer: {
     width: '100%',
     backgroundColor: 'white',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.borderBlack,
+    paddingLeft: 56,
   },
   comment: {
     width: '100%',
@@ -165,6 +169,9 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     marginTop: 0,
     backgroundColor: 'white',
+
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
   },
   threadLine: {
     flex: 1,
@@ -175,12 +182,11 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 1.5,
     borderBottomRightRadius: 1.5,
     backgroundColor: colors.iconGray,
-    opacity: 0.6,
   },
   leftColumn: {
     alignItems: 'center',
-    paddingLeft: 4,
-    width: 76,
+    paddingRight: 4,
+    width: 56,
   },
   rightColumn: {
     flex: 1,
@@ -228,4 +234,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Comment;
+export default SubComment;
