@@ -302,6 +302,24 @@ export const getGoalInfo = (goal, field) => {
 // will return an object { topicID: 'text', name: 'text' }
 export const getTopicFromID = topicID => allTopics.find(topic => topic.topicID === topicID);
 export const getFullTopicFromID = topicID => topicsList.find(topic => topic.topicID === topicID);
+export const getParentTopicFromID = topicIDpassedIn => {
+  for (let i = 0; i < topicsList.length; i++) {
+    const parentTopic = topicsList[i];
+
+    const { name, topicID, icon, color, children } = parentTopic;
+
+    if (topicID === topicIDpassedIn) {
+      return parentTopic;
+    }
+
+    const ind = children.findIndex(sub => sub.topicID === topicIDpassedIn);
+    if (ind >= 0) {
+      return parentTopic;
+    }
+  }
+
+  return null;
+};
 
 export const addMainTopics = topics => {
   // the new array we are creating

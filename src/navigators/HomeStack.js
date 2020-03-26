@@ -45,7 +45,7 @@ const HomeStack = ({ navigation, route }) => {
           locationLonToSearch: null,
         }}
       />
-      <Stack.Screen name="MyTopics" component={SearchScreen} />
+      <Stack.Screen name="MyTopics" component={MyTopicsScreen} />
       <Stack.Screen name="MyHats" component={MyHatsScreen} />
       <Stack.Screen name="Chat" component={ChatScreen} />
     </Stack.Navigator>

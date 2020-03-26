@@ -39,6 +39,12 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
 
     const isSelected = activeTopicIDs.includes(topicID);
     const isExpanded = selectedCategories.includes(topicID);
+    const countSelected = activeTopicIDs.reduce((acc, val) => {
+      if (val.startsWith(topicID)) {
+        return acc + 1;
+      }
+      return acc;
+    }, 0);
 
     return (
       <View key={topicID}>
@@ -47,9 +53,19 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
             <View style={styles.iconView}>
               <Icon name={icon} solid size={20} color={color || colors.blueGray} />
             </View>
-
             <Text style={styles.mainRowText}>{name}</Text>
-            <Ionicons name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'} size={22} color={colors.iconGray} />
+            {countSelected > 0 && (
+              <View style={styles.countCircle}>
+                <Text style={{ ...defaultStyles.smallMedium, textAlign: 'center', color: colors.white }}>{countSelected}</Text>
+              </View>
+            )}
+            <View style={{ flex: 1 }} />
+            <Ionicons
+              name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'}
+              size={22}
+              color={colors.iconGray}
+              style={{ paddingTop: 2 }}
+            />
           </View>
         </TouchableOpacity>
         {isExpanded && children.length > 0 && (
@@ -88,7 +104,7 @@ const styles = StyleSheet.create({
   },
   mainRowText: {
     ...defaultStyles.largeRegular,
-    flex: 1,
+    // flex: 1,
   },
   iconView: {
     width: 55,
@@ -131,6 +147,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
     backgroundColor: colors.blueGray,
+  },
+  countCircle: {
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.blueGray,
+    borderRadius: 12,
+    marginHorizontal: 12,
   },
 });
 

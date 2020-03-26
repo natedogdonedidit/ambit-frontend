@@ -7,6 +7,7 @@ import defaultStyles from 'styles/defaultStyles';
 import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY'; // comes in as an object
 import Loader from 'library/components/UI/Loader';
 
+import Section from 'library/components/UI/Section';
 import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 import SuggestedConnection from './SuggestedConnection';
 
@@ -75,11 +76,7 @@ const ConnectionsList = ({ navigation }) => {
             data: matches,
           },
         ]}
-        renderSectionHeader={({ section }) => (
-          <View style={styles.sectionHeader}>
-            <Text style={{ ...defaultStyles.hugeHeavy }}>{section.title}</Text>
-          </View>
-        )}
+        renderSectionHeader={({ section }) => <Section text={section.title} marginTop={false} />}
         renderItem={({ item, section }) => {
           if (section.name === 'Goals') return <ActiveGoalMatchesItem item={item} navigation={navigation} />;
           if (section.name === 'Users') return <SuggestedConnection item={item} navigation={navigation} />;
@@ -98,16 +95,6 @@ const styles = StyleSheet.create({
   timeline: {
     flex: 1,
     width: '100%',
-  },
-  sectionHeader: {
-    // marginTop: 8,
-    backgroundColor: colors.white,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.borderBlack,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
   },
 });
 

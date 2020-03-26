@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
@@ -22,6 +22,7 @@ const MessagesScreen = ({ navigation }) => {
 
   // HOOKS
   const currentTime = new Date();
+  const insets = useSafeArea();
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser, refetch, networkStatus } = useQuery(CURRENT_USER_QUERY, {
@@ -33,11 +34,11 @@ const MessagesScreen = ({ navigation }) => {
   if (errorUser) return <Error error={errorUser} />;
   if (loading)
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={{ ...styles.container, paddingTop: insets.top }}>
         <HeaderMessages handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
         {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
         <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
-      </SafeAreaView>
+      </View>
     );
   const { userLoggedIn } = dataUser;
 
@@ -45,7 +46,7 @@ const MessagesScreen = ({ navigation }) => {
   groups.sort(sortChats); // sort groups by date
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ ...styles.container, paddingTop: insets.top }}>
       <HeaderMessages handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
       {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
       <FlatList
@@ -70,7 +71,7 @@ const MessagesScreen = ({ navigation }) => {
           return <ChatListItem navigation={navigation} userLoggedIn={userLoggedIn} group={item} currentTime={currentTime} />;
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

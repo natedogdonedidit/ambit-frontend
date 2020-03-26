@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useContext } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
@@ -20,6 +20,8 @@ const NotificationsScreen = ({ navigation }) => {
     clearNotifications();
   });
 
+  const insets = useSafeArea();
+
   // QUERIES
   const { error, data, refetch, networkStatus } = useQuery(NOTIFICATIONS_QUERY, {
     notifyOnNetworkStatusChange: true,
@@ -32,14 +34,14 @@ const NotificationsScreen = ({ navigation }) => {
   if (error) return <Error error={error} />;
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={{ ...styles.container, paddingTop: insets.top }}>
         <HeaderNotifications
           handleMiddle={() => null}
           handleRight={() => navigation.navigate('Search')}
           navigation={navigation}
         />
         <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -47,7 +49,7 @@ const NotificationsScreen = ({ navigation }) => {
   const { myNotifications } = data;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ ...styles.container, paddingTop: insets.top }}>
       <HeaderNotifications handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
       <FlatList
         onRefresh={refetch}
@@ -76,12 +78,8 @@ const NotificationsScreen = ({ navigation }) => {
           return <NotificationListItem navigation={navigation} notification={item} />;
         }}
       />
-    </SafeAreaView>
+    </View>
   );
-};
-
-NotificationsScreen.navigationOptions = {
-  title: 'Notifications',
 };
 
 const styles = StyleSheet.create({

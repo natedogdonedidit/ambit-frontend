@@ -126,6 +126,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     backgroundColor: colors.white,
     alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
   },
   topicsSection: {
     width: '100%',

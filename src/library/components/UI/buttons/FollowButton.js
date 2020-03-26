@@ -7,17 +7,16 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const FollowButton = ({ onPress, buttonStyle, textStyle, active = false }) => {
-  const [tempActive, setTempActive] = useState(false);
+  // const [tempActive, setTempActive] = useState(false);
 
-  const tempOnPress = () => {
-    setTempActive(!tempActive);
-  };
+  // const tempOnPress = () => {
+  //   setTempActive(!tempActive);
+  // };
+
   return (
-    <TouchableOpacity onPress={tempOnPress} activeOpacity={0.5}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
       <View style={{ ...styles.buttonActive, ...buttonStyle }}>
-        <Text style={{ ...defaultStyles.defaultSemibold, color: 'white', ...textStyle }}>
-          {tempActive ? 'Following' : 'Follow'}
-        </Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, color: 'white', ...textStyle }}>{active ? 'Following' : 'Follow'}</Text>
       </View>
     </TouchableOpacity>
   );

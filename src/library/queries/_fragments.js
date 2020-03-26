@@ -105,6 +105,12 @@ export const LoggedInUser = gql`
       ...MessageFragment
     }
     unReadMessagesCount
+    following {
+      id
+    }
+    followers {
+      id
+    }
   }
   ${MinimalUser}
   ${GroupFragment}

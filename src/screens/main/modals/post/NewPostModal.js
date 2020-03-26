@@ -10,7 +10,6 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   InputAccessoryView,
-  YellowBox,
 } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -33,7 +32,6 @@ import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 
 const NewPostModal = ({ navigation, route }) => {
-  YellowBox.ignoreWarnings(['Non-serializable values were found in the navigation state']);
   // ROUTE PARAMS
   const { userLoggedIn, topicsPassedIn = [] } = route.params;
 
@@ -416,6 +414,7 @@ const NewPostModal = ({ navigation, route }) => {
         handleRight={handleSubmit}
         textLeft="Cancel"
         textRight="Post"
+        solidRight
         title={`New ${goal ? 'Goal' : 'Post'}`}
       />
       <KeyboardAvoidingView behavior="padding" enabled>

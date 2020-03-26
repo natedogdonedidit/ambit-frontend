@@ -15,16 +15,24 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
       onPress={() => navigation.navigate('Search', { goalToSearch: getGoalInfo(goal), topicToSearch: subField.topicID || null })}
       activeOpacity={0.6}
     >
-      <View style={{ ...styles.goalView, backgroundColor: getGoalInfo(goal, 'secondaryColor') }}>
-        <View style={styles.iconView}>
-          <Icon name={getGoalInfo(goal, 'icon')} size={15} color={getGoalInfo(goal, 'primaryColor')} solid />
-        </View>
-        <View style={styles.textView}>
-          <Text>
-            <Text style={{ ...defaultStyles.defaultText }}>{`${goal}`}</Text>
-            <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
-            <Text style={{ ...defaultStyles.defaultText }}>{subField.name}</Text>
-          </Text>
+      <View
+        style={{
+          backgroundColor: 'white',
+          ...defaultStyles.shadowGoal,
+          borderRadius: 10,
+        }}
+      >
+        <View style={{ ...styles.goalView, backgroundColor: getGoalInfo(goal, 'secondaryColor') }}>
+          <View style={styles.iconView}>
+            <Icon name={getGoalInfo(goal, 'icon')} size={15} color={getGoalInfo(goal, 'primaryColor')} solid />
+          </View>
+          <View style={styles.textView}>
+            <Text>
+              <Text style={{ ...defaultStyles.defaultText }}>{`${goal}`}</Text>
+              <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
+              <Text style={{ ...defaultStyles.defaultText }}>{subField.name}</Text>
+            </Text>
+          </View>
         </View>
       </View>
     </TouchableOpacity>

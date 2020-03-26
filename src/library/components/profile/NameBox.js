@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -10,6 +11,8 @@ import ThreeDotsButton from 'library/components/UI/buttons/ThreeDotsButton';
 import MessageButton from 'library/components/UI/buttons/MessageButton';
 import SmallGrayButton from 'library/components/UI/buttons/SmallGrayButton';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import EDIT_FOLLOWING_MUTATION from 'library/mutations/EDIT_FOLLOWING_MUTATION';
 
 const NameBox = ({ user, navigation, isMyProfile }) => {
   const isFreelancer = user.topicsFreelance.length > 0;
@@ -17,7 +20,32 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   const isInvestor = user.topicsInvest.length > 0;
   const useOpenToBox = isFreelancer || isMentor || isInvestor;
 
+  const { loading: loadingUser, error, data } = useQuery(CURRENT_USER_QUERY);
+  const { userLoggedIn } = data;
+  const following = userLoggedIn ? userLoggedIn.following : [];
+  // check if i'm following this user
+  const isFollowingInd = following.findIndex(u => u.id === user.id);
+  const isFollowing = isFollowingInd >= 0;
+
+  // MUTATIONS - follow, connect
+  const [editFollowing] = useMutation(EDIT_FOLLOWING_MUTATION, {
+    variables: {
+      userID: user.id,
+      newFollow: !isFollowing,
+    },
+    onError: e => {
+      console.log(e);
+      Alert.alert('Oh no!', 'An error occured when trying to follow this user. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
+  });
+
   // custom functions
+
+  const handleFollowClick = () => {
+    editFollowing();
+  };
 
   const renderOpenTo = () => {
     if (!useOpenToBox) return null;
@@ -76,7 +104,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
 
       <View style={styles.whiteButtons}>
         <View style={{ flex: 1 }}>
-          <FollowButton buttonStyle={{ width: '100%' }} />
+          <FollowButton onPress={handleFollowClick} active={isFollowing} buttonStyle={{ width: '100%' }} />
         </View>
 
         <View style={{ flex: 1, marginLeft: 15 }}>

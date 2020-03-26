@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
-import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -21,12 +21,12 @@ const SLIDE_HEIGHT = HEADER_HEIGHT - StyleSheet.hairlineWidth;
 const HomeScreen = ({ navigation }) => {
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
+  const [homePosition, setHomePosition] = useState(0);
 
   // OTHER HOOKS
   const insets = useSafeArea();
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
-  // const { currentUserId } = useContext(UserContext);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -34,34 +34,45 @@ const HomeScreen = ({ navigation }) => {
   const { userLoggedIn } = dataUser;
 
   const handleTopicsButton = () => {
-    console.log(horizontalScrollRef.current);
-    // horizontalScrollRef.current.scrollTo({ x: 1 * width });
-    horizontalScrollRef.current.scrollToEnd();
+    if (homePosition === 0) {
+      horizontalScrollRef.current.scrollToEnd();
+    } else {
+      horizontalScrollRef.current.scrollTo({ x: 0 });
+    }
+  };
+
+  const handleOnScroll = event => {
+    const scrollX = event.nativeEvent.contentOffset.x;
+    if (scrollX < width / 2 && homePosition === 1) {
+      setHomePosition(0);
+    }
+    if (scrollX > width / 2 && homePosition === 0) {
+      setHomePosition(1);
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ ...styles.container, paddingTop: insets.top }}>
       <StatusBar barStyle="dark-content" />
-      <View style={{ flex: 1 }}>
-        <ScrollView
-          // horizontal scrollView
-          ref={horizontalScrollRef}
-          style={{ flex: 1 }} // must give a fixed height here of the onEndReached doesnt work in FlatLists
-          horizontal
-          snapToAlignment="start"
-          snapToInterval={width}
-          decelerationRate="fast"
-          showsHorizontalScrollIndicator={false}
-          scrollEventThrottle={100}
-        >
-          <View style={{ width }}>
-            <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
-          </View>
-          <View style={{ width }}>
-            <TopicsList userLoggedIn={userLoggedIn} navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
-          </View>
-        </ScrollView>
-      </View>
+      <ScrollView
+        // horizontal scrollView
+        ref={horizontalScrollRef}
+        style={{ flex: 1 }} // must give a fixed height here of the onEndReached doesnt work in FlatLists
+        horizontal
+        snapToAlignment="start"
+        snapToInterval={width}
+        decelerationRate="fast"
+        showsHorizontalScrollIndicator={false}
+        scrollEventThrottle={100}
+        onScroll={handleOnScroll}
+      >
+        <View style={{ width }}>
+          <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
+        </View>
+        <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
+          <TopicsList userLoggedIn={userLoggedIn} navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
+        </View>
+      </ScrollView>
 
       {/* Absolute positioned stoff */}
       <View style={styles.newPostButtonAbsolute}>
@@ -107,6 +118,7 @@ const HomeScreen = ({ navigation }) => {
             handleMiddle={() => null}
             navigation={navigation}
             handleTopicsButton={handleTopicsButton}
+            homePosition={homePosition}
           />
         </Animated.View>
       </Animated.View>
@@ -118,7 +130,7 @@ const HomeScreen = ({ navigation }) => {
           height: insets.top,
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

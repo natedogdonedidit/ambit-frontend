@@ -72,7 +72,7 @@ const Comment = ({
 
   return (
     <View style={styles.commentContainer}>
-      <View style={[styles.comment, lessPadding && { paddingTop: 5 }]}>
+      <View style={lessPadding ? styles.commentNoLine : styles.comment}>
         <View style={[styles.leftColumn]}>
           <ProfilePic user={comment.owner} size="small" navigation={navigation} disableVideo={disableVideo} />
           {showLine && <View style={[{ ...styles.threadLine }]} />}
@@ -155,13 +155,22 @@ const styles = StyleSheet.create({
   commentContainer: {
     width: '100%',
     backgroundColor: 'white',
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.borderBlack,
   },
   comment: {
     width: '100%',
     flexDirection: 'row',
     paddingTop: 12,
+    paddingRight: 12,
+    marginTop: 0,
+    backgroundColor: 'white',
+
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+  },
+  commentNoLine: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingTop: 5,
     paddingRight: 12,
     marginTop: 0,
     backgroundColor: 'white',

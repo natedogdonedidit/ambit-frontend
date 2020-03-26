@@ -44,19 +44,21 @@ const SelectSearchTopicsModal = ({ navigation, route }) => {
   };
 
   const renderList = () => {
-    if (goal.modalType === 'specialist') {
-      return (
-        <FreelanceList
-          activeTopicIDs={[activeTopic]}
-          selectedCategories={selectedCategories}
-          handleTopicSelect={handleTopicSelect}
-          handleCategorySelect={handleCategorySelect}
-        />
-      );
-    }
+    if (goal) {
+      if (goal.modalType === 'specialist') {
+        return (
+          <FreelanceList
+            activeTopicIDs={[activeTopic]}
+            selectedCategories={selectedCategories}
+            handleTopicSelect={handleTopicSelect}
+            handleCategorySelect={handleCategorySelect}
+          />
+        );
+      }
 
-    if (goal.modalType === 'invest') {
-      return <InvestList activeTopicIDs={[activeTopic]} handleTopicSelect={handleTopicSelect} />;
+      if (goal.modalType === 'invest') {
+        return <InvestList activeTopicIDs={[activeTopic]} handleTopicSelect={handleTopicSelect} />;
+      }
     }
 
     return (

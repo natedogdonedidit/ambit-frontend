@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { YellowBox } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -12,6 +13,7 @@ import MainStack from 'navigators/MainStack';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
+  YellowBox.ignoreWarnings(['Non-serializable values were found in the navigation state']);
   const { currentUserId, loadingApp } = useContext(UserContext);
 
   if (loadingApp) {

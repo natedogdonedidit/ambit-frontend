@@ -20,7 +20,6 @@ const SubComment = ({
   currentTime,
   navigation,
   showLine = false,
-  showCurve = false,
   hideButtons = false,
   lessPadding = false,
   disableVideo = false,
@@ -75,8 +74,7 @@ const SubComment = ({
 
   return (
     <View style={styles.commentContainer}>
-      {/* <View style={[styles.comment, lessPadding && { paddingTop: 5 }]}> */}
-      <View style={[styles.comment]}>
+      <View style={lessPadding ? styles.commentNoLine : styles.comment}>
         <View style={[styles.leftColumn]}>
           <ProfilePic user={comment.owner} size="small" navigation={navigation} disableVideo={disableVideo} />
           {showLine && <View style={[{ ...styles.threadLine }]} />}
@@ -173,6 +171,14 @@ const styles = StyleSheet.create({
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderBlack,
   },
+  commentNoLine: {
+    width: '100%',
+    flexDirection: 'row',
+    paddingTop: 5,
+    paddingRight: 12,
+    marginTop: 0,
+    backgroundColor: 'white',
+  },
   threadLine: {
     flex: 1,
     width: 2,
@@ -182,6 +188,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 1.5,
     borderBottomRightRadius: 1.5,
     backgroundColor: colors.iconGray,
+    opacity: 0.6,
   },
   leftColumn: {
     alignItems: 'center',

@@ -113,34 +113,48 @@ const SearchScreen = ({ navigation, route }) => {
           showsHorizontalScrollIndicator={false}
         >
           <TouchableOpacity
-            style={styles.selector}
+            style={goal ? styles.selectorFilled : styles.selector}
             onPress={() => navigation.navigate('SelectGoalModalSearch', { handleGoalSelect })}
           >
-            <Text style={{ ...defaultStyles.defaultText, color: colors.darkGray, paddingRight: 10 }}>{goalSelectText}</Text>
+            <Text style={{ ...defaultStyles.defaultText, color: goal ? colors.white : colors.darkGray, paddingRight: 10 }}>
+              {goalSelectText}
+            </Text>
             <TouchableOpacity
               onPress={goal ? () => clearGoal() : () => navigation.navigate('SelectGoalModalSearch', { handleGoalSelect })}
               hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
             >
-              <Ionicons name={goal ? 'md-close' : 'md-arrow-dropdown'} size={goal ? 16 : 22} color={colors.blueGray} />
+              <Ionicons
+                name={goal ? 'md-close' : 'md-arrow-dropdown'}
+                size={goal ? 16 : 22}
+                color={goal ? colors.white : colors.darkGray}
+              />
             </TouchableOpacity>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.selector}
+            style={topicID ? styles.selectorFilled : styles.selector}
             onPress={() => navigation.navigate('SelectSearchTopicsModal', { goal, setTopic })}
           >
-            <Text style={{ ...defaultStyles.defaultText, color: colors.darkGray, paddingRight: 10 }}>{topicSelectText}</Text>
+            <Text style={{ ...defaultStyles.defaultText, color: topicID ? colors.white : colors.darkGray, paddingRight: 10 }}>
+              {topicSelectText}
+            </Text>
             <TouchableOpacity
               onPress={topicID ? () => clearTopic() : () => navigation.navigate('SelectSearchTopicsModal', { goal, setTopic })}
               hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
             >
-              <Ionicons name={topicID ? 'md-close' : 'md-arrow-dropdown'} size={topicID ? 16 : 22} color={colors.blueGray} />
+              <Ionicons
+                name={topicID ? 'md-close' : 'md-arrow-dropdown'}
+                size={topicID ? 16 : 22}
+                color={topicID ? colors.white : colors.darkGray}
+              />
             </TouchableOpacity>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.selector}
+            style={location ? styles.selectorFilled : styles.selector}
             onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
           >
-            <Text style={{ ...defaultStyles.defaultText, color: colors.darkGray, paddingRight: 10 }}>{locationSelectText}</Text>
+            <Text style={{ ...defaultStyles.defaultText, color: location ? colors.white : colors.darkGray, paddingRight: 10 }}>
+              {locationSelectText}
+            </Text>
             <TouchableOpacity
               onPress={
                 location
@@ -149,7 +163,11 @@ const SearchScreen = ({ navigation, route }) => {
               }
               hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
             >
-              <Ionicons name={location ? 'md-close' : 'md-arrow-dropdown'} size={location ? 16 : 22} color={colors.blueGray} />
+              <Ionicons
+                name={location ? 'md-close' : 'md-arrow-dropdown'}
+                size={location ? 16 : 22}
+                color={location ? colors.white : colors.darkGray}
+              />
             </TouchableOpacity>
           </TouchableOpacity>
         </ScrollView>
@@ -188,6 +206,14 @@ const styles = StyleSheet.create({
   selector: {
     borderRadius: 8,
     backgroundColor: colors.searchGray,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    marginRight: 10,
+  },
+  selectorFilled: {
+    borderRadius: 8,
+    backgroundColor: colors.blueGray,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,

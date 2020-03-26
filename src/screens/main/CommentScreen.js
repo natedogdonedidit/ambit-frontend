@@ -356,18 +356,18 @@ const CommentScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} handleRight={handleSubmit} textRight="Reply" title="Comment" />
+      <HeaderBack navigation={navigation} handleRight={handleSubmit} textRight="Reply" title="Comment" solidRight />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <View style={{ flex: 1 }}>
           <ScrollView ref={scrollViewRef} style={{ flex: 1 }}>
             {renderPost()}
             {isComment && renderComments()}
 
-            <View style={[styles.commentInput, isComment && { paddingLeft: 44 }]}>
-              <View style={styles.leftColumn}>
+            <View style={[styles.commentInput, isComment && { paddingLeft: 56 }]}>
+              <View style={isComment ? styles.leftColumnSub : styles.leftColumn}>
                 <ProfilePic size="small" navigation={navigation} user={userLoggedIn} disableVideo />
               </View>
-              <View style={styles.rightColumn}>
+              <View style={{ ...styles.rightColumn }}>
                 <View style={{ paddingTop: 2, paddingBottom: 10 }}>
                   <TextInput
                     style={{ flex: 1, marginRight: 35, ...defaultStyles.largeRegular }}
@@ -436,10 +436,11 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
     width: 76,
   },
-  // leftColumnSub: {
-  //   alignItems: 'center',
-  //   width: 64,
-  // },
+  leftColumnSub: {
+    alignItems: 'center',
+    paddingRight: 4,
+    width: 56,
+  },
   rightColumn: {
     flex: 1,
     alignItems: 'stretch',

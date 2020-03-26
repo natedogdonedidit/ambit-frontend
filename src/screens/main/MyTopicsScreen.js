@@ -12,7 +12,6 @@ import TopicsOfInterest from 'library/components/settings/TopicsOfInterest';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const MyTopicsScreen = ({ navigation }) => {
-  // ////////////////////////////////////////
   // QUERIES
   // this is the single source of truth
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
@@ -25,15 +24,6 @@ const MyTopicsScreen = ({ navigation }) => {
     );
   if (error) return <Text>{`Error! ${error}`}</Text>;
   const { userLoggedIn } = data;
-
-  // ////////////////////////////////////////
-  // MUTATIONS
-
-  // //////////////////////////////////////////////////////
-  // CUSTOM FUNCTIONS
-
-  // //////////////////////////////////////////////////////
-  // RENDER FUNCTIONS
 
   return (
     <View style={styles.container}>

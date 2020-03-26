@@ -10,7 +10,7 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import CURRENT_USER_QUERY_HEADER from 'library/queries/CURRENT_USER_QUERY_HEADER';
 import { HEADER_HEIGHT } from 'styles/constants';
 
-const HeaderHome = ({ navigation, handleMiddle, handleTopicsButton }) => {
+const HeaderHome = ({ navigation, handleMiddle, handleTopicsButton, homePosition }) => {
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY_HEADER);
   const { userLoggedIn } = data;
 
@@ -25,7 +25,11 @@ const HeaderHome = ({ navigation, handleMiddle, handleTopicsButton }) => {
       <View style={styles.rightSide}>
         <TouchableOpacity onPress={() => handleTopicsButton()} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
           <View style={styles.iconCircle}>
-            <Icon name="star" solid size={16} color={colors.black} />
+            {homePosition === 0 ? (
+              <Icon name="star" solid size={16} color={colors.black} />
+            ) : (
+              <Icon name="home" solid size={16} color={colors.black} />
+            )}
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Search')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>

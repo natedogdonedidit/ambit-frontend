@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
@@ -193,13 +193,49 @@ const MainStack = () => {
       <Stack.Screen name="StoryModal" component={StoryModal} />
       <Stack.Screen name="CreateIntroModal" component={CreateIntroModal} />
       <Stack.Screen name="NewPostModal" component={NewPostModal} />
-      <Stack.Screen name="SelectGoalModal" component={SelectGoalModal} />
-      <Stack.Screen name="SelectGoalFieldModal" component={SelectGoalFieldModal} />
-      <Stack.Screen name="SelectPostTopicsModal" component={SelectPostTopicsModal} />
-      <Stack.Screen name="SelectSearchTopicsModal" component={SelectSearchTopicsModal} />
-      <Stack.Screen name="SelectGoalModalSearch" component={SelectGoalModalSearch} />
+      <Stack.Screen
+        name="SelectGoalModal"
+        component={SelectGoalModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectGoalFieldModal"
+        component={SelectGoalFieldModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectPostTopicsModal"
+        component={SelectPostTopicsModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectSearchTopicsModal"
+        component={SelectSearchTopicsModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectGoalModalSearch"
+        component={SelectGoalModalSearch}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
       <Stack.Screen name="EditLocationModal" component={EditLocationModal} />
-      <Stack.Screen name="EditLocationModalRight" component={EditLocationModal} />
+      <Stack.Screen
+        name="EditLocationModalRight"
+        component={EditLocationModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
       <Stack.Screen name="EditLocationRadiusModal" component={EditLocationRadiusModal} />
       <Stack.Screen name="EditProfileModal" component={EditProfileModal} />
       <Stack.Screen name="EditAboutModal" component={EditAboutModal} />
@@ -211,11 +247,41 @@ const MainStack = () => {
       <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} options={halfModalOptions} />
       <Stack.Screen name="EditExperienceModal" component={EditExperienceModal} />
       <Stack.Screen name="EditEducationModal" component={EditEducationModal} />
-      <Stack.Screen name="SelectTopicsFocusModal" component={SelectTopicsFocusModal} />
-      <Stack.Screen name="SelectTopicsInterestModal" component={SelectTopicsInterestModal} />
-      <Stack.Screen name="SelectTopicsFreelanceModal" component={SelectTopicsFreelanceModal} />
-      <Stack.Screen name="SelectTopicsInvestModal" component={SelectTopicsInvestModal} />
-      <Stack.Screen name="SelectTopicsMentorModal" component={SelectTopicsMentorModal} />
+      <Stack.Screen
+        name="SelectTopicsFocusModal"
+        component={SelectTopicsFocusModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectTopicsInterestModal"
+        component={SelectTopicsInterestModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectTopicsFreelanceModal"
+        component={SelectTopicsFreelanceModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectTopicsInvestModal"
+        component={SelectTopicsInvestModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectTopicsMentorModal"
+        component={SelectTopicsMentorModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
       <Stack.Screen name="YearModal" component={YearModal} options={halfModalOptions} />
       <Stack.Screen name="MonthModal" component={MonthModal} options={halfModalOptions} />
     </Stack.Navigator>

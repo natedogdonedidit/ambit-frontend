@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions } from 'react-native';
-import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -23,7 +23,7 @@ const ConnectionsScreen = ({ navigation }) => {
   const { userLoggedIn } = dataUser;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={{ ...styles.container, paddingTop: insets.top }}>
       <StatusBar barStyle="dark-content" />
       <HeaderMatches
         user={userLoggedIn}
@@ -42,7 +42,7 @@ const ConnectionsScreen = ({ navigation }) => {
           height: insets.top,
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

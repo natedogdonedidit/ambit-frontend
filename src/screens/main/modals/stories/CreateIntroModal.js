@@ -25,6 +25,8 @@ import GrayButton from 'library/components/UI/buttons/GrayButton';
 import { introPicUpload, introVideoUpload } from 'library/utils';
 import EDIT_INTRO_MUTATION from 'library/mutations/EDIT_INTRO_MUTATION';
 import Loader from 'library/components/UI/Loader';
+import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
+import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const CreateIntroModal = ({ navigation, route }) => {
   const { userLoggedIn: user } = route.params;
@@ -245,39 +247,46 @@ const CreateIntroModal = ({ navigation, route }) => {
 
   const loading = loadingMutation || uploading;
 
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <View
-        style={{
-          height: 46,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          backgroundColor: 'white',
-          paddingHorizontal: 15,
-        }}
-      >
-        <TouchableOpacity activeOpacity={0.9} onPress={handleBack} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Icon name="chevron-left" size={22} color={colors.blueGray} />
-            {/* <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingLeft: 5 }}>Cancel</Text> */}
-          </View>
-        </TouchableOpacity>
+  //   <View
+  //   style={{
+  //     height: 46,
+  //     flexDirection: 'row',
+  //     justifyContent: 'space-between',
+  //     alignItems: 'center',
+  //     backgroundColor: 'white',
+  //     paddingHorizontal: 15,
+  //   }}
+  // >
+  //   <TouchableOpacity activeOpacity={0.9} onPress={handleBack} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
+  //     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+  //       <Icon name="chevron-left" size={22} color={colors.blueGray} />
+  //       {/* <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingLeft: 5 }}>Cancel</Text> */}
+  //     </View>
+  //   </TouchableOpacity>
 
-        <TouchableOpacity onPress={handleSave}>
-          <View
-            style={{
-              backgroundColor: colors.purp,
-              height: 36,
-              borderRadius: 18,
-              paddingHorizontal: 15,
-              justifyContent: 'center',
-            }}
-          >
-            <Text style={{ ...defaultStyles.largeMedium, color: 'white' }}>Save</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+  //   <TouchableOpacity onPress={handleSave}>
+  //     <View
+  //       style={{
+  //         backgroundColor: colors.purp,
+  //         height: 36,
+  //         borderRadius: 18,
+  //         paddingHorizontal: 15,
+  //         justifyContent: 'center',
+  //       }}
+  //     >
+  //       <Text style={{ ...defaultStyles.largeMedium, color: 'white' }}>Save</Text>
+  //     </View>
+  //   </TouchableOpacity>
+  // </View>
+
+  return (
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <HeaderBackBlank
+        navigation={navigation}
+        // title={warning}
+        rightComponent={<ButtonHeader onPress={handleSave}>Save</ButtonHeader>}
+        showBack={false}
+      />
 
       <View style={{ width: '100%', paddingHorizontal: 15 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -398,7 +407,7 @@ const CreateIntroModal = ({ navigation, route }) => {
       </View>
 
       {loading && <Loader active={loading} />}
-    </SafeAreaView>
+    </View>
   );
 };
 

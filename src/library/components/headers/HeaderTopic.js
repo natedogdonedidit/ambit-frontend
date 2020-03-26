@@ -16,11 +16,6 @@ const HeaderTopic = ({ navigation, handleMiddle, handleRight, user, height = 44,
         <Text style={{ ...defaultStyles.headerSmall }}>{topicName}</Text>
       </TouchableOpacity>
       <View style={styles.rightSide}>
-        <TouchableOpacity onPress={() => null} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
-          <View style={styles.iconCircleBlank}>
-            <Icon name="star" solid size={20} color={colors.yellow} />
-          </View>
-        </TouchableOpacity>
         <TouchableOpacity onPress={handleRight} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
           <View style={styles.iconCircle}>
             <Icon name="search" size={16} color={colors.black} />

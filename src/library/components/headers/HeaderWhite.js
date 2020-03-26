@@ -8,8 +8,9 @@ import defaultStyles from 'styles/defaultStyles';
 import { HEADER_HEIGHT } from 'styles/constants';
 
 import TextButton from 'library/components/UI/buttons/TextButton';
+import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
-const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, title }) => {
+const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, solidRight = false, title }) => {
   const insets = useSafeArea();
   return (
     <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
@@ -24,9 +25,13 @@ const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, title }) =>
       </View>
 
       <View style={styles.rightSide}>
-        <TextButton textStyle={styles.rightText} onPress={handleRight}>
-          {textRight}
-        </TextButton>
+        {solidRight ? (
+          <ButtonHeader onPress={handleRight}>{textRight}</ButtonHeader>
+        ) : (
+          <TextButton textStyle={styles.rightText} onPress={handleRight}>
+            {textRight}
+          </TextButton>
+        )}
       </View>
     </View>
   );

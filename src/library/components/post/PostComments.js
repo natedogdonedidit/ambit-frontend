@@ -78,9 +78,7 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
                   parentComment={comment}
                   navigation={navigation}
                   currentTime={currentTime}
-                  lessPadding
                   isSubComment
-                  hideTopLine
                   // showLine={comment.comments.length - 1 !== k}
                 />
               ))}
