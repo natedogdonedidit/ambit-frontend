@@ -1,9 +1,9 @@
 import gql from 'graphql-tag';
 import { BasicPost } from 'library/queries/_fragments';
 
-export default LOCAL_POSTS_QUERY = gql`
-  query LOCAL_POSTS_QUERY($lat: Float, $lon: Float, $radius: Int, $cursor: String) {
-    postsLocal(lat: $lat, lon: $lon, radius: $radius, after: $cursor) {
+export default NETWORK_POSTS_QUERY = gql`
+  query NETWORK_POSTS_QUERY($cursor: String, $first: Int, $network: [ID]!) {
+    postsNetwork(after: $cursor, first: $first, network: $network) {
       edges {
         node {
           ...BasicPost

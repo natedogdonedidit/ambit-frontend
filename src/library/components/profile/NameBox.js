@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useQuery, useMutation } from '@apollo/react-hooks';
@@ -12,9 +12,11 @@ import MessageButton from 'library/components/UI/buttons/MessageButton';
 import SmallGrayButton from 'library/components/UI/buttons/SmallGrayButton';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import EDIT_FOLLOWING_MUTATION from 'library/mutations/EDIT_FOLLOWING_MUTATION';
 
 const NameBox = ({ user, navigation, isMyProfile }) => {
+  const [followersCount, setFollowersCount] = useState(user.followersCount || 0);
+  const [connectionsCount, setConnectionsCount] = useState(user.connectionsCount || 0);
+
   const isFreelancer = user.topicsFreelance.length > 0;
   const isMentor = user.topicsMentor.length > 0;
   const isInvestor = user.topicsInvest.length > 0;
@@ -22,31 +24,8 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
 
   const { loading: loadingUser, error, data } = useQuery(CURRENT_USER_QUERY);
   const { userLoggedIn } = data;
-  const following = userLoggedIn ? userLoggedIn.following : [];
-  // check if i'm following this user
-  const isFollowingInd = following.findIndex(u => u.id === user.id);
-  const isFollowing = isFollowingInd >= 0;
-
-  // MUTATIONS - follow, connect
-  const [editFollowing] = useMutation(EDIT_FOLLOWING_MUTATION, {
-    variables: {
-      userID: user.id,
-      newFollow: !isFollowing,
-    },
-    onError: e => {
-      console.log(e);
-      Alert.alert('Oh no!', 'An error occured when trying to follow this user. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
-    },
-  });
 
   // custom functions
-
-  const handleFollowClick = () => {
-    editFollowing();
-  };
-
   const renderOpenTo = () => {
     if (!useOpenToBox) return null;
 
@@ -79,10 +58,12 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   const renderStats = () => {
     return (
       <View style={styles.stats}>
-        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>372</Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
+          {followersCount}
+        </Text>
         <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Followers</Text>
 
-        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, color: colors.iosBlue }}>32</Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, color: colors.iosBlue }}>{connectionsCount}</Text>
         <Text style={{ ...defaultStyles.defaultMute, marginRight: 20 }}>Connections</Text>
       </View>
     );
@@ -103,16 +84,22 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       )}
 
       <View style={styles.whiteButtons}>
-        <View style={{ flex: 1 }}>
-          <FollowButton onPress={handleFollowClick} active={isFollowing} buttonStyle={{ width: '100%' }} />
+        {/* <View style={{ flex: 1 }}> */}
+        <View style={{ flex: 1, paddingRight: 7 }}>
+          <FollowButton
+            userLoggedIn={userLoggedIn}
+            userToFollow={user}
+            followersCount={followersCount}
+            setFollowersCount={setFollowersCount}
+          />
         </View>
 
-        <View style={{ flex: 1, marginLeft: 15 }}>
-          <ConnectButton buttonStyle={{ width: '100%' }} />
+        <View style={{ flex: 1, paddingLeft: 7 }}>
+          <ConnectButton />
         </View>
-        <View style={{ marginLeft: 15 }}>
+        {/* <View style={{ marginLeft: 15 }}>
           <ThreeDotsButton buttonStyle={{}} />
-        </View>
+        </View> */}
       </View>
 
       {/* absolute */}
@@ -173,7 +160,7 @@ const styles = StyleSheet.create({
   whiteButtons: {
     flexDirection: 'row',
     marginTop: 5,
-    marginBottom: 15,
+    marginBottom: 20,
   },
   stats: {
     flexDirection: 'row',

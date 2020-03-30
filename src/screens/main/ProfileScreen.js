@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 
-import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+import SINGLE_USER_BASIC from 'library/queries/SINGLE_USER_BASIC';
 
 import colors from 'styles/colors';
 import Loader from 'library/components/UI/Loader';
@@ -19,7 +19,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const { profileId } = route.params;
 
   // QUERIES
-  const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
+  const { loading, error, data, refetch } = useQuery(SINGLE_USER_BASIC, {
     variables: { id: profileId },
   });
 

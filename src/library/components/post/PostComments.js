@@ -49,8 +49,8 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
   } else {
     // if comments on a post
     comments = data.singlePost.comments;
-    // filter out comments on updates
-    comments = comments.filter(comment => !comment.parentUpdate);
+    // filter out sub-comments
+    comments = comments.filter(comment => !comment.parentUpdate && !comment.parentComment);
   }
   if (!comments) comments = [];
 

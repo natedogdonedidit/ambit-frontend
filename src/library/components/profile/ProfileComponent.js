@@ -118,7 +118,7 @@ const ProfileComponent = ({
           <ProfileBio
             navigation={navigation}
             isMyProfile={isMyProfile}
-            user={user}
+            profileId={profileId}
             handleSelectExperience={nullFunction}
             handleSelectEducation={nullFunction}
             setModalVisibleSkills={nullFunction}
@@ -168,7 +168,7 @@ const ProfileComponent = ({
           alignItems: 'center',
           width: '100%',
           height: HEADER_HEIGHT + insets.top,
-          backgroundColor: colors.purp,
+          backgroundColor: colors.blueGray,
           paddingTop: insets.top,
           opacity: scrollY.interpolate({
             inputRange: [0, 100],

@@ -2,19 +2,22 @@
 
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const ProfileTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['Bio', 'Posts', 'Media'];
+  const tabNames = ['user', 'list', 'images'];
+  // const tabNames = ['Bio', 'Posts', 'Media'];
 
   const renderTabs = () => {
     return tabNames.map((tabName, i) => {
       return (
         <View key={i} style={tabState === i ? styles.tabSelected : styles.tab}>
           <TouchableOpacity onPress={() => setTabState(i)} style={styles.touchable}>
-            <Text style={tabState === i ? styles.tabSelectedText : styles.tabText}>{tabName}</Text>
+            <Icon name={tabName} solid={tabName === 'user'} size={18} color={colors.blueGray} />
+            {/* <Text style={tabState === i ? styles.tabSelectedText : styles.tabText}>{tabName}</Text> */}
           </TouchableOpacity>
         </View>
       );
@@ -31,6 +34,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     backgroundColor: 'white',
+    borderTopColor: colors.borderBlack,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
   tab: {
     justifyContent: 'center',
@@ -45,8 +50,8 @@ const styles = StyleSheet.create({
     flexBasis: 0,
     flexGrow: 1,
     height: 42,
-    borderBottomColor: colors.purp,
-    borderBottomWidth: 3,
+    borderBottomColor: colors.blueGray,
+    borderBottomWidth: 2,
   },
   touchable: {
     justifyContent: 'center',
@@ -55,11 +60,11 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   tabText: {
-    ...defaultStyles.defaultSemibold,
+    ...defaultStyles.hugeLight,
     color: colors.blueGray,
   },
   tabSelectedText: {
-    ...defaultStyles.defaultBold,
-    color: colors.purp,
+    ...defaultStyles.hugeMedium,
+    color: colors.black,
   },
 });

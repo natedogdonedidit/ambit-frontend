@@ -10,16 +10,17 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   InputAccessoryView,
+  Dimensions,
 } from 'react-native';
 import { useMutation } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import Image from 'react-native-scalable-image';
 import FitImage from 'react-native-fit-image';
 
-import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
-import LOCAL_POSTS_QUERY from 'library/queries/LOCAL_POSTS_QUERY';
+import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
@@ -34,6 +35,8 @@ import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
   const { userLoggedIn, topicsPassedIn = [] } = route.params;
+
+  const { width } = Dimensions.get('window');
 
   // STATE
   const [goal, setGoal] = useState('');
@@ -78,7 +81,7 @@ const NewPostModal = ({ navigation, route }) => {
         },
       },
     },
-    refetchQueries: () => [{ query: GLOBAL_POSTS_QUERY }, { query: USER_POSTS_QUERY, variables: { id: currentUserId } }],
+    refetchQueries: () => [{ query: NETWORK_POSTS_QUERY }, { query: USER_POSTS_QUERY, variables: { id: currentUserId } }],
     // add update here to add post to GLOBAL, NETWORK, AND MYPOST arrays in cache
     onCompleted: () => {
       navigation.goBack();
@@ -385,9 +388,7 @@ const NewPostModal = ({ navigation, route }) => {
 
         <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>
           {topics.map((topic, i) => {
-            console.log(topic.topicID);
             const { name } = getTopicFromID(topic.topicID);
-            console.log(name);
 
             if (i < topics.length - 1) {
               return `${name}, `;
@@ -454,27 +455,6 @@ const NewPostModal = ({ navigation, route }) => {
           <View style={styles.aboveKeyboard}>
             <View style={styles.aboveKeyboardLeft}>
               <TouchableOpacity
-                onPress={handleCameraIconPress}
-                // onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
-                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-              >
-                <Icon name="camera" size={18} color={colors.purp} style={{ paddingRight: 25, opacity: 0.6 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="video" size={18} color={colors.purp} style={{ paddingRight: 27, opacity: 0.6 }} />
-              </TouchableOpacity>
-              {/* <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="poll" size={20} color={colors.purp} style={{ paddingRight: 32, opacity: 0.6 }} />
-              </TouchableOpacity> */}
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 27, opacity: 0.6 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 27, opacity: 0.6 }} />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.aboveKeyboardRight}>
-              <TouchableOpacity
                 onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
                 hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
               >
@@ -483,10 +463,50 @@ const NewPostModal = ({ navigation, route }) => {
                     name="map-marker-alt"
                     size={15}
                     color={colors.purp}
-                    style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.6 }}
+                    style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.7 }}
                   />
                   <Text style={{ ...defaultStyles.largeRegular, color: colors.blueGray }}>{location}</Text>
                 </View>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              onPress={handleCameraIconPress}
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: 64,
+                height: 64,
+                borderRadius: 32,
+                backgroundColor: colors.purp,
+                position: 'absolute',
+                top: -32,
+                right: width / 2 - 32,
+                ...defaultStyles.shadowButton,
+                borderWidth: StyleSheet.hairlineWidth,
+                borderColor: colors.borderBlack,
+              }}
+            >
+              <Icon name="camera" size={32} color={colors.white} style={{}} onPress={handleCameraIconPress} />
+            </TouchableOpacity>
+            <View style={styles.aboveKeyboardRight}>
+              {/* <TouchableOpacity
+                onPress={handleCameraIconPress}
+                // onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
+                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+              >
+                <Icon name="camera" size={18} color={colors.purp} style={{ paddingRight: 25, opacity: 0.6 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="video" size={18} color={colors.purp} style={{ paddingRight: 27, opacity: 0.6 }} />
+              </TouchableOpacity> */}
+              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <IconM name="poll" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
               </TouchableOpacity>
             </View>
           </View>
@@ -585,4 +605,5 @@ const styles = StyleSheet.create({
   aboveKeyboardRight: {
     flexDirection: 'row',
   },
+  cameraButton: {},
 });

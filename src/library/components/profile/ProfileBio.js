@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -9,8 +10,20 @@ import Projects from 'library/components/profile/Projects';
 import Skills from 'library/components/profile/Skills';
 import Experience from 'library/components/profile/Experience';
 import Education from 'library/components/profile/Education';
+import Loader from 'library/components/UI/Loader';
 
-const ProfileBio = ({ navigation, isMyProfile, user }) => {
+import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+
+const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
+  // QUERIES
+  const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
+    variables: { id: profileId },
+  });
+
+  if (loading) return <Loader loading={loading} full={false} />;
+
+  const { user } = data;
+
   return (
     <View style={styles.content}>
       <View style={styles.contentSection}>

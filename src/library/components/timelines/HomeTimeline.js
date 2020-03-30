@@ -4,7 +4,7 @@ import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import GLOBAL_POSTS_QUERY from 'library/queries/GLOBAL_POSTS_QUERY';
+import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import Loader from 'library/components/UI/Loader';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
@@ -13,7 +13,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
 
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(GLOBAL_POSTS_QUERY, {
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(NETWORK_POSTS_QUERY, {
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
@@ -44,7 +44,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     return <Loader backgroundColor={colors.lightGray} />;
   }
 
-  const posts = data.postsGlobal.edges || [];
+  const posts = data.postsNetwork.edges || [];
   // const noPosts = posts.length < 1 && ok;
   // console.log('posts', posts);
 
@@ -100,25 +100,25 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         onEndReached={info => {
           // console.log('onEndReached triggered', info);
           // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
-          if (data.postsGlobal.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
+          if (data.postsNetwork.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
             // console.log('fetching more');
             fetchMore({
-              query: GLOBAL_POSTS_QUERY,
+              query: NETWORK_POSTS_QUERY,
               variables: {
-                cursor: data.postsGlobal.pageInfo.endCursor,
+                cursor: data.postsNetwork.pageInfo.endCursor,
               },
               updateQuery: (previousResult, { fetchMoreResult }) => {
                 // console.log('prev', previousResult);
                 // console.log('fetched', fetchMoreResult);
 
-                const newEdges = fetchMoreResult.postsGlobal.edges;
-                const { pageInfo } = fetchMoreResult.postsGlobal;
+                const newEdges = fetchMoreResult.postsNetwork.edges;
+                const { pageInfo } = fetchMoreResult.postsNetwork;
 
                 return newEdges.length
                   ? {
-                      postsGlobal: {
-                        __typename: previousResult.postsGlobal.__typename,
-                        edges: [...previousResult.postsGlobal.edges, ...newEdges],
+                      postsNetwork: {
+                        __typename: previousResult.postsNetwork.__typename,
+                        edges: [...previousResult.postsNetwork.edges, ...newEdges],
                         pageInfo,
                       },
                     }

@@ -6,11 +6,37 @@ export const MinimalUser = gql`
     id
     name
     profilePic
+    bannerPic
     headline
+    bio
+    website
+    connectionsCount
+    followingCount
+    followersCount
     location
     locationID
     locationLat
     locationLon
+    topicsFocus {
+      topicID
+      name
+    }
+    topicsInterest {
+      topicID
+      name
+    }
+    topicsFreelance {
+      topicID
+      name
+    }
+    topicsInvest {
+      topicID
+      name
+    }
+    topicsMentor {
+      topicID
+      name
+    }
     intro {
       id
       title
@@ -76,28 +102,7 @@ export const LoggedInUser = gql`
     createdAt
     firstName
     lastName
-    bio
     email
-    topicsFocus {
-      topicID
-      name
-    }
-    topicsInterest {
-      topicID
-      name
-    }
-    topicsFreelance {
-      topicID
-      name
-    }
-    topicsInvest {
-      topicID
-      name
-    }
-    topicsMentor {
-      topicID
-      name
-    }
     groups {
       ...GroupFragment
     }
@@ -105,6 +110,9 @@ export const LoggedInUser = gql`
       ...MessageFragment
     }
     unReadMessagesCount
+    connections {
+      id
+    }
     following {
       id
     }
