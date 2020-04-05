@@ -13,6 +13,8 @@ import TopicScreen from 'screens/main/TopicScreen';
 import SearchScreen from 'screens/main/SearchScreen';
 import MyTopicsScreen from 'screens/main/MyTopicsScreen';
 import MyHatsScreen from 'screens/main/MyHatsScreen';
+import FollowersScreen from 'screens/main/FollowersScreen';
+import FollowingScreen from 'screens/main/FollowingScreen';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +36,8 @@ const HomeStack = ({ navigation, route }) => {
       <Stack.Screen name="UpdatePost" component={UpdatePostScreen} />
       <Stack.Screen name="Comment" component={CommentScreen} />
       <Stack.Screen name="Topic" component={TopicScreen} />
+      <Stack.Screen name="Followers" component={FollowersScreen} />
+      <Stack.Screen name="Following" component={FollowingScreen} />
       <Stack.Screen
         name="Search"
         component={SearchScreen}

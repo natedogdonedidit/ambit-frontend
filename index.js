@@ -43,24 +43,24 @@ const authLink = setContext(async (req, { headers }) => {
 // Create an http link:
 const httpLink = new HttpLink({
   uri: Platform.select({
-    ios: 'http://localhost:4000/', // simulator
+    // ios: 'http://localhost:4000/', // simulator
     // ios: 'http://192.168.123.216:4000', // work
     // ios: 'http://192.168.0.87:4000', // home
-    // ios: 'http://192.168.1.28:4000', // Pats
+    ios: 'http://192.168.1.28:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
-    // ios: 'http://192.168.0.20:4000', // Moms
+    // ios: 'http://192.168.0.16:4000', // Moms
   }),
 });
 
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
   uri: Platform.select({
-    ios: 'ws://localhost:4000/', // simulator
+    // ios: 'ws://localhost:4000/', // simulator
     // ios: 'ws://192.168.123.216:4000', // work
     // ios: 'ws://192.168.0.87:4000', // home
-    // ios: 'ws://192.168.1.28:4000', // Pats
+    ios: 'ws://192.168.1.28:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
-    // ios: 'ws://192.168.0.20:4000', // Moms
+    // ios: 'ws://192.168.0.16:4000', // Moms
   }),
   options: {
     reconnect: true,

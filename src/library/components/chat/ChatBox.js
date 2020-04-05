@@ -57,7 +57,7 @@ const ChatBox = ({ navigation, userLoggedIn, groupPassedIn = { id: null }, other
     if (groupPassedIn.id) {
       // calculate optimistic response
       const unReadInThisGroup = userLoggedIn.unReadMessages.filter(message => message.to.id === groupPassedIn.id);
-      console.log('unReadInThisGroup', unReadInThisGroup);
+      // console.log('unReadInThisGroup', unReadInThisGroup);
       const numToRemove = unReadInThisGroup.length;
       const previousCount = userLoggedIn.unReadMessages.length;
       const newUnReadCount = Math.max((previousCount - numToRemove, 0));

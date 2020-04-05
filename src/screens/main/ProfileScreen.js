@@ -27,6 +27,8 @@ const ProfileScreen = ({ navigation, route }) => {
 
   const { user } = data;
 
+  // console.log(user);
+
   // CUSTOM FUNCTIONS
 
   return (

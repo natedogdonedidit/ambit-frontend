@@ -91,7 +91,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
-    marginTop: 5,
+    marginTop: 10,
   },
 });
 

@@ -146,6 +146,7 @@
 		BE794EBF22FC914F00673475 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
 		BE794EC022FC914F00673475 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
 		BE92BDF423A14EA10035B131 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		BEC575A12437C70600DEC9C6 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		BEC9302023EDFC92005EFE62 /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-ExtraLight.ttf"; path = "../../../../../Downloads/Poppins/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
 		BEC9302123EDFC92005EFE62 /* Poppins-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-LightItalic.ttf"; path = "../../../../../Downloads/Poppins/Poppins-LightItalic.ttf"; sourceTree = "<group>"; };
 		BEC9302223EDFC92005EFE62 /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-ExtraBold.ttf"; path = "../../../../../Downloads/Poppins/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
@@ -295,6 +296,7 @@
 				BE794EBF22FC914F00673475 /* FontAwesome5_Solid.ttf */,
 				BE92BDF423A14EA10035B131 /* Ionicons.ttf */,
 				BE794EBD22FC914F00673475 /* MaterialCommunityIcons.ttf */,
+				BEC575A12437C70600DEC9C6 /* Feather.ttf */,
 				BE794EBB22FC914F00673475 /* MaterialIcons.ttf */,
 				13B07FAE1A68108700A75B9A /* Ambit1 */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,

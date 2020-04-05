@@ -18,7 +18,7 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
       <View
         style={{
           backgroundColor: 'white',
-          ...defaultStyles.shadowGoal,
+          // ...defaultStyles.shadowGoal,
           borderRadius: 10,
         }}
       >

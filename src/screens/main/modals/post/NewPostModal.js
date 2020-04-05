@@ -50,7 +50,6 @@ const NewPostModal = ({ navigation, route }) => {
   const [locationID, setLocationID] = useState(userLoggedIn.locationID);
   const [locationLat, setLocationLat] = useState(userLoggedIn.locationLat);
   const [locationLon, setLocationLon] = useState(userLoggedIn.locationLon);
-  const [isPrivate, setIsPrivate] = useState(false);
 
   const [uploading, setUploading] = useState(false);
 
@@ -73,7 +72,6 @@ const NewPostModal = ({ navigation, route }) => {
         content,
         video,
         pitch,
-        isPrivate,
         images: { set: images },
         lastUpdated: new Date(),
         owner: {
@@ -465,7 +463,7 @@ const NewPostModal = ({ navigation, route }) => {
                     color={colors.purp}
                     style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.7 }}
                   />
-                  <Text style={{ ...defaultStyles.largeRegular, color: colors.blueGray }}>{location}</Text>
+                  <Text style={{ ...defaultStyles.defaultRegular, color: colors.blueGray }}>{location}</Text>
                 </View>
               </TouchableOpacity>
             </View>

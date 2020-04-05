@@ -96,35 +96,6 @@ export const MessageFragment = gql`
   ${GroupFragment}
 `;
 
-export const LoggedInUser = gql`
-  fragment LoggedInUser on User {
-    ...MinimalUser
-    createdAt
-    firstName
-    lastName
-    email
-    groups {
-      ...GroupFragment
-    }
-    unReadMessages {
-      ...MessageFragment
-    }
-    unReadMessagesCount
-    connections {
-      id
-    }
-    following {
-      id
-    }
-    followers {
-      id
-    }
-  }
-  ${MinimalUser}
-  ${GroupFragment}
-  ${MessageFragment}
-`;
-
 export const FullSkills = gql`
   fragment FullSkills on Skill {
     id
@@ -242,7 +213,6 @@ export const BasicPost = gql`
     images
     video
     pitch
-    isPrivate
     likesCount
     likedByMe
     commentsCount
@@ -322,11 +292,21 @@ export const DetailPost = gql`
 
 export const DetailedUser = gql`
   fragment DetailedUser on User {
-    ...LoggedInUser
-    bannerPic
-    website
-    bio
+    ...MinimalUser
+    createdAt
+    firstName
+    lastName
+    email
     about
+    connections {
+      ...MinimalUser
+    }
+    following {
+      ...MinimalUser
+    }
+    followers {
+      ...MinimalUser
+    }
     skills {
       ...FullSkills
     }
@@ -337,10 +317,26 @@ export const DetailedUser = gql`
       ...FullEducation
     }
   }
-  ${LoggedInUser}
+  ${MinimalUser}
   ${FullSkills}
   ${FullExperience}
   ${FullEducation}
+`;
+
+export const LoggedInUser = gql`
+  fragment LoggedInUser on User {
+    ...DetailedUser
+    groups {
+      ...GroupFragment
+    }
+    unReadMessages {
+      ...MessageFragment
+    }
+    unReadMessagesCount
+  }
+  ${DetailedUser}
+  ${GroupFragment}
+  ${MessageFragment}
 `;
 
 export const NotificationFragment = gql`

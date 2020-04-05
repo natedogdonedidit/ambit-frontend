@@ -10,7 +10,8 @@ const colors = {
   black: 'rgb(20,23,26)', // twitter
   // black: 'rgb(0,0,0)',
   // black: 'rgba(11, 24, 38, 1)',
-  blueGray: 'rgb(101,119,134)', // twitter
+  // blueGray: 'rgb(101,119,134)', // twitter
+  blueGray: 'rgb(97, 103, 112)', // facebook
   // blueGray: '#455A64', // from Material
   // blueGray: 'rgba(16, 36, 56, 0.75)', // from Truebill website
 

@@ -20,14 +20,49 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
     variables: { id: profileId },
   });
 
-  if (loading) return <Loader loading={loading} full={false} />;
+  if (loading) {
+    return (
+      <View style={{ height: 100, marginTop: 10 }}>
+        <Loader loading={loading} full={false} />
+      </View>
+    );
+  }
 
   const { user } = data;
+
+  const isFreelancer = user.topicsFreelance.length > 0;
+  const isMentor = user.topicsMentor.length > 0;
+  const isInvestor = user.topicsInvest.length > 0;
+  const useOpenToBox = isFreelancer || isMentor || isInvestor;
+
+  const renderOpenTo = () => {
+    if (!useOpenToBox) return null;
+
+    return (
+      <Text>
+        <Text style={defaultStyles.defaultMute}>💼{`  `}Open to</Text>
+        {isFreelancer && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purple }}> freelance</Text>}
+        {isFreelancer && isInvestor && <Text style={{ ...defaultStyles.defaultText }}>,</Text>}
+        {isInvestor && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.green }}> invest</Text>}
+        {(isFreelancer || isInvestor) && isMentor && <Text style={{ ...defaultStyles.defaultText }}>,</Text>}
+        {isMentor && <Text style={{ ...defaultStyles.defaultSemibold, color: colors.salmon }}> mentor</Text>}
+      </Text>
+    );
+  };
+
+  const renderLocation = () => {
+    if (!user.location) return null;
+    return (
+      <Text style={{ ...defaultStyles.defaultText }}>
+        📍<Text style={{ ...defaultStyles.defaultMute }}>{`  ${user.location}`}</Text>
+      </Text>
+    );
+  };
 
   return (
     <View style={styles.content}>
       <View style={styles.contentSection}>
-        <View style={{ ...styles.contentHeader }}>
+        <View style={{ ...styles.contentHeader, paddingBottom: 10 }}>
           <Text style={{ ...defaultStyles.hugeMedium }}>About</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditAboutModal', { user })}>
@@ -36,6 +71,12 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
           )}
         </View>
         {user.about && <Text style={{ ...defaultStyles.defaultText, paddingBottom: 10 }}>{user.about}</Text>}
+        {(useOpenToBox || !!user.location) && (
+          <View style={styles.detailsBox}>
+            {renderLocation()}
+            {renderOpenTo()}
+          </View>
+        )}
       </View>
       <View style={{ ...styles.projectsSection }}>
         <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
@@ -112,6 +153,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     marginBottom: 10,
+  },
+  detailsBox: {
+    marginTop: 10,
+    marginBottom: 5,
   },
 });
 

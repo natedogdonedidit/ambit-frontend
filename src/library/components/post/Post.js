@@ -108,7 +108,7 @@ const Post = ({
             {post.owner.headline && (
               <>
                 <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{post.owner.headline}</Text>
-                <Icon name="circle" solid size={3} color={colors.iconGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
+                <Icon name="circle" solid size={2} color={colors.blueGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
               </>
             )}
             <Text style={{ ...defaultStyles.smallMute }}>
@@ -127,11 +127,11 @@ const Post = ({
             <Text style={defaultStyles.defaultText}>{post.content}</Text>
           </View>
 
-          {(containsTopics || showDetails) && (
+          {showDetails && (
             <View style={styles.topics}>
               {post.topics.length > 0 &&
                 post.topics.map(topic => <Topic key={topic.id} navigation={navigation} topicToShow={topic} />)}
-              {(!!post.location || showDetails) && (
+              {!!post.location && (
                 <Location
                   navigation={navigation}
                   location={post.location}
@@ -208,7 +208,6 @@ const styles = StyleSheet.create({
   post: {
     width: '100%',
     flexDirection: 'row',
-    paddingTop: 15,
     backgroundColor: 'white',
   },
   threadLine: {
@@ -226,6 +225,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 4,
     width: 76,
+    paddingTop: 8,
   },
   rightColumn: {
     flex: 1,
@@ -233,6 +233,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     // paddingTop: 4,
     // paddingLeft: 8,
+    paddingTop: 14,
     paddingBottom: 12,
   },
   topRow: {
@@ -243,10 +244,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingRight: 30,
+    paddingBottom: 1,
   },
   headlineRow: {
     flexDirection: 'row',
-    paddingBottom: 8,
+    paddingBottom: 14,
   },
   goalView: {
     flexDirection: 'row',
@@ -254,7 +256,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'pink',
   },
   content: {
-    paddingBottom: 8,
+    paddingBottom: 10,
   },
   topics: {
     flexDirection: 'row',

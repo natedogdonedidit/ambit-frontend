@@ -42,6 +42,7 @@ import EditUpdatePopup from 'screens/main/modals/post/EditUpdatePopup';
 import EditCommentPopup from 'screens/main/modals/post/EditCommentPopup';
 import YearModal from 'screens/main/modals/general/YearModal';
 import MonthModal from 'screens/main/modals/general/MonthModal';
+import ForYouSettingsPopup from 'screens/main/modals/general/ForYouSettingsPopup';
 import EditStoryItemPopup from 'screens/main/modals/stories/EditStoryItemPopup';
 
 const Stack = createStackNavigator();
@@ -245,8 +246,9 @@ const MainStack = () => {
       <Stack.Screen name="EditUpdatePopup" component={EditUpdatePopup} options={halfModalOptions} />
       <Stack.Screen name="EditCommentPopup" component={EditCommentPopup} options={halfModalOptions} />
       <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} options={halfModalOptions} />
-      <Stack.Screen name="EditExperienceModal" component={EditExperienceModal} />
+      <Stack.Screen name="ForYouSettingsPopup" component={ForYouSettingsPopup} options={halfModalOptions} />
       <Stack.Screen name="EditEducationModal" component={EditEducationModal} />
+      <Stack.Screen name="EditExperienceModal" component={EditExperienceModal} />
       <Stack.Screen
         name="SelectTopicsFocusModal"
         component={SelectTopicsFocusModal}

@@ -2,22 +2,18 @@
 
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import Feather from 'react-native-vector-icons/Feather';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const ConnectButton = ({ onPress, buttonStyle, textStyle, active = false }) => {
-  const [tempActive, setTempActive] = useState(false);
-
-  const tempOnPress = () => {
-    setTempActive(!tempActive);
-  };
+const ConnectButton = ({ onPress, buttonStyle }) => {
   return (
-    <TouchableOpacity onPress={tempOnPress} activeOpacity={0.5}>
-      <View style={tempActive ? styles.buttonActive : styles.button}>
-        <Text style={{ ...defaultStyles.defaultMedium, color: tempActive ? colors.white : colors.black }}>
-          {tempActive ? 'Connected' : 'Connect'}
-        </Text>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
+      <View style={{ ...styles.button, ...buttonStyle }}>
+        {/* <Icon name="user-plus" size={16} color={colors.black} /> */}
+        <Feather name="user-plus" size={18} color={colors.black} style={{ paddingLeft: 2 }} />
       </View>
     </TouchableOpacity>
   );
@@ -28,24 +24,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.grayButton,
+    height: 34,
+    width: 34,
+    borderRadius: 17,
     // borderWidth: 1,
-    // borderWidth: StyleSheet.hairlineWidth,
-    // borderColor: colors.black,
-    borderRadius: 18,
-    height: 36,
-    // width: 160,
-    width: '100%',
-    // ...defaultStyles.shadowButton,
-  },
-  buttonActive: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.blueGray,
-    borderRadius: 18,
-    height: 36,
-    // width: 160,
-    width: '100%',
-    // ...defaultStyles.shadowButton,
+    // borderColor: colors.purp,
   },
 });
 

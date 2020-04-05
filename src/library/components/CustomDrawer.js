@@ -55,12 +55,12 @@ const CustomDrawer = ({ navigation }) => {
             <Text style={styles.buttonText}>My Intro</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MyTopics', { userLoggedIn })}>
+        <TouchableOpacity onPress={() => navigation.navigate('MyTopics')}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>My Topics</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MyHats', { userLoggedIn })}>
+        <TouchableOpacity onPress={() => navigation.navigate('MyHats')}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>My Hats</Text>
           </View>

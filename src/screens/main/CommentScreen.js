@@ -116,7 +116,7 @@ const CommentScreen = ({ navigation, route }) => {
   }
 
   const post = dataPost.singlePost;
-  console.log(post);
+  // console.log(post);
 
   // CUSTOM FUNCTIONS
 
@@ -145,7 +145,7 @@ const CommentScreen = ({ navigation, route }) => {
       },
       update: (proxy, { data: dataReturned }) => {
         const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
-        console.log('dataReturned', dataReturned);
+        // console.log('dataReturned', dataReturned);
 
         if (isComment || isSubComment) {
           if (isUpdate) {
@@ -168,8 +168,8 @@ const CommentScreen = ({ navigation, route }) => {
             });
           } else {
             // if subComment on comment on post
-            console.log('previousData', previousData);
-            console.log(parentComment);
+            // console.log('previousData', previousData);
+            // console.log(parentComment);
             const indexOfParentComment = previousData.singlePost.comments.findIndex(item => item.id === parentComment.id);
             const newCommentsArray = [...previousData.singlePost.comments];
 
