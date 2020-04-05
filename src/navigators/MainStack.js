@@ -15,6 +15,7 @@ import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY';
 import MainDrawer from 'navigators/MainDrawer';
 // modals
 import StoryModal from 'screens/main/modals/stories/StoryModal';
+import CreateStoryModal from 'screens/main/modals/stories/CreateStoryModal';
 import CreateIntroModal from 'screens/main/modals/stories/CreateIntroModal';
 import NewPostModal from 'screens/main/modals/post/NewPostModal';
 import SelectGoalModal from 'screens/main/modals/post/SelectGoalModal';
@@ -192,6 +193,7 @@ const MainStack = () => {
 
       {/* modals */}
       <Stack.Screen name="StoryModal" component={StoryModal} />
+      <Stack.Screen name="CreateStoryModal" component={CreateStoryModal} />
       <Stack.Screen name="CreateIntroModal" component={CreateIntroModal} />
       <Stack.Screen name="NewPostModal" component={NewPostModal} />
       <Stack.Screen

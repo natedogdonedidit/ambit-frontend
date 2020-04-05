@@ -1,17 +1,5 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Animated,
-  RefreshControl,
-  FlatList,
-  Image,
-  ActivityIndicator,
-  ScrollView,
-  SectionList,
-  TouchableOpacity,
-} from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-apollo';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -23,7 +11,7 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Section from 'library/components/UI/Section';
 import SeeMoreButton from 'library/components/UI/buttons/SeeMoreButton';
-
+import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
@@ -76,6 +64,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // 7: no loading, no refetch, everything OK!
 
   // LOADING STATES
+
   const refetchingPostsNetwork = networkStatusPostsNetwork === 4;
   const fetchingMorePostsNetwork = networkStatusPostsNetwork === 3;
   const loadingPostsNetwork = networkStatusPostsNetwork === 1;
@@ -149,7 +138,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         // ItemSeparatorComponent={() => (
         //   <View style={{ height: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
         // )}
-        ListHeaderComponent={<View style={{ height: 15 }} />}
+        ListHeaderComponent={<StoriesHome navigation={navigation} />}
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no posts to display at this time
@@ -251,76 +240,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             });
           }
         }}
-        // SectionSeparatorComponent={({ trailingSection, trailingItem }) => {
-        //   if (trailingSection && !trailingItem) return <View style={{ height: 15 }} />;
-        //   return null;
-        // }}
       />
-
-      {/* <FlatList
-        // refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
-        // onRefresh={onRefresh}
-        // refreshing={refetching}
-        // contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
-        // style={styles.timeline}
-        // ListHeaderComponent={
-        //   <View style={{ height: 15, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
-        // }
-        // ListEmptyComponent={
-        //   <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-        //     Sorry, no posts to display at this time
-        //   </Text>
-        // }
-        // onScroll={Animated.event(
-        //   [
-        //     {
-        //       nativeEvent: {
-        //         contentOffset: {
-        //           y: scrollY,
-        //         },
-        //       },
-        //     },
-        //   ]
-        //   // { useNativeDriver: true }
-        // )}
-        // data={posts}
-        // keyExtractor={(item, index) => item + index}
-        // renderItem={({ item }) => {
-        //   return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
-        // }}
-        onEndReachedThreshold={1.2}
-        onEndReached={info => {
-          // console.log('onEndReached triggered', info);
-          // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
-          if (data.postsNetwork.pageInfo.hasNextPage && networkStatusPostsNetwork === 7 && info.distanceFromEnd > -300) {
-            // console.log('fetching more');
-            fetchMorePostsNetwork({
-              query: NETWORK_POSTS_QUERY,
-              variables: {
-                cursor: data.postsNetwork.pageInfo.endCursor,
-                network,
-              },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                // console.log('prev', previousResult);
-                // console.log('fetched', fetchMoreResult);
-
-                const newEdges = fetchMoreResult.postsNetwork.edges;
-                const { pageInfo } = fetchMoreResult.postsNetwork;
-
-                return newEdges.length
-                  ? {
-                      postsNetwork: {
-                        __typename: previousResult.postsNetwork.__typename,
-                        edges: [...previousResult.postsNetwork.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
-                  : previousResult;
-              },
-            });
-        //   }
-        // }}
-      /> */}
 
       {/* This is the loading animation */}
       <Animated.View
@@ -407,14 +327,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
-  },
-  linearGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: 10,
   },
   welcomeText: {
     fontSize: 14,

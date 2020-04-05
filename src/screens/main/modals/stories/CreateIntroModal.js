@@ -145,7 +145,14 @@ const CreateIntroModal = ({ navigation, route }) => {
         // 1. upload video. Divide into 10s incrememnts?
         const uploadedVideo = await introVideoUpload(user.id, recordedVideo.path);
         // console.log('uploaded video', uploadedVideo);
-        const newStoryItem = { type: 'video', url: uploadedVideo.url, text: '', link: '', duration: uploadedVideo.duration };
+        const newStoryItem = {
+          type: 'video',
+          url: uploadedVideo.url,
+          text: '',
+          link: '',
+          duration: uploadedVideo.duration,
+          owner: { connect: { id: user.id } },
+        };
         // 2 add video to story
         setStoryItems([...storyItems, newStoryItem]);
         setActiveIndex(storyItems.length);
@@ -171,7 +178,7 @@ const CreateIntroModal = ({ navigation, route }) => {
       try {
         const uploadedImage = await introPicUpload(user.id, img.path);
         // console.log('uploaded image', uploadedImage);
-        const newStoryItem = { type: 'photo', url: uploadedImage, text: '', link: '' };
+        const newStoryItem = { type: 'photo', url: uploadedImage, text: '', link: '', owner: { connect: { id: user.id } } };
         // add image to story
         setStoryItems([...storyItems, newStoryItem]);
         setActiveIndex(storyItems.length);
@@ -246,38 +253,6 @@ const CreateIntroModal = ({ navigation, route }) => {
   };
 
   const loading = loadingMutation || uploading;
-
-  //   <View
-  //   style={{
-  //     height: 46,
-  //     flexDirection: 'row',
-  //     justifyContent: 'space-between',
-  //     alignItems: 'center',
-  //     backgroundColor: 'white',
-  //     paddingHorizontal: 15,
-  //   }}
-  // >
-  //   <TouchableOpacity activeOpacity={0.9} onPress={handleBack} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
-  //     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-  //       <Icon name="chevron-left" size={22} color={colors.blueGray} />
-  //       {/* <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray, paddingLeft: 5 }}>Cancel</Text> */}
-  //     </View>
-  //   </TouchableOpacity>
-
-  //   <TouchableOpacity onPress={handleSave}>
-  //     <View
-  //       style={{
-  //         backgroundColor: colors.purp,
-  //         height: 36,
-  //         borderRadius: 18,
-  //         paddingHorizontal: 15,
-  //         justifyContent: 'center',
-  //       }}
-  //     >
-  //       <Text style={{ ...defaultStyles.largeMedium, color: 'white' }}>Save</Text>
-  //     </View>
-  //   </TouchableOpacity>
-  // </View>
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
