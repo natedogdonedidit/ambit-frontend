@@ -343,11 +343,15 @@ export const DetailedUser = gql`
     education {
       ...FullEducation
     }
+    projects {
+      ...StoryFragment
+    }
   }
   ${MinimalUser}
   ${FullSkills}
   ${FullExperience}
   ${FullEducation}
+  ${StoryFragment}
 `;
 
 export const LoggedInUser = gql`

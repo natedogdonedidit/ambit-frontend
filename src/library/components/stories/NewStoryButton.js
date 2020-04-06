@@ -10,7 +10,7 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 
 const NewStoryButton = ({ navigation, userLoggedIn }) => {
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('CreateStoryModal')} style={styles.storyBox}>
+    <TouchableOpacity onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
       <LinearGradient
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}

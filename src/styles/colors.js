@@ -66,6 +66,11 @@ const colors = {
   gray60: 'rgba(60,60,67,0.6)',
   gray30: 'rgba(60,60,67,0.3)',
 
+  gray24: 'rgba(118,118,128,0.24)',
+  gray20: 'rgba(120,120,128,0.20)',
+  gray12: 'rgba(116,116,128,0.12)',
+  gray8: 'rgba(116,116,128,0.08)',
+
   // system backgrounds
   systemBackgroundSecondary: 'rgba(239,239,244,1)', // light background
   darkGray1: 'rgb(28,28,30)',

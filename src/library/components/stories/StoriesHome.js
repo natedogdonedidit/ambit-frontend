@@ -66,7 +66,7 @@ const StoriesHome = ({ navigation }) => {
 
     if (stories.length > 0) {
       return stories.map(story => {
-        return <StoryBox navigation={navigation} story={story} />;
+        return <StoryBox key={story.id} navigation={navigation} story={story} />;
       });
     }
 

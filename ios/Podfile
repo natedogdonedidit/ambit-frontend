@@ -42,7 +42,6 @@ target 'Ambit1' do
   pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
   pod 'react-native-video/VideoCaching', :path => '../node_modules/react-native-video/react-native-video.podspec'
 
-
   target 'Ambit1Tests' do
     inherit! :search_paths
     # Pods for testing
