@@ -17,7 +17,7 @@ const flashModeOrder = {
   on: 'auto',
 };
 
-const CameraModal = ({ navigation, route }) => {
+const CameraModalIntro = ({ navigation, route }) => {
   // STATE
   const [newStoryItem, setNewStoryItem] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -211,7 +211,7 @@ const CameraModal = ({ navigation, route }) => {
   );
 };
 
-export default CameraModal;
+export default CameraModalIntro;
 
 const styles = StyleSheet.create({
   container: {

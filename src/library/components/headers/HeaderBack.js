@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
-    backgroundColor: colors.white,
+    backgroundColor: colors.lightLightGray,
+    // backgroundColor: colors.white,
   },
   leftSide: {
     width: 80,

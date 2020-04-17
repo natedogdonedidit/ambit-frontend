@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-apollo';
 import Feather from 'react-native-vector-icons/Feather';
@@ -13,9 +13,17 @@ import Section from 'library/components/UI/Section';
 import SeeMoreButton from 'library/components/UI/buttons/SeeMoreButton';
 import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
+import { UserContext } from 'library/utils/UserContext';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
+
+  const { creatingStory } = useContext(UserContext);
+  // console.log('in component', creatingStory);
+
+  const [showLoader, setShowLoader] = useState(false);
+  const [loadingStories, setLoadingStories] = useState(false);
+  const [refetchingStories, setRefetchingStories] = useState(false);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -73,7 +81,33 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const fetchingMorePostsForYou = networkStatusPostsForYou === 3;
   const loadingPostsForYou = networkStatusPostsForYou === 1;
 
-  const refetching = refetchingPostsNetwork || refetchingPostsForYou;
+  useEffect(() => {
+    // console.log('in effect', creatingStory);
+    if (
+      refetchingPostsNetwork ||
+      refetchingPostsForYou ||
+      loadingPostsNetwork ||
+      loadingPostsForYou ||
+      loadingStories ||
+      refetchingStories ||
+      creatingStory
+    ) {
+      // console.log('setting show loader to true', creatingStory);
+      setShowLoader(true);
+    } else if (showLoader) {
+      setShowLoader(false);
+    }
+  }, [
+    refetchingPostsNetwork,
+    refetchingPostsForYou,
+    loadingPostsNetwork,
+    loadingPostsForYou,
+    loadingStories,
+    refetchingStories,
+    creatingStory,
+  ]);
+
+  const refetching = refetchingPostsNetwork || refetchingPostsForYou || creatingStory;
 
   if (errorPostsNetwork) {
     console.log('ERROR LOADING POSTS:', errorPostsNetwork.message);
@@ -85,7 +119,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   }
 
   if (!dataPostsNetwork || loadingPostsNetwork || !dataPostsForYou || loadingPostsForYou) {
-    return <Loader backgroundColor={colors.lightGray} />;
+    return <Loader backgroundColor={colors.lightGray} size="small" />;
   }
 
   const postsNetwork = dataPostsNetwork.postsNetwork.edges || [];
@@ -130,15 +164,22 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   return (
     <View style={styles.container}>
       <SectionList
-        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
+        refreshControl={<RefreshControl refreshing={showLoader} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
-        refreshing={refetching}
+        refreshing={showLoader}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
         // ItemSeparatorComponent={() => (
         //   <View style={{ height: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
         // )}
-        ListHeaderComponent={<StoriesHome navigation={navigation} />}
+        ListHeaderComponent={
+          <StoriesHome
+            navigation={navigation}
+            refetching={refetching}
+            setLoadingStories={setLoadingStories}
+            setRefetchingStories={setRefetchingStories}
+          />
+        }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no posts to display at this time
@@ -284,7 +325,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             }}
             size="small"
             color={colors.purp}
-            animating={refetching}
+            animating={showLoader}
           />
         </View>
       </Animated.View>

@@ -7,16 +7,14 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { HEADER_HEIGHT } from 'styles/constants';
 
-const HeaderBackBlank = ({ navigation, title, rightComponent, showBack = true }) => {
+const HeaderBackBlank = ({ navigation, title, rightComponent, leftText = '' }) => {
   const insets = useSafeArea();
   return (
     <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
       <View style={styles.leftSide}>
         <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>
           <Ionicons name="ios-arrow-back" size={28} color={colors.purp} style={{}} />
-          {showBack && (
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.purp, paddingLeft: 5, paddingBottom: 2 }}>Back</Text>
-          )}
+          <Text style={{ ...defaultStyles.largeMedium, color: colors.purp, paddingLeft: 5, paddingBottom: 2 }}>{leftText}</Text>
         </TouchableOpacity>
       </View>
 

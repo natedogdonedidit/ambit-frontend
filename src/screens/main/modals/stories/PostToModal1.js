@@ -27,9 +27,6 @@ import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import ADD_TO_STORY_MUTATION from 'library/mutations/ADD_TO_STORY_MUTATION';
 import CREATE_STORY_ITEM_MUTATION from 'library/mutations/CREATE_STORY_ITEM_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
-import StoryBox from 'library/components/stories/StoryBox';
-import StoryBoxButton from 'library/components/stories/StoryBoxButton';
-import NewProjectButton from 'library/components/stories/NewProjectButton2';
 
 const PostToModal = ({ navigation, route }) => {
   const { setCreatingStory } = useContext(UserContext);
@@ -300,13 +297,29 @@ const PostToModal = ({ navigation, route }) => {
 
       if (project.items.length > 0) {
         return (
-          <TouchableOpacity key={project.id} activeOpacity={1} onPress={() => toggleProject(project.id)}>
-            <StoryBoxButton navigation={navigation} story={project} selected={selected} />
+          <TouchableOpacity
+            key={project.id}
+            style={styles.projectRow}
+            activeOpacity={0.8}
+            onPress={() => toggleProject(project.id)}
+          >
+            <View style={styles.leftSide}>
+              <ProjectSquare navigation={navigation} project={project} />
+            </View>
+
+            <View style={{ flex: 1 }}>
+              <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>{project.title}</Text>
+            </View>
+            <View style={{ width: 40 }}>
+              {selected ? (
+                <Icon name="check-circle" solid size={26} color={colors.purp} />
+              ) : (
+                <Feather name="circle" size={26} color={colors.gray24} />
+              )}
+            </View>
           </TouchableOpacity>
         );
       }
-
-      return null;
     });
   };
 
@@ -316,11 +329,27 @@ const PostToModal = ({ navigation, route }) => {
     }
 
     return myTopics.map(topic => {
-      const selected = selectedTopics.includes(topic.topicID);
+      const { name, topicID, topicStory, parentTopic } = topic;
+      const { icon, color } = getIconFromID(parentTopic.topicID);
+
+      const selected = selectedTopics.includes(topicID);
 
       return (
-        <TouchableOpacity key={topic.topicID} activeOpacity={1} onPress={() => toggleTopic(topic.topicID)}>
-          <StoryBoxButton navigation={navigation} story={{ type: 'TOPICSTORY' }} topic={topic} selected={selected} />
+        <TouchableOpacity key={topicID} style={styles.topicRow} activeOpacity={0.8} onPress={() => toggleTopic(topicID)}>
+          <View style={styles.leftSide}>
+            <Icon name={icon || 'circle'} size={20} color={color || colors.iconGray} solid />
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>{name}</Text>
+          </View>
+          <View style={{ width: 40 }}>
+            {selected ? (
+              <Icon name="check-circle" solid size={26} color={colors.purp} />
+            ) : (
+              <Feather name="circle" size={26} color={colors.gray24} />
+            )}
+          </View>
         </TouchableOpacity>
       );
     });
@@ -336,51 +365,52 @@ const PostToModal = ({ navigation, route }) => {
         solidRight
         handleRight={handleSend}
       />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 0, paddingBottom: 20 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 20 }}>
         {renderAddToStory()}
-        <View style={{ paddingTop: 8, paddingBottom: 5, paddingHorizontal: 10 }}>
+        <View style={{ paddingTop: 8, paddingBottom: 5 }}>
           <Text style={{ ...defaultStyles.largeBold, color: colors.gray30 }}>My Projects</Text>
         </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingLeft: 4, paddingRight: 10 }}
-        >
-          {newProject.id ? (
-            <TouchableOpacity activeOpacity={1} onPress={() => toggleProject(newProject.id)}>
-              <StoryBoxButton
-                key={newProject.id}
-                navigation={navigation}
-                story={newProject}
-                newProject
-                selected={selectedProjects.includes(newProject.id)}
-              />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              activeOpacity={1}
-              onPress={() =>
-                navigation.navigate('NewProjectTitleModal', {
-                  handleProjectCreate,
-                })
-              }
-            >
-              <NewProjectButton navigation={navigation} loadingCreateStory={loadingCreateStory} />
-            </TouchableOpacity>
-          )}
-          {renderProjects()}
-        </ScrollView>
+        {newProject.id ? (
+          <TouchableOpacity style={styles.projectRow} activeOpacity={1} onPress={() => toggleProject(newProject.id)}>
+            <View style={styles.leftSide}>
+              <ProjectSquare navigation={navigation} project={newProject} loading={loadingCreateStory} />
+            </View>
 
-        <View style={{ paddingTop: 24, paddingBottom: 10, paddingHorizontal: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>{newProject.title}</Text>
+            </View>
+            <View style={{ width: 40 }}>
+              {selectedProjects.includes(newProject.id) ? (
+                <Icon name="check-circle" solid size={26} color={colors.purp} />
+              ) : (
+                <Feather name="circle" size={26} color={colors.gray24} />
+              )}
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.projectRow}
+            activeOpacity={1}
+            onPress={() =>
+              navigation.navigate('NewProjectTitleModal', {
+                handleProjectCreate,
+              })
+            }
+          >
+            <View style={styles.leftSide}>
+              <ProjectSquare navigation={navigation} newProject loading={loadingCreateStory} />
+            </View>
+
+            <View style={{ flex: 1 }}>
+              <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>New Project</Text>
+            </View>
+          </TouchableOpacity>
+        )}
+        {renderProjects()}
+        <View style={{ paddingTop: 24, paddingBottom: 10 }}>
           <Text style={{ ...defaultStyles.largeBold, color: colors.gray30 }}>Topic Stories</Text>
         </View>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingLeft: 4, paddingRight: 10 }}
-        >
-          {renderTopics()}
-        </ScrollView>
+        {renderTopics()}
       </ScrollView>
     </View>
   );
@@ -395,7 +425,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 20,
-    paddingHorizontal: 10,
   },
   projectRow: {
     flexDirection: 'row',

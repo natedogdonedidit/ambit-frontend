@@ -8,7 +8,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const ProfileTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['user', 'list', 'images'];
+  const tabNames = ['user', 'bars', 'images'];
   // const tabNames = ['Bio', 'Posts', 'Media'];
 
   const renderTabs = () => {

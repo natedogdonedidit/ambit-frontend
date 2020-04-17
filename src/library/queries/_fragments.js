@@ -8,14 +8,34 @@ export const StoryFragment = gql`
     owner {
       id
       name
+      headline
+      location
       profilePic
     }
     type
+    preview
+    topic {
+      name
+      topicID
+    }
+    projectTopics {
+      name
+      topicID
+    }
     items {
       id
       createdAt
+      owner {
+        id
+        name
+        firstName
+        headline
+        location
+        profilePic
+      }
       type
       url
+      preview
       link
       text
       duration
@@ -23,12 +43,6 @@ export const StoryFragment = gql`
         name
         topicID
       }
-    }
-    preview
-    lastUpdated
-    topics {
-      name
-      topicID
     }
   }
 `;

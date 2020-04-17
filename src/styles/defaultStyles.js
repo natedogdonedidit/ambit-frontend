@@ -45,6 +45,15 @@ const styles = StyleSheet.create({
     fontFamily: 'SFProText-Bold',
   },
 
+  // FOR STORY SCREEN
+  // storyBold: {
+  //   color: colors.white,
+  //   textShadowColor: colors.black,
+  //   textShadowRadius: StyleSheet.hairlineWidth,
+  //   fontSize: reg,
+  //   fontFamily: 'SFProText-Bold',
+  // },
+
   // DEFAULT
   defaultItalic: {
     color: colors.black,
@@ -101,6 +110,11 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: reg,
     fontFamily: 'SFProText-Bold',
+  },
+  defaultHeavy: {
+    color: colors.black,
+    fontSize: reg,
+    fontFamily: 'SFProText-Heavy',
   },
   // LARGE, 15px
   largeMute: {

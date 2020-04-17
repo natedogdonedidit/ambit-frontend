@@ -4,7 +4,7 @@ import { differenceInSeconds, differenceInDays, differenceInHours } from 'date-f
 import { cloud_name } from 'library/config';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../styles/colors';
-import { goalsList, allTopics, topicsList } from './lists';
+import { goalsList, allTopics, topicsList, mainTopicsList } from './lists';
 
 export const monthToFloat = month => {
   if (month === 'Jan') return 0.01;
@@ -245,6 +245,81 @@ export const introVideoUpload = async (userId, uri) => {
   }
 };
 
+export const storyPicUpload = async (userId, uri) => {
+  // create tags
+  const tags = `${userId}, story, image`;
+
+  // create file object (all fields required)
+  const photo = {
+    uri,
+    type: 'image',
+    name: uri,
+  };
+  // create body
+  const uploadData = new FormData();
+  uploadData.append('file', photo);
+  uploadData.append('upload_preset', 'ambit-postpic-preset');
+  uploadData.append('tags', tags);
+  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+      method: 'POST',
+      body: uploadData,
+    });
+    const resJson = await res.json();
+    // console.log('resJson', resJson);
+
+    // return the image url
+    return resJson.url;
+  } catch (error) {
+    console.log('an error occured trying to upload your photo');
+    // console.error(error);
+    return error;
+  }
+};
+
+export const storyVideoUpload = async (userId, uri) => {
+  // create tags
+  const tags = `${userId}, story, video`;
+
+  // create file object (all fields required)
+  const video = {
+    uri,
+    type: 'video',
+    name: uri,
+  };
+  // create body
+  const uploadData = new FormData();
+  uploadData.append('file', video);
+  uploadData.append('upload_preset', 'ambit-intro-video-preset');
+  uploadData.append('tags', tags);
+  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
+      method: 'POST',
+      body: uploadData,
+    });
+    const resJson = await res.json();
+    // console.log('resJson', resJson);
+
+    // return the image url and duration
+    return { url: resJson.url, duration: resJson.duration };
+  } catch (error) {
+    console.log('fail2');
+    console.log('an error occured trying to upload your photo');
+    // console.error(error);
+    return error;
+  }
+};
+
+export const createThumbnail = url => {
+  const regex = /upload/;
+  const urlSplit = url.split(regex);
+  return `${urlSplit[0]}upload/so_0.0${urlSplit[1].slice(0, -4)}.jpg`;
+};
+
 export const timeDifference = (laterDate, earlierDate) => {
   let timeDiff = differenceInSeconds(laterDate, earlierDate);
   let period = 's';
@@ -302,11 +377,18 @@ export const getGoalInfo = (goal, field) => {
 // will return an object { topicID: 'text', name: 'text' }
 export const getTopicFromID = topicID => allTopics.find(topic => topic.topicID === topicID);
 export const getFullTopicFromID = topicID => topicsList.find(topic => topic.topicID === topicID);
+export const getFullTopicListFromIDs = topicIDs => {
+  return topicIDs.map(topicID => {
+    const fullTopic = allTopics.find(topic => topic.topicID === topicID);
+    return fullTopic;
+  });
+};
+
 export const getParentTopicFromID = topicIDpassedIn => {
   for (let i = 0; i < topicsList.length; i++) {
     const parentTopic = topicsList[i];
 
-    const { name, topicID, icon, color, children } = parentTopic;
+    const { name, topicID, icon, children } = parentTopic;
 
     if (topicID === topicIDpassedIn) {
       return parentTopic;
@@ -319,6 +401,30 @@ export const getParentTopicFromID = topicIDpassedIn => {
   }
 
   return null;
+};
+
+export const getIconFromID = topicIDpassedIn => {
+  // first get parent
+  const parent = getParentTopicFromID(topicIDpassedIn);
+  // then return parent object with color
+  return mainTopicsList.find(topic => topic.topicID === parent.topicID);
+};
+
+export const getTopicIDsFromUser = usr => {
+  if (!usr) {
+    return [];
+  }
+  const topicFocusIDs = usr.topicsFocus ? usr.topicsFocus.map(t => t.topicID) : [];
+  const topicInterestIDs = usr.topicsInterest ? usr.topicsInterest.map(t => t.topicID) : [];
+  return [...topicFocusIDs, ...topicInterestIDs];
+};
+export const getNetworkIDsFromUser = usr => {
+  if (!usr) {
+    return [];
+  }
+  const followingIDs = usr.following ? usr.following.map(u => u.id) : [];
+  const connectionIDs = usr.connection ? usr.connections.map(u => u.id) : [];
+  return [...followingIDs, ...connectionIDs];
 };
 
 export const addMainTopics = topics => {

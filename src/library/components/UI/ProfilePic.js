@@ -24,6 +24,8 @@ const ProfilePic = ({
     sizePX = 46;
   } else if (size === 'large') {
     sizePX = 70;
+  } else if (size === 'xlarge') {
+    sizePX = 110;
   }
 
   // const hasPitch = !!pitch;
@@ -35,6 +37,17 @@ const ProfilePic = ({
       }
     }
   }
+
+  let hasStory = false;
+  if (user) {
+    if (user.story) {
+      if (user.story.items.length > 0) {
+        hasStory = true;
+      }
+    }
+  }
+
+  const hasVideo = hasIntro || hasStory;
 
   const whiteWidth = sizePX + 2 * borderWidth;
   const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
@@ -104,7 +117,7 @@ const ProfilePic = ({
     );
   }
 
-  if (hasIntro && !disableVideo) {
+  if (hasVideo && !disableVideo) {
     return (
       <View style={styles.introBorderBackground}>
         <TouchableOpacity
@@ -112,8 +125,8 @@ const ProfilePic = ({
           style={styles.introBorder}
           onPress={() =>
             navigation.navigate('StoryModal', {
-              owner: user,
-              story: user.intro,
+              story: hasStory ? user.story : null,
+              intro: hasIntro ? user.intro : null,
             })
           }
         >
@@ -128,31 +141,6 @@ const ProfilePic = ({
           </View>
         </TouchableOpacity>
       </View>
-    );
-  }
-
-  if (hasIntro && !disableVideo) {
-    return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('StoryModal', {
-            owner: user,
-            story: user.intro,
-          })
-        }
-      >
-        <View style={styles.introBorder}>
-          <View style={styles.whiteBorder}>
-            <Image
-              style={styles.profilePic}
-              resizeMode="cover"
-              source={{
-                uri: user.profilePic || profilePicExample,
-              }}
-            />
-          </View>
-        </View>
-      </TouchableOpacity>
     );
   }
 

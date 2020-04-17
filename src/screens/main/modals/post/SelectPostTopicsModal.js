@@ -98,6 +98,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
           navigation={navigation}
           title={warning}
           rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
+          leftText="Done"
         />
 
         <ScrollView style contentContainerStyle={styles.scrollView}>

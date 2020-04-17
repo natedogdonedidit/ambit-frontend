@@ -10,7 +10,7 @@ const SplashScreen = () => {
       <View style={styles.fullScreen}>
         <Text style={{ ...defaultStyles.ambitLogoSplash, color: colors.white }}>ambit.</Text>
         <View style={{ height: 100, width: '100%' }}>
-          <ActivityIndicator style={styles.fillComponent} size="large" color={colors.white} animating />
+          <ActivityIndicator style={styles.fillComponent} size="small" color={colors.white} animating />
         </View>
       </View>
     </>

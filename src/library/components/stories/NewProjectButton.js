@@ -8,7 +8,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const NewStoryButton = ({ navigation }) => {
+const NewProjectButton = ({ navigation }) => {
   return (
     <TouchableOpacity onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
       <LinearGradient
@@ -29,7 +29,7 @@ const NewStoryButton = ({ navigation }) => {
           paddingHorizontal: 8,
         }}
       >
-        <Text style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>Create a story or project</Text>
+        <Text style={{ ...defaultStyles.defaultMedium, color: colors.white }}>Create a project in this topic</Text>
       </View>
     </TouchableOpacity>
   );
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
     overflow: 'hidden',
-    marginLeft: 10,
+    marginLeft: 6,
   },
   linearGradient: {
     position: 'absolute',
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewStoryButton;
+export default NewProjectButton;

@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
+import { getIconFromID } from 'library/utils';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -35,7 +36,9 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
 
   // RETURN FUNCTION
   return topicsList.map(mainTopic => {
-    const { name, icon, color, topicID, children } = mainTopic;
+    const { name, topicID, children } = mainTopic;
+    const parent = getIconFromID(topicID);
+    const { icon, color } = parent;
 
     const isSelected = activeTopicIDs.includes(topicID);
     const isExpanded = selectedCategories.includes(topicID);

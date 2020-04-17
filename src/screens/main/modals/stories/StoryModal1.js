@@ -46,7 +46,7 @@ const StoryModal = ({ navigation, route }) => {
   // if reached the end of photo timelimit - go to next item
   useEffect(() => {
     if (activeItem.type === 'IMAGE' && currentTime >= IMAGE_DURATION) {
-      // incrementIndex();
+      incrementIndex();
     }
   }, [currentTime]);
 
@@ -305,51 +305,8 @@ const StoryModal = ({ navigation, route }) => {
     return null;
   };
 
-  const renderTopic = () => {
-    const { topic, projectTopics, type } = activeStory;
-    if (type === 'TOPICSTORY') {
-      return (
-        <View
-          style={{
-            height: 30,
-            paddingHorizontal: 10,
-            // borderColor: colors.white,
-            // borderWidth: StyleSheet.hairlineWidth,
-            borderRadius: 6,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(255,255,255,0.3)',
-          }}
-        >
-          <Text style={{ ...defaultStyles.defaultMedium, color: colors.white }}>{topic.name}</Text>
-        </View>
-      );
-    }
-    if (type === 'PROJECT') {
-      return projectTopics.map(({ topicID, name }) => {
-        return (
-          <View
-            key={topicID}
-            style={{
-              height: 30,
-              paddingHorizontal: 10,
-              // borderColor: colors.white,
-              // borderWidth: StyleSheet.hairlineWidth,
-              borderRadius: 6,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(255,255,255,0.3)',
-            }}
-          >
-            <Text style={{ ...defaultStyles.defaultMedium, color: colors.white }}>{name}</Text>
-          </View>
-        );
-      });
-    }
-    return null;
-  };
-
   const renderActions = () => {
+    const { title, topic } = activeStory;
     const { owner } = activeItem;
 
     return (
@@ -360,7 +317,7 @@ const StoryModal = ({ navigation, route }) => {
           colors={['transparent', colors.gray60]}
           style={styles.linearGradientBottom}
         />
-        <View style={{ width: '100%', alignItems: 'flex-end', paddingRight: 10 }}>
+        <View style={{ width: '100%', alignItems: 'flex-end', paddingRight: 10, paddingBottom: 5 }}>
           <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
             <ProfilePic size="medium" user={owner} navigation={navigation} disableVideo border borderWidth={0.5} />
             <View
@@ -379,59 +336,49 @@ const StoryModal = ({ navigation, route }) => {
               <Icon name="plus" solid size={10} color={colors.white} style={{ textAlign: 'center' }} />
             </View>
           </View>
-          <View
+          {/* <View
             style={{
               width: 50,
               height: 50,
-              marginTop: 24,
+              marginTop: 26,
               justifyContent: 'center',
               alignItems: 'center',
             }}
           >
-            <Icon name="heart" solid size={30} color="rgba(255,255,255,0.8)" />
-            <Text style={{ ...defaultStyles.smallBold, color: 'white', paddingTop: 2 }}>427</Text>
-          </View>
+            <Icon name="square" solid size={30} color={colors.white} />
+            <Text style={{ ...defaultStyles.smallBold, color: 'white' }}>Projects</Text>
+          </View> */}
           <View
             style={{
               width: 50,
               height: 50,
-              marginTop: 10,
+              marginTop: 15,
               justifyContent: 'center',
               alignItems: 'center',
             }}
           >
-            <Icon name="share" solid size={30} color="rgba(255,255,255,0.8)" />
-          </View>
-          <View
-            style={{
-              width: 50,
-              height: 50,
-              marginTop: 8,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon name="comment" solid size={30} color="rgba(255,255,255,0.8)" />
+            <Icon name="share" solid size={30} color={colors.white} />
+            <Text style={{ ...defaultStyles.smallBold, color: 'white' }}>Share</Text>
           </View>
         </View>
-      </View>
-    );
-  };
-
-  const renderTitle = () => {
-    const { title, type } = activeStory;
-
-    return (
-      <View style={styles.absoluteBottom}>
         <View style={{ width: '100%' }}>
-          <View style={{ width: '100%', paddingHorizontal: 8 }}>
-            <View style={{ flexDirection: 'column', paddingLeft: 5, alignItems: 'flex-start', paddingBottom: 10 }}>
-              {type === 'PROJECT' && (
-                <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 10 }}>
-                  {title || null}
-                </Text>
+          <View style={{ width: '100%', paddingHorizontal: 12 }}>
+            <View style={{ flexDirection: 'row', paddingLeft: 12, alignItems: 'center' }}>
+              {activeStory.type === 'TOPICSTORY' && (
+                <Ionicons
+                  name="ios-chatbubbles"
+                  size={22}
+                  color="rgba(255,255,255,0.4)"
+                  style={{ paddingRight: 8, paddingTop: 2 }}
+                />
               )}
-              {renderTopic()}
+              <Text style={{ ...defaultStyles.defaultHeavy, fontSize: 20, color: 'rgba(255,255,255,0.4)' }}>{title || null}</Text>
+            </View>
+
+            <View style={styles.sendMessageBox}>
+              <Text style={{ ...defaultStyles.defaultRegular, color: 'white' }}>
+                Send {owner.firstName && `${owner.firstName} a `}message...
+              </Text>
             </View>
           </View>
         </View>
@@ -489,7 +436,6 @@ const StoryModal = ({ navigation, route }) => {
           <TouchableOpacity onPress={incrementIndex} style={{ flex: 1 }} />
         </View>
         {!isPreview && renderActions()}
-        {!isPreview && renderTitle()}
         {renderHeader()}
       </SafeAreaView>
     </View>
@@ -519,7 +465,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     // alignItems: 'center',
-    padding: 8,
+    padding: 10,
   },
   absoluteBottom: {
     position: 'absolute',
@@ -532,10 +478,10 @@ const styles = StyleSheet.create({
   sendMessageBox: {
     flex: 1,
     height: 40,
-    borderRadius: 12,
+    borderRadius: 15,
     borderColor: colors.white,
     borderWidth: StyleSheet.hairlineWidth,
-    backgroundColor: colors.gray60,
+    backgroundColor: colors.gray30,
     justifyContent: 'center',
     paddingHorizontal: 14,
     // alignItems: 'center',

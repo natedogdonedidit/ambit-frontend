@@ -17,6 +17,8 @@ import MainDrawer from 'navigators/MainDrawer';
 import StoryModal from 'screens/main/modals/stories/StoryModal';
 import CameraModal from 'screens/main/modals/stories/CameraModal';
 import PostToModal from 'screens/main/modals/stories/PostToModal';
+import NewProjectTitleModal from 'screens/main/modals/stories/NewProjectTitleModal';
+import NewProjectTopicsModal from 'screens/main/modals/stories/NewProjectTopicsModal';
 import CreateIntroModal from 'screens/main/modals/stories/CreateIntroModal';
 import NewPostModal from 'screens/main/modals/post/NewPostModal';
 import SelectGoalModal from 'screens/main/modals/post/SelectGoalModal';
@@ -198,6 +200,20 @@ const MainStack = () => {
       <Stack.Screen
         name="PostToModal"
         component={PostToModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="NewProjectTitleModal"
+        component={NewProjectTitleModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="NewProjectTopicsModal"
+        component={NewProjectTopicsModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

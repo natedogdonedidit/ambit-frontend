@@ -7,16 +7,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import Loader from 'library/components/UI/Loader';
 
-const NewStoryButton = ({ navigation }) => {
+const NewProjectButton2 = ({ navigation, loadingCreateStory }) => {
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
-      <LinearGradient
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        colors={['transparent', 'rgba(0,0,0,0.8)']}
-        style={styles.linearGradient}
-      />
+    <View style={styles.storyBox}>
       <View style={{ top: 7, left: 7 }}>
         <Icon name="plus-circle" size={30} color={colors.purp} style={{}} />
       </View>
@@ -29,9 +24,24 @@ const NewStoryButton = ({ navigation }) => {
           paddingHorizontal: 8,
         }}
       >
-        <Text style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>Create a story or project</Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, fontSize: 13, color: colors.gray60 }}>Create a{'\n'}new project</Text>
       </View>
-    </TouchableOpacity>
+      {loadingCreateStory && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 100,
+            height: 150,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Loader loading={loadingCreateStory} size="large" color={colors.gray60} />
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -44,7 +54,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
     overflow: 'hidden',
-    marginLeft: 10,
+    marginLeft: 6,
+    backgroundColor: colors.gray12,
   },
   linearGradient: {
     position: 'absolute',
@@ -55,4 +66,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewStoryButton;
+export default NewProjectButton2;

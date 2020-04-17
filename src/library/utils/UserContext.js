@@ -15,6 +15,7 @@ const UserContext = createContext();
 const UserContextProvider = (props) => {
   const [loadingToken, setLoadingToken] = useState(true);
   const [loadingApp, setLoadingApp] = useState(true);
+  const [creatingStory, setCreatingStory] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null)
   const [unReadNotifications, setUnReadNotifications] = useState(0)
   const [unReadMessages, setUnReadMessages] = useState(0)
@@ -128,36 +129,9 @@ const UserContextProvider = (props) => {
     }
   }
 
-  // const clearUnReadMessagesForGroup = (groupID) => {
-
-
-
-  //   if (unReadMessages) {
-  //     // clear on backend synchronously
-  //     clearUnReadMessages({
-  //       variables: { groupID }, optimisticResponse: {
-  //         __typename: 'Mutation',
-  //         clearUnReadMessages: {
-  //           __typename: 'User',
-  //           unReadMessagesCount: newArrayTopicIDandType,
-  //         },
-  //       },
-  //       update: (proxy, { data: dataReturned }) => {
-  //         // console.log(dataReturned)
-  //         proxy.writeQuery({
-  //           query: CURRENT_USER_QUERY,
-  //           data: {
-  //             userLoggedIn: dataReturned.clearUnReadMessages,
-  //           },
-  //         });
-  //       },
-  //     })
-  //   }
-  // }
-
   return (
     <UserContext.Provider
-      value={{ loadingApp, currentUserId, setCurrentUserId, loginCTX, logoutCTX, unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages }}
+      value={{ loadingApp, currentUserId, setCurrentUserId, loginCTX, logoutCTX, unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages, creatingStory, setCreatingStory }}
     >
       {props.children}
     </UserContext.Provider>

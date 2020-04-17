@@ -23,7 +23,7 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
   if (loading) {
     return (
       <View style={{ height: 100, marginTop: 10 }}>
-        <Loader loading={loading} full={false} />
+        <Loader loading={loading} size="small" full={false} backgroundColor="transparent" />
       </View>
     );
   }
@@ -87,7 +87,7 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
             </TextButton>
           )}
         </View>
-        <Projects projects={user.projects} />
+        <Projects navigation={navigation} projects={user.projects} />
       </View>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader }}>

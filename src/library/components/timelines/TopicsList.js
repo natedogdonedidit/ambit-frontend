@@ -7,7 +7,7 @@ import { useQuery } from '@apollo/react-hooks';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
-import { getParentTopicFromID } from 'library/utils';
+import { getParentTopicFromID, getIconFromID } from 'library/utils';
 import Section from 'library/components/UI/Section';
 import TextButton from 'library/components/UI/buttons/TextButton';
 
@@ -78,8 +78,8 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
       renderItem={({ item, section }) => {
         if (section.title === 'My Topics') {
           const { name, topicID } = item;
+          const { icon, color } = getIconFromID(topicID);
           const parent = getParentTopicFromID(topicID);
-          const { icon, color } = parent;
 
           const isSubTopic = parent.topicID !== topicID;
           const subTopic = isSubTopic ? topicID : null;
@@ -116,7 +116,8 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
           );
         }
         if (section.title === 'More Topics') {
-          const { name, topicID, icon, color } = item;
+          const { name, topicID } = item;
+          const { icon, color } = getIconFromID(topicID);
 
           return (
             <View key={topicID} style={styles.categorySection}>

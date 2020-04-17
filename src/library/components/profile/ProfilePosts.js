@@ -60,7 +60,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
     return (
       <>
         <View style={{ height: 100, width: '100%', marginTop: 10 }}>
-          <Loader loading={loading} full={false} />
+          <Loader loading={loading} size="small" full={false} backgroundColor="transparent" />
         </View>
         <View style={{ width: '100%', height: 700 }} />
       </>

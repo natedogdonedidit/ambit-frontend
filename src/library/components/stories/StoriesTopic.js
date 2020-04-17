@@ -7,27 +7,28 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import { getTopicIDsFromUser, getNetworkIDsFromUser } from 'library/utils';
 
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import Loader from 'library/components/UI/Loader';
 import ProfilePic from 'library/components/UI/ProfilePic';
-import NewStoryButton from 'library/components/stories/NewStoryButton';
 import StoryBox from 'library/components/stories/StoryBox';
+import NewProjectButton from 'library/components/stories/NewProjectButton';
 
-const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingStories }) => {
+const StoriesTopic = ({ navigation, refetching, topicID }) => {
+  // QUERIES
   const {
     error: errorStories,
     data: dataStories,
     refetch: refetchStories,
     fetchMore: fetchMoreStories,
     networkStatus: networkStatusStories,
-  } = useQuery(STORIES_HOME_QUERY, {
+  } = useQuery(STORIES_TOPIC_QUERY, {
+    variables: {
+      topicID,
+    },
     notifyOnNetworkStatusChange: true,
   });
-
-  const refetchingStories = networkStatusStories === 4;
-  const fetchingMoreStories = networkStatusStories === 3;
-  const loadingStories = networkStatusStories === 1;
 
   useEffect(() => {
     if (networkStatusStories === 7 && refetching) {
@@ -35,30 +36,17 @@ const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingS
     }
   }, [refetching]);
 
-  // pass loading state to HomeTimeline
-  useEffect(() => {
-    setLoadingStories(loadingStories);
-  }, [loadingStories]);
-
-  // pass refetching state to HomeTimeline
-  useEffect(() => {
-    setRefetchingStories(refetchingStories);
-  }, [refetchingStories]);
+  const refetchingStories = networkStatusStories === 4;
+  const fetchingMoreStories = networkStatusStories === 3;
+  const loadingStories = networkStatusStories === 1;
 
   const renderStories = () => {
-    if (loadingStories) {
-      return null;
-      // <View style={{ width: 100, height: 150 }}>
-      //   <Loader size="small" loading={loadingStories} backgroundColor="transparent" full={false} />
-      // </View>
-    }
-
     if (errorStories) {
       console.log(errorStories);
       return null;
     }
 
-    const stories = dataStories.storiesHome;
+    const stories = dataStories.storiesTopic;
     // console.log('stories', stories);
 
     if (stories.length > 0) {
@@ -72,14 +60,18 @@ const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingS
     return null;
   };
 
+  if (loadingStories) {
+    return null;
+  }
+
   return (
     <ScrollView
       horizontal
       style={styles.stories}
-      contentContainerStyle={{ paddingVertical: 10, paddingRight: 10 }}
+      contentContainerStyle={{ paddingVertical: 10 }}
       showsHorizontalScrollIndicator={false}
     >
-      <NewStoryButton navigation={navigation} />
+      <NewProjectButton navigation={navigation} />
       {renderStories()}
     </ScrollView>
   );
@@ -96,4 +88,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StoriesHome;
+export default StoriesTopic;

@@ -6,6 +6,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import topicQueries from 'library/queries/TOPIC_POSTS_QUERY'; // comes in as an object
 import Loader from 'library/components/UI/Loader';
+import StoriesTopic from 'library/components/stories/StoriesTopic';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
@@ -56,14 +57,7 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         refreshing={refetching}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
-        ListHeaderComponent={
-          <View
-            style={[
-              { height: 15 },
-              posts.length > 0 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack },
-            ]}
-          />
-        }
+        ListHeaderComponent={<StoriesTopic topicID={activeSubTopic} navigation={navigation} refetching={refetching} />}
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no posts yet for this topic

@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeArea, initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -25,8 +25,14 @@ const HomeScreen = ({ navigation }) => {
 
   // OTHER HOOKS
   const insets = useSafeArea();
+  const [top] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
+  // console.log(top);
+  // console.log(initialWindowSafeAreaInsets);
+  // const stuff = initialWindowSafeAreaInsets();
+  // console.log(initialWindowSafeAreaInsets);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -52,8 +58,9 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={{ ...styles.container, paddingTop: insets.top }}>
+    <View style={{ ...styles.container, paddingTop: top }}>
       <StatusBar barStyle="dark-content" />
+
       <ScrollView
         // horizontal scrollView
         ref={horizontalScrollRef}
@@ -110,7 +117,7 @@ const HomeScreen = ({ navigation }) => {
       >
         <Animated.View
           style={{
-            paddingTop: insets.top,
+            paddingTop: top,
           }}
         >
           <HeaderHome
@@ -127,7 +134,7 @@ const HomeScreen = ({ navigation }) => {
       <View
         style={{
           ...styles.statusBar,
-          height: insets.top,
+          height: top,
         }}
       />
     </View>
