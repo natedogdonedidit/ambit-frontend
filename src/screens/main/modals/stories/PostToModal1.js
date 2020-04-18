@@ -24,7 +24,6 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import ProjectSquare from 'library/components/stories/ProjectSquare';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-import ADD_TO_STORY_MUTATION from 'library/mutations/ADD_TO_STORY_MUTATION';
 import CREATE_STORY_ITEM_MUTATION from 'library/mutations/CREATE_STORY_ITEM_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 

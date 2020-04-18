@@ -11,9 +11,10 @@ const Projects = ({ navigation, projects }) => {
 
   const renderProjects = () => {
     return projects.map(project => {
-      if (project.items.length > 0) {
-        return <StoryBox key={project.id} navigation={navigation} story={project} />;
+      if (project.items.length > 0 && (project.type === 'SOLO' || project.type === 'PROJECT')) {
+        return <StoryBox key={project.id} navigation={navigation} story={project} showProfilePic={false} />;
       }
+      return null;
     });
   };
 

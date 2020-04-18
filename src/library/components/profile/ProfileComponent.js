@@ -11,7 +11,7 @@ import NameBox from 'library/components/profile/NameBox';
 import ProfileTabs from 'library/components/profile/ProfileTabs';
 import ProfileBio from 'library/components/profile/ProfileBio';
 import ProfilePosts from 'library/components/profile/ProfilePosts';
-import ProfileNetwork from 'library/components/profile/ProfileNetwork';
+import ProfileGrid from 'library/components/profile/ProfileGrid';
 
 const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
 
@@ -34,7 +34,9 @@ const ProfileComponent = ({
   const [tabPosition, setTabPosition] = useState(0);
   const { currentUserId } = useContext(UserContext);
   const insets = useSafeArea();
-  const tabScrollDistance = tabPosition - insets.top - HEADER_HEIGHT;
+  const [top] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+
+  const tabScrollDistance = tabPosition - top - HEADER_HEIGHT;
   const SCROLLVIEW_PADDING_TOP = OUTSIDE_HEADER_HEIGHT;
 
   // CALCULATED
@@ -53,7 +55,7 @@ const ProfileComponent = ({
           position: 'absolute',
           top: OUTSIDE_HEADER_HEIGHT,
           width: '100%',
-          height: BANNER_HEIGHT + insets.top,
+          height: BANNER_HEIGHT + top,
           transform: [
             {
               scale: scrollY.interpolate({
@@ -99,7 +101,7 @@ const ProfileComponent = ({
         <View
           style={{
             // a clear view so you can see the banner behind it
-            height: BANNER_HEIGHT + insets.top,
+            height: BANNER_HEIGHT + top,
             width: '100%',
             backgroundColor: 'transparent',
           }}
@@ -124,7 +126,8 @@ const ProfileComponent = ({
             setModalVisibleSkills={nullFunction}
           />
         )}
-        {tabState === 1 && (
+        {tabState === 1 && <ProfileGrid navigation={navigation} isMyProfile={isMyProfile} profileId={profileId} />}
+        {tabState === 2 && (
           <ProfilePosts
             setModalVisibleEditPost={nullFunction}
             setPostToEdit={nullFunction}
@@ -133,7 +136,6 @@ const ProfileComponent = ({
             profileId={profileId}
           />
         )}
-        {tabState === 2 && <ProfileNetwork />}
       </Animated.ScrollView>
 
       {/* Profile Tabs */}
@@ -167,9 +169,9 @@ const ProfileComponent = ({
           justifyContent: 'center',
           alignItems: 'center',
           width: '100%',
-          height: HEADER_HEIGHT + insets.top,
+          height: HEADER_HEIGHT + top,
           backgroundColor: colors.blueGray,
-          paddingTop: insets.top,
+          paddingTop: top,
           opacity: scrollY.interpolate({
             inputRange: [0, 100],
             outputRange: [0, 1],
@@ -186,7 +188,7 @@ const ProfileComponent = ({
         <View
           style={{
             position: 'absolute',
-            top: 8 + insets.top,
+            top: 8 + top,
             left: 20,
             width: 30,
             height: 30,

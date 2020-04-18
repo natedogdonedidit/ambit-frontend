@@ -40,8 +40,8 @@ const ProfilePic = ({
 
   let hasStory = false;
   if (user) {
-    if (user.story) {
-      if (user.story.items.length > 0) {
+    if (user.myStory) {
+      if (user.myStory.items.length > 0) {
         hasStory = true;
       }
     }
@@ -125,7 +125,7 @@ const ProfilePic = ({
           style={styles.introBorder}
           onPress={() =>
             navigation.navigate('StoryModal', {
-              story: hasStory ? user.story : null,
+              story: hasStory ? user.myStory : null,
               intro: hasIntro ? user.intro : null,
             })
           }

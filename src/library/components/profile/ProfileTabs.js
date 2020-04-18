@@ -7,17 +7,28 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
+import Lines from 'library/components/UI/icons/Lines';
+
 const ProfileTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['user', 'bars', 'images'];
+  const tabNames = ['user', 'lines', 'bars'];
   // const tabNames = ['Bio', 'Posts', 'Media'];
 
   const renderTabs = () => {
     return tabNames.map((tabName, i) => {
+      if (tabName === 'lines') {
+        return (
+          <View key={i} style={tabState === i ? styles.tabSelected : styles.tab}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => setTabState(i)} style={styles.touchable}>
+              <Lines />
+            </TouchableOpacity>
+          </View>
+        );
+      }
+
       return (
         <View key={i} style={tabState === i ? styles.tabSelected : styles.tab}>
-          <TouchableOpacity onPress={() => setTabState(i)} style={styles.touchable}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => setTabState(i)} style={styles.touchable}>
             <Icon name={tabName} solid={tabName === 'user'} size={18} color={colors.blueGray} />
-            {/* <Text style={tabState === i ? styles.tabSelectedText : styles.tabText}>{tabName}</Text> */}
           </TouchableOpacity>
         </View>
       );

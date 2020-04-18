@@ -19,6 +19,7 @@ import CameraModal from 'screens/main/modals/stories/CameraModal';
 import PostToModal from 'screens/main/modals/stories/PostToModal';
 import NewProjectTitleModal from 'screens/main/modals/stories/NewProjectTitleModal';
 import NewProjectTopicsModal from 'screens/main/modals/stories/NewProjectTopicsModal';
+import SelectStoryTopicsModal from 'screens/main/modals/stories/SelectStoryTopicsModal';
 import CreateIntroModal from 'screens/main/modals/stories/CreateIntroModal';
 import NewPostModal from 'screens/main/modals/post/NewPostModal';
 import SelectGoalModal from 'screens/main/modals/post/SelectGoalModal';
@@ -214,6 +215,13 @@ const MainStack = () => {
       <Stack.Screen
         name="NewProjectTopicsModal"
         component={NewProjectTopicsModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="SelectStoryTopicsModal"
+        component={SelectStoryTopicsModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

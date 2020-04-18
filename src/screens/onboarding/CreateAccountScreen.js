@@ -60,7 +60,7 @@ const CreateAccountScreen = props => {
       setPassword('');
 
       // 4. navigate to Onboarding (changing to Main for now)
-      navigation.navigate('Main');
+      // navigation.navigate('Main');
     } catch (e) {
       // Backend GraphQL errors would lead us here
       console.log('ERROR SIGNING UP IN BACKEND:', e.message);
@@ -112,7 +112,7 @@ const CreateAccountScreen = props => {
 
       {renderErrors(error)}
 
-      <NavigationEvents
+      {/* <NavigationEvents
         onDidFocus={() => {
           setFirstName('');
           setLastName('');
@@ -125,7 +125,7 @@ const CreateAccountScreen = props => {
           setEmail('');
           setPassword('');
         }}
-      />
+      /> */}
     </View>
   );
 };

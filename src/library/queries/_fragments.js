@@ -14,11 +14,9 @@ export const StoryFragment = gql`
     }
     type
     preview
-    topic {
-      name
-      topicID
-    }
-    projectTopics {
+    showcase
+    save
+    topics {
       name
       topicID
     }
@@ -39,10 +37,6 @@ export const StoryFragment = gql`
       link
       text
       duration
-      topics {
-        name
-        topicID
-      }
     }
   }
 `;
@@ -86,7 +80,7 @@ export const MinimalUser = gql`
     intro {
       ...StoryFragment
     }
-    story {
+    myStory {
       ...StoryFragment
     }
   }
@@ -357,7 +351,7 @@ export const DetailedUser = gql`
     education {
       ...FullEducation
     }
-    projects {
+    stories {
       ...StoryFragment
     }
   }

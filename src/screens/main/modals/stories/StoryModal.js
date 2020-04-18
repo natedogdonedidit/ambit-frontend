@@ -46,7 +46,7 @@ const StoryModal = ({ navigation, route }) => {
   // if reached the end of photo timelimit - go to next item
   useEffect(() => {
     if (activeItem.type === 'IMAGE' && currentTime >= IMAGE_DURATION) {
-      // incrementIndex();
+      incrementIndex();
     }
   }, [currentTime]);
 
@@ -73,7 +73,7 @@ const StoryModal = ({ navigation, route }) => {
   }, [activeIndex, showIntroPreview]);
 
   if (isEmpty) {
-    navigation.navigate('Home');
+    navigation.goBack();
   }
 
   // VIDEO PLAYER CALLBACKS
@@ -92,8 +92,8 @@ const StoryModal = ({ navigation, route }) => {
   // CUSTOM FUNCTIONS
 
   const incrementIndex = () => {
+    setCurrentTime(0);
     if (activeIndex < items.length - 1) {
-      setCurrentTime(0);
       setActiveIndex(prevState => prevState + 1);
     }
 
@@ -104,12 +104,11 @@ const StoryModal = ({ navigation, route }) => {
         if (intro.items.length > 0) {
           setActiveStory(intro);
           setActiveIndex(0);
-          setCurrentTime(0);
           setShowIntroPreview(true);
         }
       } else {
         // if there is no intro to play...then close the modal
-        navigation.navigate('Home');
+        navigation.goBack();
       }
     }
   };
@@ -133,7 +132,8 @@ const StoryModal = ({ navigation, route }) => {
       setActiveStory(story);
       setActiveIndex(story.items.length - 1);
     } else {
-      navigation.navigate('Home');
+      // navigation.navigate('Home');
+      navigation.goBack();
     }
   };
 
@@ -306,46 +306,33 @@ const StoryModal = ({ navigation, route }) => {
   };
 
   const renderTopic = () => {
-    const { topic, projectTopics, type } = activeStory;
-    if (type === 'TOPICSTORY') {
+    const { topics, type } = activeStory;
+
+    if (topics.length > 0) {
       return (
-        <View
-          style={{
-            height: 30,
-            paddingHorizontal: 10,
-            // borderColor: colors.white,
-            // borderWidth: StyleSheet.hairlineWidth,
-            borderRadius: 6,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(255,255,255,0.3)',
-          }}
-        >
-          <Text style={{ ...defaultStyles.defaultMedium, color: colors.white }}>{topic.name}</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          {topics.map(({ topicID, name }) => {
+            return (
+              <View
+                key={topicID}
+                style={{
+                  height: 30,
+                  paddingHorizontal: 10,
+                  borderRadius: 6,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255,255,255,0.3)',
+                  marginRight: 6,
+                }}
+              >
+                <Text style={{ ...defaultStyles.defaultMedium, color: colors.white }}>{name}</Text>
+              </View>
+            );
+          })}
         </View>
       );
     }
-    if (type === 'PROJECT') {
-      return projectTopics.map(({ topicID, name }) => {
-        return (
-          <View
-            key={topicID}
-            style={{
-              height: 30,
-              paddingHorizontal: 10,
-              // borderColor: colors.white,
-              // borderWidth: StyleSheet.hairlineWidth,
-              borderRadius: 6,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(255,255,255,0.3)',
-            }}
-          >
-            <Text style={{ ...defaultStyles.defaultMedium, color: colors.white }}>{name}</Text>
-          </View>
-        );
-      });
-    }
+
     return null;
   };
 

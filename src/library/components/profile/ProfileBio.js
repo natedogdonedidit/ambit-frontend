@@ -80,14 +80,14 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
       </View>
       <View style={{ ...styles.projectsSection }}>
         <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
-          <Text style={{ ...defaultStyles.hugeMedium, paddingBottom: 10 }}>Projects</Text>
+          <Text style={{ ...defaultStyles.hugeMedium, paddingBottom: 6 }}>Showcase</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => null}>
               New
             </TextButton>
           )}
         </View>
-        <Projects navigation={navigation} projects={user.projects} />
+        <Projects navigation={navigation} projects={user.stories} />
       </View>
       <View style={styles.contentSection}>
         <View style={{ ...styles.contentHeader }}>
