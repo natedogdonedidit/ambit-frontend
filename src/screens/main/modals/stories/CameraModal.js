@@ -127,8 +127,8 @@ const CameraModal = ({ navigation, route }) => {
           </View>
 
           <View style={styles.sendButton}>
-            <TouchableOpacity onPress={handleSendTo} style={styles.sendButtonView}>
-              <Text style={{ ...defaultStyles.largeMedium }}>Post to</Text>
+            <TouchableOpacity activeOpacity={0.8} onPress={handleSendTo} style={styles.sendButtonView}>
+              <Text style={{ ...defaultStyles.largeMedium }}>Share to</Text>
               <Feather name="chevron-right" size={26} color={colors.purp} style={{ paddingTop: 4 }} />
             </TouchableOpacity>
           </View>
@@ -156,8 +156,8 @@ const CameraModal = ({ navigation, route }) => {
           </View>
 
           <View style={styles.sendButton}>
-            <TouchableOpacity onPress={handleSendTo} style={styles.sendButtonView}>
-              <Text style={{ ...defaultStyles.hugeRegular }}>Post to</Text>
+            <TouchableOpacity activeOpacity={0.8} onPress={handleSendTo} style={styles.sendButtonView}>
+              <Text style={{ ...defaultStyles.hugeRegular }}>Share to</Text>
               <Feather name="chevron-right" size={30} color={colors.purp} style={{ paddingTop: 4 }} />
             </TouchableOpacity>
           </View>
@@ -262,6 +262,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 15,
     right: 15,
+
+    shadowOffset: { width: 0, height: 0 },
+    shadowColor: 'black',
+    shadowOpacity: 0.3,
+    shadowRadius: 14,
   },
   sendButtonView: {
     flexDirection: 'row',

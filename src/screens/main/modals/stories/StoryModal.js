@@ -1,52 +1,110 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, StatusBar, Image, Dimensions } from 'react-native';
-import Video from 'react-native-video';
-import { useQuery } from '@apollo/react-hooks';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { timeDifference } from 'library/utils';
-import LinearGradient from 'react-native-linear-gradient';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, StatusBar, Alert } from 'react-native';
+import { useMutation } from '@apollo/react-hooks';
+import { differenceInHours } from 'date-fns';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { UserContext } from 'library/utils/UserContext';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
-import Loader from 'library/components/UI/Loader';
+import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
+import DELETE_STORY_MUTATION from 'library/mutations/DELETE_STORY_MUTATION';
+import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+
+import StoryTapRegions from 'library/components/stories/StoryTapRegions';
+import StoryImage from 'library/components/stories/StoryImage';
+import TopLinearFade from 'library/components/stories/TopLinearFade';
+import BottomLinearFade from 'library/components/stories/BottomLinearFade';
+import StoryProgressBars from 'library/components/stories/StoryProgressBars';
+import StoryHeader from 'library/components/stories/StoryHeader';
+import StoryFooter from 'library/components/stories/StoryFooter';
 
 const IMAGE_DURATION = 2;
 
 const StoryModal = ({ navigation, route }) => {
   const { isPreview = false, story = null, intro = null } = route.params;
+  const { currentUserId } = useContext(UserContext);
 
   const videoRef = useRef(null);
-  const { height, width } = Dimensions.get('window');
 
   // STATE
   const [hasError, setHasError] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [timeOfDay, setTimeOfDay] = useState(new Date());
+
   const [activeStory, setActiveStory] = useState(story || intro);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
   const [showIntroPreview, setShowIntroPreview] = useState(false);
+  const [indexAddedToProfile, setIndexAddedToProfile] = useState([]);
+  const [includedInProject, setIncludedInProject] = useState(false);
+  const [includedInMyStory, setIncludedInMyStory] = useState(false);
+  const [includedInSolo, setIncludedInSolo] = useState(false);
+  const [soloStory, setSoloStory] = useState(null);
+  const [paused, setPaused] = useState(false);
 
-  // console.log(new Date());
+  // so I can read paused in my setInterval
+  const pausedRef = useRef(paused);
+  pausedRef.current = paused;
 
   // VARIABLES
   const { items } = activeStory;
   const isEmpty = items.length < 1;
   const activeItem = { ...items[activeIndex] };
-  const storyLength = items.reduce((total, item) => {
-    const length = Math.max(item.duration || IMAGE_DURATION, 10); // minimum of 10
-    return total + length;
-  }, 0);
+  const isMyPost = activeItem.owner.id === currentUserId;
+
+  // MUTATIONS
+  const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
+    // onCompleted: () => {},
+    onError: error => {
+      console.log(error);
+      Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
+  });
+
+  const [deleteStory] = useMutation(DELETE_STORY_MUTATION, {
+    // onCompleted: () => {},
+    onError: error => {
+      console.log(error);
+      Alert.alert('Oh no!', 'An error occured when trying to delete your story. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
+  });
 
   // EFFECTS
+
+  // this is so when you open the "More" modal, the story unpauses when re-focused
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (pausedRef.current) {
+        setPaused(false);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  // update heavy computation stuff only once when activeIndex changes
+  // this stuff is mainly for deciding what to render in "More" modal
+  useEffect(() => {
+    const now = new Date();
+    const solo = activeItem.stories.find(s => s.type === 'SOLO');
+    setSoloStory(solo);
+    setIncludedInSolo(!!solo);
+    setIncludedInProject(!!activeItem.stories.find(s => s.type === 'PROJECT'));
+    setIncludedInMyStory(
+      !!activeItem.stories.find(s => s.type === 'MYSTORY' && differenceInHours(now, new Date(activeItem.createdAt)) < 24)
+    );
+  }, [activeItem]);
 
   // if reached the end of photo timelimit - go to next item
   useEffect(() => {
     if (activeItem.type === 'IMAGE' && currentTime >= IMAGE_DURATION) {
-      incrementIndex();
+      // incrementIndex();
     }
   }, [currentTime]);
 
@@ -59,7 +117,9 @@ const StoryModal = ({ navigation, route }) => {
       // increment the timer ever X seconds
       const intervalID = setInterval(() => {
         if (activeItem.type === 'IMAGE') {
-          setCurrentTime(prevState => prevState + 0.01);
+          if (!pausedRef.current) {
+            setCurrentTime(prevState => prevState + 0.01);
+          }
         }
       }, 10);
 
@@ -90,7 +150,6 @@ const StoryModal = ({ navigation, route }) => {
   };
 
   // CUSTOM FUNCTIONS
-
   const incrementIndex = () => {
     setCurrentTime(0);
     if (activeIndex < items.length - 1) {
@@ -137,299 +196,354 @@ const StoryModal = ({ navigation, route }) => {
     }
   };
 
+  const engagePause = () => {
+    if (!paused) {
+      // console.log('setting paused to TRUE');
+      setPaused(true);
+    }
+  };
+
+  const disengagePause = () => {
+    if (paused) {
+      // console.log('setting paused to FALSE');
+      setPaused(false);
+    }
+  };
+
+  const handleDoubleTap = () => {};
+
+  const handleAddToProfile = () => {
+    if (includedInSolo) {
+      setIndexAddedToProfile([...indexAddedToProfile, activeIndex]);
+      updateStory({
+        variables: {
+          id: soloStory.id,
+          story: {
+            save: true,
+          },
+        },
+        refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
+      });
+    }
+  };
+
+  // functions for "More" modal
+  const removeFromProject = () => {
+    Alert.alert(`Are you sure you want to remove this ${activeItem.type.toLowerCase()} from your project?`, '', [
+      {
+        text: 'Remove',
+        onPress: () => {
+          navigation.goBack(); // close options modal
+
+          // make new array for optimistic response
+          const newItemsArray = [...activeStory.items];
+
+          // remove it
+          newItemsArray.splice(activeIndex, 1);
+
+          updateStory({
+            variables: {
+              id: activeStory.id,
+              story: {
+                items: { disconnect: [{ id: activeItem.id }] },
+              },
+            },
+            optimisticResponse: {
+              __typename: 'Mutation',
+              updateStory: {
+                __typename: 'Story',
+                ...activeStory,
+                items: newItemsArray,
+              },
+            },
+            refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
+          });
+
+          navigation.goBack(); // close story modal
+        },
+      },
+      { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
+      { cancelable: true },
+    ]);
+  };
+  const removeFromMyStory = () => {
+    Alert.alert(`Are you sure you want to remove this ${activeItem.type.toLowerCase()} from your story?`, '', [
+      {
+        text: 'Remove',
+        onPress: () => {
+          navigation.goBack(); // close options modal
+
+          // make new array for optimistic response
+          const newItemsArray = [...activeStory.items];
+
+          // remove it
+          newItemsArray.splice(activeIndex, 1);
+
+          updateStory({
+            variables: {
+              id: activeStory.id,
+              story: {
+                items: { disconnect: [{ id: activeItem.id }] },
+              },
+            },
+            optimisticResponse: {
+              __typename: 'Mutation',
+              updateStory: {
+                __typename: 'Story',
+                ...activeStory,
+                items: newItemsArray,
+              },
+            },
+            refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
+          });
+
+          navigation.goBack(); // close story modal
+        },
+      },
+      { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
+      { cancelable: true },
+    ]);
+  };
+  const removeFromMyProfile = () => {
+    Alert.alert(`Are you sure you want to remove this ${activeItem.type.toLowerCase()} from your profile?`, '', [
+      {
+        text: 'Remove',
+        onPress: () => {
+          navigation.goBack(); // close options modal
+
+          // make new array for optimistic response
+          const newItemsArray = [...activeStory.items];
+
+          // remove it
+          newItemsArray.splice(activeIndex, 1);
+
+          updateStory({
+            variables: {
+              id: activeStory.id,
+              story: {
+                save: false,
+              },
+            },
+            optimisticResponse: {
+              __typename: 'Mutation',
+              updateStory: {
+                __typename: 'Story',
+                ...activeStory,
+                save: false,
+              },
+            },
+            refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
+          });
+
+          navigation.goBack(); // close story modal
+        },
+      },
+      { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
+      { cancelable: true },
+    ]);
+  };
+  const deleteStoryForGood = () => {
+    Alert.alert(`Are you sure you want to delete this ${activeItem.type.toLowerCase()} for good?`, '', [
+      {
+        text: 'Delete',
+        onPress: () => {
+          navigation.goBack(); // close options modal
+
+          deleteStory({
+            variables: {
+              id: activeStory.id,
+            },
+            refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
+          });
+
+          navigation.goBack(); // close story modal
+        },
+      },
+      { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
+      { cancelable: true },
+    ]);
+  };
+  const removeFromIntro = () => {};
+
+  const determineOptions = () => {
+    if (activeStory.type === 'PROJECT') {
+      return [
+        {
+          text: 'Remove from Project',
+          color: colors.peach,
+          onPress: removeFromProject,
+        },
+      ];
+    }
+    if (activeStory.type === 'MYSTORY') {
+      return [
+        {
+          text: 'Remove from My Story',
+          color: colors.peach,
+          onPress: removeFromMyStory,
+        },
+      ];
+    }
+    if (activeStory.type === 'SOLO') {
+      // if active SOLO but still exists on MYSTORY
+      if (includedInMyStory) {
+        return [
+          {
+            text: 'Remove from My Profile',
+            color: colors.peach,
+            onPress: removeFromMyProfile,
+          },
+        ];
+      }
+
+      if (activeItem.type === 'VIDEO') {
+        return [
+          {
+            text: 'Delete Video',
+            color: colors.peach,
+            onPress: deleteStoryForGood,
+          },
+        ];
+      }
+
+      // if SOLO and only exists on Profile - delete for good
+      return [
+        {
+          text: 'Delete Image',
+          color: colors.peach,
+          onPress: deleteStoryForGood,
+        },
+      ];
+    }
+    if (activeStory.type === 'INTRO') {
+      return [
+        {
+          text: 'Delete',
+          color: colors.peach,
+          onPress: removeFromIntro,
+        },
+      ];
+    }
+    return [];
+  };
+
+  // const determineOptionsOLD = () => {
+  //   if (activeStory.type === 'PROJECT') {
+  //     // if active PROJECT and also in MYSTORY
+  //     if (includedInMyStory) {
+  //       return [
+  //         {
+  //           text: 'Remove from Project',
+  //           color: colors.peach,
+  //           onPress: removeFromProject,
+  //         },
+  //       ];
+  //     }
+  //     // if only in PROJECT
+  //     return [
+  //       {
+  //         text: 'Remove from Project',
+  //         color: colors.peach,
+  //         onPress: removeFromProject,
+  //       },
+  //     ];
+  //   }
+  //   if (activeStory.type === 'MYSTORY') {
+  //     if (includedInSolo) {
+  //       // if also saved to Profile
+  //       if (soloStory.save) {
+  //         return [
+  //           {
+  //             text: 'Remove from My Story',
+  //             color: colors.peach,
+  //             onPress: removeFromMyStory,
+  //           },
+  //         ];
+  //       }
+  //       // include in My Story only (not saved to profile)
+  //       return [
+  //         {
+  //           text: 'Remove from My Story',
+  //           color: colors.peach,
+  //           onPress: removeFromMyStory,
+  //         },
+  //       ];
+  //     }
+
+  //     // if active MYSTORY and also in PROJECT
+  //     if (includedInProject) {
+  //       return [
+  //         {
+  //           text: 'Remove from My Story',
+  //           color: colors.peach,
+  //           onPress: removeFromMyStory,
+  //         },
+  //       ];
+  //     }
+  //   } else if (activeStory.type === 'SOLO') {
+  //     // if active SOLO but still exists on MYSTORY
+  //     if (includedInMyStory) {
+  //       return [
+  //         {
+  //           text: 'Remove from My Profile',
+  //           color: colors.peach,
+  //           onPress: removeFromMyProfile,
+  //         },
+  //       ];
+  //     }
+
+  //     // if SOLO and only exists on Profile
+  //     if (activeItem.type === 'IMAGE') {
+  //       return [
+  //         {
+  //           text: 'Delete Image',
+  //           color: colors.peach,
+  //           onPress: deleteImageFromProfile,
+  //         },
+  //       ];
+  //     }
+
+  //     if (activeItem.type === 'VIDEO') {
+  //       return [
+  //         {
+  //           text: 'Delete Video',
+  //           color: colors.peach,
+  //           onPress: deleteVideoFromProfile,
+  //         },
+  //       ];
+  //     }
+
+  //     return [
+  //       {
+  //         text: 'Delete',
+  //         color: colors.peach,
+  //         onPress: deleteImageFromProfile,
+  //       },
+  //     ];
+  //   } else if (activeStory.type === 'INTRO') {
+  //     return [
+  //       {
+  //         text: 'Delete',
+  //         color: colors.peach,
+  //         onPress: deleteItemFromIntro,
+  //       },
+  //     ];
+  //   }
+  //   return [];
+  // };
+
+  const handleMoreButton = () => {
+    engagePause();
+    const options = determineOptions();
+    navigation.navigate('SelectorModal', { options });
+  };
+
   // RENDER FUNCTIONS
-  const renderProgressBars = () => {
-    return items.map((item, i) => {
-      const length = Math.max(item.duration || IMAGE_DURATION, 10); // minimum of 10. ex: if dur of video is 2s, dur = 10
-      const ratio = length / storyLength;
-      const usableWidth = width - 15; // because there is padding on the left side of the parent View
-      const itemWidth = ratio * usableWidth;
-
-      // if its already been viewed
-      if (i < activeIndex) {
-        return (
-          <View
-            key={i}
-            style={{
-              height: 3,
-              width: itemWidth - 2, // -10 bc marginRight
-              borderRadius: 1.5,
-              marginRight: 2,
-              backgroundColor: 'white',
-            }}
-          />
-        );
-      }
-
-      // if its being viewed right now
-      if (i === activeIndex) {
-        let r = 0;
-        if (activeItem.type === 'IMAGE') {
-          r = currentTime / IMAGE_DURATION;
-        }
-        if (activeItem.type === 'VIDEO') {
-          r = currentTime / activeItem.duration;
-        }
-        // console.log(currentTime);
-        const w = (itemWidth - 2) * r;
-
-        return (
-          <View
-            key={i}
-            style={{
-              height: 3,
-              width: itemWidth - 2, // -10 bc marginRight
-              borderRadius: 1.5,
-              marginRight: 2,
-              backgroundColor: 'rgba(0,0,0,0.3)',
-              overflow: 'hidden',
-            }}
-          >
-            <View
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                height: 3,
-                width: w, // -10 bc marginRight
-                borderRadius: 1.5,
-                // marginRight: 5,
-                backgroundColor: 'white',
-              }}
-            />
-          </View>
-        );
-      }
-
-      // if it has yet to be viewed
-      if (i > activeIndex) {
-        return (
-          <View
-            key={i}
-            style={{
-              height: 3,
-              width: itemWidth - 2, // -10 bc marginRight
-              borderRadius: 1.5,
-              marginRight: 2,
-              backgroundColor: 'rgba(0,0,0,0.3)',
-            }}
-          />
-        );
-      }
-    });
-  };
-
-  const renderStory = () => {
-    const { type, url } = activeItem;
-
-    if (type === 'IMAGE') {
-      return <Image source={{ uri: url }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />;
-    }
-    if (type === 'VIDEO') {
-      return (
-        <Video
-          source={{ uri: url }}
-          ref={videoRef}
-          style={{ height: '100%', width: '100%' }}
-          resizeMode="cover"
-          progressUpdateInterval={100}
-          onProgress={onProgress}
-          onBuffer={onBuffer}
-          onEnd={onVideoEnd}
-        />
-      );
-    }
-    return <Text>Oopsss</Text>;
-  };
-
-  const renderHeader = () => {
-    const { owner } = activeItem;
-
-    if (owner) {
-      const createdAt = new Date(activeItem.createdAt);
-      const { timeDiff, period } = timeDifference(timeOfDay, createdAt);
-
-      return (
-        <View style={styles.absoluteTop}>
-          <SafeAreaView>
-            <LinearGradient
-              start={{ x: 0.5, y: 0 }}
-              end={{ x: 0.5, y: 1 }}
-              colors={[colors.gray60, 'transparent']}
-              style={styles.linearGradientTop}
-            />
-            <View
-              style={{
-                width: '100%',
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingLeft: 10,
-                paddingRight: 5,
-                paddingTop: 5,
-              }}
-            >
-              {renderProgressBars()}
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                if (!isPreview) navigation.navigate('Profile', { profileId: owner.id });
-              }}
-            >
-              <View style={styles.header}>
-                <ProfilePic size="small" user={owner} navigation={navigation} disableVideo />
-                <View>
-                  <Text style={{ ...defaultStyles.defaultBold, color: 'white', paddingLeft: 8 }}>{owner.name}</Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white', paddingLeft: 8 }}>
-                      {owner.headline}
-                    </Text>
-                    <Icon
-                      name="circle"
-                      solid
-                      size={2}
-                      color={colors.white}
-                      style={{ alignSelf: 'center', paddingHorizontal: 5 }}
-                    />
-                    <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>
-                      {timeDiff} {period}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </SafeAreaView>
-        </View>
-      );
-    }
-
-    return null;
-  };
-
-  const renderTopic = () => {
-    const { topics, type } = activeStory;
-
-    if (topics.length > 0) {
-      return (
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-          {topics.map(({ topicID, name }) => {
-            return (
-              <View
-                key={topicID}
-                style={{
-                  height: 30,
-                  paddingHorizontal: 10,
-                  borderRadius: 6,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(255,255,255,0.3)',
-                  marginRight: 6,
-                }}
-              >
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.white }}>{name}</Text>
-              </View>
-            );
-          })}
-        </View>
-      );
-    }
-
-    return null;
-  };
-
-  const renderActions = () => {
-    const { owner } = activeItem;
-
-    return (
-      <View style={styles.absoluteBottom}>
-        <LinearGradient
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          colors={['transparent', colors.gray60]}
-          style={styles.linearGradientBottom}
-        />
-        <View style={{ width: '100%', alignItems: 'flex-end', paddingRight: 10 }}>
-          <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
-            <ProfilePic size="medium" user={owner} navigation={navigation} disableVideo border borderWidth={0.5} />
-            <View
-              style={{
-                position: 'absolute',
-                bottom: -6,
-                right: 2,
-                width: 18,
-                height: 18,
-                borderRadius: 9,
-                backgroundColor: colors.peach,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Icon name="plus" solid size={10} color={colors.white} style={{ textAlign: 'center' }} />
-            </View>
-          </View>
-          <View
-            style={{
-              width: 50,
-              height: 50,
-              marginTop: 24,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon name="heart" solid size={30} color="rgba(255,255,255,0.8)" />
-            <Text style={{ ...defaultStyles.smallBold, color: 'white', paddingTop: 2 }}>427</Text>
-          </View>
-          <View
-            style={{
-              width: 50,
-              height: 50,
-              marginTop: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon name="share" solid size={30} color="rgba(255,255,255,0.8)" />
-          </View>
-          <View
-            style={{
-              width: 50,
-              height: 50,
-              marginTop: 8,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon name="comment" solid size={30} color="rgba(255,255,255,0.8)" />
-          </View>
-        </View>
-      </View>
-    );
-  };
-
-  const renderTitle = () => {
-    const { title, type } = activeStory;
-
-    return (
-      <View style={styles.absoluteBottom}>
-        <View style={{ width: '100%' }}>
-          <View style={{ width: '100%', paddingHorizontal: 8 }}>
-            <View style={{ flexDirection: 'column', paddingLeft: 5, alignItems: 'flex-start', paddingBottom: 10 }}>
-              {type === 'PROJECT' && (
-                <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 10 }}>
-                  {title || null}
-                </Text>
-              )}
-              {renderTopic()}
-            </View>
-          </View>
-        </View>
-      </View>
-    );
-  };
 
   // RETURN
   if (hasError) {
     return (
-      <View style={styles.coverView}>
+      <View style={styles.errorView}>
         <Text>There was an error</Text>
       </View>
     );
@@ -442,7 +556,7 @@ const StoryModal = ({ navigation, route }) => {
       <View style={styles.container}>
         <StatusBar backgroundColor="black" barStyle="light-content" hidden />
         <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: colors.gray60 }}>
-          <SafeAreaView style={styles.overlay}>
+          <SafeAreaView style={{ flex: 1, padding: 10 }}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 100 }}>
               <ProfilePic size="xlarge" user={owner} navigation={navigation} disableVideo />
               <Text
@@ -465,20 +579,42 @@ const StoryModal = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />
-      <View style={StyleSheet.absoluteFill}>
-        {renderStory()}
-        {isBuffering && <Loader loading={isBuffering} backgroundColor="transparent" color="white" />}
-      </View>
 
-      <SafeAreaView style={styles.overlay}>
-        <View style={{ ...StyleSheet.absoluteFillObject, flexDirection: 'row', alignItems: 'stretch' }}>
-          <TouchableOpacity onPress={decrementIndex} style={{ flex: 1 }} />
-          <TouchableOpacity onPress={incrementIndex} style={{ flex: 1 }} />
-        </View>
-        {!isPreview && renderActions()}
-        {!isPreview && renderTitle()}
-        {renderHeader()}
-      </SafeAreaView>
+      {/* absolute positioned stuff */}
+      <StoryImage
+        activeItem={activeItem}
+        videoRef={videoRef}
+        onProgress={onProgress}
+        onBuffer={onBuffer}
+        onVideoEnd={onVideoEnd}
+        isBuffering={isBuffering}
+        paused={paused}
+      />
+      <TopLinearFade />
+      <BottomLinearFade />
+      <StoryTapRegions
+        decrementIndex={decrementIndex}
+        incrementIndex={incrementIndex}
+        handleDoubleTap={handleDoubleTap}
+        engagePause={engagePause}
+        disengagePause={disengagePause}
+      />
+      <StoryProgressBars
+        activeStory={activeStory}
+        activeIndex={activeIndex}
+        IMAGE_DURATION={IMAGE_DURATION}
+        currentTime={currentTime}
+      />
+      <StoryHeader activeStory={activeStory} activeIndex={activeIndex} isPreview={isPreview} navigation={navigation} />
+      <StoryFooter
+        activeStory={activeStory}
+        activeIndex={activeIndex}
+        isMyPost={isMyPost}
+        navigation={navigation}
+        indexAddedToProfile={indexAddedToProfile}
+        handleAddToProfile={handleAddToProfile}
+        handleMoreButton={handleMoreButton}
+      />
     </View>
   );
 };
@@ -488,65 +624,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
   },
-  backgroundVideo: {
-    ...StyleSheet.absoluteFill,
-  },
-  overlay: {
-    flex: 1,
-    // justifyContent: 'space-between',
-    padding: 10,
-  },
-  absoluteTop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    width: '100%',
-  },
-  header: {
-    flexDirection: 'row',
-    // alignItems: 'center',
-    padding: 8,
-  },
-  absoluteBottom: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    width: '100%',
-    paddingBottom: 10,
-  },
-  sendMessageBox: {
-    flex: 1,
-    height: 40,
-    borderRadius: 12,
-    borderColor: colors.white,
-    borderWidth: StyleSheet.hairlineWidth,
-    backgroundColor: colors.gray60,
-    justifyContent: 'center',
-    paddingHorizontal: 14,
-    // alignItems: 'center',
-    marginTop: 15,
-  },
-  coverView: {
+  errorView: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(255,255,255,0.9)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  linearGradientTop: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: 200,
-    width: '100%',
-  },
-  linearGradientBottom: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    height: 200,
-    width: '100%',
   },
 });
 

@@ -28,9 +28,9 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
           </View>
           <View style={styles.textView}>
             <Text>
-              <Text style={{ ...defaultStyles.defaultText }}>{`${goal}`}</Text>
+              <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
               <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
-              <Text style={{ ...defaultStyles.defaultText }}>{subField.name}</Text>
+              <Text style={{ ...defaultStyles.defaultMedium }}>{subField.name}</Text>
             </Text>
           </View>
         </View>

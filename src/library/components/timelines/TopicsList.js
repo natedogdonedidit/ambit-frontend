@@ -39,7 +39,7 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
 
   return (
     <SectionList
-      contentContainerStyle={{ paddingTop: paddingTop + 15, paddingBottom: 20 }}
+      contentContainerStyle={{ paddingTop: paddingTop + 10, paddingBottom: 20 }}
       style={styles.timeline}
       showsVerticalScrollIndicator={false}
       onScroll={Animated.event(

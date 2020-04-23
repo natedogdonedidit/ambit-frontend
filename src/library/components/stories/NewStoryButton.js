@@ -10,41 +10,57 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 
 const NewStoryButton = ({ navigation }) => {
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
-      <LinearGradient
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        colors={['transparent', 'rgba(0,0,0,0.8)']}
-        style={styles.linearGradient}
-      />
-      <View style={{ top: 7, left: 7 }}>
-        <Icon name="plus-circle" size={30} color={colors.purp} style={{}} />
-      </View>
-
+    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
       <View
         style={{
-          position: 'absolute',
-          bottom: 10,
-          left: 0,
-          paddingHorizontal: 8,
+          width: 60,
+          height: 60,
+          borderRadius: 30,
+          backgroundColor: colors.purp,
+          justifyContent: 'center',
+          alignItems: 'center',
+          ...defaultStyles.shadowButton,
         }}
       >
-        <Text style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>Create a story or project</Text>
+        <Icon name="camera" size={28} color={colors.white} style={{}} />
       </View>
+      <Text style={{ ...defaultStyles.defaultMediumMute, paddingTop: 6 }}>Share!</Text>
     </TouchableOpacity>
   );
+
+  // the old way
+  // return (
+  //   <TouchableOpacity onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
+  //     <LinearGradient
+  //       start={{ x: 0.5, y: 0 }}
+  //       end={{ x: 0.5, y: 1 }}
+  //       colors={['transparent', 'rgba(0,0,0,0.4)']}
+  //       style={styles.linearGradient}
+  //     />
+  //     <View style={{ top: 7, left: 7 }}>
+  //       <Icon name="plus-circle" size={30} color={colors.purp} style={{}} />
+  //     </View>
+
+  //     <View
+  //       style={{
+  //         position: 'absolute',
+  //         bottom: 10,
+  //         left: 0,
+  //         paddingHorizontal: 8,
+  //       }}
+  //     >
+  //       <Text style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>Create a story or project</Text>
+  //     </View>
+  //   </TouchableOpacity>
+  // );
 };
 
 const styles = StyleSheet.create({
   storyBox: {
-    justifyContent: 'space-between',
-    height: 150,
-    width: 100,
-    borderRadius: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
-    overflow: 'hidden',
-    marginLeft: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 160,
+    paddingHorizontal: 10,
   },
   linearGradient: {
     position: 'absolute',

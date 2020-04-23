@@ -70,6 +70,16 @@ const styles = StyleSheet.create({
     fontSize: reg,
     fontFamily: 'SFProText-Regular',
   },
+  defaultMediumMute: {
+    color: colors.blueGray,
+    fontSize: reg,
+    fontFamily: 'SFProText-Medium',
+  },
+  defaultBoldMute: {
+    color: colors.gray30,
+    fontSize: reg,
+    fontFamily: 'SFProText-Semibold',
+  },
   defaultWarning: {
     color: colors.peach,
     fontSize: reg,

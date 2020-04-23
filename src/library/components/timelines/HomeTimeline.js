@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-apollo';
 import Feather from 'react-native-vector-icons/Feather';
@@ -17,6 +17,7 @@ import { UserContext } from 'library/utils/UserContext';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
+  const homeTimelineRef = useRef();
 
   const { creatingStory } = useContext(UserContext);
   // console.log('in component', creatingStory);
@@ -24,6 +25,12 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const [showLoader, setShowLoader] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
+
+  useEffect(() => {
+    if (creatingStory) {
+      onRefresh();
+    }
+  }, [creatingStory]);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -83,6 +90,8 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   useEffect(() => {
     // console.log('in effect', creatingStory);
+
+    // this doesnt work
     if (
       refetchingPostsNetwork ||
       refetchingPostsForYou ||
@@ -92,9 +101,10 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
       refetchingStories ||
       creatingStory
     ) {
-      // console.log('setting show loader to true', creatingStory);
+      // console.log('starting loader');
       setShowLoader(true);
     } else if (showLoader) {
+      // console.log('stopping loader');
       setShowLoader(false);
     }
   }, [
@@ -164,6 +174,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   return (
     <View style={styles.container}>
       <SectionList
+        ref={homeTimelineRef}
         refreshControl={<RefreshControl refreshing={showLoader} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
         refreshing={showLoader}
@@ -206,20 +217,20 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
           },
           {
             name: 'For You',
-            title: 'Based on your topics & hats',
+            title: 'For You',
             data: postsForYou,
           },
         ]}
         renderSectionHeader={({ section }) => {
           if (section.name === 'Network' && postsNetwork.length > 0) return <Section text={section.title} marginTop={false} />;
-          if (section.name === 'For You')
+          if (section.name === 'For You' && postsForYou.length > 0)
             return (
               <Section
                 text={section.title}
                 marginTop={false}
                 rightComponent={
                   <TouchableOpacity onPress={() => navigation.navigate('ForYouSettingsPopup')}>
-                    <Feather name="settings" size={18} color={colors.black} style={{ paddingLeft: 2 }} />
+                    <Feather name="settings" size={18} color={colors.blueGray} style={{ paddingLeft: 2 }} />
                   </TouchableOpacity>
                 }
               />

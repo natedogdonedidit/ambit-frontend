@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import { sortStoriesNewestFirst } from 'library/utils';
 
 import StoryBoxGrid from 'library/components/stories/StoryBoxGrid';
 import Loader from 'library/components/UI/Loader';
@@ -31,8 +32,8 @@ const ProfileGrid = ({ navigation, isMyProfile, profileId }) => {
 
   // only display projects and saved solo stories
   const stories = storiesFromDB.filter(story => story.type === 'PROJECT' || (story.type === 'SOLO' && story.save));
-  // console.log(storiesFromDB);
-  // console.log(stories);
+  const storiesWithItems = stories.filter(story => story.items.length > 0);
+  const storiesSorted = storiesWithItems.sort(sortStoriesNewestFirst);
 
   const renderGrid = () => {
     if (stories.length < 1) {
@@ -44,8 +45,8 @@ const ProfileGrid = ({ navigation, isMyProfile, profileId }) => {
     }
 
     return (
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-        {stories.map(story => {
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingTop: 1, backgroundColor: colors.lightGray }}>
+        {storiesSorted.map(story => {
           if (story.items.length > 0) {
             return (
               <View key={story.id} style={{ width: width / 3, height: width / 2 }}>
@@ -64,7 +65,7 @@ const ProfileGrid = ({ navigation, isMyProfile, profileId }) => {
 
 const styles = StyleSheet.create({
   content: {
-    height: 650,
+    // height: 650,
     backgroundColor: colors.lightGray,
   },
 });

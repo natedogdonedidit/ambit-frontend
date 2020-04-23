@@ -8,59 +8,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
-import { getIconFromID } from 'library/utils';
 
 const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
-  if (story.type === 'MYSTORY') {
-    return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('StoryModal', {
-            story,
-          })
-        }
-        style={styles.storyBox}
-        activeOpacity={0.8}
-      >
-        <FitImage source={{ uri: story.preview || story.items[story.items.length - 1].preview }} />
-        <LinearGradient
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          colors={['transparent', 'rgba(0,0,0,0.8)']}
-          style={styles.linearGradient}
-        />
-        {showProfilePic && (
-          <View
-            style={{
-              top: 5,
-              left: 5,
-              width: 32,
-              height: 32,
-              backgroundColor: colors.gray90,
-              borderRadius: 16,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <ProfilePic user={story.owner} size="small" navigation={navigation} />
-          </View>
-        )}
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 10,
-            left: 0,
-            paddingHorizontal: 6,
-          }}
-        >
-          <Text numberOfLines={3} style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>
-            {story.owner.name}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
   if (story.type === 'PROJECT') {
     return (
       <TouchableOpacity
@@ -74,9 +23,9 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
       >
         <FitImage source={{ uri: story.preview || story.items[story.items.length - 1].preview }} />
         <LinearGradient
-          start={{ x: 0.5, y: 0 }}
+          start={{ x: 0.5, y: 0.5 }}
           end={{ x: 0.5, y: 1 }}
-          colors={['transparent', 'rgba(0,0,0,0.8)']}
+          colors={['transparent', 'rgba(0,0,0,0.6)']}
           style={styles.linearGradient}
         />
         {showProfilePic && (
@@ -103,7 +52,7 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
             paddingHorizontal: 6,
           }}
         >
-          <Text numberOfLines={3} style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>
+          <Text numberOfLines={3} style={{ ...defaultStyles.defaultSemibold, fontSize: 13, color: colors.white }}>
             {story.title}
           </Text>
         </View>
@@ -139,9 +88,9 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
       >
         <FitImage source={{ uri: story.preview || story.items[story.items.length - 1].preview }} />
         <LinearGradient
-          start={{ x: 0.5, y: 0 }}
+          start={{ x: 0.5, y: 0.5 }}
           end={{ x: 0.5, y: 1 }}
-          colors={['transparent', 'rgba(0,0,0,0.8)']}
+          colors={['transparent', 'rgba(0,0,0,0.6)']}
           style={styles.linearGradient}
         />
         {showProfilePic && (
@@ -168,7 +117,7 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
             paddingHorizontal: 6,
           }}
         >
-          <Text numberOfLines={3} style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>
+          <Text numberOfLines={3} style={{ ...defaultStyles.defaultSemibold, fontSize: 13, color: colors.white }}>
             {story.title}
           </Text>
         </View>

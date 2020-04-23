@@ -57,11 +57,19 @@ const MessagesScreen = ({ navigation }) => {
         style={styles.flatList}
         contentContainerStyle={styles.flatListContainer}
         ListHeaderComponent={
-          <View style={{ height: 15, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
+          <View
+            style={[
+              { height: 15 },
+              groups.length > 0 && {
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                borderBottomColor: colors.borderBlack,
+              },
+            ]}
+          />
         }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-            Sorry, no chats to display at this time
+            Your messages will appear here
           </Text>
         }
         data={groups}

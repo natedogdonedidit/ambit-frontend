@@ -31,6 +31,16 @@ export const StoryFragment = gql`
         location
         profilePic
       }
+      stories {
+        id
+        type
+        title
+        save
+        topics {
+          name
+          topicID
+        }
+      }
       type
       url
       preview

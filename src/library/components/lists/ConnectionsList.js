@@ -72,11 +72,38 @@ const ConnectionsList = ({ navigation }) => {
           },
           {
             name: 'Users',
-            title: 'Based on your topics',
+            title: 'More matches for you',
             data: matches,
           },
         ]}
-        renderSectionHeader={({ section }) => <Section text={section.title} marginTop={false} />}
+        renderSectionHeader={({ section }) => {
+          // if (section.name === 'Goals' && activeGoalsWithMatches.length > 0) {
+          //   return <Section text={section.title} marginTop={false} />;
+          // }
+
+          // if (section.name === 'Users' && matches.length > 0) {
+          //   return <Section text={section.title} marginTop={false} />;
+          // }
+          return <Section text={section.title} marginTop={false} />;
+        }}
+        renderSectionFooter={({ section }) => {
+          if (section.name === 'Goals' && activeGoalsWithMatches.length <= 0) {
+            return (
+              <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingVertical: 30, paddingHorizontal: 15 }}>
+                After you post a goal you'll find your matches here
+              </Text>
+            );
+          }
+
+          if (section.name === 'Users' && matches.length <= 0) {
+            return (
+              <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingVertical: 30, paddingHorizontal: 15 }}>
+                You'll find suggested people to follow here. Follow some topics so we know what you're interested in.
+              </Text>
+            );
+          }
+          return null;
+        }}
         renderItem={({ item, section }) => {
           if (section.name === 'Goals') return <ActiveGoalMatchesItem item={item} navigation={navigation} />;
           if (section.name === 'Users') return <SuggestedConnection item={item} navigation={navigation} />;

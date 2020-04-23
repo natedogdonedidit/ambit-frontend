@@ -41,6 +41,7 @@ import SelectTopicsInvestModal from 'screens/main/modals/profile/SelectTopicsInv
 import SelectTopicsMentorModal from 'screens/main/modals/profile/SelectTopicsMentorModal';
 
 // popups
+import SelectorModal from 'screens/main/modals/general/SelectorModal';
 import EditSkillsPopup from 'screens/main/modals/profile/EditSkillsPopup';
 import EditPostPopup from 'screens/main/modals/post/EditPostPopup';
 import EditUpdatePopup from 'screens/main/modals/post/EditUpdatePopup';
@@ -277,6 +278,7 @@ const MainStack = () => {
       <Stack.Screen name="EditSkillsModal" component={EditSkillsModal} />
       <Stack.Screen name="EditSkillsPopup" component={EditSkillsPopup} options={halfModalOptions} />
       <Stack.Screen name="EditPostPopup" component={EditPostPopup} options={halfModalOptions} />
+      <Stack.Screen name="SelectorModal" component={SelectorModal} options={halfModalOptions} />
       <Stack.Screen name="EditUpdatePopup" component={EditUpdatePopup} options={halfModalOptions} />
       <Stack.Screen name="EditCommentPopup" component={EditCommentPopup} options={halfModalOptions} />
       <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} options={halfModalOptions} />

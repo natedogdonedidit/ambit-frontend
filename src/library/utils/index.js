@@ -53,6 +53,15 @@ export const sortChats = (a, b) => {
   return 1;
 };
 
+export const sortStoriesNewestFirst = (a, b) => {
+  // grab the last item of each story, compare
+  if (a.items[a.items.length - 1].createdAt > b.items[b.items.length - 1].createdAt) {
+    return -1;
+  }
+
+  return 1;
+};
+
 export async function requestCameraRollPermission() {
   try {
     const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {

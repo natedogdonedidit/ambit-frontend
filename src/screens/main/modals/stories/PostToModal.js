@@ -114,7 +114,7 @@ const PostToModal = ({ navigation, route }) => {
   };
 
   const handleSend = async selectedTopics => {
-    // setCreatingStory(true);
+    setCreatingStory(true);
     // if image, upload image, then save item to state
     if (capturedImage) {
       navigation.navigate('Home');
@@ -191,63 +191,81 @@ const PostToModal = ({ navigation, route }) => {
     }
 
     // if video, uplaod video, then save item to state
+
     if (capturedVideo) {
       navigation.navigate('Home');
       try {
         const uploadedVideo = await storyVideoUpload(userLoggedIn.id, capturedVideo.uri);
 
-        let storyIDsForDB = [];
+        if (selectedProject) {
+          // if here, connect MYSTORY? and PROJECT
 
-        if (isStory) {
-          storyIDsForDB = [{ id: myStoryID }];
-        }
+          // add the project story id
+          const storiesConnect = [{ id: selectedProject }];
 
-        // add in topicStories
-        if (selectedTopics.length > 0) {
-          // get full topics
-          const selectedTopicsFull = getFullTopicListFromIDs(selectedTopics);
+          // if mystory is selected, add mystory id
+          if (isStory) {
+            storiesConnect.push({ id: myStoryID });
+          }
 
-          selectedTopicsFull.forEach(topic => {
-            // add topicStory id
-            if (topic.topicStory) {
-              storyIDsForDB.push({ id: topic.topicStory.id });
-            }
+          // create preview URL for video thumbnail by inserting "so_0.0"
+          const preview = createThumbnail(uploadedVideo.url);
 
-            // if parent exists, add parent topicStory id
-            if (topic.parentTopic) {
-              storyIDsForDB.push({ id: topic.parentTopic.topicStory.id });
-            }
+          const newStoryItem = {
+            type: 'VIDEO',
+            url: uploadedVideo.url,
+            preview,
+            // text: '',
+            link: '',
+            duration: uploadedVideo.duration,
+            owner: { connect: { id: userLoggedIn.id } },
+            stories: { connect: storiesConnect },
+          };
+
+          createStoryItem({
+            variables: {
+              storyItem: newStoryItem,
+            },
+          });
+        } else {
+          // if here, connect MYSTORY? and also create a SOLO story with Topics
+
+          const selectedTopicsForDB =
+            selectedTopics.length > 0
+              ? selectedTopics.map(topicID => {
+                  return { topicID };
+                })
+              : [];
+
+          // create preview URL for video thumbnail by inserting "so_0.0"
+          const preview = createThumbnail(uploadedVideo.url);
+
+          const newStoryItem = {
+            type: 'VIDEO',
+            url: uploadedVideo.url,
+            preview,
+            // text: '',
+            link: '',
+            duration: uploadedVideo.duration,
+            owner: { connect: { id: userLoggedIn.id } },
+            stories: {
+              connect: isStory ? [{ id: myStoryID }] : null,
+              create: [
+                {
+                  type: 'SOLO',
+                  owner: { connect: { id: userLoggedIn.id } },
+                  topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
+                },
+              ],
+            },
+          };
+
+          createStoryItem({
+            variables: {
+              storyItem: newStoryItem,
+            },
           });
         }
-
-        // add in projects
-        if (selectedProject.length > 0) {
-          selectedProject.forEach(projectID => {
-            // add project id to list
-            storyIDsForDB.push({ id: projectID });
-          });
-        }
-
-        // console.log('storyIDsForDB', storyIDsForDB);
-
-        // create preview URL for video thumbnail by inserting "so_0.0"
-        const preview = createThumbnail(uploadedVideo.url);
-
-        const newStoryItem = {
-          type: 'VIDEO',
-          url: uploadedVideo.url,
-          preview,
-          duration: uploadedVideo.duration,
-          link: '',
-          owner: { connect: { id: userLoggedIn.id } },
-          story: { connect: storyIDsForDB },
-        };
-
-        createStoryItem({
-          variables: {
-            storyItem: newStoryItem,
-          },
-        });
       } catch (e) {
         setCreatingStory(false);
         Alert.alert('Oh no!', 'We could not upload your video. Try again later!', [
@@ -255,24 +273,78 @@ const PostToModal = ({ navigation, route }) => {
         ]);
       }
     }
-    // setCreatingStory(false);
+
+    // ORIGINAL ////////////////////////////////////////////////////////////////////////////////////////
+    // if (capturedVideo) {
+    //   navigation.navigate('Home');
+    //   try {
+    //     const uploadedVideo = await storyVideoUpload(userLoggedIn.id, capturedVideo.uri);
+
+    //     let storyIDsForDB = [];
+
+    //     if (isStory) {
+    //       storyIDsForDB = [{ id: myStoryID }];
+    //     }
+
+    //     // add in topicStories
+    //     if (selectedTopics.length > 0) {
+    //       // get full topics
+    //       const selectedTopicsFull = getFullTopicListFromIDs(selectedTopics);
+
+    //       selectedTopicsFull.forEach(topic => {
+    //         // add topicStory id
+    //         if (topic.topicStory) {
+    //           storyIDsForDB.push({ id: topic.topicStory.id });
+    //         }
+
+    //         // if parent exists, add parent topicStory id
+    //         if (topic.parentTopic) {
+    //           storyIDsForDB.push({ id: topic.parentTopic.topicStory.id });
+    //         }
+    //       });
+    //     }
+
+    //     // add in projects
+    //     if (selectedProject.length > 0) {
+    //       selectedProject.forEach(projectID => {
+    //         // add project id to list
+    //         storyIDsForDB.push({ id: projectID });
+    //       });
+    //     }
+
+    //     // console.log('storyIDsForDB', storyIDsForDB);
+
+    //     // create preview URL for video thumbnail by inserting "so_0.0"
+    //     const preview = createThumbnail(uploadedVideo.url);
+
+    //     const newStoryItem = {
+    //       type: 'VIDEO',
+    //       url: uploadedVideo.url,
+    //       preview,
+    //       duration: uploadedVideo.duration,
+    //       link: '',
+    //       owner: { connect: { id: userLoggedIn.id } },
+    //       story: { connect: storyIDsForDB },
+    //     };
+
+    //     createStoryItem({
+    //       variables: {
+    //         storyItem: newStoryItem,
+    //       },
+    //     });
+    //   } catch (e) {
+    //     setCreatingStory(false);
+    //     Alert.alert('Oh no!', 'We could not upload your video. Try again later!', [
+    //       { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //     ]);
+    //   }
+    // }
+    setCreatingStory(false);
   };
 
   const toggleStory = () => {
     setIsStory(!isStory);
   };
-
-  // const toggleTopic = selectedTopicID => {
-  //   let newArray = [...selectedTopics];
-  //   if (newArray.includes(selectedTopicID)) {
-  //     // remove it
-  //     newArray = newArray.filter(topicID => topicID !== selectedTopicID);
-  //   } else {
-  //     // add it
-  //     newArray = [...newArray, selectedTopicID];
-  //   }
-  //   setSelectedTopics(newArray);
-  // };
 
   const toggleProject = selectedProjectID => {
     if (selectedProject === selectedProjectID) {
@@ -306,6 +378,18 @@ const PostToModal = ({ navigation, route }) => {
     );
   };
 
+  const renderTopics = proj => {
+    if (proj.topics.length > 1) {
+      return (
+        <Text numberOfLines={1} style={{ ...defaultStyles.defaultBoldMute, paddingLeft: 10, paddingTop: 2 }}>
+          {proj.topics.map((top, i) => `${top.name}${i < proj.topics.length - 1 ? `, ` : ''}`)}
+        </Text>
+      );
+    }
+
+    return null;
+  };
+
   const renderProjects = () => {
     if (projects.length < 1) {
       return null;
@@ -326,8 +410,9 @@ const PostToModal = ({ navigation, route }) => {
               <ProjectSquare navigation={navigation} project={project} />
             </View>
 
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingRight: 10 }}>
               <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>{project.title}</Text>
+              {renderTopics(project)}
             </View>
             <View style={{ width: 40 }}>
               {selected ? (
@@ -342,27 +427,11 @@ const PostToModal = ({ navigation, route }) => {
     });
   };
 
-  // const renderTopics = () => {
-  //   if (myTopics.length < 1) {
-  //     return null;
-  //   }
-
-  //   return myTopics.map(topic => {
-  //     const selected = selectedTopics.includes(topic.topicID);
-
-  //     return (
-  //       <TouchableOpacity key={topic.topicID} activeOpacity={1} onPress={() => toggleTopic(topic.topicID)}>
-  //         <StoryBoxButton navigation={navigation} story={{ type: 'TOPICSTORY' }} topic={topic} selected={selected} />
-  //       </TouchableOpacity>
-  //     );
-  //   });
-  // };
-
   return (
     <View style={styles.container}>
       <HeaderBack
         navigation={navigation}
-        title="Post to.."
+        title="Share to..."
         handleBack={navigation.goBack}
         textRight={selectedProject ? 'Send' : 'Next'}
         solidRight={!!selectedProject}
@@ -379,8 +448,9 @@ const PostToModal = ({ navigation, route }) => {
               <ProjectSquare navigation={navigation} project={newProject} loading={loadingCreateStory} />
             </View>
 
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingRight: 10 }}>
               <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>{newProject.title}</Text>
+              {renderTopics(newProject)}
             </View>
             <View style={{ width: 40 }}>
               {selectedProject === newProject.id ? (
@@ -429,7 +499,7 @@ const styles = StyleSheet.create({
   projectRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 7,
   },
   topicRow: {
     flexDirection: 'row',

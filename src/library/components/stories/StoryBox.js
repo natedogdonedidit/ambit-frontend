@@ -27,16 +27,16 @@ const StoryBox = ({ navigation, story, showProfilePic = true }) => {
           resizeMode="cover"
         />
         <LinearGradient
-          start={{ x: 0.5, y: 0 }}
+          start={{ x: 0.5, y: 0.5 }}
           end={{ x: 0.5, y: 1 }}
-          colors={['transparent', 'rgba(0,0,0,0.8)']}
+          colors={['transparent', 'rgba(0,0,0,0.6)']}
           style={styles.linearGradient}
         />
         {showProfilePic && (
           <View
             style={{
-              top: 5,
-              left: 5,
+              top: 7,
+              left: 7,
               width: 32,
               height: 32,
               backgroundColor: colors.gray90,
@@ -45,7 +45,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true }) => {
               alignItems: 'center',
             }}
           >
-            <ProfilePic user={story.owner} size="small" navigation={navigation} />
+            <ProfilePic user={story.owner} size="small" navigation={navigation} showBlue />
           </View>
         )}
         <View
@@ -139,11 +139,11 @@ const StoryBox = ({ navigation, story, showProfilePic = true }) => {
 const styles = StyleSheet.create({
   storyBox: {
     justifyContent: 'space-between',
-    height: 150,
+    height: 160,
     width: 100,
-    borderRadius: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
+    borderRadius: 12,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: colors.borderBlack,
     overflow: 'hidden',
     marginLeft: 6,
   },

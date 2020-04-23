@@ -165,17 +165,17 @@ const styles = StyleSheet.create({
     bottom: 15,
     right: 15,
     backgroundColor: 'white',
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   newPostButton: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.purp,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
 });
 

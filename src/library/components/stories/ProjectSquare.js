@@ -9,6 +9,21 @@ import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 
 const ProjectSquare = ({ navigation, project, newProject = false, loading = false }) => {
+  const renderImage = () => {
+    if (project.preview) {
+      return <Image source={{ uri: project.preview }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />;
+    }
+
+    if (project.items.length > 0) {
+      if (project.items[0].preview) {
+        return <Image source={{ uri: project.items[0].preview }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />;
+      }
+    }
+
+    // for gray box
+    return null;
+  };
+
   if (newProject) {
     return (
       <View style={{ ...styles.container, justifyContent: 'center', alignItems: 'center' }}>
@@ -25,13 +40,7 @@ const ProjectSquare = ({ navigation, project, newProject = false, loading = fals
     return <View style={styles.container} />;
   }
 
-  return (
-    <View style={styles.container}>
-      {project.preview && (
-        <Image source={{ uri: project.preview }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-      )}
-    </View>
-  );
+  return <View style={styles.container}>{renderImage()}</View>;
 };
 
 const styles = StyleSheet.create({
@@ -40,6 +49,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 10,
     backgroundColor: colors.gray12,
+    overflow: 'hidden',
   },
 });
 

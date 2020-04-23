@@ -12,9 +12,11 @@ const ProfilePic = ({
   size = 'medium',
   disableVideo = false,
   disableClick = false,
+  showBlue = false,
   border = false,
-  borderWidth = 1.4,
+  borderWidth = 1.6,
   extraBorder = 0, // adds a white ring around outside
+  extraColorBorder = 0.4,
 }) => {
   // set the size of the profile pic
   let sizePX = 46;
@@ -47,10 +49,10 @@ const ProfilePic = ({
     }
   }
 
-  const hasVideo = hasIntro || hasStory;
+  const hasVideo = hasIntro || hasStory || showBlue;
 
   const whiteWidth = sizePX + 2 * borderWidth;
-  const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraBorder;
+  const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraColorBorder + 2 * extraBorder;
   // const colorWidth = whiteWidth + 2 * 1.4 + 2 * extraBorder;
 
   const styles = StyleSheet.create({
