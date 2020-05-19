@@ -42,8 +42,10 @@ const NotificationListItem = ({ navigation, notification }) => {
       return navigation.navigate('Post', { post: comment.parentPost });
     }
     if (style === 'COMMENT_UPDATE') {
-      console.log(comment);
       return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
+    }
+    if (style === 'COMMENT_COMMENT') {
+      return navigation.navigate('Post', { post: comment.parentPost });
     }
 
     return null;
@@ -116,6 +118,14 @@ const NotificationListItem = ({ navigation, notification }) => {
         </Text>
       );
     }
+    if (style === 'COMMENT_COMMENT') {
+      return (
+        <Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> replied to your comment</Text>
+        </Text>
+      );
+    }
 
     return '';
   };
@@ -140,6 +150,9 @@ const NotificationListItem = ({ navigation, notification }) => {
       return comment.content;
     }
     if (style === 'COMMENT_UPDATE') {
+      return comment.content;
+    }
+    if (style === 'COMMENT_COMMENT') {
       return comment.content;
     }
 

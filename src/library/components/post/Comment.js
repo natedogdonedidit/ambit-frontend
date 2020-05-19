@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
+import { useNavigation } from '@react-navigation/native';
 
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
@@ -13,17 +14,22 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import Heart from 'library/components/UI/icons/Heart';
 import CommentIcon from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
+import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
+import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 
 const Comment = ({
   comment,
   currentTime,
-  navigation,
+  // navigation,
   showLine = false,
   hideButtons = false,
   lessPadding = false,
   disableVideo = false,
 }) => {
-  // ////////////////////////////////////////////////////////////////
+  // HOOKS
+  const { currentUserId } = useContext(UserContext);
+  const navigation = useNavigation();
+
   // MUTATIONS - like, share, delete
   const [likeComment, { loading: loadingLike }] = useMutation(LIKE_COMMENT_MUTATION, {
     variables: {
@@ -51,17 +57,54 @@ const Comment = ({
     },
   });
 
-  // HOOKS & VARIABLES
-  const { currentUserId } = useContext(UserContext);
-  const isMyPost = comment.owner.id === currentUserId;
+  // DELETE MUTATIONS
+  const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION, {
+    variables: {
+      id: comment.id,
+      ownerID: comment.owner.id,
+    },
+    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: comment.parentPost.id } }],
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to delete this comment. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
+  // VARIABLES
   const containsMedia = !!comment.image;
   // const hasSubComments = comment.comments ? comment.comments.length > 0 : false;
   // console.log(`${comment.content} ${hasSubComments}`);
   // for dates
   const createdAt = new Date(comment.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
+  const isMyPost = currentUserId === comment.owner.id;
 
   // CUSTOM FUNCTIONS
+  const determineOptions = () => {
+    if (isMyPost) {
+      return [
+        {
+          text: 'Delete comment',
+          color: colors.peach,
+          onPress: deleteComment,
+        },
+      ];
+    }
+
+    // if its not my post
+    return [
+      {
+        text: 'Report',
+        onPress: () => navigation.goBack(),
+      },
+    ];
+  };
+
+  const handleMoreButton = () => {
+    const options = determineOptions();
+    navigation.navigate('SelectorModal', { options });
+  };
+
   const handleLike = () => {
     if (!loadingLike) likeComment();
   };
@@ -93,20 +136,24 @@ const Comment = ({
 
             {!hideButtons && isMyPost && (
               <View style={{ position: 'absolute', top: 0, right: 0 }}>
-                <Chevron onPress={() => navigation.navigate('EditCommentPopup', { comment })} />
+                <Chevron onPress={() => handleMoreButton()} />
               </View>
             )}
           </View>
 
           <View style={styles.headlineRow}>
-            <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{comment.owner.headline}</Text>
-            <Icon
-              name="circle"
-              solid
-              size={3}
-              color={colors.blueGray}
-              style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
-            />
+            {comment.owner.headline && (
+              <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{comment.owner.headline}</Text>
+            )}
+            {comment.owner.headline && (
+              <Icon
+                name="circle"
+                solid
+                size={3}
+                color={colors.blueGray}
+                style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
+              />
+            )}
             <Text style={{ ...defaultStyles.smallMute }}>
               {timeDiff} {period}
             </Text>

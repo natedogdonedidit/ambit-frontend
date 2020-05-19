@@ -20,7 +20,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const homeTimelineRef = useRef();
 
   const { creatingStory } = useContext(UserContext);
-  // console.log('in component', creatingStory);
 
   const [showLoader, setShowLoader] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
@@ -28,6 +27,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   useEffect(() => {
     if (creatingStory) {
+      console.log('refreshing');
       onRefresh();
     }
   }, [creatingStory]);
@@ -56,6 +56,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
       first: 6,
       network,
     },
+    onError: e => console.log('error loading newtork posts', e),
     notifyOnNetworkStatusChange: true,
   });
 
@@ -69,6 +70,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     variables: {
       first: 5,
     },
+    onError: e => console.log('error loading for you posts', e),
     notifyOnNetworkStatusChange: true,
   });
 
@@ -138,6 +140,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
     // console.log('running refetch');
+    setShowLoader(true);
     refetchPostsNetwork();
     refetchPostsForYou();
   };
@@ -170,14 +173,18 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     });
   };
 
+  // console.log(showLoader);
+  const newShowLoader = showLoader || creatingStory;
+  // console.log(newShowLoader);
   // RENDER
   return (
     <View style={styles.container}>
       <SectionList
         ref={homeTimelineRef}
-        refreshControl={<RefreshControl refreshing={showLoader} onRefresh={onRefresh} tintColor="transparent" />}
+        refreshControl={<RefreshControl refreshing={newShowLoader} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
-        refreshing={showLoader}
+        refreshing={newShowLoader}
+        progressViewOffset={100}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
         // ItemSeparatorComponent={() => (
@@ -336,7 +343,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             }}
             size="small"
             color={colors.purp}
-            animating={showLoader}
+            animating={newShowLoader}
           />
         </View>
       </Animated.View>

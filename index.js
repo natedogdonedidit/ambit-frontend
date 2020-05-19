@@ -31,6 +31,8 @@ const authLink = setContext(async (req, { headers }) => {
   // grab token from AsyncStorage
   const token = await getToken();
 
+  // console.log(req);
+
   // put token in authorization header
   return {
     ...headers,

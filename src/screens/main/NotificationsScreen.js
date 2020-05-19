@@ -31,8 +31,12 @@ const NotificationsScreen = ({ navigation }) => {
   const loading = networkStatus === 1;
   const ok = networkStatus === 7;
 
-  if (error) return <Error error={error} />;
-  if (loading) {
+  // if (error) return <Error error={error} />;
+  if (error) {
+    console.log(error);
+  }
+
+  if (loading || error) {
     return (
       <View style={{ ...styles.container, paddingTop: insets.top }}>
         <HeaderNotifications
@@ -40,7 +44,7 @@ const NotificationsScreen = ({ navigation }) => {
           handleRight={() => navigation.navigate('Search')}
           navigation={navigation}
         />
-        <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
+        <Loader loading={loading} size="small" full={false} backgroundColor={colors.lightGray} />
       </View>
     );
   }

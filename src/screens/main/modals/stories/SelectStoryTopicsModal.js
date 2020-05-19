@@ -65,7 +65,7 @@ const SelectStoryTopicsModal = ({ navigation, route }) => {
 
     return myTopics.map(topic => {
       const { name, topicID, parentTopic } = topic;
-      const { icon, color } = getIconFromID(parentTopic.topicID);
+      const { icon, color } = getIconFromID(parentTopic ? parentTopic.topicID : topicID);
 
       const selected = selectedTopics.includes(topicID);
 
@@ -94,15 +94,15 @@ const SelectStoryTopicsModal = ({ navigation, route }) => {
     <View style={styles.container}>
       <HeaderBack
         navigation={navigation}
-        title="Add some topics"
+        title="Tag topics"
         handleBack={navigation.goBack}
         textRight="Send"
         solidRight
         handleRight={() => handleSend(selectedTopics)}
       />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 0, paddingBottom: 20 }}>
-        <View style={{ paddingTop: 24, paddingBottom: 10, paddingHorizontal: 10 }}>
-          <Text style={{ ...defaultStyles.largeBold, color: colors.gray30 }}>
+        <View style={{ paddingTop: 24, paddingBottom: 10, paddingHorizontal: 15 }}>
+          <Text style={{ ...defaultStyles.largeBold, color: colors.gray40 }}>
             Would you like this post to appear on any Topic Stories?
           </Text>
         </View>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from 'screens/main/HomeScreen';
@@ -15,16 +15,32 @@ import MyTopicsScreen from 'screens/main/MyTopicsScreen';
 import MyHatsScreen from 'screens/main/MyHatsScreen';
 import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';
+import { UserContext } from 'library/utils/UserContext';
 
 const Stack = createStackNavigator();
 
 const HomeStack = ({ navigation, route }) => {
+  const { homePosition, setHomePosition } = useContext(UserContext);
+
   // hides the tabs in Chat screen
   if (route.state) {
     navigation.setOptions({
       tabBarVisible: route.state.routes ? !(route.state.routes[route.state.routes.length - 1].name === 'Chat') : null,
     });
   }
+
+  useEffect(() => {
+    console.log('here');
+    const unsubscribe = navigation.addListener('tabPress', e => {
+      // Prevent default behavior
+      console.log('here! here!');
+
+      // Do something manually
+      setHomePosition(0);
+    });
+
+    // return unsubscribe;
+  }, [navigation]);
 
   return (
     <Stack.Navigator initialRouteName="Home" headerMode="none">

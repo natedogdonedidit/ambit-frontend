@@ -19,6 +19,7 @@ const UserContextProvider = (props) => {
   const [currentUserId, setCurrentUserId] = useState(null)
   const [unReadNotifications, setUnReadNotifications] = useState(0)
   const [unReadMessages, setUnReadMessages] = useState(0)
+  const [homePosition, setHomePosition] = useState(0);
 
   const client = useApolloClient();
 
@@ -131,7 +132,7 @@ const UserContextProvider = (props) => {
 
   return (
     <UserContext.Provider
-      value={{ loadingApp, currentUserId, setCurrentUserId, loginCTX, logoutCTX, unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages, creatingStory, setCreatingStory }}
+      value={{ loadingApp, currentUserId, setCurrentUserId, homePosition, setHomePosition, loginCTX, logoutCTX, unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages, creatingStory, setCreatingStory }}
     >
       {props.children}
     </UserContext.Provider>

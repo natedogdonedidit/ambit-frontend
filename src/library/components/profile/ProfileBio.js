@@ -70,7 +70,7 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
             </TextButton>
           )}
         </View>
-        {user.about && <Text style={{ ...defaultStyles.defaultText, paddingBottom: 10 }}>{user.about}</Text>}
+        {!!user.about && <Text style={{ ...defaultStyles.defaultText, paddingBottom: 10 }}>{user.about}</Text>}
         {(useOpenToBox || !!user.location) && (
           <View style={styles.detailsBox}>
             {renderLocation()}

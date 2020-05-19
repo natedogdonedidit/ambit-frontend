@@ -87,6 +87,10 @@ const CommentScreen = ({ navigation, route }) => {
     variables: { id: parentPost.id },
   });
 
+  const { loading: loadingPostComments, error: errorPostComments, data: dataPostComments } = useQuery(POST_COMMENTS_QUERY, {
+    variables: { id: parentPost.id },
+  });
+
   const loading = loadingUser || loadingPost;
 
   const parentPostObject = { connect: { id: parentPost.id } };
@@ -116,10 +120,11 @@ const CommentScreen = ({ navigation, route }) => {
   }
 
   const post = dataPost.singlePost;
-  // console.log(post);
+
+  // optimistic response will throw an error if the comments query hasn't been called yet
+  const useOptimisticResponse = dataPostComments ? !!dataPostComments.singlePost.comments : false;
 
   // CUSTOM FUNCTIONS
-
   const handleSubmit = async () => {
     const message = validateInputs();
     // if missing a required field, Alert user
@@ -144,19 +149,54 @@ const CommentScreen = ({ navigation, route }) => {
         },
       },
       update: (proxy, { data: dataReturned }) => {
-        const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
-        // console.log('dataReturned', dataReturned);
+        if (useOptimisticResponse) {
+          const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
 
-        if (isComment || isSubComment) {
-          if (isUpdate) {
-            // if subComment on comment on update
+          if (isComment || isSubComment) {
+            if (isUpdate) {
+              // if subComment on comment on update
+              const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
+              const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
+                item => item.id === parentComment.id
+              );
+              const newUpdatesArray = [...previousData.singlePost.updates];
+              // add the new comment to the correct comment of the correct update
+              newUpdatesArray[indexOfUpdate].comments[indexOfParentComment].comments.push(dataReturned.createComment);
+              proxy.writeQuery({
+                query: POST_COMMENTS_QUERY,
+                data: {
+                  singlePost: {
+                    ...previousData.singlePost,
+                    updates: newUpdatesArray,
+                  },
+                },
+              });
+            } else {
+              // if subComment on comment on post
+              const indexOfParentComment = previousData.singlePost.comments.findIndex(item => item.id === parentComment.id);
+              const newCommentsArray = [...previousData.singlePost.comments];
+
+              // add the new subcomment to the comment array of the parentComment
+              newCommentsArray[indexOfParentComment].comments.push(dataReturned.createComment);
+
+              proxy.writeQuery({
+                query: POST_COMMENTS_QUERY,
+                data: {
+                  singlePost: {
+                    ...previousData.singlePost,
+                    comments: newCommentsArray,
+                  },
+                },
+              });
+            }
+          } else if (isUpdate) {
+            // if comment on update
             const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
-            const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
-              item => item.id === parentComment.id
-            );
             const newUpdatesArray = [...previousData.singlePost.updates];
-            // add the new comment to the correct comment of the correct update
-            newUpdatesArray[indexOfUpdate].comments[indexOfParentComment].comments.push(dataReturned.createComment);
+            // add the new comment to the correct update comments array
+
+            newUpdatesArray[indexOfUpdate].comments.push(dataReturned.createComment);
+
             proxy.writeQuery({
               query: POST_COMMENTS_QUERY,
               data: {
@@ -167,74 +207,40 @@ const CommentScreen = ({ navigation, route }) => {
               },
             });
           } else {
-            // if subComment on comment on post
-            // console.log('previousData', previousData);
-            // console.log(parentComment);
-            const indexOfParentComment = previousData.singlePost.comments.findIndex(item => item.id === parentComment.id);
-            const newCommentsArray = [...previousData.singlePost.comments];
-
-            // add the new subcomment to the comment array of the parentComment
-            newCommentsArray[indexOfParentComment].comments.push(dataReturned.createComment);
-
+            // if comment on post
             proxy.writeQuery({
               query: POST_COMMENTS_QUERY,
               data: {
                 singlePost: {
                   ...previousData.singlePost,
-                  comments: newCommentsArray,
+                  comments: [...previousData.singlePost.comments, dataReturned.createComment],
                 },
               },
             });
           }
-        } else if (isUpdate) {
-          // if comment on update
-          const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
-          const newUpdatesArray = [...previousData.singlePost.updates];
-          // add the new comment to the correct update comments array
-
-          newUpdatesArray[indexOfUpdate].comments.push(dataReturned.createComment);
-
-          proxy.writeQuery({
-            query: POST_COMMENTS_QUERY,
-            data: {
-              singlePost: {
-                ...previousData.singlePost,
-                updates: newUpdatesArray,
-              },
-            },
-          });
-        } else {
-          // if comment on post
-          proxy.writeQuery({
-            query: POST_COMMENTS_QUERY,
-            data: {
-              singlePost: {
-                ...previousData.singlePost,
-                comments: [...previousData.singlePost.comments, dataReturned.createComment],
-              },
-            },
-          });
         }
       },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        createComment: {
-          __typename: 'Comment',
-          createdAt: new Date(),
-          owner: userLoggedIn,
-          parentPost: post,
-          parentUpdate,
-          parentComment: parentCommentForDB,
-          content,
-          image: commentImage,
-          likes: [],
-          comments: [],
-          id: Math.random(),
-          likesCount: null,
-          likedByMe: false,
-          commentsCount: null,
-        },
-      },
+      optimisticResponse: useOptimisticResponse
+        ? {
+            __typename: 'Mutation',
+            createComment: {
+              __typename: 'Comment',
+              createdAt: new Date(),
+              owner: userLoggedIn,
+              parentPost: post,
+              parentUpdate,
+              parentComment: parentCommentForDB,
+              content,
+              image: commentImage,
+              likes: [],
+              comments: [],
+              id: Math.random(),
+              likesCount: null,
+              likedByMe: false,
+              commentsCount: null,
+            },
+          }
+        : null,
       refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } }],
     });
     navigation.goBack();

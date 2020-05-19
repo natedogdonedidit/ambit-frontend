@@ -41,8 +41,8 @@ const ConnectionsList = ({ navigation }) => {
   }
 
   const activeGoalsWithMatches = data.allConnections.postsWithMatches || [];
+  const activeGoalsWithMatchesFiltered = activeGoalsWithMatches.filter(({ matches }) => matches.length > 0);
   const matches = data.allConnections.matches || [];
-  // console.log(users);
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
@@ -68,7 +68,7 @@ const ConnectionsList = ({ navigation }) => {
           {
             name: 'Goals',
             title: 'Based on your goals',
-            data: activeGoalsWithMatches,
+            data: activeGoalsWithMatchesFiltered,
           },
           {
             name: 'Users',
@@ -77,23 +77,19 @@ const ConnectionsList = ({ navigation }) => {
           },
         ]}
         renderSectionHeader={({ section }) => {
-          // if (section.name === 'Goals' && activeGoalsWithMatches.length > 0) {
-          //   return <Section text={section.title} marginTop={false} />;
-          // }
-
-          // if (section.name === 'Users' && matches.length > 0) {
-          //   return <Section text={section.title} marginTop={false} />;
-          // }
-          return <Section text={section.title} marginTop={false} />;
+          // only need the headers if we have content in both sections
+          if (activeGoalsWithMatchesFiltered.length > 0 && matches.length > 0) {
+            return <Section text={section.title} marginTop={false} />;
+          }
         }}
         renderSectionFooter={({ section }) => {
-          if (section.name === 'Goals' && activeGoalsWithMatches.length <= 0) {
-            return (
-              <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingVertical: 30, paddingHorizontal: 15 }}>
-                After you post a goal you'll find your matches here
-              </Text>
-            );
-          }
+          // if (section.name === 'Goals' && activeGoalsWithMatches.length <= 0) {
+          //   return (
+          //     <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingVertical: 30, paddingHorizontal: 15 }}>
+          //       After you post a goal you'll find your matches here
+          //     </Text>
+          //   );
+          // }
 
           if (section.name === 'Users' && matches.length <= 0) {
             return (

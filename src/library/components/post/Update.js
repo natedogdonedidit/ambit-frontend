@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { format } from 'date-fns';
 import { useMutation } from '@apollo/react-hooks';
@@ -14,6 +14,9 @@ import Heart from 'library/components/UI/icons/Heart';
 import Comment from 'library/components/UI/icons/Comment';
 import Share from 'library/components/UI/icons/Share';
 import Chevron from 'library/components/UI/icons/Chevron';
+import DELETE_UPDATE_MUTATION from 'library/mutations/DELETE_UPDATE_MUTATION';
+import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
+import { UserContext } from 'library/utils/UserContext';
 
 const Update = ({
   post,
@@ -27,6 +30,9 @@ const Update = ({
   showLine = false,
   hideTopLine = false,
 }) => {
+  // HOOKS
+  const { currentUserId } = useContext(UserContext);
+
   // MUTATIONS - like, share, delete
   const [likeUpdate, { loading: loadingLike }] = useMutation(LIKE_UPDATE_MUTATION, {
     variables: {
@@ -54,15 +60,53 @@ const Update = ({
     },
   });
 
-  // HOOKS & VARIABLES
+  // DELETE MUTATION
+  const [deleteUpdate] = useMutation(DELETE_UPDATE_MUTATION, {
+    variables: {
+      id: update.id,
+      ownerID: update.parentPost.owner.id,
+    },
+    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: update.parentPost.id } }],
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to delete this update. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
+  // VARIABLES
   const containsMedia = !!update.image;
   // for dates
   const createdAt = new Date(update.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
   const formatedDate = format(createdAt, 'M/d/yy h:mm a');
+  const isMyPost = currentUserId === post.owner.id;
 
-  // ////////////////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
+  const determineOptions = () => {
+    if (isMyPost) {
+      return [
+        {
+          text: 'Delete update',
+          color: colors.peach,
+          onPress: deleteUpdate,
+        },
+      ];
+    }
+
+    // if just a normal post
+    return [
+      {
+        text: 'Report',
+        onPress: () => navigation.goBack(),
+      },
+    ];
+  };
+
+  const handleMoreButton = () => {
+    const options = determineOptions();
+    navigation.navigate('SelectorModal', { options });
+  };
+
   const handleLike = () => {
     if (!loadingLike) likeUpdate();
   };
@@ -94,7 +138,7 @@ const Update = ({
 
             {!hideButtons && (
               <View style={{ position: 'absolute', top: 0, right: 0 }}>
-                <Chevron onPress={() => navigation.navigate('EditUpdatePopup', { update })} />
+                <Chevron onPress={() => handleMoreButton()} />
               </View>
             )}
           </View>

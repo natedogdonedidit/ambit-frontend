@@ -38,7 +38,7 @@ const NewProjectButton = ({ navigation }) => {
 const styles = StyleSheet.create({
   storyBox: {
     justifyContent: 'space-between',
-    height: 150,
+    height: 160,
     width: 100,
     borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,

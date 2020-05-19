@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
 import { useSafeArea, initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
@@ -15,13 +15,16 @@ import HomeTimeline from 'library/components/timelines/HomeTimeline';
 import TopicsList from 'library/components/timelines/TopicsList';
 
 import { HEADER_HEIGHT } from 'styles/constants';
+import { UserContext } from 'library/utils/UserContext';
 
 const SLIDE_HEIGHT = HEADER_HEIGHT - StyleSheet.hairlineWidth;
 
 const HomeScreen = ({ navigation }) => {
+  // CONTEXT
+  const { homePosition, setHomePosition } = useContext(UserContext);
+
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
-  const [homePosition, setHomePosition] = useState(0);
 
   // OTHER HOOKS
   const insets = useSafeArea();
@@ -29,16 +32,20 @@ const HomeScreen = ({ navigation }) => {
 
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
-  // console.log(top);
-  // console.log(initialWindowSafeAreaInsets);
-  // const stuff = initialWindowSafeAreaInsets();
-  // console.log(initialWindowSafeAreaInsets);
+
+  // if home position changes to 0, scroll to begininning (used for when user presses Home tab)
+  useEffect(() => {
+    if (homePosition === 0) {
+      horizontalScrollRef.current.scrollTo({ x: 0 });
+    }
+  }, [homePosition]);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   if (errorUser) return <Error error={errorUser} />;
   const { userLoggedIn } = dataUser;
 
+  // if press top button --> auto scroll
   const handleTopicsButton = () => {
     if (homePosition === 0) {
       horizontalScrollRef.current.scrollToEnd();
@@ -47,6 +54,7 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  // if scroll past threshold --> change state
   const handleOnScroll = event => {
     const scrollX = event.nativeEvent.contentOffset.x;
     if (scrollX < width / 2 && homePosition === 1) {

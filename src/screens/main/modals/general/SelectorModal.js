@@ -11,9 +11,19 @@ const SelectorModal = ({ navigation, route }) => {
   const renderButtons = () => {
     if (options.length < 1) return null;
 
-    return options.map(({ text, color, onPress }, i) => {
+    return options.map(({ text, color, onPress, closeModal = true }, i) => {
       return (
-        <TouchableOpacity key={i} activeOpacity={0.8} onPress={onPress} style={i === 0 ? styles.row : styles.rowLineTop}>
+        <TouchableOpacity
+          key={i}
+          activeOpacity={0.8}
+          style={i === 0 ? styles.row : styles.rowLineTop}
+          onPress={() => {
+            onPress();
+            if (closeModal) {
+              navigation.goBack();
+            }
+          }}
+        >
           <Text style={{ ...defaultStyles.hugeRegular, color: color || colors.black }}>{text}</Text>
         </TouchableOpacity>
       );
@@ -58,7 +68,7 @@ const styles = StyleSheet.create({
   modalContent: {
     width: '100%',
     flexDirection: 'column',
-    borderRadius: 15,
+    borderRadius: 12,
     backgroundColor: 'white',
   },
   row: {
@@ -79,7 +89,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   closeButton: {
-    borderRadius: 15,
+    borderRadius: 12,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',

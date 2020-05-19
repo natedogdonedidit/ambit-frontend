@@ -29,6 +29,8 @@ const TopicScreen = ({ navigation, route }) => {
 
   // REFS & CONTEXT
   const insets = useSafeArea();
+  const [top] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+
   // const { height, width } = Dimensions.get('window');
 
   // CONSTANTS
@@ -47,7 +49,7 @@ const TopicScreen = ({ navigation, route }) => {
   // ///////////////////////////
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <View style={{ flex: 1 }}>
         <TopicsTimeline
@@ -56,7 +58,7 @@ const TopicScreen = ({ navigation, route }) => {
           userLoggedIn={userLoggedIn}
           navigation={navigation}
           scrollY={scrollY}
-          paddingTop={SLIDE_HEIGHT + tabsHeight}
+          paddingTop={SLIDE_HEIGHT + tabsHeight + top}
         />
       </View>
 
@@ -99,7 +101,7 @@ const TopicScreen = ({ navigation, route }) => {
       >
         <Animated.View
           style={{
-            paddingTop: insets.top,
+            paddingTop: top,
           }}
         >
           <HeaderTopic
@@ -140,12 +142,12 @@ const TopicScreen = ({ navigation, route }) => {
           left: 0,
           right: 0,
           width: '100%',
-          height: insets.top,
+          height: top,
           // backgroundColor: colors.lightLightGray,
           backgroundColor: 'white',
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 

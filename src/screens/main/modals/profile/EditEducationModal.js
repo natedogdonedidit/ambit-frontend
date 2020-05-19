@@ -177,6 +177,12 @@ const EditEducationModal = ({ navigation, route }) => {
     }
   };
 
+  const handleLocationSelect = locObject => {
+    if (locObject) {
+      setLocation(locObject.location);
+    }
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <HeaderWhite
@@ -206,15 +212,22 @@ const EditEducationModal = ({ navigation, route }) => {
             value={subText}
             placeholder="Add degree"
           />
-          <View style={styles.inputTitle}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Location</Text>
-          </View>
-          <TextInput
-            style={{ ...styles.input, ...defaultStyles.defaultText }}
-            onChangeText={val => setLocation(val)}
-            value={location}
-            placeholder="Add location"
-          />
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => navigation.navigate('EditLocationModalRight', { initialLocation: location, handleLocationSelect })}
+          >
+            <View>
+              <View style={styles.inputTitle}>
+                <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Location</Text>
+              </View>
+              <View style={styles.input}>
+                <Text style={location ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder}>
+                  {location || 'Add location'}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+
           <View style={styles.inputTitle}>
             <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Start Date</Text>
           </View>
@@ -225,7 +238,7 @@ const EditEducationModal = ({ navigation, route }) => {
                   navigation.navigate('MonthModal', { handleSelect: setStartDateMonth });
                 }}
               >
-                <Text style={[{ width: 80 }, startDateMonth ? defaultStyles.defaultText : defaultStyles.defaultMute]}>
+                <Text style={[{ width: 80 }, startDateMonth ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder]}>
                   {startDateMonth || `Month`}
                 </Text>
               </TouchableOpacity>
@@ -236,7 +249,7 @@ const EditEducationModal = ({ navigation, route }) => {
                   navigation.navigate('YearModal', { handleSelect: setStartDateYear });
                 }}
               >
-                <Text style={[{ width: 80 }, startDateYear ? defaultStyles.defaultText : defaultStyles.defaultMute]}>
+                <Text style={[{ width: 80 }, startDateYear ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder]}>
                   {startDateYear || `Year`}
                 </Text>
               </TouchableOpacity>
@@ -254,7 +267,7 @@ const EditEducationModal = ({ navigation, route }) => {
                       navigation.navigate('MonthModal', { handleSelect: setEndDateMonth });
                     }}
                   >
-                    <Text style={[{ width: 80 }, endDateMonth ? defaultStyles.defaultText : defaultStyles.defaultMute]}>
+                    <Text style={[{ width: 80 }, endDateMonth ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder]}>
                       {endDateMonth || `Month`}
                     </Text>
                   </TouchableOpacity>
@@ -265,7 +278,7 @@ const EditEducationModal = ({ navigation, route }) => {
                       navigation.navigate('YearModal', { handleSelect: setEndDateYear });
                     }}
                   >
-                    <Text style={[{ width: 80 }, endDateYear ? defaultStyles.defaultText : defaultStyles.defaultMute]}>
+                    <Text style={[{ width: 80 }, endDateYear ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder]}>
                       {endDateYear || `Year`}
                     </Text>
                   </TouchableOpacity>

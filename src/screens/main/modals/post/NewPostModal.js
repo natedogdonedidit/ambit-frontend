@@ -451,19 +451,25 @@ const NewPostModal = ({ navigation, route }) => {
         </View>
         <InputAccessoryView nativeID="1">
           <View style={styles.aboveKeyboard}>
-            <View style={styles.aboveKeyboardLeft}>
+            <View style={{ ...styles.aboveKeyboardLeft }}>
               <TouchableOpacity
                 onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
                 hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', width: (width - 30) / 2 - 38 }}>
                   <Icon
                     name="map-marker-alt"
                     size={15}
                     color={colors.purp}
                     style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.7 }}
                   />
-                  <Text style={{ ...defaultStyles.defaultRegular, color: colors.blueGray }}>{location}</Text>
+                  <Text
+                    numberOfLines={1}
+                    // ellipsizeMode="head"
+                    style={{ ...defaultStyles.defaultRegular, color: colors.blueGray, flex: 1 }}
+                  >
+                    {location}
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>

@@ -15,7 +15,6 @@ const StoryImage = ({ activeItem, videoRef, onProgress, onBuffer, onVideoEnd, is
       return <Image source={{ uri: url }} style={styles.fill} resizeMode="cover" />;
     }
     if (type === 'VIDEO') {
-      console.log(paused);
       return (
         <Video
           source={{ uri: url }}

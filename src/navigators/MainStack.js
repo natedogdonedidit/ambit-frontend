@@ -43,9 +43,6 @@ import SelectTopicsMentorModal from 'screens/main/modals/profile/SelectTopicsMen
 // popups
 import SelectorModal from 'screens/main/modals/general/SelectorModal';
 import EditSkillsPopup from 'screens/main/modals/profile/EditSkillsPopup';
-import EditPostPopup from 'screens/main/modals/post/EditPostPopup';
-import EditUpdatePopup from 'screens/main/modals/post/EditUpdatePopup';
-import EditCommentPopup from 'screens/main/modals/post/EditCommentPopup';
 import YearModal from 'screens/main/modals/general/YearModal';
 import MonthModal from 'screens/main/modals/general/MonthModal';
 import ForYouSettingsPopup from 'screens/main/modals/general/ForYouSettingsPopup';
@@ -277,10 +274,7 @@ const MainStack = () => {
       <Stack.Screen name="EditAboutModal" component={EditAboutModal} />
       <Stack.Screen name="EditSkillsModal" component={EditSkillsModal} />
       <Stack.Screen name="EditSkillsPopup" component={EditSkillsPopup} options={halfModalOptions} />
-      <Stack.Screen name="EditPostPopup" component={EditPostPopup} options={halfModalOptions} />
       <Stack.Screen name="SelectorModal" component={SelectorModal} options={halfModalOptions} />
-      <Stack.Screen name="EditUpdatePopup" component={EditUpdatePopup} options={halfModalOptions} />
-      <Stack.Screen name="EditCommentPopup" component={EditCommentPopup} options={halfModalOptions} />
       <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} options={halfModalOptions} />
       <Stack.Screen name="ForYouSettingsPopup" component={ForYouSettingsPopup} options={halfModalOptions} />
       <Stack.Screen name="EditEducationModal" component={EditEducationModal} />

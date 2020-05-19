@@ -22,6 +22,7 @@ const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingS
     fetchMore: fetchMoreStories,
     networkStatus: networkStatusStories,
   } = useQuery(STORIES_HOME_QUERY, {
+    onError: e => console.log('error loading home stories', e),
     notifyOnNetworkStatusChange: true,
   });
 

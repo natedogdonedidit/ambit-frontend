@@ -19,7 +19,7 @@ import {
 } from 'library/utils';
 
 import Loader from 'library/components/UI/Loader';
-import HeaderBack from 'library/components/headers/HeaderBack';
+import HeaderPostToModal from 'library/components/headers/HeaderPostToModal';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import ProjectSquare from 'library/components/stories/ProjectSquare';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -30,6 +30,8 @@ import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 import StoryBox from 'library/components/stories/StoryBox';
 import StoryBoxButton from 'library/components/stories/StoryBoxButton';
 import NewProjectButton from 'library/components/stories/NewProjectButton2';
+import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
+import TextButton from 'library/components/UI/buttons/TextButton';
 
 const PostToModal = ({ navigation, route }) => {
   const { setCreatingStory } = useContext(UserContext);
@@ -379,7 +381,7 @@ const PostToModal = ({ navigation, route }) => {
   };
 
   const renderTopics = proj => {
-    if (proj.topics.length > 1) {
+    if (proj.topics.length > 0) {
       return (
         <Text numberOfLines={1} style={{ ...defaultStyles.defaultBoldMute, paddingLeft: 10, paddingTop: 2 }}>
           {proj.topics.map((top, i) => `${top.name}${i < proj.topics.length - 1 ? `, ` : ''}`)}
@@ -403,7 +405,7 @@ const PostToModal = ({ navigation, route }) => {
           <TouchableOpacity
             key={project.id}
             style={styles.projectRow}
-            activeOpacity={0.8}
+            activeOpacity={1}
             onPress={() => toggleProject(project.id)}
           >
             <View style={styles.leftSide}>
@@ -427,15 +429,32 @@ const PostToModal = ({ navigation, route }) => {
     });
   };
 
+  const chooseHeaderButton = () => {
+    if (selectedProject) {
+      return <ButtonHeader onPress={handleSend}>Send</ButtonHeader>;
+    }
+    if (!selectedProject && !isStory) {
+      return (
+        <TextButton textStyle={styles.rightTextOpacity} onPress={() => null}>
+          Next
+        </TextButton>
+      );
+    }
+
+    return (
+      <TextButton textStyle={styles.rightText} onPress={handleGoToTopicSelection}>
+        Next
+      </TextButton>
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <HeaderBack
+      <HeaderPostToModal
         navigation={navigation}
         title="Share to..."
         handleBack={navigation.goBack}
-        textRight={selectedProject ? 'Send' : 'Next'}
-        solidRight={!!selectedProject}
-        handleRight={selectedProject ? handleSend : handleGoToTopicSelection}
+        rightComponent={chooseHeaderButton()}
       />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 20 }}>
         {renderAddToStory()}
@@ -499,7 +518,7 @@ const styles = StyleSheet.create({
   projectRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 7,
+    paddingVertical: 5,
   },
   topicRow: {
     flexDirection: 'row',
@@ -510,6 +529,19 @@ const styles = StyleSheet.create({
     width: 50,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  rightText: {
+    width: 80,
+    textAlign: 'right',
+    ...defaultStyles.largeMedium,
+    color: colors.iosBlue,
+  },
+  rightTextOpacity: {
+    width: 80,
+    textAlign: 'right',
+    ...defaultStyles.largeMedium,
+    color: colors.iosBlue,
+    opacity: 0.5,
   },
 });
 

@@ -14,6 +14,8 @@ const StoryProgressBars = ({ activeStory, activeIndex, IMAGE_DURATION, currentTi
     return total + length;
   }, 0);
 
+  // console.log('currentTime', currentTime);
+
   const renderProgressBars = () => {
     return items.map((item, i) => {
       const length = Math.max(item.duration || IMAGE_DURATION, 10); // minimum of 10. ex: if dur of video is 2s, dur = 10

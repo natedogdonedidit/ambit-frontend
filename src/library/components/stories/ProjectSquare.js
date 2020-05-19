@@ -45,8 +45,8 @@ const ProjectSquare = ({ navigation, project, newProject = false, loading = fals
 
 const styles = StyleSheet.create({
   container: {
-    width: 44,
-    height: 44,
+    width: 48,
+    height: 48,
     borderRadius: 10,
     backgroundColor: colors.gray12,
     overflow: 'hidden',

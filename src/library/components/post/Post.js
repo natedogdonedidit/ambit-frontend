@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/react-hooks';
@@ -18,6 +18,9 @@ import Share from 'library/components/UI/icons/Share';
 import Topic from 'library/components/post/Topic';
 import Location from 'library/components/post/Location';
 import GoalStatus from 'library/components/post/GoalStatus';
+import { UserContext } from 'library/utils/UserContext';
+import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
+import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 
 const Post = ({
   post,
@@ -28,6 +31,9 @@ const Post = ({
   hideButtons = false,
   disableVideo = false,
 }) => {
+  // HOOKS
+  const { currentUserId } = useContext(UserContext);
+
   // MUTATIONS - like, share, delete
   const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
     variables: {
@@ -55,9 +61,23 @@ const Post = ({
     },
   });
 
-  // HOOKS & VARIABLES
+  // DELETE POST MUTATION
+  const [deletePost] = useMutation(DELETE_POST_MUTATION, {
+    variables: {
+      id: post.id,
+      ownerID: post.owner.id,
+    },
+    refetchQueries: () => [{ query: USER_POSTS_QUERY, variables: { id: currentUserId } }],
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
+  // VARIABLES
   const containsMedia = post.video || post.images.length > 0;
   const containsTopics = !!post.subField || post.topics.length > 0;
+  const isMyPost = currentUserId === post.owner.id;
 
   // for dates
   const createdAt = new Date(post.createdAt);
@@ -67,6 +87,45 @@ const Post = ({
   // const lastUpdated = new Date(post.lastUpdated);
 
   // CUSTOM FUNCTIONS
+  const determineOptions = () => {
+    if (isMyPost && post.goal) {
+      return [
+        {
+          text: 'Add an update',
+          onPress: () => navigation.navigate('UpdatePost', { post }),
+          closeModal: false,
+        },
+        {
+          text: 'Delete post',
+          color: colors.peach,
+          onPress: deletePost,
+        },
+      ];
+    }
+
+    if (isMyPost) {
+      return [
+        {
+          text: 'Delete post',
+          color: colors.peach,
+          onPress: deletePost,
+        },
+      ];
+    }
+
+    // if its not my post
+    return [
+      {
+        text: 'Report',
+        onPress: () => navigation.goBack(),
+      },
+    ];
+  };
+
+  const handleMoreButton = () => {
+    const options = determineOptions();
+    navigation.navigate('SelectorModal', { options });
+  };
 
   const handleLike = () => {
     if (!loadingLike) likePost();
@@ -99,7 +158,7 @@ const Post = ({
 
             {!hideButtons && (
               <View style={{ position: 'absolute', top: 0, right: 0 }}>
-                <Chevron onPress={() => navigation.navigate('EditPostPopup', { post })} />
+                <Chevron onPress={handleMoreButton} />
               </View>
             )}
           </View>
@@ -225,7 +284,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 4,
     width: 76,
-    paddingTop: 8,
+    paddingTop: 10,
   },
   rightColumn: {
     flex: 1,
@@ -233,7 +292,7 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     // paddingTop: 4,
     // paddingLeft: 8,
-    paddingTop: 14,
+    paddingTop: 10,
     paddingBottom: 12,
   },
   topRow: {
@@ -248,7 +307,7 @@ const styles = StyleSheet.create({
   },
   headlineRow: {
     flexDirection: 'row',
-    paddingBottom: 14,
+    paddingBottom: 10,
   },
   goalView: {
     flexDirection: 'row',

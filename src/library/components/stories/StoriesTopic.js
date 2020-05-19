@@ -13,7 +13,7 @@ import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import Loader from 'library/components/UI/Loader';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import StoryBox from 'library/components/stories/StoryBox';
-import NewProjectButton from 'library/components/stories/NewProjectButton';
+import NewStoryButton from 'library/components/stories/NewStoryButton';
 
 const StoriesTopic = ({ navigation, refetching, topicID }) => {
   // QUERIES
@@ -40,38 +40,37 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
   const fetchingMoreStories = networkStatusStories === 3;
   const loadingStories = networkStatusStories === 1;
 
+  if (loadingStories) {
+    return null;
+  }
+
+  const stories = dataStories.storiesTopic;
+
+  if (stories.length <= 0) {
+    return null;
+  }
+
   const renderStories = () => {
     if (errorStories) {
       console.log(errorStories);
       return null;
     }
 
-    const stories = dataStories.storiesTopic;
-    // console.log('stories', stories);
-
-    if (stories.length > 0) {
-      return stories.map(story => {
-        if (story.items.length > 0) {
-          return <StoryBox key={story.id} navigation={navigation} story={story} />;
-        }
-      });
-    }
-
-    return null;
+    return stories.map(story => {
+      if (story.items.length > 0) {
+        return <StoryBox key={story.id} navigation={navigation} story={story} />;
+      }
+    });
   };
-
-  if (loadingStories) {
-    return null;
-  }
 
   return (
     <ScrollView
       horizontal
       style={styles.stories}
-      contentContainerStyle={{ paddingVertical: 10 }}
+      contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 5 }}
       showsHorizontalScrollIndicator={false}
     >
-      <NewProjectButton navigation={navigation} />
+      {/* <NewStoryButton navigation={navigation} /> */}
       {renderStories()}
     </ScrollView>
   );

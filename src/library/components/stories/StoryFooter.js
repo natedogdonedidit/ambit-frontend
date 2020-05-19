@@ -55,29 +55,31 @@ const StoryFooter = ({
   };
 
   const renderActions = () => {
-    if (isMyPost) {
-      return null;
-    }
+    // if (isMyPost) {
+    //   return null;
+    // }
 
     return (
       <View style={{ paddingRight: 10, paddingBottom: 10 }}>
         <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
           <ProfilePic size="medium" user={owner} navigation={navigation} disableVideo border borderWidth={0.5} />
-          <View
-            style={{
-              position: 'absolute',
-              bottom: -6,
-              right: 2,
-              width: 18,
-              height: 18,
-              borderRadius: 9,
-              backgroundColor: colors.peach,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Icon name="plus" solid size={10} color={colors.white} style={{ textAlign: 'center' }} />
-          </View>
+          {!isMyPost && (
+            <View
+              style={{
+                position: 'absolute',
+                bottom: -6,
+                right: 2,
+                width: 18,
+                height: 18,
+                borderRadius: 9,
+                backgroundColor: colors.peach,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Icon name="plus" solid size={10} color={colors.white} style={{ textAlign: 'center' }} />
+            </View>
+          )}
         </View>
         <View
           style={{
@@ -133,6 +135,12 @@ const StoryFooter = ({
       );
     }
 
+    if (soloStory) {
+      if (soloStory.topics) {
+        return renderTopics(soloStory.topics || []);
+      }
+    }
+
     // if the item does not belong to a project, but it has topics, just render the topics
     if (topics) {
       if (topics.length > 0) {
@@ -161,7 +169,7 @@ const StoryFooter = ({
               <Feather name="eye" solid size={20} color="rgba(255,255,255,0.8)" />
               <Text style={{ ...defaultStyles.smallMedium, color: 'white', paddingTop: 2 }}>29</Text>
             </View>
-            <View
+            {/* <View
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -170,7 +178,7 @@ const StoryFooter = ({
             >
               <Feather name="heart" solid size={20} color="rgba(255,255,255,0.8)" />
               <Text style={{ ...defaultStyles.smallMedium, color: 'white', paddingTop: 2 }}>12</Text>
-            </View>
+            </View> */}
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
             {!project && !isSaved && (
@@ -230,7 +238,9 @@ const StoryFooter = ({
 
     return (
       <View style={{ justifyContent: 'center' }}>
-        <Text style={{ ...defaultStyles.defaultMedium, color: 'rgba(255,255,255,0.6)' }}>Send Chad a message..</Text>
+        <Text
+          style={{ ...defaultStyles.defaultMedium, color: 'rgba(255,255,255,0.6)' }}
+        >{`Send ${owner.firstName} a message..`}</Text>
       </View>
     );
   };

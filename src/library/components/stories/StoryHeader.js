@@ -32,11 +32,13 @@ const StoryHeader = ({ activeStory, activeIndex, isPreview, navigation }) => {
             <ProfilePic size="small" user={owner} navigation={navigation} disableVideo />
             <View>
               <Text style={{ ...defaultStyles.defaultBold, color: 'white', paddingLeft: 8 }}>{owner.name}</Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white', paddingLeft: 8 }}>
-                  {owner.headline}
-                </Text>
-                <Icon name="circle" solid size={2} color={colors.white} style={{ alignSelf: 'center', paddingHorizontal: 5 }} />
+              <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
+                {owner.headline && (
+                  <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>{owner.headline}</Text>
+                )}
+                {owner.headline && (
+                  <Icon name="circle" solid size={2} color={colors.white} style={{ alignSelf: 'center', paddingHorizontal: 5 }} />
+                )}
                 <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>
                   {timeDiff} {period}
                 </Text>
