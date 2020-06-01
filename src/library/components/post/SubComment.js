@@ -101,14 +101,18 @@ const SubComment = ({
           </View>
 
           <View style={styles.headlineRow}>
-            <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{comment.owner.headline}</Text>
-            <Icon
-              name="circle"
-              solid
-              size={3}
-              color={colors.blueGray}
-              style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
-            />
+            {comment.owner.headline && (
+              <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{comment.owner.headline}</Text>
+            )}
+            {comment.owner.headline && (
+              <Icon
+                name="circle"
+                solid
+                size={3}
+                color={colors.blueGray}
+                style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
+              />
+            )}
             <Text style={{ ...defaultStyles.smallMute }}>
               {timeDiff} {period}
             </Text>

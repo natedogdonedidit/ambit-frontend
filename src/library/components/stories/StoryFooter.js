@@ -9,7 +9,7 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
 const StoryFooter = ({
-  activeStory,
+  story,
   activeIndex,
   isMyPost,
   navigation,
@@ -18,7 +18,7 @@ const StoryFooter = ({
   handleMoreButton,
   favoriteTopics,
 }) => {
-  const { items } = activeStory;
+  const { items } = story;
   const activeItem = { ...items[activeIndex] };
 
   const { owner, stories } = activeItem;
@@ -30,7 +30,7 @@ const StoryFooter = ({
   const insets = useSafeArea();
 
   const renderTopics = topics => {
-    // const { topics } = activeStory;
+    // const { topics } = story;
 
     // sort the topics based on favoriteTopics array passed in
     const sortTopics = (a, b) => {
@@ -150,7 +150,7 @@ const StoryFooter = ({
   };
 
   const renderTitle = () => {
-    const { title, type, topics } = activeStory;
+    const { title, type, topics } = story;
 
     // if the active story is a project
     if (type === 'PROJECT') {

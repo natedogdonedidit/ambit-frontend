@@ -8,9 +8,9 @@ import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const StoryHeader = ({ activeStory, activeIndex, isPreview, navigation }) => {
+const StoryHeader = ({ story, activeIndex, navigation }) => {
   const [timeOfDay] = useState(new Date());
-  const { items } = activeStory;
+  const { items } = story;
   const activeItem = { ...items[activeIndex] };
 
   const { owner } = activeItem;
@@ -22,10 +22,10 @@ const StoryHeader = ({ activeStory, activeIndex, isPreview, navigation }) => {
   const { timeDiff, period } = timeDifference(timeOfDay, createdAt);
 
   return (
-    <View style={{ ...styles.absoluteTop, top: insets.top + 10 }}>
+    <View style={{ ...styles.absoluteTop, top: insets.top + 15 }}>
       <TouchableOpacity
         onPress={() => {
-          if (!isPreview) navigation.navigate('Profile', { profileId: owner.id });
+          navigation.navigate('Profile', { profileId: owner.id });
         }}
       >
         <View style={styles.header}>

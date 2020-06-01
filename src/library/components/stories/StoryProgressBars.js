@@ -5,9 +5,9 @@ import { useSafeArea } from 'react-native-safe-area-context';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const StoryProgressBars = ({ activeStory, activeIndex, IMAGE_DURATION, currentTime }) => {
+const StoryProgressBars = ({ story, activeIndex, IMAGE_DURATION, currentTime }) => {
   const { width } = Dimensions.get('window');
-  const { items } = activeStory;
+  const { items } = story;
   const activeItem = { ...items[activeIndex] };
   const storyLength = items.reduce((total, item) => {
     const length = Math.max(item.duration || IMAGE_DURATION, 10); // minimum of 10
@@ -99,7 +99,7 @@ const StoryProgressBars = ({ activeStory, activeIndex, IMAGE_DURATION, currentTi
   };
 
   return (
-    <View style={{ ...styles.absoluteTop, top: insets.top - 5 }}>
+    <View style={{ ...styles.absoluteTop, top: insets.top + 5 }}>
       <View
         style={{
           width: '100%',
