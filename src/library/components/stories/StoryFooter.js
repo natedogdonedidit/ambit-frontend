@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -16,6 +16,7 @@ const StoryFooter = ({
   handleAddToProfile,
   indexAddedToProfile,
   handleMoreButton,
+  favoriteTopics,
 }) => {
   const { items } = activeStory;
   const activeItem = { ...items[activeIndex] };
@@ -26,27 +27,67 @@ const StoryFooter = ({
   const project = indexOfProject !== -1 ? stories[indexOfProject] : null;
   const soloStory = activeItem.stories.find(s => s.type === 'SOLO');
   const saved = soloStory ? soloStory.save : false;
+  const insets = useSafeArea();
 
   const renderTopics = topics => {
     // const { topics } = activeStory;
 
+    // sort the topics based on favoriteTopics array passed in
+    const sortTopics = (a, b) => {
+      const indexOfA = favoriteTopics.indexOf(a.topicID);
+      const indexOfB = favoriteTopics.indexOf(b.topicID);
+
+      // if a is a favorite but not b
+      if (indexOfA >= 0 && indexOfB === -1) {
+        return -1;
+      }
+      // if b is a favorite but not a
+      if (indexOfB >= 0 && indexOfA === -1) {
+        return 1;
+      }
+      // if both are favorites
+      if (indexOfA >= 0 && indexOfB >= 0) {
+        if (indexOfA < indexOfB) {
+          return -1;
+        }
+        return 1;
+      }
+      // if neither are favorites
+      return -1;
+    };
+
+    // topics.sort(sortTopics);
+
     if (topics.length > 0) {
       return (
-        <View style={{ flexDirection: 'row', overflow: 'hidden', alignItems: 'center' }}>
-          <View
-            key={topics[0].topicID}
-            style={{
-              height: 26,
-              paddingHorizontal: 6,
-              borderRadius: 6,
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'rgba(255,255,255,0.4)',
-              marginRight: 5,
+        <View>
+          <ScrollView
+            horizontal
+            style={{ flex: 1 }}
+            contentContainerStyle={{
+              flex: 1,
+              // backgroundColor: 'pink',
             }}
           >
-            <Text style={{ ...defaultStyles.defaultSemibold, color: colors.white }}>{topics[0].name}</Text>
-          </View>
+            {topics.map(topic => {
+              return (
+                <View
+                  key={topic.topicID}
+                  style={{
+                    height: 26,
+                    paddingHorizontal: 6,
+                    borderRadius: 6,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(255,255,255,0.4)',
+                    marginRight: 5,
+                  }}
+                >
+                  <Text style={{ ...defaultStyles.defaultSemibold, color: colors.white }}>{topic.name}</Text>
+                </View>
+              );
+            })}
+          </ScrollView>
         </View>
       );
     }
@@ -60,7 +101,7 @@ const StoryFooter = ({
     // }
 
     return (
-      <View style={{ paddingRight: 10, paddingBottom: 10 }}>
+      <View style={{ paddingRight: 10, paddingBottom: 50 }}>
         <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
           <ProfilePic size="medium" user={owner} navigation={navigation} disableVideo border borderWidth={0.5} />
           {!isMyPost && (
@@ -246,7 +287,7 @@ const StoryFooter = ({
   };
 
   return (
-    <View style={styles.absoluteBottom}>
+    <View style={{ ...styles.absoluteBottom, bottom: insets.bottom }}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
         <View
           style={{

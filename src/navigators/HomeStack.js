@@ -30,10 +30,8 @@ const HomeStack = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    console.log('here');
     const unsubscribe = navigation.addListener('tabPress', e => {
       // Prevent default behavior
-      console.log('here! here!');
 
       // Do something manually
       setHomePosition(0);

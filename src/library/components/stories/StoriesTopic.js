@@ -14,6 +14,7 @@ import Loader from 'library/components/UI/Loader';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import StoryBox from 'library/components/stories/StoryBox';
 import NewStoryButton from 'library/components/stories/NewStoryButton';
+import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
 
 const StoriesTopic = ({ navigation, refetching, topicID }) => {
   // QUERIES
@@ -58,8 +59,9 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
 
     return stories.map(story => {
       if (story.items.length > 0) {
-        return <StoryBox key={story.id} navigation={navigation} story={story} />;
+        return <StoryBox key={story.id} navigation={navigation} story={story} moreType="Topic" topicIDtoSearch={topicID} />;
       }
+      return null;
     });
   };
 
@@ -71,6 +73,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
       showsHorizontalScrollIndicator={false}
     >
       {/* <NewStoryButton navigation={navigation} /> */}
+      <ExploreTopicButton navigation={navigation} story={stories[0]} topicID={topicID} />
       {renderStories()}
     </ScrollView>
   );

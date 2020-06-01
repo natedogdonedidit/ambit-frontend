@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, StatusBar, Alert } from 'react-native';
-import { useMutation, useLazyQuery, useQuery } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { differenceInHours } from 'date-fns';
 
-import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserContext } from 'library/utils/UserContext';
 
 import colors from 'styles/colors';
@@ -20,21 +20,11 @@ import BottomLinearFade from 'library/components/stories/BottomLinearFade';
 import StoryProgressBars from 'library/components/stories/StoryProgressBars';
 import StoryHeader from 'library/components/stories/StoryHeader';
 import StoryFooter from 'library/components/stories/StoryFooter';
-import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const IMAGE_DURATION = 2;
 
 const StoryModal = ({ navigation, route }) => {
-  // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
-  // option 2: pass in an intro. Intro will play, then modal will close.
-  // option 3: pass in firstStory, with a topicIDtoSearch. First story will play followed by more stories from that topic
-  // option 4: pass in firstStory, with type = 'Home'. First story will play followed by more from your followers
-  // option 5: pass in firstStory, with type = 'Profile'. First story will play followed by more from this user
-
-  // moreType: 'Home', 'Topic', 'User', null means only show a single story
-
-  const { isPreview = false, story = null, intro = null, moreType = null, topicIDtoSearch } = route.params;
+  const { isPreview = false, story = null, intro = null } = route.params;
   const { currentUserId } = useContext(UserContext);
 
   const videoRef = useRef(null);
@@ -43,7 +33,6 @@ const StoryModal = ({ navigation, route }) => {
   const [hasError, setHasError] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
-  const [storyQIndex, setStoryQIndex] = useState(0);
   const [activeStory, setActiveStory] = useState(story || intro);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
@@ -54,7 +43,6 @@ const StoryModal = ({ navigation, route }) => {
   const [includedInSolo, setIncludedInSolo] = useState(false);
   const [soloStory, setSoloStory] = useState(null);
   const [paused, setPaused] = useState(false);
-  // const [storiesViewed, setStoriesViewed] = useState([story.id]); // THIS IS A TEMPORARY SOLUTION TO ELIMINATE REPEAT STORIES
 
   // so I can read paused in my setInterval
   const pausedRef = useRef(paused);
@@ -65,65 +53,6 @@ const StoryModal = ({ navigation, route }) => {
   const isEmpty = items.length < 1;
   const activeItem = { ...items[activeIndex] };
   const isMyPost = activeItem.owner.id === currentUserId;
-
-  // QUERY TO GET USERS TOPICS
-  const { data } = useQuery(CURRENT_USER_QUERY);
-  let favoriteTopics = [topicIDtoSearch || null];
-  const { userLoggedIn } = data;
-
-  // console.log(favoriteTopics);
-  useEffect(() => {
-    if (userLoggedIn) {
-      if (userLoggedIn.topicsFocus.length > 0) {
-        favoriteTopics = [...favoriteTopics, ...userLoggedIn.topicsFocus.map(top => top.topicID)];
-      }
-      if (userLoggedIn.topicsInterest.length > 0) {
-        if (favoriteTopics === []) {
-          favoriteTopics = [...userLoggedIn.topicsInterest.map(top => top.topicID)];
-        } else {
-          // only add topics that dont already exist
-          userLoggedIn.topicsInterest.forEach(topic => {
-            if (favoriteTopics.findIndex(fav => fav.topicID === topic.topicID) === -1) {
-              favoriteTopics = [...favoriteTopics, topic.topicID];
-            }
-          });
-        }
-      }
-    }
-  }, [userLoggedIn]);
-
-  // QUERIES - to get next stories
-  const [
-    getStoriesTopic,
-    {
-      error: errorStoriesTopic,
-      data: dataStoriesTopic,
-      refetch: refetchStoriesTopic,
-      fetchMore: fetchMoreStoriesTopic,
-      networkStatus: networkStatusStoriesTopic,
-    },
-  ] = useLazyQuery(STORIES_TOPIC_QUERY, {
-    variables: {
-      topicID: topicIDtoSearch,
-    },
-    notifyOnNetworkStatusChange: true,
-  });
-
-  const refetchingStories = networkStatusStoriesTopic === 4;
-  const fetchingMoreStories = networkStatusStoriesTopic === 3;
-  const loadingStories = networkStatusStoriesTopic === 1;
-
-  // an array of the stories up next, start with the first story (passed in)
-  let storyQ = [story];
-
-  if (moreType === 'Topic' && dataStoriesTopic) {
-    if (dataStoriesTopic.storiesTopic) {
-      // remove the story passed in from the query results
-      const storiesToAdd = dataStoriesTopic.storiesTopic.filter(s => s.id !== story.id);
-
-      storyQ = [...storyQ, ...storiesToAdd];
-    }
-  }
 
   // MUTATIONS
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
@@ -147,19 +76,6 @@ const StoryModal = ({ navigation, route }) => {
   });
 
   // EFFECTS
-  useEffect(() => {
-    if (moreType === 'Home') {
-    }
-
-    if (moreType === 'Topic') {
-      getStoriesTopic();
-    }
-
-    if (moreType === 'User') {
-    }
-
-    // if no moreType
-  }, [moreType]);
 
   // this is so when you open the "More" modal, the story unpauses when re-focused
   useEffect(() => {
@@ -188,7 +104,7 @@ const StoryModal = ({ navigation, route }) => {
   // if reached the end of photo timelimit - go to next item
   useEffect(() => {
     if (activeItem.type === 'IMAGE' && currentTime >= IMAGE_DURATION) {
-      incrementIndex();
+      // incrementIndex();
     }
   }, [currentTime]);
 
@@ -221,12 +137,12 @@ const StoryModal = ({ navigation, route }) => {
   }
 
   // VIDEO PLAYER CALLBACKS
-  const onBuffer = dataa => {
-    setIsBuffering(dataa.isBuffering);
+  const onBuffer = data => {
+    setIsBuffering(data.isBuffering);
   };
   // const onError = () => {};
-  const onProgress = dataa => {
-    setCurrentTime(dataa.currentTime);
+  const onProgress = data => {
+    setCurrentTime(data.currentTime);
   };
 
   const onVideoEnd = () => {
@@ -234,42 +150,23 @@ const StoryModal = ({ navigation, route }) => {
   };
 
   // CUSTOM FUNCTIONS
-  const goToPrevStory = () => {
-    setActiveStory(storyQ[storyQIndex - 1]);
-    setActiveIndex(storyQ[storyQIndex - 1].items.length - 1);
-    setStoryQIndex(prevState => prevState - 1);
-  };
-
-  const goToNextStory = () => {
-    setActiveStory(storyQ[storyQIndex + 1]);
-    setActiveIndex(0);
-    setStoryQIndex(prevState => prevState + 1);
-  };
-
-  const goToIntro = () => {
-    setActiveStory(intro);
-    setActiveIndex(0);
-    setShowIntroPreview(true);
-  };
-
   const incrementIndex = () => {
     setCurrentTime(0);
     if (activeIndex < items.length - 1) {
       setActiveIndex(prevState => prevState + 1);
     }
 
-    // if it was the last item in the activeStory
+    // if it was the last item
     if (activeIndex === items.length - 1) {
-      // if there are more stories in the Q to show
-      if (storyQ.length > storyQIndex + 1) {
-        goToNextStory();
-        // if this is a story, check to see if there is an intro
-      } else if (activeStory.type === 'STORY' && intro) {
+      // if this is a story, check to see if there is an intro
+      if (activeStory.type === 'STORY' && intro) {
         if (intro.items.length > 0) {
-          goToIntro();
+          setActiveStory(intro);
+          setActiveIndex(0);
+          setShowIntroPreview(true);
         }
       } else {
-        // if there are no more stories in the Q, and there is no intro to play...then close the modal
+        // if there is no intro to play...then close the modal
         navigation.goBack();
       }
     }
@@ -278,16 +175,9 @@ const StoryModal = ({ navigation, route }) => {
   const decrementIndex = () => {
     if (activeIndex > 0) {
       setActiveIndex(prevState => prevState - 1);
-    }
-
-    if (activeIndex <= 0 && storyQIndex > 0) {
-      goToPrevStory();
-    }
-
-    if (activeStory.type === 'INTRO' && story) {
+    } else if (activeStory.type === 'INTRO' && story) {
       setShowIntroPreview(true);
     }
-
     setCurrentTime(0);
   };
 
@@ -474,6 +364,7 @@ const StoryModal = ({ navigation, route }) => {
     ]);
   };
   const removeFromIntro = () => {};
+
   const determineOptions = () => {
     if (activeStory.type === 'PROJECT') {
       return [
@@ -535,6 +426,112 @@ const StoryModal = ({ navigation, route }) => {
     }
     return [];
   };
+
+  // const determineOptionsOLD = () => {
+  //   if (activeStory.type === 'PROJECT') {
+  //     // if active PROJECT and also in MYSTORY
+  //     if (includedInMyStory) {
+  //       return [
+  //         {
+  //           text: 'Remove from Project',
+  //           color: colors.peach,
+  //           onPress: removeFromProject,
+  //         },
+  //       ];
+  //     }
+  //     // if only in PROJECT
+  //     return [
+  //       {
+  //         text: 'Remove from Project',
+  //         color: colors.peach,
+  //         onPress: removeFromProject,
+  //       },
+  //     ];
+  //   }
+  //   if (activeStory.type === 'MYSTORY') {
+  //     if (includedInSolo) {
+  //       // if also saved to Profile
+  //       if (soloStory.save) {
+  //         return [
+  //           {
+  //             text: 'Remove from My Story',
+  //             color: colors.peach,
+  //             onPress: removeFromMyStory,
+  //           },
+  //         ];
+  //       }
+  //       // include in My Story only (not saved to profile)
+  //       return [
+  //         {
+  //           text: 'Remove from My Story',
+  //           color: colors.peach,
+  //           onPress: removeFromMyStory,
+  //         },
+  //       ];
+  //     }
+
+  //     // if active MYSTORY and also in PROJECT
+  //     if (includedInProject) {
+  //       return [
+  //         {
+  //           text: 'Remove from My Story',
+  //           color: colors.peach,
+  //           onPress: removeFromMyStory,
+  //         },
+  //       ];
+  //     }
+  //   } else if (activeStory.type === 'SOLO') {
+  //     // if active SOLO but still exists on MYSTORY
+  //     if (includedInMyStory) {
+  //       return [
+  //         {
+  //           text: 'Remove from My Profile',
+  //           color: colors.peach,
+  //           onPress: removeFromMyProfile,
+  //         },
+  //       ];
+  //     }
+
+  //     // if SOLO and only exists on Profile
+  //     if (activeItem.type === 'IMAGE') {
+  //       return [
+  //         {
+  //           text: 'Delete Image',
+  //           color: colors.peach,
+  //           onPress: deleteImageFromProfile,
+  //         },
+  //       ];
+  //     }
+
+  //     if (activeItem.type === 'VIDEO') {
+  //       return [
+  //         {
+  //           text: 'Delete Video',
+  //           color: colors.peach,
+  //           onPress: deleteVideoFromProfile,
+  //         },
+  //       ];
+  //     }
+
+  //     return [
+  //       {
+  //         text: 'Delete',
+  //         color: colors.peach,
+  //         onPress: deleteImageFromProfile,
+  //       },
+  //     ];
+  //   } else if (activeStory.type === 'INTRO') {
+  //     return [
+  //       {
+  //         text: 'Delete',
+  //         color: colors.peach,
+  //         onPress: deleteItemFromIntro,
+  //       },
+  //     ];
+  //   }
+  //   return [];
+  // };
+
   const handleMoreButton = () => {
     engagePause();
     const options = determineOptions();
@@ -579,8 +576,6 @@ const StoryModal = ({ navigation, route }) => {
     );
   }
 
-  // console.log('rendering');
-
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />
@@ -619,7 +614,6 @@ const StoryModal = ({ navigation, route }) => {
         indexAddedToProfile={indexAddedToProfile}
         handleAddToProfile={handleAddToProfile}
         handleMoreButton={handleMoreButton}
-        favoriteTopics={favoriteTopics}
       />
     </View>
   );

@@ -9,13 +9,14 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { getIconFromID } from 'library/utils';
 
-const StoryBox = ({ navigation, story, showProfilePic = true }) => {
+const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDtoSearch }) => {
   if (story.type === 'MYSTORY') {
     return (
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('StoryModal', {
             story,
+            moreType,
           })
         }
         style={styles.storyBox}
@@ -70,6 +71,8 @@ const StoryBox = ({ navigation, story, showProfilePic = true }) => {
         onPress={() =>
           navigation.navigate('StoryModal', {
             story,
+            moreType: 'Topic',
+            topicIDtoSearch,
           })
         }
         style={styles.storyBox}

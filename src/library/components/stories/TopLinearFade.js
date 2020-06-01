@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const TopLinearFade = ({ disable = false }) => {
+  const insets = useSafeArea();
+
   if (disable) return null;
 
   return (
@@ -14,7 +16,7 @@ const TopLinearFade = ({ disable = false }) => {
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
       colors={['rgba(0,0,0,0.4)', 'transparent']}
-      style={styles.linearGradientTop}
+      style={{ ...styles.linearGradientTop, height: insets.top + 80 }}
     />
   );
 };

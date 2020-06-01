@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -13,6 +13,7 @@ const StoryProgressBars = ({ activeStory, activeIndex, IMAGE_DURATION, currentTi
     const length = Math.max(item.duration || IMAGE_DURATION, 10); // minimum of 10
     return total + length;
   }, 0);
+  const insets = useSafeArea();
 
   // console.log('currentTime', currentTime);
 
@@ -98,7 +99,7 @@ const StoryProgressBars = ({ activeStory, activeIndex, IMAGE_DURATION, currentTi
   };
 
   return (
-    <View style={styles.absoluteTop}>
+    <View style={{ ...styles.absoluteTop, top: insets.top - 5 }}>
       <View
         style={{
           width: '100%',
@@ -106,7 +107,7 @@ const StoryProgressBars = ({ activeStory, activeIndex, IMAGE_DURATION, currentTi
           alignItems: 'center',
           paddingLeft: 10,
           paddingRight: 5,
-          paddingTop: 5,
+          paddingTop: 0,
         }}
       >
         {renderProgressBars()}

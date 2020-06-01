@@ -14,7 +14,7 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const TopicsList = ({ navigation, scrollY, paddingTop }) => {
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+  const { data } = useQuery(CURRENT_USER_QUERY);
 
   let favoritesList = [];
 

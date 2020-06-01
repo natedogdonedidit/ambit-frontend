@@ -1291,7 +1291,8 @@ export const allTopics = [
     topicID: 'topics_technology',
     topicStory: {
       id: 'ck8u9l53bzb430a78fn8zbxip',
-      preview: null,
+      preview:
+        'https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=80',
     },
     parentTopic: null,
   },

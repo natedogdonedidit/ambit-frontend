@@ -65,7 +65,7 @@ const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingS
     if (stories.length > 0) {
       return stories.map(story => {
         if (story.items.length > 0) {
-          return <StoryBox key={story.id} navigation={navigation} story={story} />;
+          return <StoryBox key={story.id} navigation={navigation} story={story} moreType="Home" />;
         }
       });
     }

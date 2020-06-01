@@ -83,7 +83,7 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
           <Text style={{ ...defaultStyles.hugeMedium, paddingBottom: 6 }}>Showcase</Text>
           {isMyProfile && (
             <TextButton textStyle={styles.editButton} onPress={() => null}>
-              New
+              Edit
             </TextButton>
           )}
         </View>
