@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, StatusBar, Alert, Dimensions } from 'react-native';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/react-hooks';
-import { differenceInHours } from 'date-fns';
+import { differenceInHours, setWeek } from 'date-fns';
 
 import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
 import { UserContext } from 'library/utils/UserContext';
@@ -25,7 +25,7 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const IMAGE_DURATION = 2;
 
-const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextStory, favoriteTopics }) => {
+const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextStory, favoriteTopics, refreshCard }) => {
   // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
   // option 2: pass in an intro. Intro will play, then modal will close.
   // option 3: pass in firstStory, with a topicIDtoSearch. First story will play followed by more stories from that topic
@@ -53,7 +53,7 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
   const [includedInMyStory, setIncludedInMyStory] = useState(false);
   const [includedInSolo, setIncludedInSolo] = useState(false);
   const [soloStory, setSoloStory] = useState(null);
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(!isActive);
   // const [storiesViewed, setStoriesViewed] = useState([story.id]); // THIS IS A TEMPORARY SOLUTION TO ELIMINATE REPEAT STORIES
 
   // so I can read paused in my setInterval
@@ -117,6 +117,26 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
       incrementIndex();
     }
   }, [currentTime]);
+
+  useEffect(() => {
+    // if changed from not active to active - unpause
+    if (paused && isActive) {
+      if (activeItem.type === 'VIDEO') {
+        videoRef.current.seek(0);
+      }
+      setCurrentTime(0);
+      setPaused(false);
+    }
+
+    // if changed from active to not active - pause
+    if (!paused && !isActive) {
+      setPaused(true);
+      setCurrentTime(0);
+      if (activeIndex < items.length - 1) {
+        setActiveIndex(prevState => prevState + 1);
+      }
+    }
+  }, [isActive]);
 
   // if the activeIndex changes always reset the current time to zero
   useEffect(() => {

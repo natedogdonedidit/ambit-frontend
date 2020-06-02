@@ -42,13 +42,13 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
   const loadingStories = networkStatusStories === 1;
 
   if (loadingStories) {
-    return null;
+    return <View style={{ height: 10 }} />;
   }
 
   const stories = dataStories.storiesTopic;
 
   if (stories.length <= 0) {
-    return null;
+    return <View style={{ height: 10 }} />;
   }
 
   const renderStories = () => {

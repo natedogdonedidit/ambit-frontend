@@ -10,6 +10,7 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import StoryCard from 'library/components/stories/StoryCard';
 
 const StoryModal = ({ navigation, route }) => {
+  const storyFlatlist = useRef();
   // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
   // option 2: pass in an intro. Intro will play, then modal will close.
   // option 3: pass in firstStory, with a topicIDtoSearch. First story will play followed by more stories from that topic
@@ -53,6 +54,11 @@ const StoryModal = ({ navigation, route }) => {
       }
     }
   }, [userLoggedIn]);
+
+  // scrolls to index when story index changes
+  useEffect(() => {
+    storyFlatlist.current.scrollToIndex({ index: storyQIndex, viewPosition: 0.5 });
+  }, [storyQIndex]);
 
   // QUERIES - to get next stories
   const [
@@ -103,6 +109,8 @@ const StoryModal = ({ navigation, route }) => {
   }, [moreType]);
 
   // CUSTOM FUNCTIONS
+  const refreshCard = () => {};
+
   const goToPrevStory = () => {
     console.log('going to prev story');
     // setActiveStory(storyQ[storyQIndex - 1]);
@@ -120,16 +128,9 @@ const StoryModal = ({ navigation, route }) => {
   };
 
   const tryGoToNextStory = () => {
-    if (storyQ.length > storyQIndex + 1) {
+    if (storyQIndex < storyQ.length - 1) {
       goToNextStory();
-      // if this is a story, check to see if there is an intro
-    }
-    // else if (story.type === 'STORY' && intro) {
-    //   if (intro.items.length > 0) {
-    //     goToIntro();
-    //   }
-    // }
-    else {
+    } else {
       // if there are no more stories in the Q, and there is no intro to play...then close the modal
       navigation.goBack();
     }
@@ -139,79 +140,94 @@ const StoryModal = ({ navigation, route }) => {
     if (storyQIndex > 0) {
       goToPrevStory();
     }
-    // else if (activeStory.type === 'INTRO' && story) {
-    //   setShowIntroPreview(true);
-    // }
   };
 
-  const renderPrevStoryCard = () => {
-    // if its the first story in the Q
-    if (storyQIndex <= 0) {
-      return null;
+  const handleSwipe = ({ nativeEvent }) => {
+    console.log('on momentum scroll end', nativeEvent);
+    const { contentOffset, layoutMeasurement } = nativeEvent;
+
+    // calculate new index after scroll
+    const newStoryQIndex = Math.round(contentOffset.x / layoutMeasurement.width);
+    console.log(newStoryQIndex, storyQIndex);
+
+    // compare newIndex to previous index and make sure within bounds
+    if (newStoryQIndex !== storyQIndex) {
+      if (newStoryQIndex > storyQIndex) {
+        tryGoToNextStory();
+      } else {
+        tryGoToPrevStory();
+      }
     }
-
-    return (
-      <StoryCard
-        key={storyKey - 1}
-        navigation={navigation}
-        story={storyQ[storyQIndex - 1]}
-        isActive={false}
-        tryGoToPrevStory={tryGoToPrevStory}
-        tryGoToNextStory={tryGoToNextStory}
-        favoriteTopics={favoriteTopics}
-      />
-    );
   };
 
-  const renderActiveStoryCard = () => {
-    return (
-      <StoryCard
-        key={storyKey}
-        navigation={navigation}
-        story={storyQ[storyQIndex]}
-        isActive
-        tryGoToPrevStory={tryGoToPrevStory}
-        tryGoToNextStory={tryGoToNextStory}
-        favoriteTopics={favoriteTopics}
-      />
-    );
-  };
+  // const renderPrevStoryCard = () => {
+  //   // if its the first story in the Q
+  //   if (storyQIndex <= 0) {
+  //     return null;
+  //   }
 
-  const renderNextStoryCard = () => {
-    // if its the first story in the Q
-    if (storyQ.length <= storyQIndex + 1) {
-      return null;
-    }
+  //   return (
+  //     <StoryCard
+  //       key={storyKey - 1}
+  //       navigation={navigation}
+  //       story={storyQ[storyQIndex - 1]}
+  //       isActive={false}
+  //       tryGoToPrevStory={tryGoToPrevStory}
+  //       tryGoToNextStory={tryGoToNextStory}
+  //       favoriteTopics={favoriteTopics}
+  //     />
+  //   );
+  // };
 
-    return (
-      <StoryCard
-        key={storyKey + 1}
-        navigation={navigation}
-        story={storyQ[storyQIndex + 1]}
-        isActive={false}
-        tryGoToPrevStory={tryGoToPrevStory}
-        tryGoToNextStory={tryGoToNextStory}
-        favoriteTopics={favoriteTopics}
-      />
-    );
-  };
+  // const renderActiveStoryCard = () => {
+  //   return (
+  //     <StoryCard
+  //       key={storyKey}
+  //       navigation={navigation}
+  //       story={storyQ[storyQIndex]}
+  //       isActive
+  //       tryGoToPrevStory={tryGoToPrevStory}
+  //       tryGoToNextStory={tryGoToNextStory}
+  //       favoriteTopics={favoriteTopics}
+  //     />
+  //   );
+  // };
 
-  const renderStories = () => {
-    return storyQ.map((s, i) => {
-      // console.log(i, storyQIndex);
-      return (
-        <StoryCard
-          key={s.id}
-          navigation={navigation}
-          story={s}
-          isActive={i === storyQIndex}
-          tryGoToPrevStory={tryGoToPrevStory}
-          tryGoToNextStory={tryGoToNextStory}
-          favoriteTopics={favoriteTopics}
-        />
-      );
-    });
-  };
+  // const renderNextStoryCard = () => {
+  //   // if its the first story in the Q
+  //   if (storyQ.length <= storyQIndex + 1) {
+  //     return null;
+  //   }
+
+  //   return (
+  //     <StoryCard
+  //       key={storyKey + 1}
+  //       navigation={navigation}
+  //       story={storyQ[storyQIndex + 1]}
+  //       isActive={false}
+  //       tryGoToPrevStory={tryGoToPrevStory}
+  //       tryGoToNextStory={tryGoToNextStory}
+  //       favoriteTopics={favoriteTopics}
+  //     />
+  //   );
+  // };
+
+  // const renderStories = () => {
+  //   return storyQ.map((s, i) => {
+  //     // console.log(i, storyQIndex);
+  //     return (
+  //       <StoryCard
+  //         key={s.id}
+  //         navigation={navigation}
+  //         story={s}
+  //         isActive={i === storyQIndex}
+  //         tryGoToPrevStory={tryGoToPrevStory}
+  //         tryGoToNextStory={tryGoToNextStory}
+  //         favoriteTopics={favoriteTopics}
+  //       />
+  //     );
+  //   });
+  // };
 
   // console.log('rendering');
   return (
@@ -222,13 +238,17 @@ const StoryModal = ({ navigation, route }) => {
       {/* {renderNextStoryCard()} */}
 
       <FlatList
+        ref={storyFlatlist}
         horizontal
         snapToAlignment="start"
         snapToInterval={width}
         decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={100}
-        onMomentumScrollEnd={() => console.log('on momentum scroll end')}
+        initialNumToRender={2}
+        bounces={false}
+        disableIntervalMomentum
+        onMomentumScrollEnd={handleSwipe}
         data={storyQ}
         renderItem={({ item, index }) => (
           <StoryCard

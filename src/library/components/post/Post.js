@@ -308,6 +308,7 @@ const styles = StyleSheet.create({
   headlineRow: {
     flexDirection: 'row',
     paddingBottom: 10,
+    alignItems: 'center',
   },
   goalView: {
     flexDirection: 'row',

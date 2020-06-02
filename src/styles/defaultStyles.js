@@ -108,8 +108,9 @@ const styles = StyleSheet.create({
   defaultText: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-Regular',
-    lineHeight: 17,
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '400',
+    // lineHeight: 17,
   },
   defaultMedium: {
     color: colors.black,

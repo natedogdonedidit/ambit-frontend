@@ -46,7 +46,7 @@ const CameraModal = ({ navigation, route }) => {
     if (cameraRef && !recording) {
       const options = {
         mute: false,
-        maxDuration: 10,
+        maxDuration: 30,
         quality: RNCamera.Constants.VideoQuality['720p'], // 288p, 480p, 720p, 1080p, 2160p
       };
 

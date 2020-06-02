@@ -27,7 +27,7 @@ const ExploreTopicButton = ({ navigation, story, topicID }) => {
       activeOpacity={0.8}
     >
       <Image
-        style={{ position: 'absolute', top: 0, left: 0, width: 100, height: 150 }}
+        style={{ position: 'absolute', top: 0, left: 0, width: 100, height: 160 }}
         source={{ uri: preview || null }}
         resizeMode="cover"
       />
