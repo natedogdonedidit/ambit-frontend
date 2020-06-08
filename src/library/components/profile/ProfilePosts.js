@@ -12,7 +12,7 @@ import BigButton from 'library/components/UI/buttons/BigButton';
 
 const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId }) => {
   // QUERIES
-  const { loading, error, data, refetch } = useQuery(USER_POSTS_QUERY, {
+  const { loading, error, data } = useQuery(USER_POSTS_QUERY, {
     variables: { id: profileId },
     fetchPolicy: 'cache-and-network', // doing it this way because cannot pull to refresh at the moment
   });

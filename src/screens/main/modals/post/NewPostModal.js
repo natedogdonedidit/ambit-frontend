@@ -270,6 +270,7 @@ const NewPostModal = ({ navigation, route }) => {
   const handleCameraIconPress = () => {
     ImagePicker.openPicker({
       multiple: true,
+      maxFiles: 4,
       waitAnimationEnd: false,
       includeExif: true,
       loadingLabelText: 'Uploading files',

@@ -38,8 +38,8 @@ const ProfileGrid = ({ navigation, isMyProfile, profileId }) => {
   const renderGrid = () => {
     if (stories.length < 1) {
       return (
-        <Text style={{ ...defaultStyles.defaultMute, fontSize: 16, textAlign: 'center', paddingTop: 30 }}>
-          Your stories & projects will appear here
+        <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingTop: 30 }}>
+          {user.firstName && `${user.firstName}'s `}stories & projects will appear here
         </Text>
       );
     }

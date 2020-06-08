@@ -32,7 +32,7 @@ const SuggestedConnection = ({ navigation, item }) => {
                 solid
                 size={12}
                 color={colors.blueGray}
-                style={{ alignSelf: 'flex-start', paddingRight: 5, paddingTop: 2 }}
+                style={{ alignSelf: 'flex-start', paddingRight: 8, paddingTop: 2 }}
               />
               <Text style={{ ...defaultStyles.defaultMuteItalic }}>{reason.text}</Text>
             </View>

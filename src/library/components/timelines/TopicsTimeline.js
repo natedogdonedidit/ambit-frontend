@@ -38,7 +38,7 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
   }
 
   if (!data || loading) {
-    return <Loader backgroundColor={colors.lightGray} />;
+    return <Loader backgroundColor={colors.lightGray} size="small" />;
   }
 
   const posts = data.postsTopic.edges || [];

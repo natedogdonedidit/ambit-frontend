@@ -16,21 +16,15 @@ import PostGroupTL from 'library/components/post/PostGroupTL';
 import { UserContext } from 'library/utils/UserContext';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
+  // console.log('hey');
   const currentTime = new Date();
   const homeTimelineRef = useRef();
 
-  const { creatingStory } = useContext(UserContext);
+  // const { creatingStory } = useContext(UserContext);
 
   const [showLoader, setShowLoader] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
-
-  useEffect(() => {
-    if (creatingStory) {
-      console.log('refreshing');
-      onRefresh();
-    }
-  }, [creatingStory]);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -94,32 +88,16 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     // console.log('in effect', creatingStory);
 
     // this doesnt work
-    if (
-      refetchingPostsNetwork ||
-      refetchingPostsForYou ||
-      loadingPostsNetwork ||
-      loadingPostsForYou ||
-      loadingStories ||
-      refetchingStories ||
-      creatingStory
-    ) {
+    if (refetchingPostsNetwork || refetchingPostsForYou || loadingPostsNetwork || loadingPostsForYou) {
       // console.log('starting loader');
       setShowLoader(true);
     } else if (showLoader) {
       // console.log('stopping loader');
       setShowLoader(false);
     }
-  }, [
-    refetchingPostsNetwork,
-    refetchingPostsForYou,
-    loadingPostsNetwork,
-    loadingPostsForYou,
-    loadingStories,
-    refetchingStories,
-    creatingStory,
-  ]);
+  }, [refetchingPostsNetwork, refetchingPostsForYou, loadingPostsNetwork, loadingPostsForYou, loadingStories, refetchingStories]);
 
-  const refetching = refetchingPostsNetwork || refetchingPostsForYou || creatingStory;
+  const refetching = refetchingPostsNetwork || refetchingPostsForYou;
 
   if (errorPostsNetwork) {
     console.log('ERROR LOADING POSTS:', errorPostsNetwork.message);
@@ -142,7 +120,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
     // console.log('running refetch');
-    setShowLoader(true);
+    // setShowLoader(true);
     refetchPostsNetwork();
     refetchPostsForYou();
   };
@@ -178,17 +156,16 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     });
   };
 
-  // console.log(showLoader);
-  const newShowLoader = showLoader || creatingStory;
+  console.log('showLoader', showLoader);
   // console.log(newShowLoader);
   // RENDER
   return (
     <View style={styles.container}>
       <SectionList
         ref={homeTimelineRef}
-        refreshControl={<RefreshControl refreshing={newShowLoader} onRefresh={onRefresh} tintColor="transparent" />}
+        refreshControl={<RefreshControl refreshing={showLoader} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
-        refreshing={newShowLoader}
+        refreshing={showLoader}
         progressViewOffset={100}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
@@ -348,7 +325,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             }}
             size="small"
             color={colors.purp}
-            animating={newShowLoader}
+            animating={showLoader}
           />
         </View>
       </Animated.View>

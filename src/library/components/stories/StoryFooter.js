@@ -289,7 +289,7 @@ const StoryFooter = ({
   };
 
   return (
-    <View style={{ ...styles.absoluteBottom, bottom: insets.bottom }}>
+    <View style={{ ...styles.absoluteBottom, bottom: insets.bottom + 5 }}>
       <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
         <View
           style={{

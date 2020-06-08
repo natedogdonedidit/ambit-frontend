@@ -479,7 +479,7 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
   }
 
   return (
-    <View style={{ ...styles.container, width }}>
+    <SafeAreaView style={{ ...styles.container, width }}>
       {/* absolute positioned stuff */}
       <StoryImage
         activeItem={activeItem}
@@ -511,7 +511,7 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
         handleMoreButton={handleMoreButton}
         favoriteTopics={favoriteTopics}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -6,7 +6,7 @@ import defaultStyles from 'styles/defaultStyles';
 
 import StoryBox from 'library/components/stories/StoryBox';
 
-const Projects = ({ navigation, projects }) => {
+const Showcase = ({ navigation, projects }) => {
   // console.log('projects', projects);
 
   const renderProjects = () => {
@@ -55,4 +55,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Projects;
+export default Showcase;

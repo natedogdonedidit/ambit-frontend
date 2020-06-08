@@ -22,7 +22,7 @@ const StoryHeader = ({ story, activeIndex, navigation }) => {
   const { timeDiff, period } = timeDifference(timeOfDay, createdAt);
 
   return (
-    <View style={{ ...styles.absoluteTop, top: insets.top + 15 }}>
+    <View style={{ ...styles.absoluteTop, top: insets.top + 18 }}>
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('Profile', { profileId: owner.id });

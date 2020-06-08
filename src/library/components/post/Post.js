@@ -164,7 +164,127 @@ const Post = ({
   };
 
   const renderMedia = () => {
-    return <Image style={{ width: '100%', height: 160 }} source={{ uri: post.images[0] }} resizeMode="cover" />;
+    if (post.images.length === 1) {
+      return (
+        <View style={{ width: '100%', height: 160 }}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 0 })}
+          >
+            <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[0] }} resizeMode="cover" />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    if (post.images.length === 2) {
+      return (
+        <>
+          <View style={{ width: '50%', height: 160, borderRightWidth: StyleSheet.hairlineWidth, borderColor: colors.lightGray }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 0 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[0] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: '50%', height: 160 }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 1 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[1] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+        </>
+      );
+    }
+    if (post.images.length === 3) {
+      return (
+        <>
+          <View
+            style={{ width: '100%', height: 120, borderBottomWidth: StyleSheet.hairlineWidth, borderColor: colors.lightGray }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 0 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[0] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: '50%', height: 120, borderRightWidth: StyleSheet.hairlineWidth, borderColor: colors.lightGray }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 1 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[1] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: '50%', height: 120 }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 2 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[2] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+        </>
+      );
+    }
+    if (post.images.length === 4) {
+      return (
+        <>
+          <View
+            style={{
+              width: '50%',
+              height: 120,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              borderColor: colors.lightGray,
+            }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 0 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[0] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: '50%', height: 120 }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 1 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[1] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: '50%', height: 120 }}>
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 2 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[2] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              width: '50%',
+              height: 120,
+              borderLeftWidth: StyleSheet.hairlineWidth,
+              borderTopWidth: StyleSheet.hairlineWidth,
+              borderColor: colors.lightGray,
+            }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() => navigation.navigate('ImageViewerModal', { images: post.images, index: 3 })}
+            >
+              <Image style={{ width: '100%', height: '100%' }} source={{ uri: post.images[3] }} resizeMode="cover" />
+            </TouchableOpacity>
+          </View>
+        </>
+      );
+    }
+    return null;
   };
 
   if (post._deleted) return null;
@@ -364,6 +484,8 @@ const styles = StyleSheet.create({
     borderColor: colors.borderBlack,
     marginBottom: 8,
     overflow: 'hidden',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   buttons: {
     flexDirection: 'row',

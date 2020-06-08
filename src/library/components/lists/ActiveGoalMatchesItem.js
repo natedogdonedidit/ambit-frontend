@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
@@ -49,7 +49,13 @@ const ActiveGoalMatchesItem = ({ navigation, item }) => {
             {post.subField.name}
           </Text>
         </Text>
-        <View style={{ flexDirection: 'row', paddingTop: 10 }}>{renderProfilePics()}</View>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ flexDirection: 'row', paddingTop: 10 }}
+        >
+          {renderProfilePics()}
+        </ScrollView>
       </View>
     </TouchableOpacity>
   );
@@ -58,7 +64,7 @@ const ActiveGoalMatchesItem = ({ navigation, item }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingRight: 15,
+    // paddingRight: 15,
     paddingTop: 12,
     paddingBottom: 17,
     backgroundColor: 'white',
@@ -76,7 +82,6 @@ const styles = StyleSheet.create({
   },
   rightSide: {
     flex: 1,
-    paddingRight: 15,
   },
   reasonRow: {
     flexDirection: 'row',

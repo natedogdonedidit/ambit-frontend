@@ -169,7 +169,7 @@ export const postPicUpload = async (userId, uri) => {
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
   try {
-    const res = await fetch(`https://api.cloudinar.com/v1_1/${cloud_name}/image/upload`, {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
       body: uploadData,
     });

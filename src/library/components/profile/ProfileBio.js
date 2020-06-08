@@ -6,7 +6,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import TextButton from 'library/components/UI/buttons/TextButton';
-import Projects from 'library/components/profile/Projects';
+import Showcase from 'library/components/profile/Showcase';
 import Skills from 'library/components/profile/Skills';
 import Experience from 'library/components/profile/Experience';
 import Education from 'library/components/profile/Education';
@@ -34,6 +34,21 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
   const isMentor = user.topicsMentor.length > 0;
   const isInvestor = user.topicsInvest.length > 0;
   const useOpenToBox = isFreelancer || isMentor || isInvestor;
+
+  const hasExperience = user.experience ? user.experience.length > 0 : false;
+  const hasEducation = user.education ? user.education.length > 0 : false;
+  const hasSkills = user.skills ? user.skills.length > 0 : false;
+  const hasStories = user.stories ? user.stories.length > 0 : false;
+
+  const showExperience = isMyProfile || hasExperience;
+  const showEducation = isMyProfile || hasEducation;
+  const showSkills = isMyProfile || hasSkills;
+
+  const showcaseProjects = hasStories
+    ? user.stories.filter(project => project.items.length > 0 && (project.type === 'SOLO' || project.type === 'PROJECT'))
+    : [];
+
+  const showShowcase = isMyProfile || showcaseProjects.length > 0;
 
   const renderOpenTo = () => {
     if (!useOpenToBox) return null;
@@ -78,50 +93,64 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
           </View>
         )}
       </View>
-      <View style={{ ...styles.projectsSection }}>
-        <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
-          <Text style={{ ...defaultStyles.hugeMedium, paddingBottom: 6 }}>Showcase</Text>
-          {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => null}>
-              Edit
-            </TextButton>
-          )}
+      {showShowcase && (
+        <View style={{ ...styles.projectsSection }}>
+          <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>
+            <Text style={{ ...defaultStyles.hugeMedium, paddingBottom: 6 }}>Showcase</Text>
+            {isMyProfile && (
+              <TextButton textStyle={styles.editButton} onPress={() => null}>
+                Edit
+              </TextButton>
+            )}
+          </View>
+          <Showcase navigation={navigation} projects={user.stories} />
         </View>
-        <Projects navigation={navigation} projects={user.stories} />
-      </View>
-      <View style={styles.contentSection}>
-        <View style={{ ...styles.contentHeader }}>
-          <Text style={{ ...defaultStyles.hugeMedium }}>Experience</Text>
-          {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditExperienceModal', { isNew: true })}>
-              New
-            </TextButton>
-          )}
+      )}
+      {showExperience && (
+        <View style={styles.contentSection}>
+          <View style={{ ...styles.contentHeader }}>
+            <Text style={{ ...defaultStyles.hugeMedium }}>Experience</Text>
+            {isMyProfile && (
+              <TextButton
+                textStyle={styles.editButton}
+                onPress={() => navigation.navigate('EditExperienceModal', { isNew: true })}
+              >
+                New
+              </TextButton>
+            )}
+          </View>
+          <Experience navigation={navigation} isMyProfile={isMyProfile} experience={user.experience} />
         </View>
-        <Experience navigation={navigation} isMyProfile={isMyProfile} experience={user.experience} />
-      </View>
-      <View style={styles.contentSection}>
-        <View style={{ ...styles.contentHeader }}>
-          <Text style={{ ...defaultStyles.hugeMedium }}>Education</Text>
-          {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditEducationModal', { isNew: true })}>
-              New
-            </TextButton>
-          )}
+      )}
+      {showEducation && (
+        <View style={styles.contentSection}>
+          <View style={{ ...styles.contentHeader }}>
+            <Text style={{ ...defaultStyles.hugeMedium }}>Education</Text>
+            {isMyProfile && (
+              <TextButton
+                textStyle={styles.editButton}
+                onPress={() => navigation.navigate('EditEducationModal', { isNew: true })}
+              >
+                New
+              </TextButton>
+            )}
+          </View>
+          <Education navigation={navigation} isMyProfile={isMyProfile} education={user.education} />
         </View>
-        <Education navigation={navigation} isMyProfile={isMyProfile} education={user.education} />
-      </View>
-      <View style={styles.contentSection}>
-        <View style={[{ ...styles.contentHeader, paddingBottom: 15 }]}>
-          <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
-          {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditSkillsModal', { user })}>
-              Edit
-            </TextButton>
-          )}
+      )}
+      {showSkills && (
+        <View style={styles.contentSection}>
+          <View style={[{ ...styles.contentHeader, paddingBottom: 15 }]}>
+            <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
+            {isMyProfile && (
+              <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditSkillsModal', { user })}>
+                Edit
+              </TextButton>
+            )}
+          </View>
+          {user.skills.length > 0 && <Skills skills={user.skills} height={32} />}
         </View>
-        {user.skills.length > 0 && <Skills skills={user.skills} height={32} />}
-      </View>
+      )}
     </View>
   );
 };

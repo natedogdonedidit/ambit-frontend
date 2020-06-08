@@ -29,6 +29,7 @@ import SelectPostTopicsModal from 'screens/main/modals/post/SelectPostTopicsModa
 import SelectSearchTopicsModal from 'screens/main/modals/search/SelectSearchTopicsModal';
 import EditLocationModal from 'screens/main/modals/general/EditLocationModal';
 import EditLocationRadiusModal from 'screens/main/modals/general/EditLocationRadiusModal';
+import ImageViewerModal from 'screens/main/modals/general/ImageViewerModal';
 import EditProfileModal from 'screens/main/modals/profile/EditProfileModal';
 import EditAboutModal from 'screens/main/modals/profile/EditAboutModal';
 import EditExperienceModal from 'screens/main/modals/profile/EditExperienceModal';
@@ -226,6 +227,7 @@ const MainStack = () => {
       />
       <Stack.Screen name="CreateIntroModal" component={CreateIntroModal} />
       <Stack.Screen name="NewPostModal" component={NewPostModal} />
+      <Stack.Screen name="ImageViewerModal" component={ImageViewerModal} />
       <Stack.Screen
         name="SelectGoalModal"
         component={SelectGoalModal}

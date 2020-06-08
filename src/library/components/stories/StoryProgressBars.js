@@ -99,7 +99,7 @@ const StoryProgressBars = ({ story, activeIndex, IMAGE_DURATION, currentTime }) 
   };
 
   return (
-    <View style={{ ...styles.absoluteTop, top: insets.top + 5 }}>
+    <View style={{ ...styles.absoluteTop, top: insets.top + 8 }}>
       <View
         style={{
           width: '100%',

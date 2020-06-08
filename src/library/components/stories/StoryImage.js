@@ -33,10 +33,10 @@ const StoryImage = ({ activeItem, videoRef, onProgress, onBuffer, onVideoEnd, is
   };
 
   return (
-    <View style={StyleSheet.absoluteFill}>
+    <SafeAreaView style={StyleSheet.absoluteFill}>
       {renderMedia()}
       {isBuffering && <Loader loading={isBuffering} backgroundColor="transparent" color="white" />}
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   fill: {
     height: '100%',
     width: '100%',
+    borderRadius: 10,
   },
 });
 
