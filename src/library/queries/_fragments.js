@@ -242,14 +242,6 @@ export const BasicPost = gql`
       name
       topicID
     }
-    topics {
-      id
-      name
-      topicID
-      parentTopic {
-        topicID
-      }
-    }
     location
     locationID
     locationLat
@@ -265,6 +257,15 @@ export const BasicPost = gql`
     updates {
       ...UpdateFragment
     }
+    topics {
+      id
+      name
+      topicID
+      parentTopic {
+        topicID
+      }
+    }
+    _deleted @client
   }
   ${MinimalUser}
   ${UpdateFragment}
@@ -315,6 +316,7 @@ export const CommentFragment = gql`
         id
       }
     }
+    _deleted @client
   }
   ${MinimalUser}
 `;

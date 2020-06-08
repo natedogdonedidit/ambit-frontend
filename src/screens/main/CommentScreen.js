@@ -17,7 +17,7 @@ import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
 import ImagePicker from 'react-native-image-crop-picker';
 // import Image from 'react-native-scalable-image';
 import FitImage from 'react-native-fit-image';
-import { postPicUpload, imageUpload } from 'library/utils';
+import { postPicUpload } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -99,12 +99,12 @@ const CommentScreen = ({ navigation, route }) => {
 
   // MUTATIONS
   const [createComment] = useMutation(CREATE_COMMENT_MUTATION, {
-    onError: error => {
-      console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to create this comment. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
-    },
+    // onError: error => {
+    //   console.log(error);
+    //   Alert.alert('Oh no!', 'An error occured when trying to create this comment. Try again later!', [
+    //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //   ]);
+    // },
   });
 
   if (errorUser) return <Error error={errorUser} />;
@@ -132,36 +132,73 @@ const CommentScreen = ({ navigation, route }) => {
       Alert.alert('Please add a comment or image', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
       return;
     }
-    if (commentImage) {
-      await uploadImage();
-    }
-    createComment({
-      variables: {
-        comment: {
-          content,
-          image: commentImage,
-          owner: {
-            connect: { id: userLoggedIn.id },
-          },
-          parentPost: parentPostObject,
-          parentUpdate: parentUpdateObject,
-          parentComment: parentCommentObject,
-        },
-      },
-      update: (proxy, { data: dataReturned }) => {
-        if (useOptimisticResponse) {
-          const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
 
-          if (isComment || isSubComment) {
-            if (isUpdate) {
-              // if subComment on comment on update
+    try {
+      const uploadedImage = await uploadImage();
+      navigation.goBack();
+
+      createComment({
+        variables: {
+          comment: {
+            content,
+            image: uploadedImage,
+            owner: {
+              connect: { id: userLoggedIn.id },
+            },
+            parentPost: parentPostObject,
+            parentUpdate: parentUpdateObject,
+            parentComment: parentCommentObject,
+          },
+        },
+        update: (proxy, { data: dataReturned }) => {
+          if (useOptimisticResponse) {
+            const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
+
+            if (isComment || isSubComment) {
+              if (isUpdate) {
+                // if subComment on comment on update
+                const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
+                const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
+                  item => item.id === parentComment.id
+                );
+                const newUpdatesArray = [...previousData.singlePost.updates];
+                // add the new comment to the correct comment of the correct update
+                newUpdatesArray[indexOfUpdate].comments[indexOfParentComment].comments.push(dataReturned.createComment);
+                proxy.writeQuery({
+                  query: POST_COMMENTS_QUERY,
+                  data: {
+                    singlePost: {
+                      ...previousData.singlePost,
+                      updates: newUpdatesArray,
+                    },
+                  },
+                });
+              } else {
+                // if subComment on comment on post
+                const indexOfParentComment = previousData.singlePost.comments.findIndex(item => item.id === parentComment.id);
+                const newCommentsArray = [...previousData.singlePost.comments];
+
+                // add the new subcomment to the comment array of the parentComment
+                newCommentsArray[indexOfParentComment].comments.push(dataReturned.createComment);
+
+                proxy.writeQuery({
+                  query: POST_COMMENTS_QUERY,
+                  data: {
+                    singlePost: {
+                      ...previousData.singlePost,
+                      comments: newCommentsArray,
+                    },
+                  },
+                });
+              }
+            } else if (isUpdate) {
+              // if comment on update
               const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
-              const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
-                item => item.id === parentComment.id
-              );
               const newUpdatesArray = [...previousData.singlePost.updates];
-              // add the new comment to the correct comment of the correct update
-              newUpdatesArray[indexOfUpdate].comments[indexOfParentComment].comments.push(dataReturned.createComment);
+              // add the new comment to the correct update comments array
+
+              newUpdatesArray[indexOfUpdate].comments.push(dataReturned.createComment);
+
               proxy.writeQuery({
                 query: POST_COMMENTS_QUERY,
                 data: {
@@ -172,78 +209,55 @@ const CommentScreen = ({ navigation, route }) => {
                 },
               });
             } else {
-              // if subComment on comment on post
-              const indexOfParentComment = previousData.singlePost.comments.findIndex(item => item.id === parentComment.id);
-              const newCommentsArray = [...previousData.singlePost.comments];
-
-              // add the new subcomment to the comment array of the parentComment
-              newCommentsArray[indexOfParentComment].comments.push(dataReturned.createComment);
-
+              // if comment on post
               proxy.writeQuery({
                 query: POST_COMMENTS_QUERY,
                 data: {
                   singlePost: {
                     ...previousData.singlePost,
-                    comments: newCommentsArray,
+                    comments: [...previousData.singlePost.comments, dataReturned.createComment],
                   },
                 },
               });
             }
-          } else if (isUpdate) {
-            // if comment on update
-            const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
-            const newUpdatesArray = [...previousData.singlePost.updates];
-            // add the new comment to the correct update comments array
-
-            newUpdatesArray[indexOfUpdate].comments.push(dataReturned.createComment);
-
-            proxy.writeQuery({
-              query: POST_COMMENTS_QUERY,
-              data: {
-                singlePost: {
-                  ...previousData.singlePost,
-                  updates: newUpdatesArray,
-                },
-              },
-            });
-          } else {
-            // if comment on post
-            proxy.writeQuery({
-              query: POST_COMMENTS_QUERY,
-              data: {
-                singlePost: {
-                  ...previousData.singlePost,
-                  comments: [...previousData.singlePost.comments, dataReturned.createComment],
-                },
-              },
-            });
           }
-        }
-      },
-      optimisticResponse: useOptimisticResponse
-        ? {
-            __typename: 'Mutation',
-            createComment: {
-              __typename: 'Comment',
-              createdAt: new Date(),
-              owner: userLoggedIn,
-              parentPost: post,
-              parentUpdate,
-              parentComment: parentCommentForDB,
-              content,
-              image: commentImage,
-              likes: [],
-              comments: [],
-              id: Math.random(),
-              likesCount: null,
-              likedByMe: false,
-              commentsCount: null,
-            },
-          }
-        : null,
-      refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } }],
-    });
-    navigation.goBack();
+        },
+        optimisticResponse: useOptimisticResponse
+          ? {
+              __typename: 'Mutation',
+              createComment: {
+                __typename: 'Comment',
+                createdAt: new Date(),
+                owner: userLoggedIn,
+                parentPost: post,
+                parentUpdate,
+                parentComment: parentCommentForDB,
+                content,
+                image: uploadedImage,
+                likes: [],
+                comments: [],
+                id: Math.random(),
+                likesCount: null,
+                likedByMe: false,
+                commentsCount: null,
+              },
+            }
+          : null,
+        refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } }],
+      });
+    } catch (e) {
+      setUploading(false);
+      console.log(e);
+      if (e.message === 'Image upload fail') {
+        Alert.alert('Oh no!', 'An error occured when trying to upload your photo. Remove the photo or try again.', [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
+      } else {
+        Alert.alert('Oh no!', 'An error occured when trying to create this comment. Try again later!', [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
+      }
+    }
   };
 
   const onChangeText = val => {
@@ -251,18 +265,15 @@ const CommentScreen = ({ navigation, route }) => {
   };
 
   const uploadImage = async () => {
-    setUploading(true);
+    if (commentImage) {
+      setUploading(true);
 
-    try {
       const uploadedImage = await postPicUpload(userLoggedIn, commentImage);
       setUploading(false);
-      setCommentImage(uploadedImage);
-    } catch (e) {
-      setUploading(false);
-      Alert.alert('Oh no!', 'We could not upload your picture. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+      // setCommentImage(uploadedImage);
+      return uploadedImage;
     }
+    return '';
   };
 
   const handleCameraIconPress = () => {

@@ -21,13 +21,13 @@ const EnvelopeDot = ({ color, unReadMessages }) => {
 const styles = StyleSheet.create({
   dot: {
     position: 'absolute',
-    top: -6,
+    top: -7,
     right: -8,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 16,
-    width: 16,
-    borderRadius: 8,
+    height: 18,
+    paddingHorizontal: 4,
+    borderRadius: 9,
     backgroundColor: colors.peach,
   },
 });

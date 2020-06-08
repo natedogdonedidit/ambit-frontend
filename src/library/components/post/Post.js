@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -8,6 +9,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
+import { BasicPost } from 'library/queries/_fragments';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Goal from 'library/components/UI/Goal';
@@ -67,7 +69,8 @@ const Post = ({
       id: post.id,
       ownerID: post.owner.id,
     },
-    refetchQueries: () => [{ query: USER_POSTS_QUERY, variables: { id: currentUserId } }],
+    onCompleted: () =>
+      Alert.alert('Done!', "You're post was successfully deleted", [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -76,7 +79,7 @@ const Post = ({
 
   // VARIABLES
   const containsMedia = post.video || post.images.length > 0;
-  const containsTopics = !!post.subField || post.topics.length > 0;
+  // const containsTopics = !!post.subField || !!post.topics;
   const isMyPost = currentUserId === post.owner.id;
 
   // for dates
@@ -87,6 +90,35 @@ const Post = ({
   // const lastUpdated = new Date(post.lastUpdated);
 
   // CUSTOM FUNCTIONS
+  const handleDelete = () => {
+    deletePost({
+      optimisticResponse: {
+        __typename: 'Mutation',
+        deletePost: { __typename: 'Post', id: post.id },
+      },
+      update(cache, { data }) {
+        // We get a single item from cache.
+        const postInCache = cache.readFragment({
+          id: `Post:${post.id}`,
+          fragment: BasicPost,
+          fragmentName: 'BasicPost',
+        });
+        // Then, we update it.
+        if (postInCache) {
+          cache.writeFragment({
+            id: `Post:${post.id}`,
+            fragment: BasicPost,
+            fragmentName: 'BasicPost',
+            data: {
+              ...post,
+              _deleted: true,
+            },
+          });
+        }
+      },
+    });
+  };
+
   const determineOptions = () => {
     if (isMyPost && post.goal) {
       return [
@@ -98,7 +130,7 @@ const Post = ({
         {
           text: 'Delete post',
           color: colors.peach,
-          onPress: deletePost,
+          onPress: handleDelete,
         },
       ];
     }
@@ -108,7 +140,7 @@ const Post = ({
         {
           text: 'Delete post',
           color: colors.peach,
-          onPress: deletePost,
+          onPress: handleDelete,
         },
       ];
     }
@@ -134,6 +166,8 @@ const Post = ({
   const renderMedia = () => {
     return <Image style={{ width: '100%', height: 160 }} source={{ uri: post.images[0] }} resizeMode="cover" />;
   };
+
+  if (post._deleted) return null;
 
   return (
     <View style={[{ ...styles.postContainer }, showLine && { borderBottomWidth: 0 }]}>
@@ -188,7 +222,7 @@ const Post = ({
 
           {showDetails && (
             <View style={styles.topics}>
-              {post.topics.length > 0 &&
+              {!!post.topics > 0 &&
                 post.topics.map(topic => <Topic key={topic.id} navigation={navigation} topicToShow={topic} />)}
               {!!post.location && (
                 <Location

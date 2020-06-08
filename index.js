@@ -115,6 +115,15 @@ const client = new ApolloClient({
       },
     },
   }),
+  resolvers: {
+    Post: {
+      // You can tell ApolloClient how to resolve a property \o/ !
+      _deleted: post => Boolean(post._deleted),
+    },
+    Comment: {
+      _deleted: post => Boolean(post._deleted),
+    },
+  },
   onError: ({ networkError, graphQLErrors }) => {
     console.log('graphQLErrors', graphQLErrors);
     console.log('networkError', networkError);

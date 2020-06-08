@@ -137,6 +137,8 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const postsNetwork = dataPostsNetwork.postsNetwork.edges || [];
   const postsForYou = dataPostsForYou.postsForYou.edges || [];
 
+  // console.log(postsNetwork);
+
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
     // console.log('running refetch');
@@ -151,7 +153,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
       variables: {
         cursor: dataPostsNetwork.postsNetwork.pageInfo.endCursor,
         first: 12,
-        network,
+        // network,
       },
       updateQuery: (previousResult, { fetchMoreResult }) => {
         // console.log('prev', previousResult);
@@ -159,6 +161,9 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
         const newEdges = fetchMoreResult.postsNetwork.edges;
         const { pageInfo } = fetchMoreResult.postsNetwork;
+
+        console.log('newEdges', newEdges);
+        console.log('pageInfo', pageInfo);
 
         return newEdges.length
           ? {

@@ -10,7 +10,7 @@ const SeeMoreButton = ({ onPress, loading = false }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.section}>
       <View style={styles.sectionHeader}>
-        <Text style={{ ...defaultStyles.defaultText, color: colors.purp }}>Show more</Text>
+        <Text style={{ ...defaultStyles.defaultText, color: colors.purp }}>{loading ? 'Loading' : 'Show'} more</Text>
         {loading ? (
           <View style={{ paddingRight: 15 }}>
             <Loader size="small" loading={loading} full backgroundColor={colors.white} />
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
+    height: 42,
     paddingHorizontal: 15,
   },
 });

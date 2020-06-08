@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState, useContext } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -16,6 +17,7 @@ import CommentIcon from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
 import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
 import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
+import { CommentFragment } from 'library/queries/_fragments';
 
 const Comment = ({
   comment,
@@ -63,7 +65,8 @@ const Comment = ({
       id: comment.id,
       ownerID: comment.owner.id,
     },
-    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: comment.parentPost.id } }],
+    onCompleted: () =>
+      Alert.alert('Done!', "You're comment was successfully deleted", [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to delete this comment. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -80,13 +83,42 @@ const Comment = ({
   const isMyPost = currentUserId === comment.owner.id;
 
   // CUSTOM FUNCTIONS
+  const handleDelete = () => {
+    deleteComment({
+      optimisticResponse: {
+        __typename: 'Mutation',
+        deleteComment: { __typename: 'Comment', id: comment.id },
+      },
+      update(cache, { data }) {
+        // We get a single item from cache.
+        const commentInCache = cache.readFragment({
+          id: `Comment:${comment.id}`,
+          fragment: CommentFragment,
+          fragmentName: 'CommentFragment',
+        });
+        // Then, we update it.
+        if (commentInCache) {
+          cache.writeFragment({
+            id: `Comment:${comment.id}`,
+            fragment: CommentFragment,
+            fragmentName: 'CommentFragment',
+            data: {
+              ...comment,
+              _deleted: true,
+            },
+          });
+        }
+      },
+    });
+  };
+
   const determineOptions = () => {
     if (isMyPost) {
       return [
         {
           text: 'Delete comment',
           color: colors.peach,
-          onPress: deleteComment,
+          onPress: handleDelete,
         },
       ];
     }
@@ -112,6 +144,8 @@ const Comment = ({
   const renderMedia = () => {
     return <Image style={{ width: '100%', height: 160 }} source={{ uri: comment.image }} resizeMode="cover" />;
   };
+
+  if (comment._deleted) return null;
 
   return (
     <View style={styles.commentContainer}>
@@ -256,6 +290,7 @@ const styles = StyleSheet.create({
   headlineRow: {
     flexDirection: 'row',
     paddingBottom: 4,
+    alignItems: 'center',
   },
   content: {
     paddingBottom: 6,

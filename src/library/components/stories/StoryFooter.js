@@ -101,7 +101,7 @@ const StoryFooter = ({
     // }
 
     return (
-      <View style={{ paddingRight: 10, paddingBottom: 50 }}>
+      <View style={{ paddingRight: 8, paddingBottom: 45, paddingLeft: 10 }}>
         <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
           <ProfilePic size="medium" user={owner} navigation={navigation} disableVideo border borderWidth={0.5} />
           {!isMyPost && (
@@ -131,7 +131,7 @@ const StoryFooter = ({
             alignItems: 'center',
           }}
         >
-          <Icon name="heart" solid size={30} color="rgba(255,255,255,0.8)" />
+          <Icon name="heart" solid size={30} color="white" />
           <Text style={{ ...defaultStyles.smallBold, color: 'white', paddingTop: 2 }}>427</Text>
         </View>
         <View
@@ -143,7 +143,7 @@ const StoryFooter = ({
             alignItems: 'center',
           }}
         >
-          <Icon name="share" solid size={30} color="rgba(255,255,255,0.8)" />
+          <Icon name="share" solid size={30} color="white" />
         </View>
       </View>
     );
@@ -156,10 +156,12 @@ const StoryFooter = ({
     if (type === 'PROJECT') {
       return (
         <>
-          <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 10 }}>
+          <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 0 }}>
             {title || null}
+            {'  '}
+            <Icon name="caret-right" solid size={20} color="white" />
           </Text>
-          {renderTopics(topics || [])}
+          {/* {renderTopics(topics || [])} */}
         </>
       );
     }
@@ -168,24 +170,24 @@ const StoryFooter = ({
     if (project) {
       return (
         <>
-          <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 10 }}>
+          <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 0 }}>
             {project.title || null}
           </Text>
-          {renderTopics(project.topics || [])}
+          {/* {renderTopics(project.topics || [])} */}
         </>
       );
     }
 
     if (soloStory) {
       if (soloStory.topics) {
-        return renderTopics(soloStory.topics || []);
+        // return renderTopics(soloStory.topics || []);
       }
     }
 
     // if the item does not belong to a project, but it has topics, just render the topics
     if (topics) {
       if (topics.length > 0) {
-        return renderTopics(topics || []);
+        // return renderTopics(topics || []);
       }
     }
 

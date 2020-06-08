@@ -24,7 +24,7 @@ import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
-import { postPicUpload, getTopicFromID, addMainTopics } from 'library/utils';
+import { postPicUpload, getTopicID, addMainTopics, getNetworkIDsFromUser, getTopicFromID } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -79,17 +79,12 @@ const NewPostModal = ({ navigation, route }) => {
         },
       },
     },
-    refetchQueries: () => [{ query: NETWORK_POSTS_QUERY }, { query: USER_POSTS_QUERY, variables: { id: currentUserId } }],
-    // add update here to add post to GLOBAL, NETWORK, AND MYPOST arrays in cache
-    onCompleted: () => {
-      navigation.goBack();
-    },
-    onError: error => {
-      console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
-    },
+    // onError: error => {
+    //   console.log(error);
+    //   Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
+    //     { text: 'OK', onPress: () => console.log('OK Pressed') },
+    //   ]);
+    // },
   });
 
   const loading = loadingCreate || uploading;
@@ -106,18 +101,122 @@ const NewPostModal = ({ navigation, route }) => {
       Alert.alert('Please fill in required field:', `${message}`, [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
       return;
     }
-    if (images.length > 0) {
-      await uploadImages();
-    }
 
     // make sure all main topics are added
     const finalTopicsArray = addMainTopics([...topics]);
 
     await setTopics(finalTopicsArray);
-    // console.log('finalTopicsArray', finalTopicsArray);
-    // console.log('topics', topics);
 
-    createPost();
+    try {
+      const uploadedImages = await uploadImages();
+      navigation.goBack();
+      // console.log('saving', uploadedImages);
+
+      const topicsArrayForOptResp =
+        topics.length > 0
+          ? topics.map(({ topicID }, i) => {
+              const { name } = getTopicFromID(topicID);
+
+              return {
+                __typename: 'Topic',
+                id: i,
+                name,
+                topicID,
+                parentTopic: { __typename: 'Topic', id: i, name, topicID },
+              };
+            })
+          : null;
+
+      const newPostOptimisticObject = {
+        __typename: 'Post',
+        id: 'newPost12345',
+        isGoal: !!goal,
+        goal: goal ? goal.name : null,
+        subField: subField ? { __typename: 'Topic', id: subField, name: getTopicFromID(subField).name, topicID: subField } : null,
+        topics: topicsArrayForOptResp,
+        location,
+        locationID,
+        locationLat,
+        locationLon,
+        content,
+        video,
+        pitch,
+        images: uploadedImages,
+        createdAt: new Date(),
+        lastUpdated: new Date(),
+        owner: { ...userLoggedIn },
+        likesCount: null,
+        likedByMe: false,
+        commentsCount: null,
+        sharesCount: null,
+        updates: [],
+      };
+
+      createPost({
+        variables: {
+          owner: currentUserId,
+          post: {
+            isGoal: !!goal,
+            goal: goal ? goal.name : null,
+            subField: subField ? { connect: { topicID: subField } } : null,
+            topics: topics.length > 0 ? { connect: topics } : null,
+            location,
+            locationID,
+            locationLat,
+            locationLon,
+            content,
+            video,
+            pitch,
+            images: { set: uploadedImages },
+            lastUpdated: new Date(),
+            owner: {
+              connect: { id: currentUserId },
+            },
+          },
+        },
+        optimisticResponse: {
+          __typename: 'Mutation',
+          createPost: {
+            ...newPostOptimisticObject,
+          },
+        },
+        update: (proxy, { data: dataReturned }) => {
+          const networkPostsCache = proxy.readQuery({
+            query: NETWORK_POSTS_QUERY,
+          });
+          // console.log(networkPostsCache);
+          // console.log(dataReturned);
+
+          proxy.writeQuery({
+            query: NETWORK_POSTS_QUERY,
+            data: {
+              postsNetwork: {
+                __typename: 'PostConnection',
+                pageInfo: {
+                  ...networkPostsCache.postsNetwork.pageInfo,
+                },
+                edges: [
+                  { __typename: 'PostEdge', node: { ...dataReturned.createPost } },
+                  ...networkPostsCache.postsNetwork.edges,
+                ],
+              },
+            },
+          });
+        },
+      });
+    } catch (e) {
+      setUploading(false);
+      console.log(e);
+      if (e.message === 'Image upload fail') {
+        Alert.alert('Oh no!', 'An error occured when trying to upload your photo. Remove the photo or try again.', [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
+      } else {
+        Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ]);
+      }
+    }
   };
 
   const handleGoalRowSelect = () => {
@@ -151,18 +250,14 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const uploadImages = async () => {
-    setUploading(true);
-
-    try {
+    if (images.length > 0) {
+      setUploading(true);
       const uploadedImages = await attemptUploads();
       setUploading(false);
-      setImages(uploadedImages);
-    } catch (e) {
-      setUploading(false);
-      Alert.alert('Oh no!', 'We could not upload one of your pictures. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+      // console.log('uploaded', uploadedImages);
+      return uploadedImages;
     }
+    return [];
   };
 
   const validateInputs = () => {
@@ -493,16 +588,6 @@ const NewPostModal = ({ navigation, route }) => {
               <Icon name="camera" size={32} color={colors.white} style={{}} onPress={handleCameraIconPress} />
             </TouchableOpacity>
             <View style={styles.aboveKeyboardRight}>
-              {/* <TouchableOpacity
-                onPress={handleCameraIconPress}
-                // onPress={() => navigation.navigate('RollModal', { handleMediaSelect, selected: [...images, video] })}
-                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-              >
-                <Icon name="camera" size={18} color={colors.purp} style={{ paddingRight: 25, opacity: 0.6 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="video" size={18} color={colors.purp} style={{ paddingRight: 27, opacity: 0.6 }} />
-              </TouchableOpacity> */}
               <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                 <IconM name="poll" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
               </TouchableOpacity>
@@ -516,7 +601,7 @@ const NewPostModal = ({ navigation, route }) => {
           </View>
         </InputAccessoryView>
       </KeyboardAvoidingView>
-      {loading && <Loader active={loading} />}
+      {loading && <Loader active={loading} size="small" />}
     </View>
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid, Alert } from 'react-native';
 import { differenceInSeconds, differenceInDays, differenceInHours } from 'date-fns';
 import { cloud_name } from 'library/config';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -169,7 +169,7 @@ export const postPicUpload = async (userId, uri) => {
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
   try {
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+    const res = await fetch(`https://api.cloudinar.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
       body: uploadData,
     });
@@ -179,9 +179,8 @@ export const postPicUpload = async (userId, uri) => {
     // return the image url
     return resJson.url;
   } catch (error) {
-    console.log('an error occured trying to upload your photo');
-    // console.error(error);
-    return error;
+    console.log(error);
+    throw new Error('Image upload fail');
   }
 };
 

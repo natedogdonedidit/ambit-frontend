@@ -20,7 +20,6 @@ const StoryModal = ({ navigation, route }) => {
   // moreType: 'Home', 'Topic', 'User', null means only show a single story
 
   const { story = null, intro = null, moreType = null, topicIDtoSearch } = route.params;
-  const { currentUserId } = useContext(UserContext);
   const { width } = Dimensions.get('window');
 
   // STATE
@@ -109,20 +108,12 @@ const StoryModal = ({ navigation, route }) => {
   }, [moreType]);
 
   // CUSTOM FUNCTIONS
-  const refreshCard = () => {};
-
   const goToPrevStory = () => {
-    console.log('going to prev story');
-    // setActiveStory(storyQ[storyQIndex - 1]);
-    // setActiveIndex(storyQ[storyQIndex - 1].items.length - 1);
     setStoryQIndex(prevState => prevState - 1);
     setStoryKey(prevState => prevState + 10);
   };
 
   const goToNextStory = () => {
-    console.log('going to next story');
-    // setActiveStory(storyQ[storyQIndex + 1]);
-    // setActiveIndex(0);
     setStoryQIndex(prevState => prevState + 1);
     setStoryKey(prevState => prevState + 10);
   };
@@ -143,12 +134,10 @@ const StoryModal = ({ navigation, route }) => {
   };
 
   const handleSwipe = ({ nativeEvent }) => {
-    console.log('on momentum scroll end', nativeEvent);
     const { contentOffset, layoutMeasurement } = nativeEvent;
 
     // calculate new index after scroll
     const newStoryQIndex = Math.round(contentOffset.x / layoutMeasurement.width);
-    console.log(newStoryQIndex, storyQIndex);
 
     // compare newIndex to previous index and make sure within bounds
     if (newStoryQIndex !== storyQIndex) {
@@ -160,83 +149,10 @@ const StoryModal = ({ navigation, route }) => {
     }
   };
 
-  // const renderPrevStoryCard = () => {
-  //   // if its the first story in the Q
-  //   if (storyQIndex <= 0) {
-  //     return null;
-  //   }
-
-  //   return (
-  //     <StoryCard
-  //       key={storyKey - 1}
-  //       navigation={navigation}
-  //       story={storyQ[storyQIndex - 1]}
-  //       isActive={false}
-  //       tryGoToPrevStory={tryGoToPrevStory}
-  //       tryGoToNextStory={tryGoToNextStory}
-  //       favoriteTopics={favoriteTopics}
-  //     />
-  //   );
-  // };
-
-  // const renderActiveStoryCard = () => {
-  //   return (
-  //     <StoryCard
-  //       key={storyKey}
-  //       navigation={navigation}
-  //       story={storyQ[storyQIndex]}
-  //       isActive
-  //       tryGoToPrevStory={tryGoToPrevStory}
-  //       tryGoToNextStory={tryGoToNextStory}
-  //       favoriteTopics={favoriteTopics}
-  //     />
-  //   );
-  // };
-
-  // const renderNextStoryCard = () => {
-  //   // if its the first story in the Q
-  //   if (storyQ.length <= storyQIndex + 1) {
-  //     return null;
-  //   }
-
-  //   return (
-  //     <StoryCard
-  //       key={storyKey + 1}
-  //       navigation={navigation}
-  //       story={storyQ[storyQIndex + 1]}
-  //       isActive={false}
-  //       tryGoToPrevStory={tryGoToPrevStory}
-  //       tryGoToNextStory={tryGoToNextStory}
-  //       favoriteTopics={favoriteTopics}
-  //     />
-  //   );
-  // };
-
-  // const renderStories = () => {
-  //   return storyQ.map((s, i) => {
-  //     // console.log(i, storyQIndex);
-  //     return (
-  //       <StoryCard
-  //         key={s.id}
-  //         navigation={navigation}
-  //         story={s}
-  //         isActive={i === storyQIndex}
-  //         tryGoToPrevStory={tryGoToPrevStory}
-  //         tryGoToNextStory={tryGoToNextStory}
-  //         favoriteTopics={favoriteTopics}
-  //       />
-  //     );
-  //   });
-  // };
-
   // console.log('rendering');
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />
-      {/* {renderPrevStoryCard()} */}
-      {/* {renderActiveStoryCard()} */}
-      {/* {renderNextStoryCard()} */}
-
       <FlatList
         ref={storyFlatlist}
         horizontal
@@ -262,18 +178,6 @@ const StoryModal = ({ navigation, route }) => {
           />
         )}
       />
-
-      {/* <ScrollView
-        horizontal
-        snapToAlignment="start"
-        snapToInterval={width}
-        decelerationRate="fast"
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={100}
-        onMomentumScrollEnd={() => console.log('on momentum scroll end')}
-      >
-        {renderStories()}
-      </ScrollView> */}
     </View>
   );
 };

@@ -16,7 +16,7 @@ const StoryTapRegions = ({ decrementIndex, incrementIndex, handleDoubleTap, enga
         delayLongPress={LONG_TAP_DURATION}
         onPressOut={() => disengagePause()}
       >
-        <View style={{ width: 80 }} />
+        <View style={{ width: 70 }} />
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
         onPress={handleDoubleTap}
@@ -32,7 +32,7 @@ const StoryTapRegions = ({ decrementIndex, incrementIndex, handleDoubleTap, enga
         delayLongPress={LONG_TAP_DURATION}
         onPressOut={() => disengagePause()}
       >
-        <View style={{ width: 80 }} />
+        <View style={{ width: 70 }} />
       </TouchableWithoutFeedback>
     </View>
   );
