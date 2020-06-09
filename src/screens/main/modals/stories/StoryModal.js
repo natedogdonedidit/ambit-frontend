@@ -37,15 +37,15 @@ const StoryModal = ({ navigation, route }) => {
   useEffect(() => {
     if (userLoggedIn) {
       if (userLoggedIn.topicsFocus.length > 0) {
-        favoriteTopics = [...favoriteTopics, ...userLoggedIn.topicsFocus.map(top => top.topicID)];
+        favoriteTopics = [...favoriteTopics, ...userLoggedIn.topicsFocus.map((top) => top.topicID)];
       }
       if (userLoggedIn.topicsInterest.length > 0) {
         if (favoriteTopics === []) {
-          favoriteTopics = [...userLoggedIn.topicsInterest.map(top => top.topicID)];
+          favoriteTopics = [...userLoggedIn.topicsInterest.map((top) => top.topicID)];
         } else {
           // only add topics that dont already exist
-          userLoggedIn.topicsInterest.forEach(topic => {
-            if (favoriteTopics.findIndex(fav => fav.topicID === topic.topicID) === -1) {
+          userLoggedIn.topicsInterest.forEach((topic) => {
+            if (favoriteTopics.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
               favoriteTopics = [...favoriteTopics, topic.topicID];
             }
           });
@@ -86,7 +86,7 @@ const StoryModal = ({ navigation, route }) => {
   if (moreType === 'Topic' && dataStoriesTopic) {
     if (dataStoriesTopic.storiesTopic) {
       // remove the story passed in from the query results
-      const storiesToAdd = dataStoriesTopic.storiesTopic.filter(s => s.id !== story.id);
+      const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.id !== story.id);
 
       storyQ = [...storyQ, ...storiesToAdd];
     }
@@ -109,13 +109,13 @@ const StoryModal = ({ navigation, route }) => {
 
   // CUSTOM FUNCTIONS
   const goToPrevStory = () => {
-    setStoryQIndex(prevState => prevState - 1);
-    setStoryKey(prevState => prevState + 10);
+    setStoryQIndex((prevState) => prevState - 1);
+    setStoryKey((prevState) => prevState + 10);
   };
 
   const goToNextStory = () => {
-    setStoryQIndex(prevState => prevState + 1);
-    setStoryKey(prevState => prevState + 10);
+    setStoryQIndex((prevState) => prevState + 1);
+    setStoryKey((prevState) => prevState + 10);
   };
 
   const tryGoToNextStory = () => {
@@ -168,7 +168,7 @@ const StoryModal = ({ navigation, route }) => {
         data={storyQ}
         renderItem={({ item, index }) => (
           <StoryCard
-            key={item.id}
+            key={index}
             navigation={navigation}
             story={item}
             isActive={index === storyQIndex}
