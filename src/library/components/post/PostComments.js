@@ -46,11 +46,12 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
   if (updateInd >= 0 && updateInd !== null) {
     // if comments on an update
     comments = data.singlePost.updates[updateInd].comments;
+    comments = comments.filter((comment) => !comment.parentComment);
   } else {
     // if comments on a post
     comments = data.singlePost.comments;
     // filter out sub-comments
-    comments = comments.filter(comment => !comment.parentUpdate && !comment.parentComment);
+    comments = comments.filter((comment) => !comment.parentUpdate && !comment.parentComment);
   }
   if (!comments) comments = [];
 
@@ -66,7 +67,7 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
 
   return (
     <Section text="Comments" loading={refetching}>
-      {comments.map(comment => {
+      {comments.map((comment) => {
         return (
           <View key={comment.id}>
             <Comment comment={comment} navigation={navigation} currentTime={currentTime} />

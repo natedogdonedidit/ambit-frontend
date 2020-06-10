@@ -200,6 +200,7 @@ export const UpdateFragment = gql`
         id
       }
     }
+    _deleted
   }
 `;
 
@@ -223,6 +224,7 @@ export const MinimalPost = gql`
     images
     video
     pitch
+    _deleted
   }
   ${MinimalUser}
 `;
@@ -265,6 +267,7 @@ export const BasicPost = gql`
     updates {
       ...UpdateFragment
     }
+    _deleted
   }
   ${MinimalUser}
   ${UpdateFragment}
@@ -285,6 +288,9 @@ export const CommentFragment = gql`
     }
     parentUpdate {
       id
+      parentPost {
+        id
+      }
     }
     content
     image
@@ -313,8 +319,11 @@ export const CommentFragment = gql`
       commentsCount
       comments {
         id
+        _deleted
       }
+      _deleted
     }
+    _deleted
   }
   ${MinimalUser}
 `;

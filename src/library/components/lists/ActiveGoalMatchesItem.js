@@ -37,7 +37,7 @@ const ActiveGoalMatchesItem = ({ navigation, item }) => {
         <Icon name={getGoalInfo(post.goal, 'icon')} size={24} color={getGoalInfo(post.goal, 'primaryColor')} solid />
       </View>
       <View style={styles.rightSide}>
-        <Text>
+        <Text style={{ paddingRight: 15 }}>
           <Text style={defaultStyles.defaultText}>
             Found {matches.length} potential match{matches.length > 1 && 'es'} for your goal to{' '}
           </Text>

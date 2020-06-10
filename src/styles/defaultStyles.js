@@ -2,8 +2,8 @@ import { StyleSheet } from 'react-native';
 
 import colors from 'styles/colors';
 
-const small = 11;
-const reg = 14;
+const small = 13;
+const reg = 15;
 const large = 15;
 const huge = 17;
 

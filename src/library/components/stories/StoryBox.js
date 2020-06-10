@@ -71,7 +71,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
         onPress={() =>
           navigation.navigate('StoryModal', {
             story,
-            moreType: 'Topic',
+            moreType,
             topicIDtoSearch,
           })
         }

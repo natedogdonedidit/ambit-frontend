@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   leftSide: {
-    width: 80,
+    width: 100,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rightSide: {
-    width: 80,
+    width: 100,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     color: colors.iosBlue,
   },
   rightText: {
-    width: 80,
+    width: 100,
     textAlign: 'right',
     ...defaultStyles.largeMedium,
     color: colors.iosBlue,

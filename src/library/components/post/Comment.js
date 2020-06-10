@@ -51,7 +51,7 @@ const Comment = ({
     onCompleted: () => {
       // closeModal();
     },
-    onError: error => {
+    onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to like this comment. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -65,6 +65,7 @@ const Comment = ({
       id: comment.id,
       ownerID: comment.owner.id,
     },
+    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: comment.parentPost.id } }],
     onCompleted: () =>
       Alert.alert('Done!', "You're comment was successfully deleted", [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
     onError: () =>

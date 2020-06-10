@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
   reasonRow: {
     flexDirection: 'row',
     marginTop: 10,
+    paddingRight: 15,
     // left: -18,
   },
 });

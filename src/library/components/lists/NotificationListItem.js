@@ -42,6 +42,8 @@ const NotificationListItem = ({ navigation, notification }) => {
       return navigation.navigate('Post', { post: comment.parentPost });
     }
     if (style === 'COMMENT_UPDATE') {
+      console.log(comment);
+      console.log(update);
       return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
     }
     if (style === 'COMMENT_COMMENT') {

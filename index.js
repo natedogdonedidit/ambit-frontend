@@ -89,7 +89,7 @@ const client = new ApolloClient({
   link: ApolloLink.from([errorLink, authLink, link]),
   cache: new InMemoryCache({
     // dataIdFromObject: o => o.id,
-    dataIdFromObject: object => {
+    dataIdFromObject: (object) => {
       switch (object.__typename) {
         case 'MessageConnection':
           // console.log('in dataIdFromObject', object);
@@ -115,19 +115,6 @@ const client = new ApolloClient({
       },
     },
   }),
-  // resolvers: {
-  //   Post: {
-  //     // You can tell ApolloClient how to resolve a property \o/ !
-  //     _deleted: post => Boolean(post._deleted),
-  //   },
-  //   Comment: {
-  //     _deleted: comment => {
-  //       // console.log('chad', comment);
-  //       // console.log(Boolean(comment._deleted));
-  //       return Boolean(comment._deleted);
-  //     },
-  //   },
-  // },
   onError: ({ networkError, graphQLErrors }) => {
     console.log('graphQLErrors', graphQLErrors);
     console.log('networkError', networkError);

@@ -55,7 +55,7 @@ const Post = ({
     onCompleted: () => {
       // closeModal();
     },
-    onError: error => {
+    onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to like this post. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -296,7 +296,7 @@ const Post = ({
           <ProfilePic size="medium" user={post.owner} navigation={navigation} disableVideo={disableVideo} />
           {showLine && <View style={styles.threadLine} />}
         </View>
-        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
+        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 0 }]}>
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
@@ -343,7 +343,7 @@ const Post = ({
           {showDetails && (
             <View style={styles.topics}>
               {!!post.topics > 0 &&
-                post.topics.map(topic => <Topic key={topic.id} navigation={navigation} topicToShow={topic} />)}
+                post.topics.map((topic) => <Topic key={topic.id} navigation={navigation} topicToShow={topic} />)}
               {!!post.location && (
                 <Location
                   navigation={navigation}
@@ -461,16 +461,16 @@ const styles = StyleSheet.create({
   },
   headlineRow: {
     flexDirection: 'row',
-    paddingBottom: 10,
+    paddingBottom: 6,
     alignItems: 'center',
   },
   goalView: {
     flexDirection: 'row',
-    paddingBottom: 8,
+    paddingBottom: 6,
     // backgroundColor: 'pink',
   },
   content: {
-    paddingBottom: 10,
+    paddingBottom: 8,
   },
   topics: {
     flexDirection: 'row',

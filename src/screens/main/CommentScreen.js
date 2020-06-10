@@ -157,9 +157,9 @@ const CommentScreen = ({ navigation, route }) => {
             if (isComment || isSubComment) {
               if (isUpdate) {
                 // if subComment on comment on update
-                const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
+                const indexOfUpdate = previousData.singlePost.updates.findIndex((item) => item.id === parentUpdate.id);
                 const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
-                  item => item.id === parentComment.id
+                  (item) => item.id === parentComment.id
                 );
                 const newUpdatesArray = [...previousData.singlePost.updates];
                 // add the new comment to the correct comment of the correct update
@@ -175,7 +175,7 @@ const CommentScreen = ({ navigation, route }) => {
                 });
               } else {
                 // if subComment on comment on post
-                const indexOfParentComment = previousData.singlePost.comments.findIndex(item => item.id === parentComment.id);
+                const indexOfParentComment = previousData.singlePost.comments.findIndex((item) => item.id === parentComment.id);
                 const newCommentsArray = [...previousData.singlePost.comments];
 
                 // add the new subcomment to the comment array of the parentComment
@@ -193,7 +193,7 @@ const CommentScreen = ({ navigation, route }) => {
               }
             } else if (isUpdate) {
               // if comment on update
-              const indexOfUpdate = previousData.singlePost.updates.findIndex(item => item.id === parentUpdate.id);
+              const indexOfUpdate = previousData.singlePost.updates.findIndex((item) => item.id === parentUpdate.id);
               const newUpdatesArray = [...previousData.singlePost.updates];
               // add the new comment to the correct update comments array
 
@@ -240,6 +240,7 @@ const CommentScreen = ({ navigation, route }) => {
                 likesCount: null,
                 likedByMe: false,
                 commentsCount: null,
+                _deleted: false,
               },
             }
           : null,
@@ -260,7 +261,7 @@ const CommentScreen = ({ navigation, route }) => {
     }
   };
 
-  const onChangeText = val => {
+  const onChangeText = (val) => {
     setContent(val);
   };
 
@@ -282,10 +283,10 @@ const CommentScreen = ({ navigation, route }) => {
       waitAnimationEnd: false,
       includeExif: true,
     })
-      .then(img => {
+      .then((img) => {
         setCommentImage(img.path);
       })
-      .catch(e => alert(e));
+      .catch((e) => alert(e));
   };
 
   const validateInputs = () => {
@@ -305,7 +306,7 @@ const CommentScreen = ({ navigation, route }) => {
       );
     }
 
-    const updateInd = isUpdate ? post.updates.findIndex(u => u.id === parentUpdate.id) : null;
+    const updateInd = isUpdate ? post.updates.findIndex((u) => u.id === parentUpdate.id) : null;
 
     // if showing an update
     return (
@@ -324,7 +325,7 @@ const CommentScreen = ({ navigation, route }) => {
   const renderComments = () => {
     // if this is a subcomment
     if (isSubComment) {
-      const subCommentIndex = parentComment.comments.findIndex(com => com.id === comment.id);
+      const subCommentIndex = parentComment.comments.findIndex((com) => com.id === comment.id);
 
       return (
         <>
@@ -396,7 +397,7 @@ const CommentScreen = ({ navigation, route }) => {
                     scrollEnabled={false}
                     textAlignVertical="top"
                     placeholder="Start your comment"
-                    onSelectionChange={event => setSelection(event.nativeEvent.selection)}
+                    onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
                     inputAccessoryViewID="1"
                     // onBlur={() => setShowMentionList(false)}
                   />

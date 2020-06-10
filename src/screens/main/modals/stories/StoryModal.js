@@ -6,6 +6,7 @@ import { useLazyQuery, useQuery } from '@apollo/react-hooks';
 import { UserContext } from 'library/utils/UserContext';
 
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
+import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import StoryCard from 'library/components/stories/StoryCard';
 
@@ -30,29 +31,29 @@ const StoryModal = ({ navigation, route }) => {
 
   // QUERY TO GET USERS TOPICS
   const { data } = useQuery(CURRENT_USER_QUERY);
-  let favoriteTopics = [topicIDtoSearch || null];
+  const favoriteTopics = [topicIDtoSearch || null];
   const { userLoggedIn } = data;
 
   // effect compiles the list of favoriteTopics
-  useEffect(() => {
-    if (userLoggedIn) {
-      if (userLoggedIn.topicsFocus.length > 0) {
-        favoriteTopics = [...favoriteTopics, ...userLoggedIn.topicsFocus.map((top) => top.topicID)];
-      }
-      if (userLoggedIn.topicsInterest.length > 0) {
-        if (favoriteTopics === []) {
-          favoriteTopics = [...userLoggedIn.topicsInterest.map((top) => top.topicID)];
-        } else {
-          // only add topics that dont already exist
-          userLoggedIn.topicsInterest.forEach((topic) => {
-            if (favoriteTopics.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
-              favoriteTopics = [...favoriteTopics, topic.topicID];
-            }
-          });
-        }
-      }
-    }
-  }, [userLoggedIn]);
+  // useEffect(() => {
+  //   if (userLoggedIn) {
+  //     if (userLoggedIn.topicsFocus.length > 0) {
+  //       favoriteTopics = [...favoriteTopics, ...userLoggedIn.topicsFocus.map((top) => top.topicID)];
+  //     }
+  //     if (userLoggedIn.topicsInterest.length > 0) {
+  //       if (favoriteTopics === []) {
+  //         favoriteTopics = [...userLoggedIn.topicsInterest.map((top) => top.topicID)];
+  //       } else {
+  //         // only add topics that dont already exist
+  //         userLoggedIn.topicsInterest.forEach((topic) => {
+  //           if (favoriteTopics.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
+  //             favoriteTopics = [...favoriteTopics, topic.topicID];
+  //           }
+  //         });
+  //       }
+  //     }
+  //   }
+  // }, [userLoggedIn]);
 
   // scrolls to index when story index changes
   useEffect(() => {
@@ -76,13 +77,31 @@ const StoryModal = ({ navigation, route }) => {
     notifyOnNetworkStatusChange: true,
   });
 
-  const refetchingStories = networkStatusStoriesTopic === 4;
-  const fetchingMoreStories = networkStatusStoriesTopic === 3;
-  const loadingStories = networkStatusStoriesTopic === 1;
+  const refetchingStoriesTopic = networkStatusStoriesTopic === 4;
+  const fetchingMoreStoriesTopic = networkStatusStoriesTopic === 3;
+  const loadingStoriesTopic = networkStatusStoriesTopic === 1;
+
+  const [
+    getStoriesHome,
+    {
+      error: errorStoriesHome,
+      data: dataStoriesHome,
+      refetch: refetchStoriesHome,
+      fetchMore: fetchMoreStoriesHome,
+      networkStatus: networkStatusStoriesHome,
+    },
+  ] = useLazyQuery(STORIES_HOME_QUERY, {
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const refetchingStoriesHome = networkStatusStoriesHome === 4;
+  const fetchingMoreStoriesHome = networkStatusStoriesHome === 3;
+  const loadingStoriesHome = networkStatusStoriesHome === 1;
 
   // an array of the stories up next, start with the first story (passed in)
   let storyQ = [story];
 
+  // used to add topic stories to Q
   if (moreType === 'Topic' && dataStoriesTopic) {
     if (dataStoriesTopic.storiesTopic) {
       // remove the story passed in from the query results
@@ -92,10 +111,21 @@ const StoryModal = ({ navigation, route }) => {
     }
   }
 
+  // used to add home stories to Q
+  if (moreType === 'Home' && dataStoriesHome) {
+    if (dataStoriesHome.storiesHome) {
+      // remove the story passed in from the query results
+      const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id);
+
+      storyQ = [...storyQ, ...storiesToAdd];
+    }
+  }
+
   // EFFECTS
   useEffect(() => {
-    // if (moreType === 'Home') {
-    // }
+    if (moreType === 'Home') {
+      getStoriesHome();
+    }
 
     if (moreType === 'Topic') {
       getStoriesTopic();

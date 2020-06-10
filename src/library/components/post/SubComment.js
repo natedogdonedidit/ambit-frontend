@@ -8,11 +8,14 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import LIKE_COMMENT_MUTATION from 'library/mutations/LIKE_COMMENT_MUTATION';
+import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
+import { CommentFragment } from 'library/queries/_fragments';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Heart from 'library/components/UI/icons/Heart';
 import CommentIcon from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
+import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 
 const SubComment = ({
   comment,
@@ -44,12 +47,27 @@ const SubComment = ({
     onCompleted: () => {
       // closeModal();
     },
-    onError: error => {
+    onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to like this comment. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]);
     },
+  });
+
+  // DELETE MUTATIONS
+  const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION, {
+    variables: {
+      id: comment.id,
+      ownerID: comment.owner.id,
+    },
+    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: comment.parentPost.id } }],
+    onCompleted: () =>
+      Alert.alert('Done!', "You're comment was successfully deleted", [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to delete this comment. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
   });
 
   // HOOKS & VARIABLES
@@ -62,6 +80,60 @@ const SubComment = ({
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
 
   // CUSTOM FUNCTIONS
+  const handleDelete = () => {
+    deleteComment({
+      optimisticResponse: {
+        __typename: 'Mutation',
+        deleteComment: { __typename: 'Comment', id: comment.id },
+      },
+      update(cache, { data }) {
+        // We get a single item from cache.
+        const commentInCache = cache.readFragment({
+          id: `Comment:${comment.id}`,
+          fragment: CommentFragment,
+          fragmentName: 'CommentFragment',
+        });
+        // Then, we update it.
+        if (commentInCache) {
+          cache.writeFragment({
+            id: `Comment:${comment.id}`,
+            fragment: CommentFragment,
+            fragmentName: 'CommentFragment',
+            data: {
+              ...comment,
+              _deleted: true,
+            },
+          });
+        }
+      },
+    });
+  };
+
+  const determineOptions = () => {
+    if (isMyPost) {
+      return [
+        {
+          text: 'Delete comment',
+          color: colors.peach,
+          onPress: handleDelete,
+        },
+      ];
+    }
+
+    // if its not my post
+    return [
+      {
+        text: 'Report',
+        onPress: () => navigation.goBack(),
+      },
+    ];
+  };
+
+  const handleMoreButton = () => {
+    const options = determineOptions();
+    navigation.navigate('SelectorModal', { options });
+  };
+
   const handleLike = () => {
     if (!loadingLike) likeComment();
   };
@@ -95,7 +167,7 @@ const SubComment = ({
 
             {!hideButtons && isMyPost && (
               <View style={{ position: 'absolute', top: 0, right: 0 }}>
-                <Chevron onPress={() => navigation.navigate('EditCommentPopup', { comment })} />
+                <Chevron onPress={handleMoreButton} />
               </View>
             )}
           </View>

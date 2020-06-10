@@ -150,6 +150,7 @@ const NewPostModal = ({ navigation, route }) => {
         commentsCount: null,
         sharesCount: null,
         updates: [],
+        _deleted: false,
       };
 
       createPost({
@@ -241,7 +242,7 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const attemptUploads = () => {
-    const uploadImagesPromises = images.map(image => {
+    const uploadImagesPromises = images.map((image) => {
       const imageObject = postPicUpload(userLoggedIn.id, image);
       return imageObject;
     });
@@ -275,8 +276,8 @@ const NewPostModal = ({ navigation, route }) => {
       includeExif: true,
       loadingLabelText: 'Uploading files',
     })
-      .then(imgs => {
-        const newArray = imgs.map(img => {
+      .then((imgs) => {
+        const newArray = imgs.map((img) => {
           // console.log('received image', img);
           // return { uri: img.path, width: img.width, height: img.height };
           return img.path;
@@ -284,7 +285,7 @@ const NewPostModal = ({ navigation, route }) => {
 
         setImages([...newArray]);
       })
-      .catch(e => alert(e));
+      .catch((e) => alert(e));
   };
 
   const cleanupImages = () => {
@@ -292,13 +293,13 @@ const NewPostModal = ({ navigation, route }) => {
       .then(() => {
         console.log('removed tmp images from tmp directory');
       })
-      .catch(e => {
+      .catch((e) => {
         alert(e);
       });
   };
 
   // must pass this to location modal
-  const handleLocationSelect = locObject => {
+  const handleLocationSelect = (locObject) => {
     if (locObject) {
       setLocation(locObject.location);
       setLocationID(locObject.locationID);
@@ -529,7 +530,7 @@ const NewPostModal = ({ navigation, route }) => {
               <View style={styles.rightSide}>
                 <TextInput
                   style={{ flex: 1, paddingTop: 6, paddingRight: 15, ...defaultStyles.largeRegular }}
-                  onChangeText={val => setContent(val)}
+                  onChangeText={(val) => setContent(val)}
                   value={content}
                   autoFocus
                   autoCompleteType="off"
