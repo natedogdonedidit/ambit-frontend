@@ -5,51 +5,82 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
 
-const GoalStatus = ({ navigation, post }) => {
-  const { goalStatus = 'active' } = post;
+const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
+  const { goalStatus = 'Active' } = post;
 
   if (!goalStatus) {
     return null;
   }
 
   const renderText = () => {
-    if (goalStatus === 'active') {
+    if (goalStatus === 'Active') {
       return 'In Progress';
     }
-    if (goalStatus === 'inactive') {
+    if (goalStatus === 'Inactive') {
       return 'Inactive';
     }
-    if (goalStatus === 'complete') {
+    if (goalStatus === 'Complete') {
       return 'Complete';
     }
   };
 
-  const getColor = () => {
-    if (goalStatus === 'active') {
-      return colors.goalGreen;
-    }
-    if (goalStatus === 'inactive') {
-      return colors.goalOrange;
-    }
-    if (goalStatus === 'complete') {
-      return colors.goalBlue;
-    }
-  };
-
   const getTextColor = () => {
-    if (goalStatus === 'active') {
+    if (goalStatus === 'Active') {
       return colors.green;
     }
-    if (goalStatus === 'inactive') {
+    if (goalStatus === 'Inactive') {
       return colors.orange;
     }
-    if (goalStatus === 'complete') {
+    if (goalStatus === 'Complete') {
       return colors.blue;
     }
   };
 
+  const determineOptions = () => {
+    if (post.goalStatus === 'Inactive') {
+      return [
+        {
+          text: 'Mark goal Active',
+          onPress: () => updateGoalStatus('Active'),
+        },
+        {
+          text: 'Mark goal Complete',
+          onPress: () => updateGoalStatus('Complete'),
+        },
+      ];
+    }
+    if (post.goalStatus === 'Active') {
+      return [
+        {
+          text: 'Mark goal Inactive',
+          onPress: () => updateGoalStatus('Inactive'),
+        },
+        {
+          text: 'Mark goal Complete',
+          onPress: () => updateGoalStatus('Complete'),
+        },
+      ];
+    }
+    if (post.goalStatus === 'Complete') {
+      return [
+        {
+          text: 'Mark goal Active',
+          onPress: () => updateGoalStatus('Active'),
+        },
+      ];
+    }
+    return [];
+  };
+
+  const handleClick = () => {
+    if (isMyPost) {
+      const options = determineOptions();
+      navigation.navigate('SelectorModal', { options });
+    }
+  };
+
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Post', { post })} activeOpacity={0.3}>
+    <TouchableOpacity onPress={handleClick} activeOpacity={0.3}>
       {/* <View style={{ ...styles.topic, backgroundColor: getColor() }}> */}
       <Text style={{ ...defaultStyles.smallMedium, color: getTextColor() }}>{renderText()}</Text>
       {/* </View> */}

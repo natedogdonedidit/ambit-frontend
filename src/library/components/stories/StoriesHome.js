@@ -22,7 +22,7 @@ const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingS
     fetchMore: fetchMoreStories,
     networkStatus: networkStatusStories,
   } = useQuery(STORIES_HOME_QUERY, {
-    onError: e => console.log('error loading home stories', e),
+    onError: (e) => console.log('error loading home stories', e),
     notifyOnNetworkStatusChange: true,
   });
 
@@ -63,7 +63,7 @@ const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingS
     // console.log('stories', stories);
 
     if (stories.length > 0) {
-      return stories.map(story => {
+      return stories.map((story) => {
         if (story.items.length > 0) {
           return <StoryBox key={story.id} navigation={navigation} story={story} moreType="Home" />;
         }
@@ -74,21 +74,24 @@ const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingS
   };
 
   return (
-    <ScrollView
-      horizontal
-      style={styles.stories}
-      contentContainerStyle={{ paddingVertical: 10, paddingRight: 10 }}
-      showsHorizontalScrollIndicator={false}
-    >
-      <NewStoryButton navigation={navigation} />
-      {renderStories()}
-    </ScrollView>
+    <>
+      <ScrollView
+        horizontal
+        style={styles.stories}
+        contentContainerStyle={{ paddingVertical: 10, paddingRight: 10 }}
+        showsHorizontalScrollIndicator={false}
+      >
+        <NewStoryButton navigation={navigation} />
+        {renderStories()}
+      </ScrollView>
+      <View style={{ height: 10, backgroundColor: colors.lightGray }} />
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   stories: {
-    marginVertical: 10,
+    // marginBottom: 10,
     backgroundColor: 'white',
     borderBottomColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,

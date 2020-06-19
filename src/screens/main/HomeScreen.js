@@ -55,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   // if scroll past threshold --> change state
-  const handleOnScroll = event => {
+  const handleOnScroll = (event) => {
     const scrollX = event.nativeEvent.contentOffset.x;
     if (scrollX < width / 2 && homePosition === 1) {
       setHomePosition(0);

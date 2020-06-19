@@ -23,6 +23,7 @@ import GoalStatus from 'library/components/post/GoalStatus';
 import { UserContext } from 'library/utils/UserContext';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
+import EDIT_GOALSTATUS_MUTATION from 'library/mutations/EDIT_GOALSTATUS_MUTATION';
 
 const Post = ({
   post,
@@ -77,6 +78,14 @@ const Post = ({
       ]),
   });
 
+  // DELETE POST MUTATION
+  const [editGoalStatus] = useMutation(EDIT_GOALSTATUS_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to update this post. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
   // VARIABLES
   const containsMedia = post.video || post.images.length > 0;
   // const containsTopics = !!post.subField || !!post.topics;
@@ -119,9 +128,96 @@ const Post = ({
     });
   };
 
+  const updateGoalStatus = (newStatus) => {
+    editGoalStatus({
+      variables: {
+        id: post.id,
+        ownerID: post.owner.id,
+        goalStatus: newStatus,
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        editGoalStatus: {
+          __typename: 'Post',
+          ...post,
+          goalStatus: newStatus,
+        },
+      },
+      update(cache, { data: dataReturned }) {
+        // We get a single item from cache.
+        const postInCache = cache.readFragment({
+          id: `Post:${post.id}`,
+          fragment: BasicPost,
+          fragmentName: 'BasicPost',
+        });
+        // Then, we update it.
+        if (postInCache) {
+          cache.writeFragment({
+            id: `Post:${post.id}`,
+            fragment: BasicPost,
+            fragmentName: 'BasicPost',
+            data: {
+              ...dataReturned.editGoalStatus,
+            },
+          });
+        }
+      },
+    });
+  };
+
   const determineOptions = () => {
-    if (isMyPost && post.goal) {
+    if (isMyPost && post.goal && post.goalStatus === 'Active') {
       return [
+        {
+          text: 'Mark goal Complete',
+          onPress: () => updateGoalStatus('Complete'),
+        },
+        {
+          text: 'Mark goal Inactive',
+          onPress: () => updateGoalStatus('Inactive'),
+        },
+        {
+          text: 'Add an update',
+          onPress: () => navigation.navigate('UpdatePost', { post }),
+          closeModal: false,
+        },
+        {
+          text: 'Delete post',
+          color: colors.peach,
+          onPress: handleDelete,
+        },
+      ];
+    }
+
+    if (isMyPost && post.goal && post.goalStatus === 'Inactive') {
+      return [
+        {
+          text: 'Mark goal Active',
+          onPress: () => updateGoalStatus('Active'),
+        },
+        {
+          text: 'Mark goal Complete',
+          onPress: () => updateGoalStatus('Complete'),
+        },
+        {
+          text: 'Add an update',
+          onPress: () => navigation.navigate('UpdatePost', { post }),
+          closeModal: false,
+        },
+        {
+          text: 'Delete post',
+          color: colors.peach,
+          onPress: handleDelete,
+        },
+      ];
+    }
+
+    if (isMyPost && post.goal && post.goalStatus === 'Complete') {
+      return [
+        {
+          text: 'Mark goal Active',
+          onPress: () => updateGoalStatus('Active'),
+        },
         {
           text: 'Add an update',
           onPress: () => navigation.navigate('UpdatePost', { post }),
@@ -360,7 +456,9 @@ const Post = ({
             <>
               <View style={styles.date}>
                 <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{formatedDate}</Text>
-                {!!post.isGoal && <GoalStatus navigation={navigation} post={post} />}
+                {!!post.isGoal && (
+                  <GoalStatus navigation={navigation} post={post} updateGoalStatus={updateGoalStatus} isMyPost={isMyPost} />
+                )}
               </View>
               <View style={styles.likesRow}>
                 <View style={{ flexDirection: 'row' }}>

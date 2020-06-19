@@ -22,7 +22,7 @@ const UpdatePostScreen = ({ navigation, route }) => {
 
   // MUTATIONS
   const [createUpdate] = useMutation(CREATE_UPDATE_MUTATION, {
-    onError: error => {
+    onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to update this post. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -43,6 +43,7 @@ const UpdatePostScreen = ({ navigation, route }) => {
       likedByMe: false,
       commentsCount: null,
       sharesCount: null,
+      _deleted: false,
     };
 
     createUpdate({
@@ -101,7 +102,7 @@ const UpdatePostScreen = ({ navigation, route }) => {
               <View style={{ height: 100, paddingTop: 0 }}>
                 <TextInput
                   style={styles.input}
-                  onChangeText={val => setUpdateText(val)}
+                  onChangeText={(val) => setUpdateText(val)}
                   value={updateText}
                   autoFocus
                   autoCompleteType="off"

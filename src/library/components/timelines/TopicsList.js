@@ -28,8 +28,8 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
         favoritesList = [...userLoggedIn.topicsInterest];
       } else {
         // only add topics that dont already exist
-        userLoggedIn.topicsInterest.forEach(topic => {
-          if (favoritesList.findIndex(fav => fav.topicID === topic.topicID) === -1) {
+        userLoggedIn.topicsInterest.forEach((topic) => {
+          if (favoritesList.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
             favoritesList = [...favoritesList, topic];
           }
         });

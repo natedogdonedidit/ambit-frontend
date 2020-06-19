@@ -7,9 +7,11 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import FORYOU_POSTS_QUERY from 'library/queries/FORYOU_POSTS_QUERY';
+import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Section from 'library/components/UI/Section';
+import HomeTimelineHeader from 'library/components/UI/HomeTimelineHeader';
 import SeeMoreButton from 'library/components/UI/buttons/SeeMoreButton';
 import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
@@ -24,27 +26,24 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const [showLoader, setShowLoader] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
-
-  useEffect(() => {
-    if (creatingStory) {
-      console.log('refreshing');
-      onRefresh();
-    }
-  }, [creatingStory]);
+  const [activeTimeline, setActiveTimeline] = useState(0);
 
   // QUERIES
+
+  // CURRENT USER QUERY (to get network IDs)
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
   const { userLoggedIn } = dataUser;
-  const getNetworkIDs = usr => {
+  const getNetworkIDs = (usr) => {
     if (!usr) {
       return [];
     }
-    const followingIDs = usr.following ? usr.following.map(u => u.id) : [];
-    const connectionIDs = usr.connection ? usr.connections.map(u => u.id) : [];
+    const followingIDs = usr.following ? usr.following.map((u) => u.id) : [];
+    const connectionIDs = usr.connection ? usr.connections.map((u) => u.id) : [];
     return [...followingIDs, ...connectionIDs];
   };
   const network = getNetworkIDs(userLoggedIn);
 
+  // GET POSTS FROM "FOLLOWING"
   const {
     error: errorPostsNetwork,
     data: dataPostsNetwork,
@@ -53,13 +52,14 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     networkStatus: networkStatusPostsNetwork,
   } = useQuery(NETWORK_POSTS_QUERY, {
     variables: {
-      first: 6,
+      first: 10,
       network,
     },
-    onError: e => console.log('error loading newtork posts', e),
+    onError: (e) => console.log('error loading newtork posts', e),
     notifyOnNetworkStatusChange: true,
   });
 
+  // GET POSTS "FOR YOU"
   const {
     error: errorPostsForYou,
     data: dataPostsForYou,
@@ -68,9 +68,24 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     networkStatus: networkStatusPostsForYou,
   } = useQuery(FORYOU_POSTS_QUERY, {
     variables: {
-      first: 5,
+      first: 10,
     },
-    onError: e => console.log('error loading for you posts', e),
+    onError: (e) => console.log('error loading for you posts', e),
+    notifyOnNetworkStatusChange: true,
+  });
+
+  // GET "MY GOALS"
+  const {
+    error: errorPostsMyGoals,
+    data: dataPostsMyGoals,
+    refetch: refetchPostsMyGoals,
+    fetchMore: fetchMorePostsMyGoals,
+    networkStatus: networkStatusPostsMyGoals,
+  } = useQuery(MYGOALS_POSTS_QUERY, {
+    variables: {
+      first: 10,
+    },
+    onError: (e) => console.log('error loading my goals posts', e),
     notifyOnNetworkStatusChange: true,
   });
 
@@ -81,45 +96,45 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // 7: no loading, no refetch, everything OK!
 
   // LOADING STATES
-
+  // network
   const refetchingPostsNetwork = networkStatusPostsNetwork === 4;
   const fetchingMorePostsNetwork = networkStatusPostsNetwork === 3;
   const loadingPostsNetwork = networkStatusPostsNetwork === 1;
 
+  // for you
   const refetchingPostsForYou = networkStatusPostsForYou === 4;
   const fetchingMorePostsForYou = networkStatusPostsForYou === 3;
   const loadingPostsForYou = networkStatusPostsForYou === 1;
 
-  useEffect(() => {
-    // console.log('in effect', creatingStory);
+  // my goals
+  const refetchingPostsMyGoals = networkStatusPostsMyGoals === 4;
+  const fetchingMorePostsMyGoals = networkStatusPostsMyGoals === 3;
+  const loadingPostsMyGoals = networkStatusPostsMyGoals === 1;
 
-    // this doesnt work
+  const refetching = refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals;
+
+  // UPDATE showLoader BASED ON QUERY LOADING STATES
+  useEffect(() => {
     if (
       refetchingPostsNetwork ||
       refetchingPostsForYou ||
+      refetchingPostsMyGoals ||
       loadingPostsNetwork ||
       loadingPostsForYou ||
-      loadingStories ||
-      refetchingStories ||
-      creatingStory
+      loadingPostsMyGoals
     ) {
-      // console.log('starting loader');
       setShowLoader(true);
     } else if (showLoader) {
-      // console.log('stopping loader');
       setShowLoader(false);
     }
   }, [
     refetchingPostsNetwork,
     refetchingPostsForYou,
+    refetchingPostsMyGoals,
     loadingPostsNetwork,
     loadingPostsForYou,
-    loadingStories,
-    refetchingStories,
-    creatingStory,
+    loadingPostsMyGoals,
   ]);
-
-  const refetching = refetchingPostsNetwork || refetchingPostsForYou || creatingStory;
 
   if (errorPostsNetwork) {
     console.log('ERROR LOADING POSTS:', errorPostsNetwork.message);
@@ -130,65 +145,111 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     );
   }
 
-  if (!dataPostsNetwork || loadingPostsNetwork || !dataPostsForYou || loadingPostsForYou) {
+  // IF DOING INITIAL LOAD
+  if (
+    !dataPostsNetwork ||
+    loadingPostsNetwork ||
+    !dataPostsForYou ||
+    loadingPostsForYou ||
+    !dataPostsMyGoals ||
+    loadingPostsMyGoals
+  ) {
     return <Loader backgroundColor={colors.lightGray} size="small" />;
   }
 
   const postsNetwork = dataPostsNetwork.postsNetwork.edges || [];
   const postsForYou = dataPostsForYou.postsForYou.edges || [];
+  const postsMyGoals = dataPostsMyGoals.postsMyGoals.edges || [];
 
-  // console.log(postsNetwork);
+  // decide which posts to show based on the timeline selected
+  let postsToShow = [];
+  if (activeTimeline === 0) postsToShow = [...postsForYou];
+  if (activeTimeline === 1) postsToShow = [...postsNetwork];
+  if (activeTimeline === 2) postsToShow = [...postsMyGoals];
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
-    // console.log('running refetch');
     setShowLoader(true);
     refetchPostsNetwork();
     refetchPostsForYou();
+    refetchPostsMyGoals();
   };
 
-  const fetchMorePostsNetworkMethod = () => {
-    fetchMorePostsNetwork({
-      query: NETWORK_POSTS_QUERY,
-      variables: {
-        cursor: dataPostsNetwork.postsNetwork.pageInfo.endCursor,
-        first: 12,
-        // network,
-      },
-      updateQuery: (previousResult, { fetchMoreResult }) => {
-        // console.log('prev', previousResult);
-        // console.log('fetched', fetchMoreResult);
+  // const fetchMorePostsNetworkMethod = () => {
+  //   fetchMorePostsNetwork({
+  //     query: NETWORK_POSTS_QUERY,
+  //     variables: {
+  //       cursor: dataPostsNetwork.postsNetwork.pageInfo.endCursor,
+  //       first: 12,
+  //       // network,
+  //     },
+  //     updateQuery: (previousResult, { fetchMoreResult }) => {
+  //       // console.log('prev', previousResult);
+  //       // console.log('fetched', fetchMoreResult);
 
-        const newEdges = fetchMoreResult.postsNetwork.edges;
-        const { pageInfo } = fetchMoreResult.postsNetwork;
+  //       const newEdges = fetchMoreResult.postsNetwork.edges;
+  //       const { pageInfo } = fetchMoreResult.postsNetwork;
 
-        console.log('newEdges', newEdges);
-        console.log('pageInfo', pageInfo);
+  //       console.log('newEdges', newEdges);
+  //       console.log('pageInfo', pageInfo);
 
-        return newEdges.length
-          ? {
-              postsNetwork: {
-                __typename: previousResult.postsNetwork.__typename,
-                edges: [...previousResult.postsNetwork.edges, ...newEdges],
-                pageInfo,
-              },
-            }
-          : previousResult;
-      },
-    });
-  };
+  //       return newEdges.length
+  //         ? {
+  //             postsNetwork: {
+  //               __typename: previousResult.postsNetwork.__typename,
+  //               edges: [...previousResult.postsNetwork.edges, ...newEdges],
+  //               pageInfo,
+  //             },
+  //           }
+  //         : previousResult;
+  //     },
+  //   });
+  // };
 
-  // console.log(showLoader);
-  const newShowLoader = showLoader || creatingStory;
-  // console.log(newShowLoader);
   // RENDER
   return (
     <View style={styles.container}>
+      {/* This is the loading animation */}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: paddingTop - 60,
+          left: 0,
+          width: '100%',
+          height: 60,
+          justifyContent: 'flex-end',
+          transform: [
+            {
+              translateY: scrollY.interpolate({
+                inputRange: [-60, 0],
+                outputRange: [60, 0],
+                extrapolate: 'clamp',
+              }),
+            },
+          ],
+        }}
+      >
+        <View style={{ width: '100%', height: 60 }}>
+          <ActivityIndicator
+            style={{
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+            }}
+            size="small"
+            color={colors.purp}
+            animating={showLoader}
+            hidesWhenStopped={false}
+          />
+        </View>
+      </Animated.View>
       <SectionList
         ref={homeTimelineRef}
-        refreshControl={<RefreshControl refreshing={newShowLoader} onRefresh={onRefresh} tintColor="transparent" />}
+        refreshControl={<RefreshControl refreshing={showLoader} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
-        refreshing={newShowLoader}
+        refreshing={showLoader}
         progressViewOffset={100}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
@@ -223,135 +284,122 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         keyExtractor={(item, index) => item + index}
         sections={[
           {
-            name: 'Network',
-            title: 'People you follow',
-            data: postsNetwork,
-          },
-          {
-            name: 'For You',
-            title: 'For You',
-            data: postsForYou,
+            data: postsToShow || [],
           },
         ]}
-        renderSectionHeader={({ section }) => {
-          if (section.name === 'Network' && postsNetwork.length > 0) return <Section text={section.title} marginTop={false} />;
-          if (section.name === 'For You' && postsForYou.length > 0)
-            return (
-              <Section
-                text={section.title}
-                marginTop={false}
-                rightComponent={
-                  <TouchableOpacity onPress={() => navigation.navigate('ForYouSettingsPopup')}>
-                    <Feather name="settings" size={18} color={colors.blueGray} style={{ paddingLeft: 2 }} />
-                  </TouchableOpacity>
-                }
-              />
-            );
-          return null;
-        }}
-        renderSectionFooter={({ section }) => {
-          if (section.name === 'Network' && dataPostsNetwork.postsNetwork.pageInfo.hasNextPage) {
-            return <SeeMoreButton onPress={fetchMorePostsNetworkMethod} loading={fetchingMorePostsNetwork} />;
-          }
+        renderSectionHeader={({ section }) => (
+          <HomeTimelineHeader navigation={navigation} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
+        )}
+        // renderSectionFooter={({ section }) => {
+        //   if (section.name === 'Network' && dataPostsNetwork.postsNetwork.pageInfo.hasNextPage) {
+        //     return <SeeMoreButton onPress={fetchMorePostsNetworkMethod} loading={fetchingMorePostsNetwork} />;
+        //   }
 
-          if (section.name === 'For You' && fetchingMorePostsForYou) {
-            return (
-              <View style={{ width: '100%', height: 50, marginBottom: 15 }}>
-                <Loader loading={fetchingMorePostsForYou} size="small" />
-              </View>
-            );
-          }
+        //   if (section.name === 'For You' && fetchingMorePostsForYou) {
+        //     return (
+        //       <View style={{ width: '100%', height: 50, marginBottom: 15 }}>
+        //         <Loader loading={fetchingMorePostsForYou} size="small" />
+        //       </View>
+        //     );
+        //   }
 
-          return <View style={{ height: 15 }} />;
-        }}
+        //   return <View style={{ height: 15 }} />;
+        // }}
         renderItem={({ item, section }) => {
-          if (section.name === 'Network')
-            return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
-          if (section.name === 'For You')
-            return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
-          return null;
+          return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
         }}
         onEndReachedThreshold={1.2}
-        onEndReached={info => {
+        onEndReached={(info) => {
           // console.log('onEndReached triggered', info);
           // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
-          if (dataPostsForYou.postsForYou.pageInfo.hasNextPage && networkStatusPostsForYou === 7 && info.distanceFromEnd > -300) {
-            // console.log('fetching more');
-            fetchMorePostsForYou({
-              query: FORYOU_POSTS_QUERY,
-              variables: {
-                cursor: dataPostsForYou.postsForYou.pageInfo.endCursor,
-                first: 30,
-                network,
-              },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                // console.log('prev', previousResult);
-                // console.log('fetched', fetchMoreResult);
 
-                const newEdges = fetchMoreResult.postsForYou.edges;
-                const { pageInfo } = fetchMoreResult.postsForYou;
+          if (activeTimeline === 0) {
+            if (
+              dataPostsForYou.postsForYou.pageInfo.hasNextPage &&
+              networkStatusPostsForYou === 7 &&
+              info.distanceFromEnd > -300
+            ) {
+              fetchMorePostsForYou({
+                query: FORYOU_POSTS_QUERY,
+                variables: {
+                  cursor: dataPostsForYou.postsForYou.pageInfo.endCursor,
+                  first: 10,
+                },
+                updateQuery: (previousResult, { fetchMoreResult }) => {
+                  const newEdges = fetchMoreResult.postsForYou.edges;
+                  const { pageInfo } = fetchMoreResult.postsForYou;
 
-                return newEdges.length
-                  ? {
-                      postsForYou: {
-                        __typename: previousResult.postsForYou.__typename,
-                        edges: [...previousResult.postsForYou.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
-                  : previousResult;
-              },
-            });
+                  return newEdges.length
+                    ? {
+                        postsForYou: {
+                          __typename: previousResult.postsForYou.__typename,
+                          edges: [...previousResult.postsForYou.edges, ...newEdges],
+                          pageInfo,
+                        },
+                      }
+                    : previousResult;
+                },
+              });
+            }
+          } else if (activeTimeline === 1) {
+            if (
+              dataPostsNetwork.postsNetwork.pageInfo.hasNextPage &&
+              networkStatusPostsNetwork === 7 &&
+              info.distanceFromEnd > -300
+            ) {
+              fetchMorePostsNetwork({
+                query: NETWORK_POSTS_QUERY,
+                variables: {
+                  cursor: dataPostsNetwork.postsNetwork.pageInfo.endCursor,
+                  first: 10,
+                },
+                updateQuery: (previousResult, { fetchMoreResult }) => {
+                  const newEdges = fetchMoreResult.postsNetwork.edges;
+                  const { pageInfo } = fetchMoreResult.postsNetwork;
+
+                  return newEdges.length
+                    ? {
+                        postsNetwork: {
+                          __typename: previousResult.postsNetwork.__typename,
+                          edges: [...previousResult.postsNetwork.edges, ...newEdges],
+                          pageInfo,
+                        },
+                      }
+                    : previousResult;
+                },
+              });
+            }
+          } else if (activeTimeline === 2) {
+            if (
+              dataPostsMyGoals.postsMyGoals.pageInfo.hasNextPage &&
+              networkStatusPostsMyGoals === 7 &&
+              info.distanceFromEnd > -300
+            ) {
+              fetchMorePostsMyGoals({
+                query: MYGOALS_POSTS_QUERY,
+                variables: {
+                  cursor: dataPostsMyGoals.postsMyGoals.pageInfo.endCursor,
+                  first: 10,
+                },
+                updateQuery: (previousResult, { fetchMoreResult }) => {
+                  const newEdges = fetchMoreResult.postsMyGoals.edges;
+                  const { pageInfo } = fetchMoreResult.postsMyGoals;
+
+                  return newEdges.length
+                    ? {
+                        postsMyGoals: {
+                          __typename: previousResult.postsMyGoals.__typename,
+                          edges: [...previousResult.postsMyGoals.edges, ...newEdges],
+                          pageInfo,
+                        },
+                      }
+                    : previousResult;
+                },
+              });
+            }
           }
         }}
       />
-
-      {/* This is the loading animation */}
-      <Animated.View
-        style={{
-          position: 'absolute',
-          top: -400,
-          left: 0,
-          width: '100%',
-          height: paddingTop + 7 + 400,
-          // backgroundColor: colors.purp,
-          justifyContent: 'flex-end',
-          transform: [
-            {
-              translateY: scrollY.interpolate({
-                inputRange: [-800, 0],
-                outputRange: [800, 0],
-                extrapolate: 'clamp',
-              }),
-              // scale: scrollY.interpolate({
-              //   inputRange: [-1000, 0],
-              //   outputRange: [23, 1],
-              //   extrapolate: 'clamp',
-              // }),
-            },
-          ],
-          // opacity: scrollY.interpolate({
-          //   inputRange: [-400, 0],
-          //   outputRange: [1, 0],
-          //   extrapolate: 'clamp',
-          // }),
-        }}
-      >
-        <View style={{ width: '100%', height: 60 }}>
-          <ActivityIndicator
-            style={{
-              width: '100%',
-              height: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: 'transparent',
-            }}
-            size="small"
-            color={colors.purp}
-            animating={newShowLoader}
-          />
-        </View>
-      </Animated.View>
     </View>
   );
 };
@@ -363,9 +411,12 @@ const styles = StyleSheet.create({
     borderLeftColor: colors.borderBlack,
     borderRightWidth: StyleSheet.hairlineWidth,
     borderRightColor: colors.borderBlack,
+    // backgroundColor: 'pink',
+    position: 'relative',
   },
   timeline: {
-    backgroundColor: colors.lightGray,
+    // backgroundColor: colors.lightGray,
+    backgroundColor: 'transparent',
     // height: '100%',
     flex: 1,
     width: '100%',

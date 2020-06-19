@@ -62,6 +62,9 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
 
   // VARIABLES
   const { items } = story;
+  console.log(story);
+  console.log(items);
+  console.log(activeIndex, isActive);
   const isEmpty = items.length < 1;
   const activeItem = { ...items[activeIndex] };
   const isMyPost = activeItem.owner.id === currentUserId;
@@ -69,7 +72,7 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
   // MUTATIONS
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
     // onCompleted: () => {},
-    onError: error => {
+    onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -79,7 +82,7 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
 
   const [deleteStory] = useMutation(DELETE_STORY_MUTATION, {
     // onCompleted: () => {},
-    onError: error => {
+    onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to delete your story. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -102,12 +105,12 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
   // this stuff is mainly for deciding what to render in "More" modal
   useEffect(() => {
     const now = new Date();
-    const solo = activeItem.stories.find(s => s.type === 'SOLO');
+    const solo = activeItem.stories.find((s) => s.type === 'SOLO');
     setSoloStory(solo);
     setIncludedInSolo(!!solo);
-    setIncludedInProject(!!activeItem.stories.find(s => s.type === 'PROJECT'));
+    setIncludedInProject(!!activeItem.stories.find((s) => s.type === 'PROJECT'));
     setIncludedInMyStory(
-      !!activeItem.stories.find(s => s.type === 'MYSTORY' && differenceInHours(now, new Date(activeItem.createdAt)) < 24)
+      !!activeItem.stories.find((s) => s.type === 'MYSTORY' && differenceInHours(now, new Date(activeItem.createdAt)) < 24)
     );
   }, [activeItem]);
 
@@ -133,7 +136,7 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
       setPaused(true);
       setCurrentTime(0);
       if (activeIndex < items.length - 1) {
-        setActiveIndex(prevState => prevState + 1);
+        setActiveIndex((prevState) => prevState + 1);
       }
     }
   }, [isActive]);
@@ -148,7 +151,7 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
       const intervalID = setInterval(() => {
         if (activeItem.type === 'IMAGE' && isActive) {
           if (!pausedRef.current) {
-            setCurrentTime(prevState => prevState + 0.01);
+            setCurrentTime((prevState) => prevState + 0.01);
           }
         }
       }, 10);
@@ -167,11 +170,11 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
   }
 
   // VIDEO PLAYER CALLBACKS
-  const onBuffer = dataa => {
+  const onBuffer = (dataa) => {
     setIsBuffering(dataa.isBuffering);
   };
   // const onError = () => {};
-  const onProgress = dataa => {
+  const onProgress = (dataa) => {
     if (isActive) {
       setCurrentTime(dataa.currentTime);
     }
@@ -186,7 +189,8 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
   const incrementIndex = () => {
     setCurrentTime(0);
     if (activeIndex < items.length - 1) {
-      setActiveIndex(prevState => prevState + 1);
+      console.log('here2');
+      setActiveIndex((prevState) => prevState + 1);
     }
 
     // if it was the last item in the activeStory
@@ -197,7 +201,8 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
 
   const decrementIndex = () => {
     if (activeIndex > 0) {
-      setActiveIndex(prevState => prevState - 1);
+      console.log('here3');
+      setActiveIndex((prevState) => prevState - 1);
     } else {
       tryGoToPrevStory();
     }

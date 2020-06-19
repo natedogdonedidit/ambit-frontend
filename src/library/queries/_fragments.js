@@ -215,6 +215,7 @@ export const MinimalPost = gql`
     }
     isGoal
     goal
+    goalStatus
     subField {
       id
       name
@@ -239,6 +240,7 @@ export const BasicPost = gql`
     }
     isGoal
     goal
+    goalStatus
     subField {
       id
       name

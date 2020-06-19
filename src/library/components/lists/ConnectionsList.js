@@ -37,7 +37,7 @@ const ConnectionsList = ({ navigation }) => {
   }
 
   if (!data || loading) {
-    return <Loader backgroundColor={colors.lightGray} />;
+    return <Loader backgroundColor={colors.lightGray} size="small" />;
   }
 
   const activeGoalsWithMatches = data.allConnections.postsWithMatches || [];
@@ -53,7 +53,7 @@ const ConnectionsList = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <SectionList
-        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} size="small" />}
         onRefresh={onRefresh}
         refreshing={refetching}
         contentContainerStyle={{ paddingTop: 15, paddingBottom: 20 }}

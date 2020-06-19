@@ -1,11 +1,13 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference, getGoalInfo } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import { DAYS_TILL_INACTIVE } from 'styles/constants';
 
 const NotificationListItem = ({ navigation, notification }) => {
   const { style, createdAt, user, users, post, update, comment } = notification;
@@ -178,7 +180,6 @@ const NotificationListItem = ({ navigation, notification }) => {
               </Text>
             </View>
           </View>
-
           <Text style={defaultStyles.defaultMute}>{getNotificationContent()}</Text>
         </View>
       </View>

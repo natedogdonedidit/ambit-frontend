@@ -57,7 +57,7 @@ const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput,
   }
 
   if (!data || loading || refetching || newVariables) {
-    return <Loader backgroundColor={colors.lightGray} />;
+    return <Loader backgroundColor={colors.lightGray} size="small" />;
   }
 
   const posts = data.postsSearch.edges || [];
@@ -118,7 +118,7 @@ const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput,
           return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
         }}
         onEndReachedThreshold={1.2}
-        onEndReached={info => {
+        onEndReached={(info) => {
           // console.log('onEndReached triggered', info);
           // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
           if (data.postsSearch.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {

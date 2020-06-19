@@ -13,7 +13,7 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
   const { id } = userLoggedIn;
   const topics = userLoggedIn.topicsFocus || [];
-  const topicsIDonly = topics.map(topic => topic.topicID);
+  const topicsIDonly = topics.map((topic) => topic.topicID);
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -31,21 +31,30 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
     let newArray = [];
     if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
+      newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
     } else {
       // add it
       newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
 
     // for mutation
-    const newArrayTopicIDonly = newArray.map(topic => {
+    const newArrayTopicIDonly = newArray.map((topic) => {
       return { topicID: topic.topicID };
     });
 
     // for optimistic response
-    const newArrayTopicIDandType = newArray.map(topic => {
+    const newArrayTopicIDandType = newArray.map((topic) => {
       return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
     });
+    // console.log(newArrayTopicIDandType);
+    // console.log('opt resp', {
+    //   __typename: 'Mutation',
+    //   editTopicsFocus: {
+    //     __typename: 'User',
+    //     ...userLoggedIn,
+    //     topicsFocus: newArrayTopicIDandType,
+    //   },
+    // });
 
     // run the mutation
     editTopicsFocus({
@@ -62,6 +71,9 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
         },
       },
       update: (proxy, { data: dataReturned }) => {
+        // console.log('dataReturned', dataReturned.editTopicsFocus);
+        // const data = proxy.readQuery({ query: CURRENT_USER_QUERY });
+
         proxy.writeQuery({
           query: CURRENT_USER_QUERY,
           data: {

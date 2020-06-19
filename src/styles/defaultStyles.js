@@ -179,6 +179,11 @@ const styles = StyleSheet.create({
     fontSize: large,
     fontFamily: 'SFProText-Bold',
   },
+  largeBoldDisplay: {
+    color: colors.black,
+    fontSize: large,
+    fontFamily: 'SFProDisplay-Bold',
+  },
   largeHeavy: {
     color: colors.black,
     fontSize: large,

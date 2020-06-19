@@ -105,7 +105,7 @@ const StoryModal = ({ navigation, route }) => {
   if (moreType === 'Topic' && dataStoriesTopic) {
     if (dataStoriesTopic.storiesTopic) {
       // remove the story passed in from the query results
-      const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.id !== story.id);
+      const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.id !== story.id && s.items.length > 0);
 
       storyQ = [...storyQ, ...storiesToAdd];
     }
@@ -115,7 +115,7 @@ const StoryModal = ({ navigation, route }) => {
   if (moreType === 'Home' && dataStoriesHome) {
     if (dataStoriesHome.storiesHome) {
       // remove the story passed in from the query results
-      const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id);
+      const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id && s.items.length > 0);
 
       storyQ = [...storyQ, ...storiesToAdd];
     }
@@ -196,17 +196,20 @@ const StoryModal = ({ navigation, route }) => {
         disableIntervalMomentum
         onMomentumScrollEnd={handleSwipe}
         data={storyQ}
-        renderItem={({ item, index }) => (
-          <StoryCard
-            key={index}
-            navigation={navigation}
-            story={item}
-            isActive={index === storyQIndex}
-            tryGoToPrevStory={tryGoToPrevStory}
-            tryGoToNextStory={tryGoToNextStory}
-            favoriteTopics={favoriteTopics}
-          />
-        )}
+        renderItem={({ item, index }) => {
+          console.log(storyQIndex, index, item);
+          return (
+            <StoryCard
+              key={index}
+              navigation={navigation}
+              story={item}
+              isActive={index === storyQIndex}
+              tryGoToPrevStory={tryGoToPrevStory}
+              tryGoToNextStory={tryGoToNextStory}
+              favoriteTopics={favoriteTopics}
+            />
+          );
+        }}
       />
     </View>
   );

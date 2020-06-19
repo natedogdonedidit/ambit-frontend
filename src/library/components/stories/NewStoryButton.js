@@ -24,7 +24,7 @@ const NewStoryButton = ({ navigation }) => {
       >
         <Icon name="camera" size={28} color={colors.white} style={{}} />
       </View>
-      <Text style={{ ...defaultStyles.defaultMediumMute, paddingTop: 6 }}>Share!</Text>
+      <Text style={{ ...defaultStyles.defaultMediumMute, paddingTop: 6 }}>Share</Text>
     </TouchableOpacity>
   );
 

@@ -23,7 +23,7 @@ const SelectTopicsFocusModal = ({ navigation }) => {
   // this is the single source of truth
   const { id } = userLoggedIn;
   const topics = userLoggedIn.topicsFocus || [];
-  const topicsIDonly = topics.map(topic => topic.topicID);
+  const topicsIDonly = topics.map((topic) => topic.topicID);
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -41,19 +41,19 @@ const SelectTopicsFocusModal = ({ navigation }) => {
     let newArray = [];
     if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
+      newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
     } else {
       // add it
       newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
 
     // for mutation
-    const newArrayTopicIDonly = newArray.map(topic => {
+    const newArrayTopicIDonly = newArray.map((topic) => {
       return { topicID: topic.topicID };
     });
 
     // for optimistic response
-    const newArrayTopicIDandType = newArray.map(topic => {
+    const newArrayTopicIDandType = newArray.map((topic) => {
       return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
     });
 
@@ -83,7 +83,7 @@ const SelectTopicsFocusModal = ({ navigation }) => {
     });
   };
 
-  const handleCategorySelect = category => {
+  const handleCategorySelect = (category) => {
     if (selectedCategories.includes(category)) {
       const index = selectedCategories.indexOf(category);
       if (index > -1) {

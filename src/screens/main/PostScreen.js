@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, View, ScrollView, Alert, Text } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -13,17 +14,31 @@ import Error from 'library/components/UI/Error';
 import PostComments from 'library/components/post/PostComments';
 import PostUpdates from 'library/components/post/PostUpdates';
 import Post from 'library/components/post/Post';
+import Popover from 'library/components/UI/Popover';
+
 import { UserContext } from 'library/utils/UserContext';
+import { useMutation } from 'react-apollo';
+import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
+import { BasicPost } from 'library/queries/_fragments';
+import { DAYS_TILL_INACTIVE } from 'styles/constants';
 
 const PostScreen = ({ navigation, route }) => {
   // ROUTE PARAMS
   const { post: postToQuery } = route.params; // all the data from parent post down to updates
+  const [hidePopover, setHidePopover] = useState(false);
 
   // HOOKS
   const currentTime = new Date();
   const { currentUserId } = useContext(UserContext);
 
   // QUERIES
+  const [updatePost] = useMutation(UPDATE_POST_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to update this post. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
   const { loading: loadingMatches, data: dataMatches } = useQuery(POST_MATCHES_QUERY, {
     variables: { id: postToQuery.id },
   });
@@ -52,6 +67,39 @@ const PostScreen = ({ navigation, route }) => {
 
   const isMyPost = post.owner.id === currentUserId;
   const showMatchesLoader = isMyPost && !!post.goal && loadingMatches;
+  const daysSinceUpdated = differenceInCalendarDays(new Date(), new Date(post.lastUpdated));
+
+  const daysRemainingTillInactive = DAYS_TILL_INACTIVE - daysSinceUpdated;
+
+  const showPopover = isMyPost && !hidePopover && post.isGoal && post.goalStatus === 'Active' && daysRemainingTillInactive <= 5;
+
+  const updateLastUpdated = async () => {
+    await updatePost({
+      variables: {
+        owner: post.owner.id,
+        postID: post.id,
+        post: {
+          lastUpdated: new Date(),
+        },
+      },
+    });
+    setHidePopover(true);
+  };
+
+  const handlePopoverSelect = () => {
+    const options = [
+      {
+        text: 'Add an Update',
+        onPress: () => navigation.navigate('UpdatePost', { post }),
+        closeModal: false,
+      },
+      {
+        text: 'Keep Active',
+        onPress: () => updateLastUpdated(),
+      },
+    ];
+    navigation.navigate('SelectorModal', { options });
+  };
 
   // CUSTOM FUNCTIONS
   const renderPost = () => {
@@ -62,6 +110,36 @@ const PostScreen = ({ navigation, route }) => {
       </View>
     );
   };
+
+  const decidePopoverMessage = () => {
+    if (daysRemainingTillInactive > 1) {
+      return (
+        <Text>
+          {`Your goal will expire in ${daysRemainingTillInactive} days. To keep your goal active, `}
+          <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or{' '}
+          <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.
+        </Text>
+      );
+    }
+    if (daysRemainingTillInactive === 1) {
+      return (
+        <Text>
+          Your goal will expire in 1 day. To keep your goal active,{' '}
+          <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or{' '}
+          <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.
+        </Text>
+      );
+    }
+    return (
+      <Text>
+        Your goal will expire today. To keep your goal active,{' '}
+        <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or{' '}
+        <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.
+      </Text>
+    );
+  };
+
+  const messageComponent = decidePopoverMessage();
 
   return (
     <View style={styles.container}>
@@ -77,6 +155,7 @@ const PostScreen = ({ navigation, route }) => {
         <PostUpdates navigation={navigation} post={post} currentTime={currentTime} />
         <PostComments navigation={navigation} post={post} />
       </ScrollView>
+      {showPopover && <Popover onPress={handlePopoverSelect} messageComponent={messageComponent} />}
     </View>
   );
 };
