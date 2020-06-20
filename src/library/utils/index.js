@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../styles/colors';
 import { goalsList, allTopics, topicsList, mainTopicsList } from './lists';
 
-export const monthToFloat = month => {
+export const monthToFloat = (month) => {
   if (month === 'Jan') return 0.01;
   if (month === 'Feb') return 0.02;
   if (month === 'Mar') return 0.03;
@@ -322,7 +322,7 @@ export const storyVideoUpload = async (userId, uri) => {
   }
 };
 
-export const createThumbnail = url => {
+export const createThumbnail = (url) => {
   const regex = /upload/;
   const urlSplit = url.split(regex);
   return `${urlSplit[0]}upload/so_0.0${urlSplit[1].slice(0, -4)}.jpg`;
@@ -375,24 +375,40 @@ export const timeDifferenceGoal = (laterDate, earlierDate) => {
   return { timeRemaining, period };
 };
 
+export const isCustomGoalTest = (goal) => {
+  const fullGoal = goalsList.find((i) => i.name === goal);
+
+  // means its a custom goal
+  if (!fullGoal || fullGoal === undefined) return true;
+  return false;
+};
+
 export const getGoalInfo = (goal, field) => {
-  const fullGoal = goalsList.find(i => i.name === goal);
-  if (!fullGoal) return '';
+  const fullGoal = goalsList.find((i) => i.name === goal);
+
+  // means its a custom goal
+  if (!fullGoal || fullGoal === undefined) {
+    return {
+      topicID: 'goals_customgoal',
+      primaryColor: colors.green,
+      secondaryColor: colors.goalGreen,
+    };
+  }
   if (!field) return fullGoal;
   return fullGoal[field];
 };
 
 // will return an object { topicID: 'text', name: 'text' }
-export const getTopicFromID = topicID => allTopics.find(topic => topic.topicID === topicID);
-export const getFullTopicFromID = topicID => topicsList.find(topic => topic.topicID === topicID);
-export const getFullTopicListFromIDs = topicIDs => {
-  return topicIDs.map(topicID => {
-    const fullTopic = allTopics.find(topic => topic.topicID === topicID);
+export const getTopicFromID = (topicID) => allTopics.find((topic) => topic.topicID === topicID);
+export const getFullTopicFromID = (topicID) => topicsList.find((topic) => topic.topicID === topicID);
+export const getFullTopicListFromIDs = (topicIDs) => {
+  return topicIDs.map((topicID) => {
+    const fullTopic = allTopics.find((topic) => topic.topicID === topicID);
     return fullTopic;
   });
 };
 
-export const getParentTopicFromID = topicIDpassedIn => {
+export const getParentTopicFromID = (topicIDpassedIn) => {
   for (let i = 0; i < topicsList.length; i++) {
     const parentTopic = topicsList[i];
 
@@ -402,7 +418,7 @@ export const getParentTopicFromID = topicIDpassedIn => {
       return parentTopic;
     }
 
-    const ind = children.findIndex(sub => sub.topicID === topicIDpassedIn);
+    const ind = children.findIndex((sub) => sub.topicID === topicIDpassedIn);
     if (ind >= 0) {
       return parentTopic;
     }
@@ -411,40 +427,40 @@ export const getParentTopicFromID = topicIDpassedIn => {
   return null;
 };
 
-export const getIconFromID = topicIDpassedIn => {
+export const getIconFromID = (topicIDpassedIn) => {
   // first get parent
   const parent = getParentTopicFromID(topicIDpassedIn);
   // then return parent object with color
-  return mainTopicsList.find(topic => topic.topicID === parent.topicID);
+  return mainTopicsList.find((topic) => topic.topicID === parent.topicID);
 };
 
-export const getTopicIDsFromUser = usr => {
+export const getTopicIDsFromUser = (usr) => {
   if (!usr) {
     return [];
   }
-  const topicFocusIDs = usr.topicsFocus ? usr.topicsFocus.map(t => t.topicID) : [];
-  const topicInterestIDs = usr.topicsInterest ? usr.topicsInterest.map(t => t.topicID) : [];
+  const topicFocusIDs = usr.topicsFocus ? usr.topicsFocus.map((t) => t.topicID) : [];
+  const topicInterestIDs = usr.topicsInterest ? usr.topicsInterest.map((t) => t.topicID) : [];
   return [...topicFocusIDs, ...topicInterestIDs];
 };
-export const getNetworkIDsFromUser = usr => {
+export const getNetworkIDsFromUser = (usr) => {
   if (!usr) {
     return [];
   }
-  const followingIDs = usr.following ? usr.following.map(u => u.id) : [];
-  const connectionIDs = usr.connection ? usr.connections.map(u => u.id) : [];
+  const followingIDs = usr.following ? usr.following.map((u) => u.id) : [];
+  const connectionIDs = usr.connection ? usr.connections.map((u) => u.id) : [];
   return [...followingIDs, ...connectionIDs];
 };
 
-export const addMainTopics = topics => {
+export const addMainTopics = (topics) => {
   // the new array we are creating
   const mainTopicsToAdd = [];
 
-  const usedTopicsIDonly = topics.map(topic => topic.topicID);
-  const mainTopicsIDonly = topicsList.map(topic => topic.topicID);
+  const usedTopicsIDonly = topics.map((topic) => topic.topicID);
+  const mainTopicsIDonly = topicsList.map((topic) => topic.topicID);
 
-  mainTopicsIDonly.forEach(mainTopicID => {
+  mainTopicsIDonly.forEach((mainTopicID) => {
     // check if the mainTopicID needs to be added
-    const addIt = usedTopicsIDonly.some(usedTopicID => usedTopicID.startsWith(mainTopicID) && mainTopicID !== usedTopicID);
+    const addIt = usedTopicsIDonly.some((usedTopicID) => usedTopicID.startsWith(mainTopicID) && mainTopicID !== usedTopicID);
 
     // if true - add the main topic
     if (addIt) {

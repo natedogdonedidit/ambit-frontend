@@ -8,6 +8,7 @@ import { UserContext } from 'library/utils/UserContext';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import { VERSION } from 'styles/constants';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
@@ -78,6 +79,9 @@ const CustomDrawer = ({ navigation }) => {
             <Text style={styles.buttonText}>Logout</Text>
           </View>
         </TouchableOpacity>
+        <View style={{ position: 'absolute', bottom: 15, right: 10 }}>
+          <Text style={{ ...styles.buttonText, textAlign: 'right', paddingRight: 15 }}>{VERSION}</Text>
+        </View>
       </View>
     </SafeAreaView>
   );

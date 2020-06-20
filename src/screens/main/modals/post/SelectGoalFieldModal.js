@@ -20,9 +20,14 @@ const SelectGoalFieldModal = ({ navigation, route }) => {
 
   if (!goal) navigation.navigate('NewPostModal');
 
-  const handleTopicSelect = selectedTopicID => {
+  const handleTopicSelect = (selectedTopicID) => {
     setGoal(goal);
-    setSubField(selectedTopicID);
+
+    // don't save the subfield if its a custom goal
+    if (goal.topicID !== 'goals_customgoal') {
+      setSubField(selectedTopicID);
+    }
+
     setActiveSubfield(selectedTopicID);
 
     // if its a topic type goal - then set topic also
@@ -38,7 +43,7 @@ const SelectGoalFieldModal = ({ navigation, route }) => {
     const timeout = setTimeout(() => navigation.navigate('NewPostModal'), 300);
   };
 
-  const handleCategorySelect = category => {
+  const handleCategorySelect = (category) => {
     if (selectedCategories.includes(category)) {
       const index = selectedCategories.indexOf(category);
       if (index > -1) {

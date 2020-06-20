@@ -11,8 +11,12 @@ import defaultStyles from 'styles/defaultStyles';
 const SelectGoalModal = ({ navigation, route }) => {
   const { setGoal, setTopics, setSubField } = route.params;
 
-  const handleGoalSelect = goal => {
+  const handleGoalSelect = (goal) => {
     navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField });
+  };
+
+  const handleCustomGoalSelect = () => {
+    navigation.navigate('CustomGoalModal', { setGoal, setTopics });
   };
 
   return (
@@ -32,7 +36,7 @@ const SelectGoalModal = ({ navigation, route }) => {
               <Text style={{ ...defaultStyles.defaultMute, paddingTop: 1 }}>Then Ambit will suggest people to help!</Text>
             </View>
           </View>
-          <GoalsList handleGoalSelect={handleGoalSelect} />
+          <GoalsList handleGoalSelect={handleGoalSelect} handleCustomGoalSelect={handleCustomGoalSelect} includeCustom />
         </ScrollView>
       </View>
     </View>

@@ -3,12 +3,14 @@ import { StyleSheet, View, Text, ActivityIndicator } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import { VERSION } from 'styles/constants';
 
 const SplashScreen = () => {
   return (
     <>
       <View style={styles.fullScreen}>
         <Text style={{ ...defaultStyles.ambitLogoSplash, color: colors.white }}>ambit.</Text>
+        <Text style={{ ...defaultStyles.regularSemibold, color: colors.white }}>{VERSION}</Text>
         <View style={{ height: 100, width: '100%' }}>
           <ActivityIndicator style={styles.fillComponent} size="small" color={colors.white} animating />
         </View>

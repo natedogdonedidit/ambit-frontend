@@ -7,12 +7,13 @@ import { format } from 'date-fns';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { timeDifference } from 'library/utils';
+import { timeDifference, isCustomGoalTest } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import { BasicPost } from 'library/queries/_fragments';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Goal from 'library/components/UI/Goal';
+import CustomGoal from 'library/components/UI/CustomGoal';
 import Heart from 'library/components/UI/icons/Heart';
 import Comment from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
@@ -426,11 +427,16 @@ const Post = ({
             </Text>
           </View>
 
-          {post.isGoal && (
-            <View style={styles.goalView}>
-              <Goal navigation={navigation} goal={post.goal} subField={post.subField} />
-            </View>
-          )}
+          {post.isGoal &&
+            (isCustomGoalTest(post.goal) ? (
+              <View style={styles.goalView}>
+                <CustomGoal navigation={navigation} goal={post.goal} />
+              </View>
+            ) : (
+              <View style={styles.goalView}>
+                <Goal navigation={navigation} goal={post.goal} subField={post.subField} />
+              </View>
+            ))}
 
           <View style={styles.content}>
             <Text style={defaultStyles.defaultText}>{post.content}</Text>

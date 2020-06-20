@@ -64,6 +64,7 @@ const NewPostModal = ({ navigation, route }) => {
         isGoal: !!goal,
         goal: goal ? goal.name : null,
         subField: subField ? { connect: { topicID: subField } } : null,
+        goalStatus: goal ? 'Active' : null,
         topics: topics.length > 0 ? { connect: topics } : null,
         location,
         locationID,
@@ -133,6 +134,7 @@ const NewPostModal = ({ navigation, route }) => {
         isGoal: !!goal,
         goal: goal ? goal.name : null,
         subField: subField ? { __typename: 'Topic', id: subField, name: getTopicFromID(subField).name, topicID: subField } : null,
+        goalStatus: goal ? 'Active' : null,
         topics: topicsArrayForOptResp,
         location,
         locationID,
@@ -160,6 +162,7 @@ const NewPostModal = ({ navigation, route }) => {
             isGoal: !!goal,
             goal: goal ? goal.name : null,
             subField: subField ? { connect: { topicID: subField } } : null,
+            goalStatus: goal ? 'Active' : null,
             topics: topics.length > 0 ? { connect: topics } : null,
             location,
             locationID,
@@ -416,7 +419,11 @@ const NewPostModal = ({ navigation, route }) => {
       return (
         <>
           <View style={styles.leftSide}>
-            <Icon name={goal.icon} solid size={20} color={goal.primaryColor} />
+            {goal.icon ? (
+              <Icon name={goal.icon} solid size={20} color={goal.primaryColor} />
+            ) : (
+              <Ionicons name="ios-rocket" size={22} color={colors.red} />
+            )}
           </View>
           <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>{goal.name}</Text>
           <TouchableOpacity
@@ -435,7 +442,11 @@ const NewPostModal = ({ navigation, route }) => {
     return (
       <>
         <View style={styles.leftSide}>
-          <Icon name={goal.icon} solid size={20} color={goal.primaryColor} />
+          {goal.icon ? (
+            <Icon name={goal.icon} solid size={20} color={goal.primaryColor} />
+          ) : (
+            <Ionicons name="ios-rocket" size={22} color={colors.iconGray} />
+          )}
         </View>
         <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap' }}>
           <Text>

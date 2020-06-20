@@ -21,11 +21,11 @@ const DROPDOWNS_HEIGHT = 40;
 
 const SearchScreen = ({ navigation, route }) => {
   // PARAMS
-  const { goalToSearch, topicToSearch, locationToSearch, locationLatToSearch, locationLonToSearch } = route.params;
+  const { textToSearch, goalToSearch, topicToSearch, locationToSearch, locationLatToSearch, locationLonToSearch } = route.params;
 
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
-  const [textInput, setTextInput] = useState('');
+  const [textInput, setTextInput] = useState(textToSearch || '');
   const [goal, setGoal] = useState(goalToSearch || null);
   const [topicID, setTopic] = useState(topicToSearch);
   const [location, setLocation] = useState(locationToSearch);
@@ -74,7 +74,7 @@ const SearchScreen = ({ navigation, route }) => {
   };
 
   // must pass this to location modal
-  const handleLocationSelect = locObject => {
+  const handleLocationSelect = (locObject) => {
     if (locObject) {
       setLocation(locObject.location);
       setLocationID(locObject.locationID);
@@ -84,7 +84,7 @@ const SearchScreen = ({ navigation, route }) => {
   };
 
   // must pass this to goal modal
-  const handleGoalSelect = goalInput => {
+  const handleGoalSelect = (goalInput) => {
     setGoal(goalInput);
     setTopic('');
   };

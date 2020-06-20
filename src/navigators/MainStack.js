@@ -22,6 +22,7 @@ import NewProjectTopicsModal from 'screens/main/modals/stories/NewProjectTopicsM
 import SelectStoryTopicsModal from 'screens/main/modals/stories/SelectStoryTopicsModal';
 import CreateIntroModal from 'screens/main/modals/stories/CreateIntroModal';
 import NewPostModal from 'screens/main/modals/post/NewPostModal';
+import CustomGoalModal from 'screens/main/modals/post/CustomGoalModal';
 import SelectGoalModal from 'screens/main/modals/post/SelectGoalModal';
 import SelectGoalModalSearch from 'screens/main/modals/search/SelectGoalModalSearch';
 import SelectGoalFieldModal from 'screens/main/modals/post/SelectGoalFieldModal';
@@ -228,6 +229,13 @@ const MainStack = () => {
       <Stack.Screen name="CreateIntroModal" component={CreateIntroModal} />
       <Stack.Screen name="NewPostModal" component={NewPostModal} />
       <Stack.Screen name="ImageViewerModal" component={ImageViewerModal} />
+      <Stack.Screen
+        name="CustomGoalModal"
+        component={CustomGoalModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
       <Stack.Screen
         name="SelectGoalModal"
         component={SelectGoalModal}

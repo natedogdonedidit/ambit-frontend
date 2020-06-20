@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   leftSide: {
-    width: 60,
+    width: 80,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rightSide: {
-    width: 60,
+    width: 80,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
