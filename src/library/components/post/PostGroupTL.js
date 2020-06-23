@@ -160,7 +160,7 @@ const PostGroupTL = ({
           </View>
           <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Post', { post })} style={styles.rightColumn}>
             <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>
-              Show {post.updates.length} update{post.updates.length > 1 ? 's' : ''}
+              Show {post.updates.length > 1 ? `${post.updates.length} ` : ''}update{post.updates.length > 1 ? 's' : ''}
             </Text>
           </TouchableOpacity>
         </View>

@@ -175,37 +175,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     refetchPostsMyGoals();
   };
 
-  // const fetchMorePostsNetworkMethod = () => {
-  //   fetchMorePostsNetwork({
-  //     query: NETWORK_POSTS_QUERY,
-  //     variables: {
-  //       cursor: dataPostsNetwork.postsNetwork.pageInfo.endCursor,
-  //       first: 12,
-  //       // network,
-  //     },
-  //     updateQuery: (previousResult, { fetchMoreResult }) => {
-  //       // console.log('prev', previousResult);
-  //       // console.log('fetched', fetchMoreResult);
-
-  //       const newEdges = fetchMoreResult.postsNetwork.edges;
-  //       const { pageInfo } = fetchMoreResult.postsNetwork;
-
-  //       console.log('newEdges', newEdges);
-  //       console.log('pageInfo', pageInfo);
-
-  //       return newEdges.length
-  //         ? {
-  //             postsNetwork: {
-  //               __typename: previousResult.postsNetwork.__typename,
-  //               edges: [...previousResult.postsNetwork.edges, ...newEdges],
-  //               pageInfo,
-  //             },
-  //           }
-  //         : previousResult;
-  //     },
-  //   });
-  // };
-
   // RENDER
   return (
     <View style={styles.container}>

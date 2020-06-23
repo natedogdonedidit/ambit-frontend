@@ -74,10 +74,14 @@ const NotificationListItem = ({ navigation, notification }) => {
             <Text
               style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}
             >{` ${post.goal}`}</Text>
-            <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
-            <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>
-              {post.subField.name}
-            </Text>
+            {post.subField && (
+              <>
+                <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
+                <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>
+                  {post.subField.name}
+                </Text>
+              </>
+            )}
           </Text>
         </Text>
       );

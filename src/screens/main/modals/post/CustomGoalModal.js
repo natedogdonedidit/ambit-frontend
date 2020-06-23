@@ -26,7 +26,7 @@ const CustomGoalModal = ({ navigation, route }) => {
     const customGoal = {
       name: customGoalText,
       topicID: 'goals_customgoal',
-      modalType: 'topic',
+      modalType: 'none',
       primaryColor: colors.blue,
       secondaryColor: colors.goalBlue,
       fieldName: 'Topic',
@@ -35,13 +35,15 @@ const CustomGoalModal = ({ navigation, route }) => {
       adverb: '',
     };
 
-    navigation.navigate('SelectGoalFieldModal', { goal: customGoal, setGoal, setTopics });
+    setGoal(customGoal);
+
+    navigation.navigate('SelectPostTopicsModal', { goal: customGoal, setGoal, setTopics });
   };
 
   // ROUTE PARAMS
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <HeaderBackBlank navigation={navigation} rightComponent={<ButtonHeader onPress={handleDone}>Done</ButtonHeader>} />
+      <HeaderBackBlank navigation={navigation} rightComponent={<ButtonHeader onPress={handleDone}>Next</ButtonHeader>} />
       <ScrollView style contentContainerStyle={styles.scrollView}>
         <View style={{ width: '100%', paddingHorizontal: 5 }}>
           <View style={styles.mainTitle}>

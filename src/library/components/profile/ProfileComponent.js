@@ -13,7 +13,8 @@ import ProfileBio from 'library/components/profile/ProfileBio';
 import ProfilePosts from 'library/components/profile/ProfilePosts';
 import ProfileGrid from 'library/components/profile/ProfileGrid';
 
-const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
+const bannerExample =
+  'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
 
 // SET THESE
 const BANNER_HEIGHT = 100;
@@ -110,7 +111,7 @@ const ProfileComponent = ({
         <NameBox navigation={navigation} isMyProfile={isMyProfile} user={user} />
         <View
           // this is how i get the position for the sticky tabs
-          onLayout={event => {
+          onLayout={(event) => {
             const { y } = event.nativeEvent.layout;
             setTabPosition(y);
           }}

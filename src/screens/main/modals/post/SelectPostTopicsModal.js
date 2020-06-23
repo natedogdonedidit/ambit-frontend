@@ -7,6 +7,7 @@ import TopicsList from 'library/components/lists/TopicsList';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const TOPIC_LIMIT = 3;
 
@@ -30,7 +31,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
 
   // CONSTANTS
   let { heading } = goal;
-  const activeTopicsIDonly = activeTopics.map(topic => topic.topicID);
+  const activeTopicsIDonly = activeTopics.map((topic) => topic.topicID);
 
   // if its a non topic goal
   if (goal.modalType !== 'topic') {
@@ -43,7 +44,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
     heading = 'Select some topics';
   }
 
-  const handleTopicSelect = selectedTopicID => {
+  const handleTopicSelect = (selectedTopicID) => {
     // build an array of active topics with topicID only - for comparision reasons
 
     // if there is NOT a goal passed in, then multiple selections are allowed
@@ -52,7 +53,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
       let newArray = [...activeTopics];
       if (activeTopicsIDonly.includes(selectedTopicID)) {
         // remove it
-        newArray = activeTopics.filter(topic => topic.topicID !== selectedTopicID);
+        newArray = activeTopics.filter((topic) => topic.topicID !== selectedTopicID);
         if (warning) setWarning('');
       } else if (newArray.length < TOPIC_LIMIT) {
         // add it
@@ -78,7 +79,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
     }
   };
 
-  const handleCategorySelect = category => {
+  const handleCategorySelect = (category) => {
     if (selectedCategories.includes(category)) {
       const index = selectedCategories.indexOf(category);
       if (index > -1) {
@@ -97,8 +98,8 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
         <HeaderBackBlank
           navigation={navigation}
           title={warning}
-          rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
-          leftText="Done"
+          rightComponent={<ButtonHeader onPress={() => navigation.navigate('NewPostModal')}>Done</ButtonHeader>}
+          // leftText="Done"
         />
 
         <ScrollView style contentContainerStyle={styles.scrollView}>

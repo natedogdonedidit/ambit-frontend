@@ -30,9 +30,9 @@ const StoryModal = ({ navigation, route }) => {
   // VARIABLES
 
   // QUERY TO GET USERS TOPICS
-  const { data } = useQuery(CURRENT_USER_QUERY);
+  // const { data } = useQuery(CURRENT_USER_QUERY);
   const favoriteTopics = [topicIDtoSearch || null];
-  const { userLoggedIn } = data;
+  // const { userLoggedIn } = data;
 
   // effect compiles the list of favoriteTopics
   // useEffect(() => {

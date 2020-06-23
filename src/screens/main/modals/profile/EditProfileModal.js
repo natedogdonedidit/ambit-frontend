@@ -30,8 +30,6 @@ import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 import EditProfileModalComponent from './EditProfileModalComponent';
 
-const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
-
 const EditProfileModal = ({ navigation }) => {
   const { loading, data } = useQuery(CURRENT_USER_QUERY);
 

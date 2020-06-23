@@ -23,13 +23,13 @@ const StoryFooter = ({
 
   const { owner, stories } = activeItem;
 
-  const indexOfProject = stories.findIndex(s => s.type === 'PROJECT');
+  const indexOfProject = stories.findIndex((s) => s.type === 'PROJECT');
   const project = indexOfProject !== -1 ? stories[indexOfProject] : null;
-  const soloStory = activeItem.stories.find(s => s.type === 'SOLO');
+  const soloStory = activeItem.stories.find((s) => s.type === 'SOLO');
   const saved = soloStory ? soloStory.save : false;
   const insets = useSafeArea();
 
-  const renderTopics = topics => {
+  const renderTopics = (topics) => {
     // const { topics } = story;
 
     // sort the topics based on favoriteTopics array passed in
@@ -69,7 +69,7 @@ const StoryFooter = ({
               // backgroundColor: 'pink',
             }}
           >
-            {topics.map(topic => {
+            {topics.map((topic) => {
               return (
                 <View
                   key={topic.topicID}

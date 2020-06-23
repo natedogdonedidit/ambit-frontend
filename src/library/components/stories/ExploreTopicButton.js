@@ -8,6 +8,9 @@ import defaultStyles from 'styles/defaultStyles';
 
 import { getIconFromID, getTopicFromID } from 'library/utils';
 
+const placeholderImage =
+  'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80';
+
 const ExploreTopicButton = ({ navigation, story, topicID }) => {
   const { icon, color } = getIconFromID(topicID);
   const topicInfo = getTopicFromID(topicID);
@@ -28,7 +31,7 @@ const ExploreTopicButton = ({ navigation, story, topicID }) => {
     >
       <Image
         style={{ position: 'absolute', top: 0, left: 0, width: 100, height: 160 }}
-        source={{ uri: preview || null }}
+        source={{ uri: preview || placeholderImage }}
         resizeMode="cover"
       />
       <LinearGradient

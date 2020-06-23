@@ -28,8 +28,10 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
+import { useSafeArea } from 'react-native-safe-area-context';
 
-const bannerExample = 'http://backgrounddownload.com/wp-content/uploads/2018/09/background-polygons-6.jpg';
+const bannerExample =
+  'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
 
 const EditProfileModalComponent = ({ navigation, user }) => {
   // headline
@@ -52,7 +54,10 @@ const EditProfileModalComponent = ({ navigation, user }) => {
   const [website, setWebsite] = useState(user.website);
   const [uploading, setUploading] = useState(false);
 
-  // temp pics
+  // for setting banner width and height
+  const { width } = Dimensions.get('window');
+  const insets = useSafeArea();
+  const [top] = useState(insets.top || 20);
 
   const [editBio, { loading: loadingEdit, error, data }] = useMutation(EDIT_BIO_MUTATION, {
     variables: {
@@ -110,8 +115,8 @@ const EditProfileModalComponent = ({ navigation, user }) => {
       includeExif: true,
       cropping: true,
     })
-      .then(img => setProfilePic(img.path))
-      .catch(e => alert(e));
+      .then((img) => setProfilePic(img.path))
+      .catch((e) => alert(e));
   };
 
   const handleEditBannerButton = () => {
@@ -119,10 +124,12 @@ const EditProfileModalComponent = ({ navigation, user }) => {
       multiple: false,
       waitAnimationEnd: false,
       includeExif: true,
-      // cropping: true,
+      cropping: true,
+      width,
+      height: 100 + top,
     })
-      .then(img => setBannerPic(img.path))
-      .catch(e => alert(e));
+      .then((img) => setBannerPic(img.path))
+      .catch((e) => alert(e));
   };
 
   const uploadProfilePic = async () => {
@@ -143,6 +150,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
     setUploading(true);
     try {
       const url = await bannerPicUpload(user, bannerPic);
+      console.log(url);
       setUploading(false);
       setBannerPic(url);
     } catch (e) {
@@ -154,7 +162,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
   };
 
   // must pass this to location modal
-  const handleLocationSelect = locObject => {
+  const handleLocationSelect = (locObject) => {
     if (locObject) {
       setLocation(locObject.location);
       setLocationID(locObject.locationID);
@@ -179,7 +187,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
           <View style={{ width: '100%' }}>
             <Image
               style={{
-                height: 140,
+                height: 100 + top,
                 width: '100%',
               }}
               resizeMode="cover"
@@ -208,7 +216,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
               </View>
               <TextInput
                 style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                onChangeText={val => setFirstName(val)}
+                onChangeText={(val) => setFirstName(val)}
                 value={firstName}
                 placeholder="John"
                 autoCorrect={false}
@@ -221,7 +229,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
               </View>
               <TextInput
                 style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                onChangeText={val => setLastName(val)}
+                onChangeText={(val) => setLastName(val)}
                 value={lastName}
                 placeholder="Doe"
                 autoCorrect={false}
@@ -234,7 +242,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
               </View>
               <TextInput
                 style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                onChangeText={val => setHeadline(val)}
+                onChangeText={(val) => setHeadline(val)}
                 value={headline}
                 placeholder="Software Engineer at Facebook"
                 autoCorrect={false}
@@ -270,7 +278,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
               </View>
               <TextInput
                 style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                onChangeText={val => setWebsite(val)}
+                onChangeText={(val) => setWebsite(val)}
                 value={website}
                 placeholder="Your website URL"
                 autoCapitalize="none"
@@ -287,7 +295,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
               </View>
               <TextInput
                 style={{ ...styles.multilineInput, ...defaultStyles.defaultText, width: Dimensions.get('window').width - 140 }}
-                onChangeText={val => setBio(val)}
+                onChangeText={(val) => setBio(val)}
                 value={bio}
                 placeholder="Start your bio..."
                 maxLength={160}
@@ -337,7 +345,7 @@ const styles = StyleSheet.create({
   editBannerButton: {
     position: 'absolute',
     justifyContent: 'center',
-    top: 100,
+    bottom: 100,
     right: 12,
     height: 30,
     paddingHorizontal: 10,

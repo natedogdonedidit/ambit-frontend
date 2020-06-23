@@ -106,6 +106,7 @@ const NewPostModal = ({ navigation, route }) => {
     // make sure all main topics are added
     const finalTopicsArray = addMainTopics([...topics]);
 
+    // dont think this is working
     await setTopics(finalTopicsArray);
 
     try {
