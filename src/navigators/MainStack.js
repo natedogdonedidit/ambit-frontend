@@ -151,21 +151,6 @@ const MainStack = () => {
     },
   });
 
-  // UPDATE # OF UNSEEN MESSAGES EVERYTIME NEW USER DATA COMES IN
-  // useEffect(() => {
-  //   if (userOk && userData.userLoggedIn) {
-  //     // get # of unseen
-  //     // const unRead = userData.userLoggedIn.unReadMessages.length;
-  //     const unRead = userData.userLoggedIn.unReadMessagesCount;
-
-  //     if (unRead > 0) {
-  //       setUnReadMessages(unRead);
-  //     } else {
-  //       setUnReadMessages(0);
-  //     }
-  //   }
-  // }, [userData]);
-
   const halfModalOptions = {
     cardStyle: { backgroundColor: 'transparent' },
     cardOverlayEnabled: true,

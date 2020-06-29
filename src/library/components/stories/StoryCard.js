@@ -62,9 +62,6 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
 
   // VARIABLES
   const { items } = story;
-  console.log(story);
-  console.log(items);
-  console.log(activeIndex, isActive);
   const isEmpty = items.length < 1;
   const activeItem = { ...items[activeIndex] };
   const isMyPost = activeItem.owner.id === currentUserId;
@@ -189,7 +186,6 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
   const incrementIndex = () => {
     setCurrentTime(0);
     if (activeIndex < items.length - 1) {
-      console.log('here2');
       setActiveIndex((prevState) => prevState + 1);
     }
 
@@ -201,7 +197,6 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
 
   const decrementIndex = () => {
     if (activeIndex > 0) {
-      console.log('here3');
       setActiveIndex((prevState) => prevState - 1);
     } else {
       tryGoToPrevStory();

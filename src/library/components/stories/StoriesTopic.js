@@ -57,7 +57,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
       return null;
     }
 
-    return stories.map(story => {
+    return stories.map((story) => {
       if (story.items.length > 0) {
         return <StoryBox key={story.id} navigation={navigation} story={story} moreType="Topic" topicIDtoSearch={topicID} />;
       }
@@ -73,7 +73,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
       showsHorizontalScrollIndicator={false}
     >
       {/* <NewStoryButton navigation={navigation} /> */}
-      <ExploreTopicButton navigation={navigation} story={stories[0]} topicID={topicID} />
+      <ExploreTopicButton navigation={navigation} topicID={topicID} />
       {renderStories()}
     </ScrollView>
   );

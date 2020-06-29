@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
@@ -8,8 +8,16 @@ import defaultStyles from 'styles/defaultStyles';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { getIconFromID } from 'library/utils';
+import { UserContext } from 'library/utils/UserContext';
 
-const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDtoSearch }) => {
+const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDtoSearch, loading }) => {
+  const { currentUserId } = useContext(UserContext);
+  const isMyStory = story ? currentUserId === story.owner.id : false;
+
+  if (loading) {
+    return <View style={styles.storyBoxBlank} />;
+  }
+
   if (story.type === 'MYSTORY') {
     return (
       <TouchableOpacity
@@ -58,7 +66,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
           }}
         >
           <Text numberOfLines={3} style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>
-            {story.owner.name}
+            {isMyStory ? 'Your story' : story.owner.name}
           </Text>
         </View>
       </TouchableOpacity>
@@ -148,6 +156,17 @@ const styles = StyleSheet.create({
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,
     overflow: 'hidden',
+    marginLeft: 6,
+  },
+  storyBoxBlank: {
+    justifyContent: 'space-between',
+    height: 160,
+    width: 100,
+    borderRadius: 12,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: colors.borderBlack,
+    overflow: 'hidden',
+    backgroundColor: colors.gray30,
     marginLeft: 6,
   },
   linearGradient: {

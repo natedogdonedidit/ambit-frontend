@@ -33,7 +33,7 @@ const NewProjectButton2 = ({ navigation, loadingCreateStory }) => {
             top: 0,
             left: 0,
             width: 100,
-            height: 150,
+            height: 160,
             justifyContent: 'center',
             alignItems: 'center',
           }}
@@ -48,11 +48,11 @@ const NewProjectButton2 = ({ navigation, loadingCreateStory }) => {
 const styles = StyleSheet.create({
   storyBox: {
     justifyContent: 'space-between',
-    height: 150,
+    height: 160,
     width: 100,
     borderRadius: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: colors.borderBlack,
     overflow: 'hidden',
     marginLeft: 6,
     backgroundColor: colors.gray12,

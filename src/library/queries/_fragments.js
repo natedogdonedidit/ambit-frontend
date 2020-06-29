@@ -18,7 +18,7 @@ export const StoryFragment = gql`
     save
     topics {
       name
-      topicID
+      id
     }
     items {
       id
@@ -38,7 +38,7 @@ export const StoryFragment = gql`
         save
         topics {
           name
-          topicID
+          id
         }
       }
       type
@@ -68,23 +68,23 @@ export const MinimalUser = gql`
     locationLat
     locationLon
     topicsFocus {
-      topicID
+      id
       name
     }
     topicsInterest {
-      topicID
+      id
       name
     }
     topicsFreelance {
-      topicID
+      id
       name
     }
     topicsInvest {
-      topicID
+      id
       name
     }
     topicsMentor {
-      topicID
+      id
       name
     }
     intro {
@@ -219,7 +219,6 @@ export const MinimalPost = gql`
     subField {
       id
       name
-      topicID
     }
     content
     images
@@ -244,12 +243,10 @@ export const BasicPost = gql`
     subField {
       id
       name
-      topicID
     }
     topics {
       id
       name
-      topicID
       parentTopic {
         topicID
       }

@@ -172,6 +172,8 @@ const StoryFooter = ({
         <>
           <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 0 }}>
             {project.title || null}
+            {'  '}
+            <Icon name="caret-right" solid size={20} color="white" />
           </Text>
           {/* {renderTopics(project.topics || [])} */}
         </>

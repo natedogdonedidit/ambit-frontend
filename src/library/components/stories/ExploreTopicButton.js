@@ -7,21 +7,58 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import { getIconFromID, getTopicFromID } from 'library/utils';
+import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
+import { useQuery } from 'react-apollo';
+import StoryBox from 'library/components/stories/StoryBox';
 
 const placeholderImage =
   'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80';
 
-const ExploreTopicButton = ({ navigation, story, topicID }) => {
+const ExploreTopicButton = ({ navigation, topicID }) => {
   const { icon, color } = getIconFromID(topicID);
   const topicInfo = getTopicFromID(topicID);
   const { preview } = topicInfo.topicStory;
   const { name } = topicInfo;
 
+  // GETS STORIES FOR YOUR FAV TOPICS
+  const {
+    error: errorStories,
+    data: dataStories,
+    refetch: refetchStories,
+    fetchMore: fetchMoreStories,
+    networkStatus: networkStatusStories,
+  } = useQuery(STORIES_TOPIC_QUERY, {
+    variables: {
+      topicID,
+    },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const refetchingStories = networkStatusStories === 4;
+  const fetchingMoreStories = networkStatusStories === 3;
+  const loadingStories = networkStatusStories === 1;
+
+  if (errorStories) {
+    console.log(errorStories);
+    return null;
+  }
+
+  if (loadingStories) {
+    // return null;
+    return <StoryBox loading />;
+  }
+
+  const topicStories = dataStories.storiesTopic;
+
+  if (topicStories.length <= 0) {
+    return null;
+  }
+
   return (
     <TouchableOpacity
       onPress={() =>
         navigation.navigate('StoryModal', {
-          story,
+          story: topicStories[0],
           moreType: 'Topic',
           topicIDtoSearch: topicID,
         })

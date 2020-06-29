@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { StyleSheet, View, StatusBar, Alert, ScrollView, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, View, StatusBar, Alert, ScrollView, Dimensions, FlatList, Text } from 'react-native';
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
 
 // import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
@@ -9,6 +9,7 @@ import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import StoryCard from 'library/components/stories/StoryCard';
+import Loader from 'library/components/UI/Loader';
 
 const StoryModal = ({ navigation, route }) => {
   const storyFlatlist = useRef();
@@ -57,7 +58,9 @@ const StoryModal = ({ navigation, route }) => {
 
   // scrolls to index when story index changes
   useEffect(() => {
-    storyFlatlist.current.scrollToIndex({ index: storyQIndex, viewPosition: 0.5 });
+    if (storyQ.length > 0) {
+      storyFlatlist.current.scrollToIndex({ index: storyQIndex, viewPosition: 0.5 });
+    }
   }, [storyQIndex]);
 
   // QUERIES - to get next stories
@@ -99,13 +102,18 @@ const StoryModal = ({ navigation, route }) => {
   const loadingStoriesHome = networkStatusStoriesHome === 1;
 
   // an array of the stories up next, start with the first story (passed in)
-  let storyQ = [story];
+  let storyQ = story ? [story] : [];
 
   // used to add topic stories to Q
   if (moreType === 'Topic' && dataStoriesTopic) {
     if (dataStoriesTopic.storiesTopic) {
       // remove the story passed in from the query results
-      const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.id !== story.id && s.items.length > 0);
+      const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => {
+        if (story) {
+          return s.items.length > 0 && s.id !== story.id;
+        }
+        return s.items.length > 0;
+      });
 
       storyQ = [...storyQ, ...storiesToAdd];
     }
@@ -179,7 +187,15 @@ const StoryModal = ({ navigation, route }) => {
     }
   };
 
-  // console.log('rendering');
+  if (storyQ.length <= 0) {
+    return (
+      <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'black' }}>
+        <Loader size="small" />
+      </View>
+    );
+  }
+
+  // console.log('rendering')
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />
@@ -197,7 +213,8 @@ const StoryModal = ({ navigation, route }) => {
         onMomentumScrollEnd={handleSwipe}
         data={storyQ}
         renderItem={({ item, index }) => {
-          console.log(storyQIndex, index, item);
+          // console.log(storyQIndex, index, item);
+
           return (
             <StoryCard
               key={index}

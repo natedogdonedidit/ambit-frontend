@@ -16,14 +16,13 @@ import SeeMoreButton from 'library/components/UI/buttons/SeeMoreButton';
 import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import { UserContext } from 'library/utils/UserContext';
+import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
   const homeTimelineRef = useRef();
 
-  const { creatingStory } = useContext(UserContext);
-
-  const [showLoader, setShowLoader] = useState(false);
+  const [showRefreshing, setShowRefreshing] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
   const [activeTimeline, setActiveTimeline] = useState(0);
@@ -43,21 +42,25 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   };
   const network = getNetworkIDs(userLoggedIn);
 
-  // GET POSTS FROM "FOLLOWING"
-  const {
-    error: errorPostsNetwork,
-    data: dataPostsNetwork,
-    refetch: refetchPostsNetwork,
-    fetchMore: fetchMorePostsNetwork,
-    networkStatus: networkStatusPostsNetwork,
-  } = useQuery(NETWORK_POSTS_QUERY, {
-    variables: {
-      first: 10,
-      network,
-    },
-    onError: (e) => console.log('error loading newtork posts', e),
-    notifyOnNetworkStatusChange: true,
-  });
+  // compile a list of the users favorite topics
+  let favoritesList = [];
+  if (userLoggedIn) {
+    if (userLoggedIn.topicsFocus.length > 0) {
+      favoritesList = [...userLoggedIn.topicsFocus];
+    }
+    if (userLoggedIn.topicsInterest.length > 0) {
+      if (favoritesList === []) {
+        favoritesList = [...userLoggedIn.topicsInterest];
+      } else {
+        // only add topics that dont already exist
+        userLoggedIn.topicsInterest.forEach((topic) => {
+          if (favoritesList.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
+            favoritesList = [...favoritesList, topic];
+          }
+        });
+      }
+    }
+  }
 
   // GET POSTS "FOR YOU"
   const {
@@ -71,6 +74,22 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
       first: 10,
     },
     onError: (e) => console.log('error loading for you posts', e),
+    notifyOnNetworkStatusChange: true,
+  });
+
+  // GET POSTS FROM "FOLLOWING"
+  const {
+    error: errorPostsNetwork,
+    data: dataPostsNetwork,
+    refetch: refetchPostsNetwork,
+    fetchMore: fetchMorePostsNetwork,
+    networkStatus: networkStatusPostsNetwork,
+  } = useQuery(NETWORK_POSTS_QUERY, {
+    variables: {
+      first: 10,
+      network,
+    },
+    onError: (e) => console.log('error loading newtork posts', e),
     notifyOnNetworkStatusChange: true,
   });
 
@@ -88,6 +107,8 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     onError: (e) => console.log('error loading my goals posts', e),
     notifyOnNetworkStatusChange: true,
   });
+
+  useQuery(STORIES_HOME_QUERY);
 
   // networkStatus states:
   // 1: loading
@@ -113,28 +134,14 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   const refetching = refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals;
 
-  // UPDATE showLoader BASED ON QUERY LOADING STATES
+  // UPDATE showRefreshing BASED ON QUERY LOADING STATES
   useEffect(() => {
-    if (
-      refetchingPostsNetwork ||
-      refetchingPostsForYou ||
-      refetchingPostsMyGoals ||
-      loadingPostsNetwork ||
-      loadingPostsForYou ||
-      loadingPostsMyGoals
-    ) {
-      setShowLoader(true);
-    } else if (showLoader) {
-      setShowLoader(false);
+    if (refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals) {
+      setShowRefreshing(true);
+    } else if (showRefreshing) {
+      setShowRefreshing(false);
     }
-  }, [
-    refetchingPostsNetwork,
-    refetchingPostsForYou,
-    refetchingPostsMyGoals,
-    loadingPostsNetwork,
-    loadingPostsForYou,
-    loadingPostsMyGoals,
-  ]);
+  }, [refetchingPostsNetwork, refetchingPostsForYou, refetchingPostsMyGoals]);
 
   if (errorPostsNetwork) {
     console.log('ERROR LOADING POSTS:', errorPostsNetwork.message);
@@ -145,21 +152,20 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     );
   }
 
-  // IF DOING INITIAL LOAD
-  if (
-    !dataPostsNetwork ||
-    loadingPostsNetwork ||
-    !dataPostsForYou ||
-    loadingPostsForYou ||
-    !dataPostsMyGoals ||
-    loadingPostsMyGoals
-  ) {
-    return <Loader backgroundColor={colors.lightGray} size="small" />;
-  }
+  // IF DOING INITIAL LOAD, SHOW LOADER UNTIL DATA COMES IN
+  // if (activeTimeline === 0 && (!dataPostsForYou || loadingPostsForYou)) {
+  //   return <Loader backgroundColor={colors.lightGray} size="small" />;
+  // }
+  // if (activeTimeline === 1 && (!dataPostsNetwork || loadingPostsNetwork)) {
+  //   return <Loader backgroundColor={colors.lightGray} size="small" />;
+  // }
+  // if (activeTimeline === 2 && (!dataPostsMyGoals || loadingPostsMyGoals)) {
+  //   return <Loader backgroundColor={colors.lightGray} size="small" />;
+  // }
 
-  const postsNetwork = dataPostsNetwork.postsNetwork.edges || [];
-  const postsForYou = dataPostsForYou.postsForYou.edges || [];
-  const postsMyGoals = dataPostsMyGoals.postsMyGoals.edges || [];
+  const postsForYou = dataPostsForYou ? dataPostsForYou.postsForYou.edges : [];
+  const postsNetwork = dataPostsNetwork ? dataPostsNetwork.postsNetwork.edges : [];
+  const postsMyGoals = dataPostsMyGoals ? dataPostsMyGoals.postsMyGoals.edges : [];
 
   // decide which posts to show based on the timeline selected
   let postsToShow = [];
@@ -169,7 +175,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
-    setShowLoader(true);
+    setShowRefreshing(true);
     refetchPostsNetwork();
     refetchPostsForYou();
     refetchPostsMyGoals();
@@ -209,35 +215,39 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             }}
             size="small"
             color={colors.purp}
-            animating={showLoader}
+            animating={showRefreshing}
             hidesWhenStopped={false}
           />
         </View>
       </Animated.View>
       <SectionList
         ref={homeTimelineRef}
-        refreshControl={<RefreshControl refreshing={showLoader} onRefresh={onRefresh} tintColor="transparent" />}
+        refreshControl={<RefreshControl refreshing={showRefreshing} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
-        refreshing={showLoader}
+        refreshing={showRefreshing}
         progressViewOffset={100}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
-        // ItemSeparatorComponent={() => (
-        //   <View style={{ height: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
-        // )}
         ListHeaderComponent={
           <StoriesHome
             navigation={navigation}
+            userLoggedIn={userLoggedIn}
             refetching={refetching}
             setLoadingStories={setLoadingStories}
             setRefetchingStories={setRefetchingStories}
+            favoritesList={favoritesList}
           />
         }
-        ListEmptyComponent={
-          <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-            Sorry, no posts to display at this time
-          </Text>
-        }
+        ListEmptyComponent={() => {
+          return (
+            <>
+              <HomeTimelineHeader navigation={navigation} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
+              <View style={{ width: '100%', height: 400 }}>
+                <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
+              </View>
+            </>
+          );
+        }}
         onScroll={Animated.event(
           [
             {
@@ -251,11 +261,15 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
           // { useNativeDriver: true }
         )}
         keyExtractor={(item, index) => item + index}
-        sections={[
-          {
-            data: postsToShow || [],
-          },
-        ]}
+        sections={
+          postsToShow.length > 0
+            ? [
+                {
+                  data: postsToShow || [],
+                },
+              ]
+            : []
+        }
         renderSectionHeader={({ section }) => (
           <HomeTimelineHeader navigation={navigation} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
         )}
@@ -282,7 +296,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
           // console.log('onEndReached triggered', info);
           // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
 
-          if (activeTimeline === 0) {
+          if (activeTimeline === 0 && dataPostsForYou) {
             if (
               dataPostsForYou.postsForYou.pageInfo.hasNextPage &&
               networkStatusPostsForYou === 7 &&
@@ -310,7 +324,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
                 },
               });
             }
-          } else if (activeTimeline === 1) {
+          } else if (activeTimeline === 1 && dataPostsNetwork) {
             if (
               dataPostsNetwork.postsNetwork.pageInfo.hasNextPage &&
               networkStatusPostsNetwork === 7 &&
@@ -338,7 +352,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
                 },
               });
             }
-          } else if (activeTimeline === 2) {
+          } else if (activeTimeline === 2 && dataPostsMyGoals) {
             if (
               dataPostsMyGoals.postsMyGoals.pageInfo.hasNextPage &&
               networkStatusPostsMyGoals === 7 &&

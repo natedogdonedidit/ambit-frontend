@@ -24,11 +24,11 @@ const TabsNavigator = ({ navigation }) => {
     notifyOnNetworkStatusChange: true,
   });
 
-  let unReadMessagesCountt = 0;
+  let unReadMessagesCount = 0;
   if (userData) {
     if (userData.userLoggedIn) {
       if (userData.userLoggedIn.unReadMessagesCount) {
-        unReadMessagesCountt = userData.userLoggedIn.unReadMessagesCount;
+        unReadMessagesCount = userData.userLoggedIn.unReadMessagesCount;
       }
     }
   }
@@ -59,7 +59,7 @@ const TabsNavigator = ({ navigation }) => {
         name="InboxStack"
         component={InboxStack}
         options={{
-          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessagesCountt} />,
+          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessagesCount} />,
         }}
       />
     </Tabs.Navigator>

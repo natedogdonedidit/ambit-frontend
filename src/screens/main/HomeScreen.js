@@ -21,7 +21,7 @@ const SLIDE_HEIGHT = HEADER_HEIGHT - StyleSheet.hairlineWidth;
 
 const HomeScreen = ({ navigation }) => {
   // CONTEXT
-  const { homePosition, setHomePosition } = useContext(UserContext);
+  const { homePosition, setHomePosition, creatingStory } = useContext(UserContext);
 
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
@@ -67,7 +67,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={{ ...styles.container, paddingTop: top }}>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="dark-content" networkActivityIndicatorVisible={creatingStory} />
 
       <ScrollView
         // horizontal scrollView
