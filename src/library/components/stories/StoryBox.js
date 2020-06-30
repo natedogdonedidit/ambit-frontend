@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,
     overflow: 'hidden',
-    backgroundColor: colors.gray30,
+    backgroundColor: colors.gray12,
     marginLeft: 6,
   },
   linearGradient: {

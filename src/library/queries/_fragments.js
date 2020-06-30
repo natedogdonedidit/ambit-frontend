@@ -17,8 +17,9 @@ export const StoryFragment = gql`
     showcase
     save
     topics {
-      name
       id
+      topicID
+      name
     }
     items {
       id
@@ -37,8 +38,9 @@ export const StoryFragment = gql`
         title
         save
         topics {
-          name
           id
+          topicID
+          name
         }
       }
       type
@@ -69,22 +71,27 @@ export const MinimalUser = gql`
     locationLon
     topicsFocus {
       id
+      topicID
       name
     }
     topicsInterest {
       id
+      topicID
       name
     }
     topicsFreelance {
       id
+      topicID
       name
     }
     topicsInvest {
       id
+      topicID
       name
     }
     topicsMentor {
       id
+      topicID
       name
     }
     intro {
@@ -246,9 +253,12 @@ export const BasicPost = gql`
     }
     topics {
       id
+      topicID
       name
       parentTopic {
+        id
         topicID
+        name
       }
     }
     location

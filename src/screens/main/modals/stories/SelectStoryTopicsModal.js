@@ -16,6 +16,7 @@ import {
   storyVideoUpload,
   getIconFromID,
   createThumbnail,
+  getTopicFromID,
 } from 'library/utils';
 
 import Loader from 'library/components/UI/Loader';
@@ -46,11 +47,11 @@ const SelectStoryTopicsModal = ({ navigation, route }) => {
   // get the full topic info from each ID (including story.id)
   const myTopics = getFullTopicListFromIDs(topicIDs);
 
-  const toggleTopic = selectedTopicID => {
+  const toggleTopic = (selectedTopicID) => {
     let newArray = [...selectedTopics];
     if (newArray.includes(selectedTopicID)) {
       // remove it
-      newArray = newArray.filter(topicID => topicID !== selectedTopicID);
+      newArray = newArray.filter((topicID) => topicID !== selectedTopicID);
     } else {
       // add it
       newArray = [...newArray, selectedTopicID];
@@ -63,16 +64,16 @@ const SelectStoryTopicsModal = ({ navigation, route }) => {
       return null;
     }
 
-    return myTopics.map(topic => {
-      const { name, topicID, parentTopic } = topic;
-      const { icon, color } = getIconFromID(parentTopic ? parentTopic.topicID : topicID);
+    return myTopics.map((topic) => {
+      const { name, topicID } = topic;
+      const { icon, color } = getTopicFromID(topicID);
 
       const selected = selectedTopics.includes(topicID);
 
       return (
         <TouchableOpacity key={topicID} style={styles.topicRow} activeOpacity={0.8} onPress={() => toggleTopic(topicID)}>
           <View style={styles.leftSide}>
-            <Icon name={icon || 'circle'} size={20} color={color || colors.iconGray} solid />
+            <Icon name={icon || 'circle'} size={20} color={colors[color] || colors.iconGray} solid />
           </View>
 
           <View style={{ flex: 1 }}>

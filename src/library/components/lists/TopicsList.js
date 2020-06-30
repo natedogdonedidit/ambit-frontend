@@ -10,8 +10,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect, handleCategorySelect }) => {
-  const renderSubtopics = subTopics => {
-    return subTopics.map(subTopic => {
+  const renderSubtopics = (subTopics) => {
+    return subTopics.map((subTopic) => {
       const { name, topicID } = subTopic;
       const isSelected = activeTopicIDs.includes(topicID);
 
@@ -35,10 +35,10 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
   };
 
   // RETURN FUNCTION
-  return topicsList.map(mainTopic => {
-    const { name, topicID, children } = mainTopic;
-    const parent = getIconFromID(topicID);
-    const { icon, color } = parent;
+  return topicsList.map((mainTopic) => {
+    const { name, topicID, children, icon, color } = mainTopic;
+    // const parent = getIconFromID(topicID);
+    // const { icon, color } = parent;
 
     const isSelected = activeTopicIDs.includes(topicID);
     const isExpanded = selectedCategories.includes(topicID);
@@ -54,7 +54,7 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
         <TouchableOpacity activeOpacity={0.8} onPress={() => handleCategorySelect(topicID)}>
           <View style={styles.mainRow}>
             <View style={styles.iconView}>
-              <Icon name={icon} solid size={20} color={color || colors.blueGray} />
+              <Icon name={icon} solid size={20} color={colors[color] || colors.blueGray} />
             </View>
             <Text style={styles.mainRowText}>{name}</Text>
             {countSelected > 0 && (

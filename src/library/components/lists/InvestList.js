@@ -19,7 +19,7 @@ const InvestList = ({ activeTopicIDs = [], handleTopicSelect }) => {
       <TouchableOpacity key={topicID} activeOpacity={0.8} onPress={() => handleTopicSelect(topicID, name)}>
         <View style={[styles.mainRow, i === investList.length - 1 && styles.addBottomBorder]}>
           <View style={styles.iconView}>
-            <Icon name={icon} solid size={20} color={color || colors.blueGray} />
+            <Icon name={icon} solid size={20} color={colors[color] || colors.blueGray} />
           </View>
           <Text style={styles.mainRowText}>{name}</Text>
           {isSelected ? (

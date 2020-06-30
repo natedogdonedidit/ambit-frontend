@@ -133,15 +133,16 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const loadingPostsMyGoals = networkStatusPostsMyGoals === 1;
 
   const refetching = refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals;
+  const loading = loadingPostsNetwork || loadingPostsForYou || loadingPostsMyGoals;
 
   // UPDATE showRefreshing BASED ON QUERY LOADING STATES
   useEffect(() => {
-    if (refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals) {
+    if (refetching) {
       setShowRefreshing(true);
     } else if (showRefreshing) {
       setShowRefreshing(false);
     }
-  }, [refetchingPostsNetwork, refetchingPostsForYou, refetchingPostsMyGoals]);
+  }, [refetching]);
 
   if (errorPostsNetwork) {
     console.log('ERROR LOADING POSTS:', errorPostsNetwork.message);
@@ -243,7 +244,13 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             <>
               <HomeTimelineHeader navigation={navigation} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
               <View style={{ width: '100%', height: 400 }}>
-                <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
+                {loading ? (
+                  <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
+                ) : (
+                  <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
+                    No posts were found
+                  </Text>
+                )}
               </View>
             </>
           );

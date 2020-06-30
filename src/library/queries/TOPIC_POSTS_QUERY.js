@@ -55,6 +55,91 @@ const TOPICS_TECHNOLOGY_HARDWARE = gql`
   ${BasicPost}
 `;
 
+const TOPICS_TECHNOLOGY_GAMEDEV = gql`
+  query TOPICS_TECHNOLOGY_GAMEDEV($cursor: String) {
+    postsTopic(topicID: "topics_technology_gamedev", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+
+const TOPICS_TECHNOLOGY_WEBDEV = gql`
+  query TOPICS_TECHNOLOGY_WEBDEV($cursor: String) {
+    postsTopic(topicID: "topics_technology_webdev", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+
+const TOPICS_TECHNOLOGY_MOBILEDEV = gql`
+  query TOPICS_TECHNOLOGY_MOBILEDEV($cursor: String) {
+    postsTopic(topicID: "topics_technology_mobiledev", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+
+const TOPICS_TECHNOLOGY_BACKENDDEV = gql`
+  query TOPICS_TECHNOLOGY_BACKENDDEV($cursor: String) {
+    postsTopic(topicID: "topics_technology_backenddev", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+
+const TOPICS_TECHNOLOGY_ELECTRONICS = gql`
+  query TOPICS_TECHNOLOGY_ELECTRONICS($cursor: String) {
+    postsTopic(topicID: "topics_technology_electronics", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+
 const TOPICS_TECHNOLOGY_SEMICONDUCTORS = gql`
   query TOPICS_TECHNOLOGY_SEMICONDUCTORS($cursor: String) {
     postsTopic(topicID: "topics_technology_semiconductors", after: $cursor) {
@@ -480,6 +565,22 @@ const TOPICS_CREATIVES_FASHIONAPPAREL = gql`
 const TOPICS_ENTERTAINMENT = gql`
   query TOPICS_ENTERTAINMENT($cursor: String) {
     postsTopic(topicID: "topics_entertainment", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_ENTERTAINMENT_GAMING = gql`
+  query TOPICS_ENTERTAINMENT_GAMING($cursor: String) {
+    postsTopic(topicID: "topics_entertainment_gaming", after: $cursor) {
       edges {
         node {
           ...BasicPost
@@ -965,6 +1066,54 @@ const TOPICS_HEALTH_FITNESS = gql`
   }
   ${BasicPost}
 `;
+const TOPICS_HEALTH_RUNNING = gql`
+  query TOPICS_HEALTH_RUNNING($cursor: String) {
+    postsTopic(topicID: "topics_health_running", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_HEALTH_CROSSFIT = gql`
+  query TOPICS_HEALTH_CROSSFIT($cursor: String) {
+    postsTopic(topicID: "topics_health_crossfit", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_HEALTH_WEIGHTLIFTING = gql`
+  query TOPICS_HEALTH_WEIGHTLIFTING($cursor: String) {
+    postsTopic(topicID: "topics_health_weightlifting", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
 const TOPICS_HEALTH_NUTRITION = gql`
   query TOPICS_HEALTH_NUTRITION($cursor: String) {
     postsTopic(topicID: "topics_health_nutrition", after: $cursor) {
@@ -1195,6 +1344,166 @@ const TOPICS_SPORTS = gql`
   }
   ${BasicPost}
 `;
+const TOPICS_SPORTS_ESPORTS = gql`
+  query TOPICS_SPORTS_ESPORTS($cursor: String) {
+    postsTopic(topicID: "topics_sports_esports", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_FOOTBALL = gql`
+  query TOPICS_SPORTS_FOOTBALL($cursor: String) {
+    postsTopic(topicID: "topics_sports_football", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_BASKETBALL = gql`
+  query TOPICS_SPORTS_BASKETBALL($cursor: String) {
+    postsTopic(topicID: "topics_sports_basketball", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_BASEBALL = gql`
+  query TOPICS_SPORTS_BASEBALL($cursor: String) {
+    postsTopic(topicID: "topics_sports_baseball", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_SOFTBALL = gql`
+  query TOPICS_SPORTS_SOFTBALL($cursor: String) {
+    postsTopic(topicID: "topics_sports_softball", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_LACROSSE = gql`
+  query TOPICS_SPORTS_LACROSSE($cursor: String) {
+    postsTopic(topicID: "topics_sports_lacrosse", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_AUTORACING = gql`
+  query TOPICS_SPORTS_AUTORACING($cursor: String) {
+    postsTopic(topicID: "topics_sports_autoracing", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_HOCKEY = gql`
+  query TOPICS_SPORTS_HOCKEY($cursor: String) {
+    postsTopic(topicID: "topics_sports_hockey", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_GOLF = gql`
+  query TOPICS_SPORTS_GOLF($cursor: String) {
+    postsTopic(topicID: "topics_sports_golf", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_SPORTS_MMA = gql`
+  query TOPICS_SPORTS_MMA($cursor: String) {
+    postsTopic(topicID: "topics_sports_mma", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
 
 // REAL ESTATE
 const TOPICS_REALESTATE = gql`
@@ -1218,6 +1527,118 @@ const TOPICS_REALESTATE = gql`
 const TOPICS_EDUCATION = gql`
   query TOPICS_EDUCATION($cursor: String) {
     postsTopic(topicID: "topics_education", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_EDUCATION_PRESCHOOL = gql`
+  query TOPICS_EDUCATION_PRESCHOOL($cursor: String) {
+    postsTopic(topicID: "topics_education_preschool", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_EDUCATION_ELEMENTARY = gql`
+  query TOPICS_EDUCATION_ELEMENTARY($cursor: String) {
+    postsTopic(topicID: "topics_education_elementary", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_EDUCATION_MIDDLESCHOOL = gql`
+  query TOPICS_EDUCATION_MIDDLESCHOOL($cursor: String) {
+    postsTopic(topicID: "topics_education_middleschool", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_EDUCATION_HIGHSCHOOL = gql`
+  query TOPICS_EDUCATION_HIGHSCHOOL($cursor: String) {
+    postsTopic(topicID: "topics_education_highschool", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_EDUCATION_UNDERGRADUATE = gql`
+  query TOPICS_EDUCATION_UNDERGRADUATE($cursor: String) {
+    postsTopic(topicID: "topics_education_undergraduate", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_EDUCATION_GRADUATE = gql`
+  query TOPICS_EDUCATION_GRADUATE($cursor: String) {
+    postsTopic(topicID: "topics_education_graduate", after: $cursor) {
+      edges {
+        node {
+          ...BasicPost
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+  ${BasicPost}
+`;
+const TOPICS_EDUCATION_DOCTORALSTUDIES = gql`
+  query TOPICS_EDUCATION_DOCTORALSTUDIES($cursor: String) {
+    postsTopic(topicID: "topics_education_doctoralstudies", after: $cursor) {
       edges {
         node {
           ...BasicPost
@@ -1335,6 +1756,10 @@ export default {
   TOPICS_TECHNOLOGY,
   TOPICS_TECHNOLOGY_SOFTWARE,
   TOPICS_TECHNOLOGY_HARDWARE,
+  TOPICS_TECHNOLOGY_GAMEDEV,
+  TOPICS_TECHNOLOGY_MOBILEDEV,
+  TOPICS_TECHNOLOGY_BACKENDDEV,
+  TOPICS_TECHNOLOGY_ELECTRONICS,
   TOPICS_TECHNOLOGY_SEMICONDUCTORS,
   TOPICS_TECHNOLOGY_CLOUDCOMPUTING,
   TOPICS_TECHNOLOGY_GAMING,
@@ -1369,6 +1794,7 @@ export default {
   TOPICS_ENTERTAINMENT_COMEDY,
   TOPICS_ENTERTAINMENT_MOTIONPICTURE,
   TOPICS_ENTERTAINMENT_WRITING,
+  TOPICS_ENTERTAINMENT_GAMING,
   // business
   TOPICS_BUSINESS,
   TOPICS_BUSINESS_ENTREPRENEURSHIP,
@@ -1398,6 +1824,9 @@ export default {
   TOPICS_HEALTH,
   TOPICS_HEALTH_FITNESS,
   TOPICS_HEALTH_NUTRITION,
+  TOPICS_HEALTH_RUNNING,
+  TOPICS_HEALTH_CROSSFIT,
+  TOPICS_HEALTH_WEIGHTLIFTING,
   TOPICS_HEALTH_MEDICINE,
   TOPICS_HEALTH_PHYSICALTHERAPY,
   // content creators
@@ -1414,10 +1843,27 @@ export default {
   TOPICS_NEWS_LAWPOLICY,
   // sports
   TOPICS_SPORTS,
+  TOPICS_SPORTS_AUTORACING,
+  TOPICS_SPORTS_BASEBALL,
+  TOPICS_SPORTS_BASKETBALL,
+  TOPICS_SPORTS_ESPORTS,
+  TOPICS_SPORTS_FOOTBALL,
+  TOPICS_SPORTS_GOLF,
+  TOPICS_SPORTS_HOCKEY,
+  TOPICS_SPORTS_LACROSSE,
+  TOPICS_SPORTS_MMA,
+  TOPICS_SPORTS_SOFTBALL,
   // real estate
   TOPICS_REALESTATE,
   // education
   TOPICS_EDUCATION,
+  TOPICS_EDUCATION_PRESCHOOL,
+  TOPICS_EDUCATION_ELEMENTARY,
+  TOPICS_EDUCATION_MIDDLESCHOOL,
+  TOPICS_EDUCATION_HIGHSCHOOL,
+  TOPICS_EDUCATION_GRADUATE,
+  TOPICS_EDUCATION_UNDERGRADUATE,
+  TOPICS_EDUCATION_DOCTORALSTUDIES,
   // industry
   TOPICS_INDUSTRY,
   TOPICS_INDUSTRY_FOODBEV,

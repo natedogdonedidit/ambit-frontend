@@ -28,7 +28,7 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
       >
         <View style={{ ...styles.goalView, backgroundColor: getGoalInfo(goal, 'secondaryColor') }}>
           <View style={styles.iconView}>
-            <Icon name={getGoalInfo(goal, 'icon')} size={15} color={getGoalInfo(goal, 'primaryColor')} solid />
+            <Icon name={getGoalInfo(goal, 'icon')} size={16} color={getGoalInfo(goal, 'primaryColor')} solid />
           </View>
           <View style={styles.textView}>
             <Text>

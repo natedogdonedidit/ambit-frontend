@@ -7,7 +7,7 @@ import { useQuery } from '@apollo/react-hooks';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
-import { getParentTopicFromID, getIconFromID } from 'library/utils';
+import { getParentTopicID, getIconID, getTopicFromID } from 'library/utils';
 import Section from 'library/components/UI/Section';
 import TextButton from 'library/components/UI/buttons/TextButton';
 
@@ -78,21 +78,20 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
       renderItem={({ item, section }) => {
         if (section.title === 'My Topics') {
           const { name, topicID } = item;
-          const { icon, color } = getIconFromID(topicID);
-          const parent = getParentTopicFromID(topicID);
+          const { icon, color, parentTopic } = getTopicFromID(topicID);
 
-          const isSubTopic = parent.topicID !== topicID;
+          const isSubTopic = parentTopic.topicID !== topicID;
           const subTopic = isSubTopic ? topicID : null;
 
           return (
             <View key={item} style={styles.categorySection}>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('Topic', { topicID: parent.topicID, subTopic })}
+                onPress={() => navigation.navigate('Topic', { topicID: parentTopic.topicID, subTopic })}
               >
                 <View style={{ ...styles.mainRow }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 50 }}>
-                    <Icon name={icon || 'bolt'} size={18} color={color || colors.iconGray} solid />
+                    <Icon name={icon || 'bolt'} size={18} color={colors[color] || colors.iconGray} solid />
                   </View>
 
                   <Text
@@ -117,14 +116,14 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
         }
         if (section.title === 'More Topics') {
           const { name, topicID } = item;
-          const { icon, color } = getIconFromID(topicID);
+          const { icon, color } = getTopicFromID(topicID);
 
           return (
             <View key={topicID} style={styles.categorySection}>
               <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Topic', { topicID })}>
                 <View style={{ ...styles.mainRow }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 50 }}>
-                    <Icon name={icon || 'bolt'} size={18} color={color || colors.iconGray} solid />
+                    <Icon name={icon || 'bolt'} size={18} color={colors[color] || colors.iconGray} solid />
                   </View>
 
                   <Text

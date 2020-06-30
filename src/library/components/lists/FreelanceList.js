@@ -9,8 +9,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect, handleCategorySelect }) => {
-  const renderSubtopics = subTopics => {
-    return subTopics.map(subTopic => {
+  const renderSubtopics = (subTopics) => {
+    return subTopics.map((subTopic) => {
       const { name, topicID } = subTopic;
       const isSelected = activeTopicIDs.includes(topicID);
 
@@ -45,7 +45,7 @@ const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSel
         <TouchableOpacity activeOpacity={0.8} onPress={() => handleCategorySelect(topicID)}>
           <View style={[styles.mainRow, i === freelanceList.length - 1 && styles.addBottomBorder]}>
             <View style={styles.iconView}>
-              <Icon name={icon} solid size={20} color={color || colors.blueGray} />
+              <Icon name={icon} solid size={20} color={colors[color] || colors.blueGray} />
             </View>
 
             <Text style={styles.mainRowText}>{name}</Text>

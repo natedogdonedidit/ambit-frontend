@@ -21,7 +21,7 @@ const SelectTopicsInvestModal = ({ navigation }) => {
   // this is the single source of truth
   const { id } = userLoggedIn;
   const topics = userLoggedIn.topicsInvest || [];
-  const topicsIDonly = topics.map(topic => topic.topicID);
+  const topicsIDonly = topics.map((topic) => topic.topicID);
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -39,20 +39,20 @@ const SelectTopicsInvestModal = ({ navigation }) => {
     let newArray = [];
     if (topicsIDonly.includes(selectedTopicID)) {
       // remove it
-      newArray = topics.filter(topic => topic.topicID !== selectedTopicID);
+      newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
     } else {
       // add it
       newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
     }
 
     // for mutation
-    const newArrayTopicIDonly = newArray.map(topic => {
+    const newArrayTopicIDonly = newArray.map((topic) => {
       return { topicID: topic.topicID };
     });
 
     // for optimistic response
-    const newArrayTopicIDandType = newArray.map(topic => {
-      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+    const newArrayTopicIDandType = newArray.map((topic) => {
+      return { id: topic.topicID, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
     });
 
     // run the mutation

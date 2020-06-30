@@ -15,10 +15,7 @@ const placeholderImage =
   'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80';
 
 const ExploreTopicButton = ({ navigation, topicID }) => {
-  const { icon, color } = getIconFromID(topicID);
-  const topicInfo = getTopicFromID(topicID);
-  const { preview } = topicInfo.topicStory;
-  const { name } = topicInfo;
+  const { icon, color, image, name } = getTopicFromID(topicID);
 
   // GETS STORIES FOR YOUR FAV TOPICS
   const {
@@ -68,7 +65,7 @@ const ExploreTopicButton = ({ navigation, topicID }) => {
     >
       <Image
         style={{ position: 'absolute', top: 0, left: 0, width: 100, height: 160 }}
-        source={{ uri: preview || placeholderImage }}
+        source={{ uri: image || placeholderImage }}
         resizeMode="cover"
       />
       <LinearGradient
@@ -90,7 +87,13 @@ const ExploreTopicButton = ({ navigation, topicID }) => {
             alignItems: 'center',
           }}
         >
-          <Icon name={icon} size={16} color={color || colors.iconGray} solid style={{ textAlign: 'center', paddingTop: 1 }} />
+          <Icon
+            name={icon}
+            size={16}
+            color={colors[color] || colors.iconGray}
+            solid
+            style={{ textAlign: 'center', paddingTop: 1 }}
+          />
         </View>
       )}
       <View

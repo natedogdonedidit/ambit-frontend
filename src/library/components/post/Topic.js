@@ -3,17 +3,20 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { topicsList } from 'library/utils/lists';
+import { getTopicFromID } from 'library/utils';
 
 const Topic = ({ navigation, topicToShow }) => {
-  const isSubTopic = !!topicToShow.parentTopic;
-  const mainTopicID = isSubTopic ? topicToShow.parentTopic.topicID : topicToShow.topicID;
-  const subTopic = isSubTopic ? topicToShow.topicID : null;
+  // get the full topic
+  const topic = getTopicFromID(topicToShow.topicID);
+
+  const isSubTopic = !!topic.parentTopic;
+  const mainTopicID = isSubTopic ? topic.parentTopic.topicID : topic.topicID;
+  const subTopic = isSubTopic ? topic.topicID : null;
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })} activeOpacity={0.3}>
       <View style={styles.topic}>
-        <Text style={defaultStyles.smallMute}>{topicToShow.name}</Text>
+        <Text style={defaultStyles.smallMute}>{topic.name}</Text>
       </View>
     </TouchableOpacity>
   );

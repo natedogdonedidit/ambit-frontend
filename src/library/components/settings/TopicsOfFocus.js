@@ -44,7 +44,7 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
 
     // for optimistic response
     const newArrayTopicIDandType = newArray.map((topic) => {
-      return { topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+      return { id: topic.topicID, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
     });
     // console.log(newArrayTopicIDandType);
     // console.log('opt resp', {
