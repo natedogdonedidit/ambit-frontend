@@ -13,6 +13,7 @@ import Loader from 'library/components/UI/Loader';
 
 const StoryModal = ({ navigation, route }) => {
   const storyFlatlist = useRef();
+  const [disableOutterScroll, setDisableOutterScroll] = useState(false);
   // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
   // option 2: pass in an intro. Intro will play, then modal will close.
   // option 3: pass in firstStory, with a topicIDtoSearch. First story will play followed by more stories from that topic
@@ -31,30 +32,30 @@ const StoryModal = ({ navigation, route }) => {
   // VARIABLES
 
   // QUERY TO GET USERS TOPICS
-  // const { data } = useQuery(CURRENT_USER_QUERY);
-  const favoriteTopics = [topicIDtoSearch || null];
-  // const { userLoggedIn } = data;
+  const { data } = useQuery(CURRENT_USER_QUERY);
+  let favoriteTopics = [topicIDtoSearch || null];
+  const { userLoggedIn } = data;
 
   // effect compiles the list of favoriteTopics
-  // useEffect(() => {
-  //   if (userLoggedIn) {
-  //     if (userLoggedIn.topicsFocus.length > 0) {
-  //       favoriteTopics = [...favoriteTopics, ...userLoggedIn.topicsFocus.map((top) => top.topicID)];
-  //     }
-  //     if (userLoggedIn.topicsInterest.length > 0) {
-  //       if (favoriteTopics === []) {
-  //         favoriteTopics = [...userLoggedIn.topicsInterest.map((top) => top.topicID)];
-  //       } else {
-  //         // only add topics that dont already exist
-  //         userLoggedIn.topicsInterest.forEach((topic) => {
-  //           if (favoriteTopics.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
-  //             favoriteTopics = [...favoriteTopics, topic.topicID];
-  //           }
-  //         });
-  //       }
-  //     }
-  //   }
-  // }, [userLoggedIn]);
+  useEffect(() => {
+    if (userLoggedIn) {
+      if (userLoggedIn.topicsFocus.length > 0) {
+        favoriteTopics = [...favoriteTopics, ...userLoggedIn.topicsFocus.map((top) => top.topicID)];
+      }
+      if (userLoggedIn.topicsInterest.length > 0) {
+        if (favoriteTopics === []) {
+          favoriteTopics = [...userLoggedIn.topicsInterest.map((top) => top.topicID)];
+        } else {
+          // only add topics that dont already exist
+          userLoggedIn.topicsInterest.forEach((topic) => {
+            if (favoriteTopics.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
+              favoriteTopics = [...favoriteTopics, topic.topicID];
+            }
+          });
+        }
+      }
+    }
+  }, [userLoggedIn]);
 
   // scrolls to index when story index changes
   useEffect(() => {
@@ -195,7 +196,7 @@ const StoryModal = ({ navigation, route }) => {
     );
   }
 
-  // console.log('rendering')
+  console.log(disableOutterScroll);
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />
@@ -210,8 +211,10 @@ const StoryModal = ({ navigation, route }) => {
         initialNumToRender={2}
         bounces={false}
         disableIntervalMomentum
+        disableScrollViewPanResponder
         onMomentumScrollEnd={handleSwipe}
         data={storyQ}
+        scrollEnabled={!disableOutterScroll}
         renderItem={({ item, index }) => {
           // console.log(storyQIndex, index, item);
 
@@ -224,6 +227,7 @@ const StoryModal = ({ navigation, route }) => {
               tryGoToPrevStory={tryGoToPrevStory}
               tryGoToNextStory={tryGoToNextStory}
               favoriteTopics={favoriteTopics}
+              setDisableOutterScroll={setDisableOutterScroll}
             />
           );
         }}

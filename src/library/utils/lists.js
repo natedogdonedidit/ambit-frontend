@@ -1993,7 +1993,6 @@ for (j = 0; j < freelanceList.length; j++) {
   allTopicsArray.push(...children);
 }
 
-console.log(allTopicsArray);
 export const allTopics = [...allTopicsArray];
 
 // export const allTopics = [

@@ -11,7 +11,7 @@ import Loader from 'library/components/UI/Loader';
 
 const NewProjectButton2 = ({ navigation, userLoggedIn, loadingCreateStory }) => {
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
+    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
       <View style={{ width: '100%', height: 100 }}>
         <Image
           style={{ width: '100%', height: '100%' }}

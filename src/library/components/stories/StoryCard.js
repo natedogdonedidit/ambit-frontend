@@ -25,7 +25,16 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const IMAGE_DURATION = 2;
 
-const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextStory, favoriteTopics, refreshCard }) => {
+const StoryCard = ({
+  navigation,
+  story,
+  isActive,
+  tryGoToPrevStory,
+  tryGoToNextStory,
+  favoriteTopics,
+  refreshCard,
+  setDisableOutterScroll,
+}) => {
   // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
   // option 2: pass in an intro. Intro will play, then modal will close.
   // option 3: pass in firstStory, with a topicIDtoSearch. First story will play followed by more stories from that topic
@@ -510,6 +519,7 @@ const StoryCard = ({ navigation, story, isActive, tryGoToPrevStory, tryGoToNextS
         handleAddToProfile={handleAddToProfile}
         handleMoreButton={handleMoreButton}
         favoriteTopics={favoriteTopics}
+        setDisableOutterScroll={setDisableOutterScroll}
       />
     </SafeAreaView>
   );

@@ -388,11 +388,15 @@ export const getGoalInfo = (goal, field) => {
 
   // means its a custom goal
   if (!fullGoal || fullGoal === undefined) {
-    return {
+    const customGoalInfo = {
       topicID: 'goals_customgoal',
       primaryColor: colors.green,
       secondaryColor: colors.goalGreen,
     };
+    if (!field) {
+      return customGoalInfo;
+    }
+    return customGoalInfo[field];
   }
   if (!field) return fullGoal;
   return fullGoal[field];

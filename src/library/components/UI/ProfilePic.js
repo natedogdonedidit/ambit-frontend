@@ -125,12 +125,13 @@ const ProfilePic = ({
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.introBorder}
-          onPress={() =>
+          disabled={disableClick}
+          onPress={() => {
             navigation.navigate('StoryModal', {
               story: hasStory ? user.myStory : null,
               intro: hasIntro ? user.intro : null,
-            })
-          }
+            });
+          }}
         >
           <View style={styles.whiteBorder}>
             <Image

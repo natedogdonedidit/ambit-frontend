@@ -7,42 +7,57 @@ const reg = 15;
 const large = 15;
 const huge = 17;
 
+// thin:      200
+// light:     300
+// regular:   400
+// medium:    500
+// semibold:  600
+// bold:      700
+// heavy:     800
+
 const styles = StyleSheet.create({
   // SMALL
   smallMute: {
     color: colors.blueGray,
     fontSize: small,
-    fontFamily: 'SFProText-Regular',
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '400',
   },
   smallThin: {
     color: colors.black,
     fontSize: small,
-    fontFamily: 'SFProText-Thin',
+    // fontFamily: 'SFProText-Thin',
+    fontWeight: '200',
   },
   smallLight: {
     color: colors.black,
     fontSize: small,
-    fontFamily: 'SFProText-Light',
+    // fontFamily: 'SFProText-Light',
+    fontWeight: '300',
   },
   smallRegular: {
     color: colors.black,
     fontSize: small,
-    fontFamily: 'SFProText-Regular',
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '400',
   },
   smallMedium: {
     color: colors.black,
     fontSize: small,
-    fontFamily: 'SFProText-Medium',
+    // fontFamily: 'SFProText-Medium',
+    fontWeight: '500',
   },
   smallSemibold: {
     color: colors.black,
     fontSize: small,
-    fontFamily: 'SFProText-Semibold',
+    // fontFamily: 'SFProText-Semibold',
+    fontWeight: '600',
   },
   smallBold: {
     color: colors.black,
     fontSize: small,
-    fontFamily: 'SFProText-Bold',
+    // fontFamily: 'SFProText-Bold',
+    fontWeight: '700',
   },
 
   // FOR STORY SCREEN
@@ -58,136 +73,161 @@ const styles = StyleSheet.create({
   defaultItalic: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-LightItalic',
+    // fontFamily: 'SFProText-LightItalic',
+    fontWeight: '300',
+    fontStyle: 'italic',
   },
   defaultMediumItalic: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-MediumItalic',
+    // fontFamily: 'SFProText-MediumItalic',
+    fontWeight: '500',
+    fontStyle: 'italic',
   },
   defaultMute: {
     color: colors.blueGray,
     fontSize: reg,
-    fontFamily: 'SFProText-Regular',
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '400',
   },
   defaultPlaceholder: {
     color: colors.gray30,
     fontSize: reg,
-    fontFamily: 'SFProText-Regular',
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '400',
   },
   defaultMediumMute: {
     color: colors.blueGray,
     fontSize: reg,
-    fontFamily: 'SFProText-Medium',
+    // fontFamily: 'SFProText-Medium',
+    fontWeight: '500',
   },
   defaultBoldMute: {
     color: colors.gray30,
     fontSize: reg,
-    fontFamily: 'SFProText-Semibold',
+    // fontFamily: 'SFProText-Semibold',
+    fontWeight: '700',
   },
   defaultWarning: {
     color: colors.peach,
     fontSize: reg,
-    fontFamily: 'SFProText-Regular',
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '400',
   },
   defaultMuteItalic: {
     color: colors.blueGray,
     fontSize: reg,
-    fontFamily: 'SFProText-RegularItalic',
+    // fontFamily: 'SFProText-RegularItalic',
+    fontWeight: '400',
+    fontStyle: 'italic',
   },
   defaultThin: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-Thin',
+    // fontFamily: 'SFProText-Thin',
+    fontWeight: '200',
   },
   defaultLight: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-Light',
+    // fontFamily: 'SFProText-Light',
+    fontWeight: '300',
   },
   defaultText: {
     color: colors.black,
     fontSize: reg,
-    // fontFamily: 'SFProText-Regular',
     fontWeight: '400',
-    // lineHeight: 17,
   },
   defaultMedium: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-Medium',
+    // fontFamily: 'SFProText-Medium',
+    fontWeight: '500',
   },
   defaultSemibold: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-Semibold',
+    // fontFamily: 'SFProText-Semibold',
+    fontWeight: '600',
   },
   defaultBold: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-Bold',
+    // fontFamily: 'SFProText-Bold',
+    fontWeight: '700',
   },
   defaultHeavy: {
     color: colors.black,
     fontSize: reg,
-    fontFamily: 'SFProText-Heavy',
+    // fontFamily: 'SFProText-Heavy',
   },
   // LARGE, 15px
   largeMute: {
     color: colors.blueGray,
     fontSize: large,
-    fontFamily: 'SFProText-Regular',
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '400',
   },
   largeMuteItalic: {
     color: colors.blueGray,
     fontSize: large,
-    fontFamily: 'SFProText-RegularItalic',
+    // fontFamily: 'SFProText-RegularItalic',
+    fontWeight: '400',
+    fontStyle: 'italic',
   },
   largeThin: {
     color: colors.black,
     fontSize: large,
-    fontFamily: 'SFProText-Thin',
+    // fontFamily: 'SFProText-Thin',
+    fontWeight: '200',
   },
   largeLight: {
     color: colors.black,
     fontSize: large,
-    fontFamily: 'SFProText-Light',
+    // fontFamily: 'SFProText-Light',
+    fontWeight: '300',
   },
   largeRegular: {
     color: colors.black,
     fontSize: large,
-    fontFamily: 'SFProText-Regular',
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '400',
   },
   largeMedium: {
     color: colors.black,
     fontSize: large,
-    fontFamily: 'SFProText-Medium',
+    // fontFamily: 'SFProText-Medium',
+    fontWeight: '500',
   },
   largeMediumMute: {
     color: colors.blueGray,
     fontSize: large,
-    fontFamily: 'SFProText-Regular',
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '500',
     opacity: 0.6,
   },
   largeSemibold: {
     color: colors.black,
     fontSize: large,
-    fontFamily: 'SFProText-Semibold',
+    // fontFamily: 'SFProText-Semibold',
+    fontWeight: '600',
   },
   largeBold: {
     color: colors.black,
     fontSize: large,
-    fontFamily: 'SFProText-Bold',
+    // fontFamily: 'SFProText-Bold',
+    fontWeight: '700',
   },
   largeBoldDisplay: {
     color: colors.black,
     fontSize: large,
     fontFamily: 'SFProDisplay-Bold',
+    // fontWeight: '700',
   },
   largeHeavy: {
     color: colors.black,
     fontSize: large,
-    fontFamily: 'SFProText-Heavy',
+    // fontFamily: 'SFProText-Heavy',
   },
   largeDisplay: {
     color: colors.black,

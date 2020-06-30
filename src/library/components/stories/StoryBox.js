@@ -54,7 +54,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
               alignItems: 'center',
             }}
           >
-            <ProfilePic user={story.owner} size="small" navigation={navigation} showBlue />
+            <ProfilePic user={story.owner} size="small" navigation={navigation} showBlue disableClick />
           </View>
         )}
         <View
@@ -110,7 +110,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
               alignItems: 'center',
             }}
           >
-            <ProfilePic user={story.owner} size="small" navigation={navigation} />
+            <ProfilePic user={story.owner} size="small" navigation={navigation} showBlue disableClick />
           </View>
         )}
         <View

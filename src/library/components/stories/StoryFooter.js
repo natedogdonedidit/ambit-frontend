@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
@@ -7,6 +7,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import { getTopicFromID } from 'library/utils';
 
 const StoryFooter = ({
   story,
@@ -17,8 +18,11 @@ const StoryFooter = ({
   indexAddedToProfile,
   handleMoreButton,
   favoriteTopics,
+  setDisableOutterScroll,
 }) => {
-  const { items } = story;
+  const [topicsSorted, setTopicsSorted] = useState([]);
+
+  const { items, title, type, topics } = story;
   const activeItem = { ...items[activeIndex] };
 
   const { owner, stories } = activeItem;
@@ -29,11 +33,20 @@ const StoryFooter = ({
   const saved = soloStory ? soloStory.save : false;
   const insets = useSafeArea();
 
-  const renderTopics = (topics) => {
-    // const { topics } = story;
+  useEffect(() => {
+    let topicsToShow = [];
+
+    if (project) {
+      topicsToShow = project.topics ? [...project.topics] : [];
+    } else if (soloStory) {
+      topicsToShow = soloStory.topics ? [...soloStory.topics] : [];
+    } else if (topics) {
+      topicsToShow = [...topics];
+    }
 
     // sort the topics based on favoriteTopics array passed in
     const sortTopics = (a, b) => {
+      console.log(favoriteTopics);
       const indexOfA = favoriteTopics.indexOf(a.topicID);
       const indexOfB = favoriteTopics.indexOf(b.topicID);
 
@@ -56,39 +69,55 @@ const StoryFooter = ({
       return -1;
     };
 
-    // topics.sort(sortTopics);
+    const topicsSortedNew = topicsToShow.sort(sortTopics);
+    setTopicsSorted(topicsSortedNew);
+  }, [story, favoriteTopics, activeIndex]);
 
-    if (topics.length > 0) {
+  const renderTopics = () => {
+    if (topicsSorted.length > 0) {
       return (
-        <View>
-          <ScrollView
-            horizontal
-            style={{ flex: 1 }}
-            contentContainerStyle={{
-              flex: 1,
-              // backgroundColor: 'pink',
-            }}
+        <ScrollView
+          horizontal
+          style={{ flex: 1 }}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingLeft: 8,
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            onPressIn={() => setDisableOutterScroll(true)}
+            onPressOut={() => setDisableOutterScroll(false)}
+            style={{ flexDirection: 'row' }}
           >
-            {topics.map((topic) => {
-              return (
-                <View
-                  key={topic.topicID}
-                  style={{
-                    height: 26,
-                    paddingHorizontal: 6,
-                    borderRadius: 6,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: 'rgba(255,255,255,0.4)',
-                    marginRight: 5,
-                  }}
-                >
-                  <Text style={{ ...defaultStyles.defaultSemibold, color: colors.white }}>{topic.name}</Text>
-                </View>
-              );
-            })}
-          </ScrollView>
-        </View>
+            <>
+              {topicsSorted.map((topic) => {
+                const { icon, color } = getTopicFromID(topic.topicID);
+
+                return (
+                  <View
+                    key={topic.topicID}
+                    style={{
+                      height: 26,
+                      paddingHorizontal: 6,
+                      borderRadius: 6,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: 'rgba(255,255,255,0.4)',
+                      marginRight: 5,
+                    }}
+                  >
+                    {icon && (
+                      <Icon name={icon} solid size={14} color={colors[color] || colors.blueGray} style={{ paddingRight: 4 }} />
+                    )}
+                    <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{topic.name}</Text>
+                  </View>
+                );
+              })}
+            </>
+          </TouchableOpacity>
+        </ScrollView>
       );
     }
 
@@ -150,18 +179,20 @@ const StoryFooter = ({
   };
 
   const renderTitle = () => {
-    const { title, type, topics } = story;
+    // const { title, type, topics } = story;
 
     // if the active story is a project
     if (type === 'PROJECT') {
       return (
         <>
-          <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 0 }}>
+          <Text
+            style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 8, paddingLeft: 8 }}
+          >
             {title || null}
             {'  '}
             <Icon name="caret-right" solid size={20} color="white" />
           </Text>
-          {/* {renderTopics(topics || [])} */}
+          {renderTopics(topics || [])}
         </>
       );
     }
@@ -170,19 +201,21 @@ const StoryFooter = ({
     if (project) {
       return (
         <>
-          <Text style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 0 }}>
+          <Text
+            style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 8, paddingLeft: 8 }}
+          >
             {project.title || null}
             {'  '}
             <Icon name="caret-right" solid size={20} color="white" />
           </Text>
-          {/* {renderTopics(project.topics || [])} */}
+          {renderTopics(project.topics || [])}
         </>
       );
     }
 
     if (soloStory) {
       if (soloStory.topics) {
-        // return renderTopics(soloStory.topics || []);
+        return renderTopics(soloStory.topics || []);
       }
     }
 
@@ -292,17 +325,14 @@ const StoryFooter = ({
 
   return (
     <View style={{ ...styles.absoluteBottom, bottom: insets.bottom + 5 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'flex-end' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'flex-end', paddingBottom: 14 }}>
         <View
           style={{
             flex: 1,
-            paddingLeft: 8,
-            paddingBottom: 14,
           }}
         >
           {renderTitle()}
         </View>
-        <View>{renderActions()}</View>
       </View>
       <View
         style={{
@@ -316,6 +346,7 @@ const StoryFooter = ({
       >
         {renderBottom()}
       </View>
+      <View style={{ position: 'absolute', bottom: 50, right: 0 }}>{renderActions()}</View>
     </View>
   );
 };
@@ -328,6 +359,7 @@ const styles = StyleSheet.create({
     right: 0,
     width: '100%',
     justifyContent: 'flex-end',
+    // backgroundColor: 'pink',
   },
 });
 
