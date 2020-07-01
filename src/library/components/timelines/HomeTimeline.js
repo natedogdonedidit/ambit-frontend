@@ -264,8 +264,8 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
                 },
               },
             },
-          ]
-          // { useNativeDriver: true }
+          ],
+          { useNativeDriver: false }
         )}
         keyExtractor={(item, index) => item + index}
         sections={
