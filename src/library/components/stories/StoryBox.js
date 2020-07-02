@@ -28,7 +28,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
             moreType,
           })
         }
-        style={viewedEntireStory ? { ...styles.storyBox, opacity: 0.7 } : styles.storyBox}
+        style={viewedEntireStory ? { ...styles.storyBox, opacity: 0.5 } : styles.storyBox}
         activeOpacity={0.8}
       >
         <Image
@@ -84,7 +84,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
             topicIDtoSearch,
           })
         }
-        style={viewedEntireStory ? { ...styles.storyBox, opacity: 0.7 } : styles.storyBox}
+        style={viewedEntireStory ? { ...styles.storyBox, opacity: 0.5 } : styles.storyBox}
         activeOpacity={0.8}
       >
         <Image

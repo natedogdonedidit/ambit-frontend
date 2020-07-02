@@ -215,8 +215,6 @@ const StoryModal = ({ navigation, route }) => {
         data={storyQ}
         scrollEnabled={!disableOutterScroll}
         renderItem={({ item, index }) => {
-          // console.log(storyQIndex, index, item);
-
           return (
             <StoryCard
               key={index}

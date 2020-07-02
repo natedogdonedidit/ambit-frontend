@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, StatusBar, Alert, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, StatusBar, Alert, Dimensions, Animated } from 'react-native';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/react-hooks';
 import { differenceInHours, setWeek } from 'date-fns';
 
@@ -24,8 +24,7 @@ import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import VIEWED_STORY_ITEM_MUTATION from 'library/mutations/VIEWED_STORY_ITEM_MUTATION';
 import { StoryItemFragment } from 'library/queries/_fragments';
-
-const IMAGE_DURATION = 2;
+import { STORY_IMAGE_DURATION } from 'styles/constants'
 
 const StoryCard = ({
   navigation,
@@ -59,11 +58,12 @@ const StoryCard = ({
 
   // STATE
   const [hasError, setHasError] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
+  // const [currentTime, setCurrentTime] = useState(0);
 
   // const [storyQIndex, setStoryQIndex] = useState(0);
   // const [activeStory, setActiveStory] = useState(story || intro);
   const [activeIndex, setActiveIndex] = useState(newestUnseen > 0 ? newestUnseen : 0);
+  const [itemDuration, setItemDuration] = useState(10) // in seconds
   const [isBuffering, setIsBuffering] = useState(false);
   const [showIntroPreview, setShowIntroPreview] = useState(false);
   const [indexAddedToProfile, setIndexAddedToProfile] = useState([]);
@@ -107,13 +107,7 @@ const StoryCard = ({
 
   const [viewedStoryItem] = useMutation(VIEWED_STORY_ITEM_MUTATION, {
     variables: { storyItemID: activeItem.id },
-    optimisticResponse: {
-      __typename: 'Mutation',
-      viewedStoryItem: { __typename: 'StoryItem', id: activeItem.id },
-    },
-    update(cache, { data }) {
-      const currentUser = cache.readQuery({ query: CURRENT_USER_QUERY });
-      const { name, profilePic } = currentUser.userLoggedIn;
+    update(cache, { data: { viewedStoryItem } }) {
 
       // We get a single item from cache.
       const storyItemInCache = cache.readFragment({
@@ -132,8 +126,7 @@ const StoryCard = ({
           fragmentName: 'StoryItemFragment',
           data: {
             __typename: 'StoryItem',
-            ...activeItem,
-            views: [...activeItem.views, { __typename: 'User', id: currentUserId, name, profilePic }], // add current user to the viewed list. this may cause a duplicate...but we don't care. Next time you load the app you'll get the real data from the datbase. This is just for cache.
+            ...viewedStoryItem,
           },
         });
       }
@@ -144,6 +137,11 @@ const StoryCard = ({
   useEffect(() => {
     viewedStoryItem()
   }, [activeIndex])
+
+  // anytime the story item changes, save the duration to state (if this story is active)
+
+
+  // anytime the story item or duration changes
 
   // this is so when you open the "More" modal, the story unpauses when re-focused
   useEffect(() => {
@@ -170,11 +168,11 @@ const StoryCard = ({
   }, [activeItem]);
 
   // if reached the end of photo timelimit - go to next item
-  useEffect(() => {
-    if (activeItem.type === 'IMAGE' && currentTime >= IMAGE_DURATION) {
-      incrementIndex();
-    }
-  }, [currentTime]);
+  // useEffect(() => {
+  //   if (activeItem.type === 'IMAGE' && currentTime >= STORY_IMAGE_DURATION) {
+  //     incrementIndex();
+  //   }
+  // }, [currentTime]);
 
   useEffect(() => {
     // if changed from not active to active - unpause
@@ -182,14 +180,14 @@ const StoryCard = ({
       if (activeItem.type === 'VIDEO') {
         videoRef.current.seek(0);
       }
-      setCurrentTime(0);
+      // setCurrentTime(0);
       setPaused(false);
     }
 
     // if changed from active to not active - pause
     if (!paused && !isActive) {
       setPaused(true);
-      setCurrentTime(0);
+      // setCurrentTime(0);
       if (activeIndex < items.length - 1) {
         setActiveIndex((prevState) => prevState + 1);
       }
@@ -198,7 +196,7 @@ const StoryCard = ({
 
   // if the activeIndex changes always reset the current time to zero
   useEffect(() => {
-    setCurrentTime(0);
+    // setCurrentTime(0);
 
     // only start the timer if showIntroPreview is false
     if (!showIntroPreview && isActive) {
@@ -206,7 +204,7 @@ const StoryCard = ({
       const intervalID = setInterval(() => {
         if (activeItem.type === 'IMAGE' && isActive) {
           if (!pausedRef.current) {
-            setCurrentTime((prevState) => prevState + 0.01);
+            // setCurrentTime((prevState) => prevState + 0.01);
           }
         }
       }, 10);
@@ -230,9 +228,9 @@ const StoryCard = ({
   };
   // const onError = () => {};
   const onProgress = (dataa) => {
-    if (isActive) {
-      setCurrentTime(dataa.currentTime);
-    }
+    // if (isActive) {
+    //   setCurrentTime(dataa.currentTime);
+    // }
   };
 
   const onVideoEnd = () => {
@@ -242,7 +240,7 @@ const StoryCard = ({
   // CUSTOM FUNCTIONS
 
   const incrementIndex = () => {
-    setCurrentTime(0);
+    // setCurrentTime(0);
     if (activeIndex < items.length - 1) {
       setActiveIndex((prevState) => prevState + 1);
     }
@@ -260,7 +258,7 @@ const StoryCard = ({
       tryGoToPrevStory();
     }
 
-    setCurrentTime(0);
+    // setCurrentTime(0);
   };
 
   const engagePause = () => {
@@ -557,7 +555,14 @@ const StoryCard = ({
         engagePause={engagePause}
         disengagePause={disengagePause}
       />
-      <StoryProgressBars story={story} activeIndex={activeIndex} IMAGE_DURATION={IMAGE_DURATION} currentTime={currentTime} />
+      <StoryProgressBars 
+        story={story} 
+        activeIndex={activeIndex}
+        incrementIndex={incrementIndex}
+        isActive={isActive}
+        isBuffering={isBuffering}
+        paused={paused}
+      />
       <StoryHeader story={story} activeIndex={activeIndex} navigation={navigation} />
       <StoryFooter
         story={story}
