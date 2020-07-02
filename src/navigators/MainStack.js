@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { useQuery, useSubscription } from '@apollo/react-hooks';
+import analytics from '@segment/analytics-react-native';
 
 import { UserContext } from 'library/utils/UserContext';
 import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
@@ -49,6 +50,7 @@ import YearModal from 'screens/main/modals/general/YearModal';
 import MonthModal from 'screens/main/modals/general/MonthModal';
 import ForYouSettingsPopup from 'screens/main/modals/general/ForYouSettingsPopup';
 import EditStoryItemPopup from 'screens/main/modals/stories/EditStoryItemPopup';
+
 
 const Stack = createStackNavigator();
 
@@ -178,7 +180,10 @@ const MainStack = () => {
       mode="modal"
       headerMode="none"
     >
-      <Stack.Screen name="MainDrawer" component={MainDrawer} />
+      <Stack.Screen 
+        name="MainDrawer" 
+        component={MainDrawer}
+      />
 
       {/* modals */}
       <Stack.Screen name="StoryModal" component={StoryModal} />

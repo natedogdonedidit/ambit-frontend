@@ -22,6 +22,8 @@ import StoryHeader from 'library/components/stories/StoryHeader';
 import StoryFooter from 'library/components/stories/StoryFooter';
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import VIEWED_STORY_ITEM_MUTATION from 'library/mutations/VIEWED_STORY_ITEM_MUTATION';
+import { StoryItemFragment } from 'library/queries/_fragments';
 
 const IMAGE_DURATION = 2;
 
@@ -48,13 +50,20 @@ const StoryCard = ({
 
   const videoRef = useRef(null);
 
+  // will return the index of the newest unseen story item
+  const newestUnseen = story.items.findIndex(({ views }) => {
+    // return true if you have NOT viewed the story - this will set newestUnseen to that index
+    if (views.length <= 0) return true
+    return views.some(({ id }) => id !== currentUserId)
+  })
+
   // STATE
   const [hasError, setHasError] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
   // const [storyQIndex, setStoryQIndex] = useState(0);
   // const [activeStory, setActiveStory] = useState(story || intro);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(newestUnseen > 0 ? newestUnseen : 0);
   const [isBuffering, setIsBuffering] = useState(false);
   const [showIntroPreview, setShowIntroPreview] = useState(false);
   const [indexAddedToProfile, setIndexAddedToProfile] = useState([]);
@@ -95,6 +104,46 @@ const StoryCard = ({
       ]);
     },
   });
+
+  const [viewedStoryItem] = useMutation(VIEWED_STORY_ITEM_MUTATION, {
+    variables: { storyItemID: activeItem.id },
+    optimisticResponse: {
+      __typename: 'Mutation',
+      viewedStoryItem: { __typename: 'StoryItem', id: activeItem.id },
+    },
+    update(cache, { data }) {
+      const currentUser = cache.readQuery({ query: CURRENT_USER_QUERY });
+      const { name, profilePic } = currentUser.userLoggedIn;
+
+      // We get a single item from cache.
+      const storyItemInCache = cache.readFragment({
+        id: `StoryItem:${activeItem.id}`,
+        fragment: StoryItemFragment,
+        fragmentName: 'StoryItemFragment',
+      });
+
+      // Then, we update it.
+      if (storyItemInCache) {
+
+        // the new view is ALWAYS the currentUser
+        cache.writeFragment({
+          id: `StoryItem:${activeItem.id}`,
+          fragment: StoryItemFragment,
+          fragmentName: 'StoryItemFragment',
+          data: {
+            __typename: 'StoryItem',
+            ...activeItem,
+            views: [...activeItem.views, { __typename: 'User', id: currentUserId, name, profilePic }], // add current user to the viewed list. this may cause a duplicate...but we don't care. Next time you load the app you'll get the real data from the datbase. This is just for cache.
+          },
+        });
+      }
+    },
+  });
+
+  // anytime the story item changes, add the user to viewed list
+  useEffect(() => {
+    viewedStoryItem()
+  }, [activeIndex])
 
   // this is so when you open the "More" modal, the story unpauses when re-focused
   useEffect(() => {
@@ -228,7 +277,7 @@ const StoryCard = ({
     }
   };
 
-  const handleDoubleTap = () => {};
+  const handleDoubleTap = () => { };
 
   const handleAddToProfile = () => {
     if (includedInSolo) {
@@ -381,7 +430,7 @@ const StoryCard = ({
       { cancelable: true },
     ]);
   };
-  const removeFromIntro = () => {};
+  const removeFromIntro = () => { };
   const determineOptions = () => {
     if (story.type === 'PROJECT') {
       return [

@@ -16,6 +16,7 @@ import TopicsList from 'library/components/timelines/TopicsList';
 
 import { HEADER_HEIGHT } from 'styles/constants';
 import { UserContext } from 'library/utils/UserContext';
+import analytics from '@segment/analytics-react-native';
 
 const SLIDE_HEIGHT = HEADER_HEIGHT - StyleSheet.hairlineWidth;
 
@@ -32,6 +33,11 @@ const HomeScreen = ({ navigation }) => {
 
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
+
+  // useEffect(() => {
+  //   console.log('i see home screen')
+  //   analytics.screen('Home Screen')
+  // })
 
   // if home position changes to 0, scroll to begininning (used for when user presses Home tab)
   useEffect(() => {

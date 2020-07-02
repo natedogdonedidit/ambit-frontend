@@ -46,7 +46,6 @@ const StoryFooter = ({
 
     // sort the topics based on favoriteTopics array passed in
     const sortTopics = (a, b) => {
-      console.log(favoriteTopics);
       const indexOfA = favoriteTopics.indexOf(a.topicID);
       const indexOfB = favoriteTopics.indexOf(b.topicID);
 

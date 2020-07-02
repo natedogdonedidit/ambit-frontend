@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
@@ -10,9 +10,10 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import { getIconFromID } from 'library/utils';
 import { UserContext } from 'library/utils/UserContext';
 
-const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDtoSearch, loading }) => {
+const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDtoSearch, loading, newestUnseen }) => {
   const { currentUserId } = useContext(UserContext);
   const isMyStory = story ? currentUserId === story.owner.id : false;
+  const viewedEntireStory = newestUnseen === -1;
 
   if (loading) {
     return <View style={styles.storyBoxBlank} />;
@@ -27,7 +28,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
             moreType,
           })
         }
-        style={styles.storyBox}
+        style={viewedEntireStory ? { ...styles.storyBox, opacity: 0.7 } : styles.storyBox}
         activeOpacity={0.8}
       >
         <Image
@@ -83,7 +84,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
             topicIDtoSearch,
           })
         }
-        style={styles.storyBox}
+        style={viewedEntireStory ? { ...styles.storyBox, opacity: 0.7 } : styles.storyBox}
         activeOpacity={0.8}
       >
         <Image

@@ -1,6 +1,43 @@
 import gql from 'graphql-tag';
 
 // NON-DEPENDENT FRAGMENTS
+export const StoryItemFragment = gql`
+  fragment StoryItemFragment on StoryItem {
+    id
+    createdAt
+    owner {
+      id
+      name
+      firstName
+      headline
+      location
+      profilePic
+    }
+    stories {
+      id
+      type
+      title
+      save
+      topics {
+        id
+        topicID
+        name
+      }
+    }
+    type
+    url
+    preview
+    link
+    text
+    duration
+    views {
+      id
+      name
+      profilePic
+    }
+  }
+`;
+
 export const StoryFragment = gql`
   fragment StoryFragment on Story {
     id
@@ -22,35 +59,10 @@ export const StoryFragment = gql`
       name
     }
     items {
-      id
-      createdAt
-      owner {
-        id
-        name
-        firstName
-        headline
-        location
-        profilePic
-      }
-      stories {
-        id
-        type
-        title
-        save
-        topics {
-          id
-          topicID
-          name
-        }
-      }
-      type
-      url
-      preview
-      link
-      text
-      duration
+      ...StoryItemFragment
     }
   }
+  ${StoryItemFragment}
 `;
 
 export const MinimalUser = gql`

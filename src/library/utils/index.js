@@ -101,10 +101,13 @@ export const profilePicUpload = async (userId, uri) => {
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: uploadData,
     });
     const resJson = await res.json();
-    // console.log('resJson', resJson);
+    console.log('resJson', resJson);
 
     // return the image url
     return resJson.url;
@@ -136,6 +139,9 @@ export const bannerPicUpload = async (userId, uri) => {
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: uploadData,
     });
     const resJson = await res.json();
@@ -171,6 +177,9 @@ export const postPicUpload = async (userId, uri) => {
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: uploadData,
     });
     const resJson = await res.json();
@@ -204,6 +213,9 @@ export const introPicUpload = async (userId, uri) => {
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: uploadData,
     });
     const resJson = await res.json();
@@ -238,6 +250,9 @@ export const introVideoUpload = async (userId, uri) => {
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: uploadData,
     });
     const resJson = await res.json();
@@ -273,6 +288,9 @@ export const storyPicUpload = async (userId, uri) => {
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: uploadData,
     });
     const resJson = await res.json();
@@ -282,7 +300,7 @@ export const storyPicUpload = async (userId, uri) => {
     return resJson.url;
   } catch (error) {
     console.log('an error occured trying to upload your photo');
-    // console.error(error);
+    console.log(error);
     return error;
   }
 };
@@ -307,6 +325,9 @@ export const storyVideoUpload = async (userId, uri) => {
   try {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: uploadData,
     });
     const resJson = await res.json();

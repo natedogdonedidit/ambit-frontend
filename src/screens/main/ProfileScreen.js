@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -22,6 +22,10 @@ const ProfileScreen = ({ navigation, route }) => {
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BASIC, {
     variables: { id: profileId },
   });
+
+  // useEffect(() => {
+  //   analytics.screen('Home Screen')
+  // }, [profileId])
 
   if (loading) return <Loader loading={loading} />;
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import analytics from '@segment/analytics-react-native';
 
 import HomeScreen from 'screens/main/HomeScreen';
 import ChatScreen from 'screens/main/ChatScreen';
@@ -42,9 +43,36 @@ const HomeStack = ({ navigation, route }) => {
 
   return (
     <Stack.Navigator initialRouteName="Home" headerMode="none">
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Post" component={PostScreen} />
+      <Stack.Screen
+        name="Home"
+        component={HomeScreen}
+        listeners={{
+          focus: () => {
+            console.log('User opened Home Screen')
+            analytics.screen('Home Screen')
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="Profile" 
+        component={ProfileScreen}
+        listeners={{
+          focus: () => {
+            console.log('User opened Profile Screen')
+            analytics.screen('Profile Screen')
+          },
+        }}
+      />
+      <Stack.Screen 
+        name="Post" 
+        component={PostScreen}
+        listeners={{
+          focus: () => {
+            console.log('User opened Post Screen')
+            analytics.screen('Post Screen')
+          },
+        }}
+      />
       <Stack.Screen name="PostMatches" component={PostMatchesScreen} />
       <Stack.Screen name="Update" component={UpdateScreen} />
       <Stack.Screen name="UpdatePost" component={UpdatePostScreen} />

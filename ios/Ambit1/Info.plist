@@ -40,7 +40,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>To take pictures</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To record videos</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

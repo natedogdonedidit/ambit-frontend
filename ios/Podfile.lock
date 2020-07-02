@@ -1,4 +1,5 @@
 PODS:
+  - Analytics (3.9.0)
   - boost-for-react-native (1.63.0)
   - BVLinearGradient (2.5.6):
     - React
@@ -69,6 +70,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - Mixpanel (3.6.0)
   - OpenSSL-Universal (1.0.2.19):
     - OpenSSL-Universal/Static (= 1.0.2.19)
   - OpenSSL-Universal/Static (1.0.2.19)
@@ -311,6 +313,14 @@ PODS:
     - React-cxxreact (= 0.62.2)
     - React-jsi (= 0.62.2)
     - ReactCommon/callinvoker (= 0.62.2)
+  - RNAnalytics (1.2.1):
+    - Analytics (= 3.9.0)
+    - React
+  - RNAnalyticsIntegration-Mixpanel (1.2.1):
+    - Analytics
+    - React
+    - RNAnalytics
+    - Segment-Mixpanel
   - RNCAsyncStorage (1.11.0):
     - React
   - RNCMaskedView (0.1.10):
@@ -332,6 +342,9 @@ PODS:
     - React
   - RNVectorIcons (6.6.0):
     - React
+  - Segment-Mixpanel (1.6.0):
+    - Analytics (~> 3.0)
+    - Mixpanel (~> 3.5)
   - TOCropViewController (2.5.2)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
@@ -389,6 +402,8 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/callinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "RNAnalytics (from `../node_modules/@segment/analytics-react-native`)"
+  - "RNAnalyticsIntegration-Mixpanel (from `../node_modules/@segment/analytics-react-native-mixpanel`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
@@ -400,6 +415,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Analytics
     - boost-for-react-native
     - CocoaAsyncSocket
     - CocoaLibEvent
@@ -410,7 +426,9 @@ SPEC REPOS:
     - Flipper-PeerTalk
     - Flipper-RSocket
     - FlipperKit
+    - Mixpanel
     - OpenSSL-Universal
+    - Segment-Mixpanel
     - TOCropViewController
     - YogaKit
 
@@ -473,6 +491,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNAnalytics:
+    :path: "../node_modules/@segment/analytics-react-native"
+  RNAnalyticsIntegration-Mixpanel:
+    :path: "../node_modules/@segment/analytics-react-native-mixpanel"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
   RNCMaskedView:
@@ -491,6 +513,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  Analytics: 67cce2129e4b0df5b532bf0c043043f292b32f5f
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
@@ -507,6 +530,7 @@ SPEC CHECKSUMS:
   FlipperKit: 6dc9b8f4ef60d9e5ded7f0264db299c91f18832e
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  Mixpanel: 446b6e7713aa34a9a3516ff7648d56551384fc94
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   RCTRequired: cec6a34b3ac8a9915c37e7e4ad3aa74726ce4035
   RCTTypeSafety: 93006131180074cffa227a1075802c89a49dd4ce
@@ -531,6 +555,8 @@ SPEC CHECKSUMS:
   React-RCTText: fae545b10cfdb3d247c36c56f61a94cfd6dba41d
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
+  RNAnalytics: e52853832f8b895caf9700023ee5b997902f3b32
+  RNAnalyticsIntegration-Mixpanel: 0e25d9849351e78ce9aa88ad5c5ce1ffad3f6f12
   RNCAsyncStorage: db711e29e5e0500d9bd21aa0c2e397efa45302b1
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
@@ -538,6 +564,7 @@ SPEC CHECKSUMS:
   RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
+  Segment-Mixpanel: b5d949a7eda1018a8d5afbb2cfcb59c870ecce34
   TOCropViewController: e9da34f484aedd4e5d5a8ab230ba217cfe16c729
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

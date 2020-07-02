@@ -13,12 +13,33 @@ import { setContext } from 'apollo-link-context';
 import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
+// for analytics
+import analytics from '@segment/analytics-react-native'
+import mixpanel from '@segment/analytics-react-native-mixpanel'
 
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
 import { UserContextProvider } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
 import AppNavigator from './App';
 import { name as appName } from './app.json';
+
+// setup analytics
+const setupAnalytics = async () => {
+  await analytics.setup('zHxaKjU0CbDCYBLTEU1OsjIvU79jCbfc', {
+    using: [mixpanel],
+    // recordScreenViews: false,
+    trackAppLifecycleEvents: true,
+    trackAttributionData: true,
+  })
+    .then(() =>
+      console.log('Analytics is ready')
+    )
+    .catch(err =>
+      console.error('Something went wrong', err)
+    )
+}
+setupAnalytics()
+
 
 // eslint-disable-next-line no-undef
 GLOBAL.Blob = null; // required so Network Inspect works on RNdebugger
@@ -47,11 +68,11 @@ const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/', // simulator
     // ios: 'http://192.168.123.210:4000', // work
-    // ios: 'http://192.168.1.214:4000', // home
+    ios: 'http://192.168.1.214:4000', // home
     // ios: 'http://192.168.1.25:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
     // ios: 'http://192.168.0.16:4000', // Moms
-    ios: 'https://ambit-yoga-prod.herokuapp.com/',
+    // ios: 'https://ambit-yoga-prod.herokuapp.com/',
   }),
 });
 
@@ -60,11 +81,11 @@ const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/', // simulator
     // ios: 'ws://192.168.123.210:4000', // work
-    // ios: 'ws://192.168.1.214:4000', // home
+    ios: 'ws://192.168.1.214:4000', // home
     // ios: 'ws://192.168.1.25:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
     // ios: 'ws://192.168.0.16:4000', // Moms
-    ios: 'ws://ambit-yoga-prod.herokuapp.com/',
+    // ios: 'ws://ambit-yoga-prod.herokuapp.com/',
   }),
   options: {
     reconnect: true,
@@ -126,6 +147,8 @@ const client = new ApolloClient({
     console.log('networkError', networkError);
   },
 });
+
+
 
 const App = () => {
   return (

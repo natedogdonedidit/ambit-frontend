@@ -196,7 +196,6 @@ const StoryModal = ({ navigation, route }) => {
     );
   }
 
-  console.log(disableOutterScroll);
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />

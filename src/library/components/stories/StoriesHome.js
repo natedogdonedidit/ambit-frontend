@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useQuery, useLazyQuery } from 'react-apollo';
 import Feather from 'react-native-vector-icons/Feather';
@@ -17,8 +17,10 @@ import StoryBox from 'library/components/stories/StoryBox';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
 import NewProjectButton from './NewProjectButton';
 import NewProjectButton3 from './NewProjectButton3';
+import { UserContext } from 'library/utils/UserContext';
 
 const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, setRefetchingStories, favoritesList }) => {
+  const { currentUserId } = useContext(UserContext);
   // GETS STORIES FROM YOUR NETWORK
   const {
     error: errorStories,
@@ -74,7 +76,14 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
     if (userStories.length > 0) {
       return userStories.map((story) => {
         if (story.items.length > 0) {
-          return <StoryBox key={story.id} navigation={navigation} story={story} moreType="Home" />;
+
+          const newestUnseen = story.items.findIndex(({ views }) => {
+            // return true if you have NOT viewed the story - this will set newestUnseen to that index
+            if (views.length <= 0) return true
+            return views.some(({ id }) => id !== currentUserId)
+          })
+
+          return <StoryBox key={`${story.id}-${newestUnseen}`} navigation={navigation} story={story} moreType="Home" newestUnseen={newestUnseen}/>;
         }
       });
     }
