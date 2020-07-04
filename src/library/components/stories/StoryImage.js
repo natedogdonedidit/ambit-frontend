@@ -7,7 +7,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 
-const StoryImage = ({ activeItem, videoRef, onProgress, onBuffer, onVideoEnd, isBuffering, paused }) => {
+const StoryImage = ({ activeItem, videoRef, onProgress, onBuffer, onVideoEnd, isBuffering, paused, onLoad, onLoadStart, onReadyForDisplay }) => {
   const renderMedia = () => {
     const { type, url } = activeItem;
 
@@ -21,8 +21,11 @@ const StoryImage = ({ activeItem, videoRef, onProgress, onBuffer, onVideoEnd, is
           ref={videoRef}
           style={styles.fill}
           resizeMode="cover"
-          // progressUpdateInterval={30}
-          // onProgress={onProgress}
+          progressUpdateInterval={500}
+          onProgress={onProgress}
+          onLoad={onLoad}
+          onLoadStart={onLoadStart}
+          onReadyForDisplay={onReadyForDisplay}
           onBuffer={onBuffer}
           onEnd={onVideoEnd}
           paused={paused}

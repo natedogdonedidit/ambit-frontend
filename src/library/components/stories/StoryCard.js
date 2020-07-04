@@ -64,7 +64,8 @@ const StoryCard = ({
   // const [activeStory, setActiveStory] = useState(story || intro);
   const [activeIndex, setActiveIndex] = useState(newestUnseen > 0 ? newestUnseen : 0);
   const [itemDuration, setItemDuration] = useState(10) // in seconds
-  const [isBuffering, setIsBuffering] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false)
+  const [isBuffering, setIsBuffering] = useState(true);
   const [showIntroPreview, setShowIntroPreview] = useState(false);
   const [indexAddedToProfile, setIndexAddedToProfile] = useState([]);
   const [includedInProject, setIncludedInProject] = useState(false);
@@ -135,6 +136,10 @@ const StoryCard = ({
 
   // anytime the story item changes, add the user to viewed list
   useEffect(() => {
+    if (activeItem.type === 'IMAGE') {
+      console.log('setting is buffering false in IMAGE')
+      setIsBuffering(false)
+    }
     viewedStoryItem()
   }, [activeIndex])
 
@@ -224,14 +229,40 @@ const StoryCard = ({
 
   // VIDEO PLAYER CALLBACKS
   const onBuffer = (dataa) => {
-    setIsBuffering(dataa.isBuffering);
+    if (videoStarted && dataa.isBuffering) {
+      // mid-video buffering will trigger this
+
+      console.log(`mid video buffer, setting isBuffering to ${dataa.isBuffering}`)
+      setIsBuffering(dataa.isBuffering);
+    }
   };
   // const onError = () => {};
-  const onProgress = (dataa) => {
+  const onProgress = ({ currentTime }) => {
+    // when video first starts only
+    if (currentTime > 0 && currentTime < 1) {
+      console.log('video started - setting buffering false', currentTime)
+      setVideoStarted(true)
+      setIsBuffering(false)
+    }
     // if (isActive) {
     //   setCurrentTime(dataa.currentTime);
     // }
   };
+
+  const onReadyForDisplay = () => {
+    console.log('onReadyForDisplay')
+    // setIsBuffering(false)
+  }
+
+  const onLoadStart = () => {
+    console.log('onLoadStart')
+    // setIsBuffering(true)
+  }
+
+  const onLoad = () => {
+    console.log('onLoad')
+    // setIsBuffering(false)
+  }
 
   const onVideoEnd = () => {
     incrementIndex();
@@ -243,6 +274,10 @@ const StoryCard = ({
     // setCurrentTime(0);
     if (activeIndex < items.length - 1) {
       setActiveIndex((prevState) => prevState + 1);
+      
+      console.log(`increment index & initializing isBuffering to true in StoryCard`)
+      setIsBuffering(true)
+      setVideoStarted(false)
     }
 
     // if it was the last item in the activeStory
@@ -254,6 +289,10 @@ const StoryCard = ({
   const decrementIndex = () => {
     if (activeIndex > 0) {
       setActiveIndex((prevState) => prevState - 1);
+
+      console.log(`decrement index & initializing isBuffering to true in StoryCard`)
+      setIsBuffering(true)
+      setVideoStarted(false)
     } else {
       tryGoToPrevStory();
     }
@@ -540,6 +579,9 @@ const StoryCard = ({
       <StoryImage
         activeItem={activeItem}
         videoRef={videoRef}
+        onLoad={onLoad} 
+        onLoadStart={onLoadStart} 
+        onReadyForDisplay={onReadyForDisplay}
         onProgress={onProgress}
         onBuffer={onBuffer}
         onVideoEnd={onVideoEnd}
