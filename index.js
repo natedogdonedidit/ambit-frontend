@@ -69,11 +69,11 @@ const httpLink = new HttpLink({
     // ios: 'http://localhost:4000/', // simulator
     // ios: 'http://192.168.123.210:4000', // work
     // ios: 'http://192.168.1.214:4000', // home
-    ios: 'http://192.168.1.147:4000', // condo
+    // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
     // ios: 'http://192.168.0.16:4000', // Moms
-    // ios: 'https://ambit-yoga-prod.herokuapp.com/',
+    ios: 'https://ambit-yoga-prod.herokuapp.com/',
   }),
 });
 
@@ -83,11 +83,11 @@ const wsLink = new WebSocketLink({
     // ios: 'ws://localhost:4000/', // simulator
     // ios: 'ws://192.168.123.210:4000', // work
     // ios: 'ws://192.168.1.214:4000', // home
-    ios: 'ws://192.168.1.147:4000', // condo
+    // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
     // ios: 'ws://192.168.0.16:4000', // Moms
-    // ios: 'ws://ambit-yoga-prod.herokuapp.com/',
+    ios: 'ws://ambit-yoga-prod.herokuapp.com/',
   }),
   options: {
     reconnect: true,
