@@ -25,7 +25,7 @@ const StoryFooter = ({
   const { items, title, type, topics } = story;
   const activeItem = { ...items[activeIndex] };
 
-  const { owner, stories } = activeItem;
+  const { owner, stories, views } = activeItem;
 
   const indexOfProject = stories.findIndex((s) => s.type === 'PROJECT');
   const project = indexOfProject !== -1 ? stories[indexOfProject] : null;
@@ -185,11 +185,11 @@ const StoryFooter = ({
       return (
         <>
           <Text
-            style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 8, paddingLeft: 8 }}
+            style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,1)', paddingBottom: 8, paddingLeft: 8 }}
           >
             {title || null}
             {'  '}
-            <Icon name="caret-right" solid size={20} color="white" />
+            <Icon name="caret-right" solid size={16} color="white" />
           </Text>
           {renderTopics(topics || [])}
         </>
@@ -201,11 +201,11 @@ const StoryFooter = ({
       return (
         <>
           <Text
-            style={{ ...defaultStyles.hugeBold, fontSize: 20, color: 'rgba(255,255,255,1)', paddingBottom: 8, paddingLeft: 8 }}
+            style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,1)', paddingBottom: 8, paddingLeft: 8 }}
           >
             {project.title || null}
             {'  '}
-            <Icon name="caret-right" solid size={20} color="white" />
+            <Icon name="caret-right" solid size={16} color="white" />
           </Text>
           {renderTopics(project.topics || [])}
         </>
@@ -244,7 +244,7 @@ const StoryFooter = ({
               }}
             >
               <Feather name="eye" solid size={20} color="rgba(255,255,255,0.8)" />
-              <Text style={{ ...defaultStyles.smallMedium, color: 'white', paddingTop: 2 }}>29</Text>
+              <Text style={{ ...defaultStyles.smallMedium, color: 'white', paddingTop: 2 }}>{views ? views.length : 0}</Text>
             </View>
             {/* <View
               style={{

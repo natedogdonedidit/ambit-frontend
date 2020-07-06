@@ -38,7 +38,7 @@ const StoryImage = ({ activeItem, videoRef, onProgress, onBuffer, onVideoEnd, is
   return (
     <SafeAreaView style={StyleSheet.absoluteFill}>
       {renderMedia()}
-      {isBuffering && <Loader loading={isBuffering} backgroundColor="transparent" color="white" />}
+      {isBuffering && <Loader loading={isBuffering} backgroundColor="transparent" color="white" size="small" />}
     </SafeAreaView>
   );
 };

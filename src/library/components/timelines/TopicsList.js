@@ -78,16 +78,17 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
       renderItem={({ item, section }) => {
         if (section.title === 'My Topics') {
           const { name, topicID } = item;
-          const { icon, color, parentTopic } = getTopicFromID(topicID);
+          const { parentTopic, color, icon } = getTopicFromID(topicID);
 
-          const isSubTopic = parentTopic.topicID !== topicID;
+          const isSubTopic = !!parentTopic;
+          const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;
           const subTopic = isSubTopic ? topicID : null;
 
           return (
             <View key={item} style={styles.categorySection}>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => navigation.navigate('Topic', { topicID: parentTopic.topicID, subTopic })}
+                onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })}
               >
                 <View style={{ ...styles.mainRow }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 50 }}>
