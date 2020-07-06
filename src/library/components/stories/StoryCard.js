@@ -53,7 +53,9 @@ const StoryCard = ({
   const newestUnseen = story.items.findIndex(({ views }) => {
     // return true if you have NOT viewed the story - this will set newestUnseen to that index
     if (views.length <= 0) return true
-    return views.some(({ id }) => id !== currentUserId)
+
+    const viewedByMe = views.some(({ id }) => id === currentUserId);
+    return !viewedByMe
   })
 
   // STATE

@@ -59,7 +59,16 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
 
     return stories.map((story) => {
       if (story.items.length > 0) {
-        return <StoryBox key={story.id} navigation={navigation} story={story} moreType="Topic" topicIDtoSearch={topicID} />;
+
+        const newestUnseen = story.items.findIndex(({ views }) => {
+          // return true if you have NOT viewed the story - this will set newestUnseen to that index
+          if (views.length <= 0) return true
+      
+          const viewedByMe = views.some(({ id }) => id === currentUserId);
+          return !viewedByMe
+        })
+
+        return <StoryBox key={`${story.id}-${newestUnseen}`} navigation={navigation} story={story} moreType="Topic" topicIDtoSearch={topicID} newestUnseen={newestUnseen}/>;
       }
       return null;
     });
