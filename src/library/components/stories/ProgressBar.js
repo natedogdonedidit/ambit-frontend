@@ -8,19 +8,13 @@ import { STORY_IMAGE_DURATION } from 'styles/constants'
 
 const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffering, paused }) => {
   const [pausedValue, setPausedValue] = useState(0);
-  const [buffering, setBuffering] = useState(true)
   const { width: screenWidth } = Dimensions.get('window');
   const [progressBar, setProgressBar] = useState(new Animated.Value(0));
   const { items } = story;
-  const activeItem = { ...items[activeIndex] };
-
-  // useEffect(() => {
-  //   console.log(`now: ${buffering}; setting buffering to ${isBuffering}`)
-  //   setBuffering(isBuffering)
-  // }, [isBuffering])
+  const thisItem = { ...items[i] };
 
   // individual length of this item
-  const itemDuration = items[i].duration || STORY_IMAGE_DURATION;
+  const itemDuration = thisItem.duration || STORY_IMAGE_DURATION;
 
   // get the entire length of the story items added together
   const storyLength = items.reduce((total, item) => {
@@ -34,19 +28,18 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
 
   useEffect(() => {
     if (activeIndex === i && isActive && !isBuffering) {
-      // console.log(buffering, isBuffering)
       // start the animation, when complete, increment index
-      console.log(`starting animation for ${itemDuration} - ${pausedValue * itemDuration} sec`)
+      // console.log(`starting animation for ${itemDuration} - ${pausedValue * itemDuration} sec`)
 
       Animated.timing(progressBar, {
         toValue: 1,
         duration: (1 - pausedValue) * itemDuration * 1000,
         easing: Easing.linear,
-        useNativeDriver: false
+        useNativeDriver: true,
       }).start(({ finished }) => {
         if (finished) {
           // IF VIDEO, let onVideoEnd incrementIndex so the video never gets cuttoff early
-          if (activeItem.type === 'IMAGE') {
+          if (thisItem.type === 'IMAGE') {
             incrementIndex()
           }
         } else {
@@ -54,7 +47,7 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
         }
       })
 
-      // progressBar.addListener(({value}) => console.log('val', value));
+      progressBar.addListener(() => null); // remove this listener somewhere
     }
 
   }, [activeIndex, isActive, paused, isBuffering])
@@ -62,7 +55,8 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
   useEffect(() => {
     if (activeIndex === i && isActive) {
       if (paused) {
-        progressBar.stopAnimation((value) => {
+          progressBar.stopAnimation((value) => {
+          // console.log('stopping animation with value', value)
           // save the timestamp (from 0-1) of when it was paused so we can adjust the next Animated.timing above
           setPausedValue(value)
           setProgressBar(new Animated.Value(value))
@@ -92,7 +86,8 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
 
     const barLengthAnim = progressBar.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, itemWidth - 2]
+      outputRange: [-(itemWidth - 2), 0], // used with tranform
+      // outputRange: [0, itemWidth -2], // used with width animation (useNativeDriver = false)
     })
 
     return (
@@ -113,10 +108,14 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
             top: 0,
             left: 0,
             height: 3,
-            width: barLengthAnim, // -2 bc marginRight
+            // width: barLengthAnim, // -2 bc marginRight
+            width: itemWidth - 2,
             borderRadius: 1.5,
             // marginRight: 5,
             backgroundColor: 'white',
+            transform: [{
+              translateX: barLengthAnim,
+            }]
           }}
         />
       </View>

@@ -35,6 +35,7 @@ export const StoryItemFragment = gql`
       name
       profilePic
     }
+    plays
   }
 `;
 

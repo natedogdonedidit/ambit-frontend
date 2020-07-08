@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, StatusBar, Alert, Dimensions, Animated } from 'react-native';
-import { useMutation, useLazyQuery, useQuery } from '@apollo/react-hooks';
+import { useMutation, useLazyQuery, useQuery, useApolloClient } from '@apollo/react-hooks';
 import { differenceInHours, setWeek } from 'date-fns';
 
 import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
@@ -43,7 +43,7 @@ const StoryCard = ({
   // option 5: pass in firstStory, with type = 'Profile'. First story will play followed by more from this user
 
   // moreType: 'Home', 'Topic', 'User', null means only show a single story
-
+  const client = useApolloClient()
   const { currentUserId } = useContext(UserContext);
   const { width } = Dimensions.get('window');
 
@@ -108,22 +108,24 @@ const StoryCard = ({
     },
   });
 
-  const [viewedStoryItem] = useMutation(VIEWED_STORY_ITEM_MUTATION, {
+  const [viewedStoryItem, { loading: loadingViewMutation }] = useMutation(VIEWED_STORY_ITEM_MUTATION, {
     variables: { storyItemID: activeItem.id },
     update(cache, { data: { viewedStoryItem } }) {
 
       // We get a single item from cache.
-      const storyItemInCache = cache.readFragment({
+      const storyItemInCache = client.readFragment({
         id: `StoryItem:${activeItem.id}`,
         fragment: StoryItemFragment,
         fragmentName: 'StoryItemFragment',
       });
 
+      console.log(`Added a view!!!: ${activeItem.views.length} -> ${viewedStoryItem.views.length}`)
+      console.log(`Added a play!!!: ${activeItem.plays} -> ${viewedStoryItem.plays}`)
+
       // Then, we update it.
       if (storyItemInCache) {
-
         // the new view is ALWAYS the currentUser
-        cache.writeFragment({
+        client.writeFragment({
           id: `StoryItem:${activeItem.id}`,
           fragment: StoryItemFragment,
           fragmentName: 'StoryItemFragment',
@@ -142,7 +144,9 @@ const StoryCard = ({
       console.log('setting is buffering false in IMAGE')
       setIsBuffering(false)
     }
-    viewedStoryItem()
+    if (isActive && !loadingViewMutation) {
+      viewedStoryItem()
+    } 
   }, [activeIndex])
 
   // anytime the story item changes, save the duration to state (if this story is active)
@@ -252,17 +256,17 @@ const StoryCard = ({
   };
 
   const onReadyForDisplay = () => {
-    console.log('onReadyForDisplay')
+    // console.log('onReadyForDisplay')
     // setIsBuffering(false)
   }
 
   const onLoadStart = () => {
-    console.log('onLoadStart')
+    // console.log('onLoadStart')
     // setIsBuffering(true)
   }
 
   const onLoad = () => {
-    console.log('onLoad')
+    // console.log('onLoad')
     // setIsBuffering(false)
   }
 
@@ -276,8 +280,6 @@ const StoryCard = ({
     // setCurrentTime(0);
     if (activeIndex < items.length - 1) {
       setActiveIndex((prevState) => prevState + 1);
-      
-      console.log(`increment index & initializing isBuffering to true in StoryCard`)
       setIsBuffering(true)
       setVideoStarted(false)
     }
@@ -291,15 +293,11 @@ const StoryCard = ({
   const decrementIndex = () => {
     if (activeIndex > 0) {
       setActiveIndex((prevState) => prevState - 1);
-
-      console.log(`decrement index & initializing isBuffering to true in StoryCard`)
       setIsBuffering(true)
       setVideoStarted(false)
     } else {
       tryGoToPrevStory();
     }
-
-    // setCurrentTime(0);
   };
 
   const engagePause = () => {

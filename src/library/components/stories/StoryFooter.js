@@ -25,7 +25,7 @@ const StoryFooter = ({
   const { items, title, type, topics } = story;
   const activeItem = { ...items[activeIndex] };
 
-  const { owner, stories, views } = activeItem;
+  const { owner, stories, views, plays } = activeItem;
 
   const indexOfProject = stories.findIndex((s) => s.type === 'PROJECT');
   const project = indexOfProject !== -1 ? stories[indexOfProject] : null;
@@ -129,7 +129,7 @@ const StoryFooter = ({
     // }
 
     return (
-      <View style={{ paddingRight: 8, paddingBottom: 45, paddingLeft: 10 }}>
+      <View style={{ paddingRight: 8, paddingBottom: 55, paddingLeft: 10 }}>
         <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
           <ProfilePic size="medium" user={owner} navigation={navigation} disableVideo border borderWidth={0.5} />
           {!isMyPost && (
@@ -159,7 +159,7 @@ const StoryFooter = ({
             alignItems: 'center',
           }}
         >
-          <Icon name="heart" solid size={30} color="white" />
+          <Icon name="heart" solid size={24} color="white" />
           <Text style={{ ...defaultStyles.smallBold, color: 'white', paddingTop: 2 }}>427</Text>
         </View>
         <View
@@ -171,7 +171,7 @@ const StoryFooter = ({
             alignItems: 'center',
           }}
         >
-          <Icon name="share" solid size={30} color="white" />
+          <Icon name="share" solid size={24} color="white" />
         </View>
       </View>
     );
@@ -185,7 +185,7 @@ const StoryFooter = ({
       return (
         <>
           <Text
-            style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,1)', paddingBottom: 8, paddingLeft: 8 }}
+            style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,1)', paddingBottom: 12, paddingLeft: 8 }}
           >
             {title || null}
             {'  '}
@@ -201,7 +201,7 @@ const StoryFooter = ({
       return (
         <>
           <Text
-            style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,1)', paddingBottom: 8, paddingLeft: 8 }}
+            style={{ ...defaultStyles.largeSemibold, color: 'rgba(255,255,255,1)', paddingBottom: 12, paddingLeft: 8 }}
           >
             {project.title || null}
             {'  '}
@@ -244,7 +244,7 @@ const StoryFooter = ({
               }}
             >
               <Feather name="eye" solid size={20} color="rgba(255,255,255,0.8)" />
-              <Text style={{ ...defaultStyles.smallMedium, color: 'white', paddingTop: 2 }}>{views ? views.length : 0}</Text>
+              <Text style={{ ...defaultStyles.smallMedium, color: 'white', paddingTop: 2 }}>{plays}</Text>
             </View>
             {/* <View
               style={{
