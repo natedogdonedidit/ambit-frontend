@@ -26,6 +26,15 @@ import VIEWED_STORY_ITEM_MUTATION from 'library/mutations/VIEWED_STORY_ITEM_MUTA
 import { StoryItemFragment } from 'library/queries/_fragments';
 import { STORY_IMAGE_DURATION } from 'styles/constants'
 
+// custom hook to read previous props or state
+function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
 const StoryCard = ({
   navigation,
   story,
@@ -35,6 +44,8 @@ const StoryCard = ({
   favoriteTopics,
   refreshCard,
   setDisableOutterScroll,
+  // i,
+  storyKey,
 }) => {
   // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
   // option 2: pass in an intro. Intro will play, then modal will close.
@@ -119,8 +130,8 @@ const StoryCard = ({
         fragmentName: 'StoryItemFragment',
       });
 
-      console.log(`Added a view!!!: ${activeItem.views.length} -> ${viewedStoryItem.views.length}`)
-      console.log(`Added a play!!!: ${activeItem.plays} -> ${viewedStoryItem.plays}`)
+      // console.log(`Added a view!!!: ${activeItem.views.length} -> ${viewedStoryItem.views.length}`)
+      // console.log(`Added a play!!!: ${activeItem.plays} -> ${viewedStoryItem.plays}`)
 
       // Then, we update it.
       if (storyItemInCache) {
@@ -141,12 +152,12 @@ const StoryCard = ({
   // anytime the story item changes, add the user to viewed list
   useEffect(() => {
     if (activeItem.type === 'IMAGE') {
-      console.log('setting is buffering false in IMAGE')
+      // console.log('setting is buffering false in IMAGE')
       setIsBuffering(false)
     }
     if (isActive && !loadingViewMutation) {
       viewedStoryItem()
-    } 
+    }
   }, [activeIndex])
 
   // anytime the story item changes, save the duration to state (if this story is active)
@@ -187,13 +198,13 @@ const StoryCard = ({
 
   useEffect(() => {
     // if changed from not active to active - unpause
-    if (paused && isActive) {
-      if (activeItem.type === 'VIDEO') {
-        videoRef.current.seek(0);
-      }
-      // setCurrentTime(0);
-      setPaused(false);
-    }
+    // if (paused && isActive) {
+    //   if (activeItem.type === 'VIDEO') {
+    //     videoRef.current.seek(0);
+    //   }
+    //   // setCurrentTime(0);
+    //   setPaused(false);
+    // }
 
     // if changed from active to not active - pause
     if (!paused && !isActive) {
@@ -202,6 +213,19 @@ const StoryCard = ({
       if (activeIndex < items.length - 1) {
         setActiveIndex((prevState) => prevState + 1);
       }
+    }
+
+    if (isActive) {
+      if (paused) {
+        if (activeItem.type === 'VIDEO') {
+          videoRef.current.seek(0);
+        }
+        // setCurrentTime(0);
+        setPaused(false);
+
+        // if ()
+      }
+
     }
   }, [isActive]);
 
@@ -246,7 +270,7 @@ const StoryCard = ({
   const onProgress = ({ currentTime }) => {
     // when video first starts only
     if (currentTime > 0 && currentTime < 1) {
-      console.log('video started - setting buffering false', currentTime)
+      // console.log('video started - setting buffering false', currentTime)
       setVideoStarted(true)
       setIsBuffering(false)
     }
@@ -271,13 +295,13 @@ const StoryCard = ({
   }
 
   const onVideoEnd = () => {
+    console.log('on video end')
     incrementIndex();
   };
 
   // CUSTOM FUNCTIONS
 
   const incrementIndex = () => {
-    // setCurrentTime(0);
     if (activeIndex < items.length - 1) {
       setActiveIndex((prevState) => prevState + 1);
       setIsBuffering(true)
@@ -579,8 +603,8 @@ const StoryCard = ({
       <StoryImage
         activeItem={activeItem}
         videoRef={videoRef}
-        onLoad={onLoad} 
-        onLoadStart={onLoadStart} 
+        onLoad={onLoad}
+        onLoadStart={onLoadStart}
         onReadyForDisplay={onReadyForDisplay}
         onProgress={onProgress}
         onBuffer={onBuffer}
@@ -597,13 +621,14 @@ const StoryCard = ({
         engagePause={engagePause}
         disengagePause={disengagePause}
       />
-      <StoryProgressBars 
-        story={story} 
+      <StoryProgressBars
+        story={story}
         activeIndex={activeIndex}
         incrementIndex={incrementIndex}
         isActive={isActive}
         isBuffering={isBuffering}
         paused={paused}
+        storyKey={storyKey}
       />
       <StoryHeader story={story} activeIndex={activeIndex} navigation={navigation} />
       <StoryFooter

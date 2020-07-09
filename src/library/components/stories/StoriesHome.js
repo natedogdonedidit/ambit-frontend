@@ -39,6 +39,7 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
 
   useEffect(() => {
     if (networkStatusStories === 7 && refetching) {
+      console.log('refetching stories Home')
       refetchStories();
     }
   }, [refetching]);
@@ -165,7 +166,7 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
 
       // if topic story
       if (isTopicStory) {
-        return <ExploreTopicButton key={story.topicID} navigation={navigation} story={null} topicID={story.topicID} />;
+        return <ExploreTopicButton key={story.topicID} navigation={navigation} story={null} topicID={story.topicID} refetching={refetching} />;
       }
 
       // if user story

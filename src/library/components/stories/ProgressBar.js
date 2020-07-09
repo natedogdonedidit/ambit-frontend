@@ -27,9 +27,10 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
   const itemWidth = ratio * usableWidth;
 
   useEffect(() => {
+    // console.log(activeIndex, i, isActive, isBuffering, paused)
     if (activeIndex === i && isActive && !isBuffering) {
       // start the animation, when complete, increment index
-      // console.log(`starting animation for ${itemDuration} - ${pausedValue * itemDuration} sec`)
+      // console.log(`starting animation for ${itemDuration} - ${pausedValue * itemDuration} sec`, thisItem.id)
 
       Animated.timing(progressBar, {
         toValue: 1,
@@ -38,23 +39,27 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
         useNativeDriver: true,
       }).start(({ finished }) => {
         if (finished) {
+          // console.log(finished)
           // IF VIDEO, let onVideoEnd incrementIndex so the video never gets cuttoff early
           if (thisItem.type === 'IMAGE') {
+            // console.log('getting here should not!!')
+            // console.log(i)
             incrementIndex()
+            setProgressBar(new Animated.Value(0))
           }
         } else {
           setProgressBar(new Animated.Value(0))
         }
       })
 
-      progressBar.addListener(() => null); // remove this listener somewhere
+      progressBar.addListener(() => null) // remove this listener somewhere
     }
-
   }, [activeIndex, isActive, paused, isBuffering])
 
   useEffect(() => {
     if (activeIndex === i && isActive) {
       if (paused) {
+        // console.log('stopping here paused', i)
           progressBar.stopAnimation((value) => {
           // console.log('stopping animation with value', value)
           // save the timestamp (from 0-1) of when it was paused so we can adjust the next Animated.timing above
@@ -63,7 +68,14 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
         })
       }
     }
-  }, [paused])
+
+    // if the index or story changes somehow - stop the animation
+    if (activeIndex > i || !isActive) {
+      // console.log('stopping here', i, thisItem.id)
+      progressBar.stopAnimation()
+      setProgressBar(new Animated.Value(0))
+    }
+  }, [paused, activeIndex])
 
   // if its already been viewed
   if (i < activeIndex) {

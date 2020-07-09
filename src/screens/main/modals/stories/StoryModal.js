@@ -139,11 +139,6 @@ const StoryModal = ({ navigation, route }) => {
     if (moreType === 'Topic') {
       getStoriesTopic();
     }
-
-    // if (moreType === 'User') {
-    // }
-
-    // if no moreType
   }, [moreType]);
 
   // CUSTOM FUNCTIONS
@@ -158,6 +153,7 @@ const StoryModal = ({ navigation, route }) => {
   };
 
   const tryGoToNextStory = () => {
+    // console.log('going to next story', storyQIndex)
     if (storyQIndex < storyQ.length - 1) {
       goToNextStory();
     } else {
@@ -167,6 +163,7 @@ const StoryModal = ({ navigation, route }) => {
   };
 
   const tryGoToPrevStory = () => {
+    // console.log('going to prev story', storyQIndex)
     if (storyQIndex > 0) {
       goToPrevStory();
     }
@@ -196,6 +193,8 @@ const StoryModal = ({ navigation, route }) => {
     );
   }
 
+  // console.log(storyQ)
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />
@@ -217,9 +216,11 @@ const StoryModal = ({ navigation, route }) => {
         renderItem={({ item, index }) => {
           return (
             <StoryCard
+              // key={`${index}${storyKey}`} // for forcing a re-render. this isnt so good bc then cant save activeIndex of that story
               key={index}
               navigation={navigation}
               story={item}
+              storyKey={storyKey}
               isActive={index === storyQIndex}
               tryGoToPrevStory={tryGoToPrevStory}
               tryGoToNextStory={tryGoToNextStory}

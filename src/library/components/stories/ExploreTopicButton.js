@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,7 +14,7 @@ import StoryBox from 'library/components/stories/StoryBox';
 const placeholderImage =
   'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80';
 
-const ExploreTopicButton = ({ navigation, topicID }) => {
+const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
   const { icon, color, image, name } = getTopicFromID(topicID);
 
   // GETS STORIES FOR YOUR FAV TOPICS
@@ -34,6 +34,13 @@ const ExploreTopicButton = ({ navigation, topicID }) => {
   const refetchingStories = networkStatusStories === 4;
   const fetchingMoreStories = networkStatusStories === 3;
   const loadingStories = networkStatusStories === 1;
+
+  useEffect(() => {
+    if (networkStatusStories === 7 && refetching) {
+      console.log('refetching stories Topic', topicID)
+      refetchStories();
+    }
+  }, [refetching]);
 
   if (errorStories) {
     console.log(errorStories);

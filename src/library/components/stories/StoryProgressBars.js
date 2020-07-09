@@ -6,13 +6,13 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProgressBar from './ProgressBar';
 
-const StoryProgressBars = ({ story, activeIndex, incrementIndex, isActive, isBuffering, paused }) => {
+const StoryProgressBars = ({ story, activeIndex, incrementIndex, isActive, isBuffering, paused, storyKey }) => {
   const insets = useSafeArea();
 
   const renderProgressBars = () => {
 
     return story.items.map((item, i) => {
-      return <ProgressBar key={item.id} i={i} activeIndex={activeIndex} incrementIndex={incrementIndex} isActive={isActive} story={story} isBuffering={isBuffering} paused={paused}/>
+      return <ProgressBar key={`${item.id}${storyKey}`} i={i} activeIndex={activeIndex} incrementIndex={incrementIndex} isActive={isActive} story={story} isBuffering={isBuffering} paused={paused}/>
     });
   };
 
