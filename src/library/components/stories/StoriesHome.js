@@ -191,7 +191,7 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
       <ScrollView
         horizontal
         style={styles.stories}
-        contentContainerStyle={{ paddingVertical: 10, paddingRight: 10 }}
+        contentContainerStyle={{ paddingVertical: 10, paddingRight: 15, paddingLeft: 5 }}
         showsHorizontalScrollIndicator={false}
       >
         {/* <NewStoryButton navigation={navigation} /> */}

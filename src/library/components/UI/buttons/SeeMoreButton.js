@@ -12,7 +12,7 @@ const SeeMoreButton = ({ onPress, loading = false }) => {
       <View style={styles.sectionHeader}>
         <Text style={{ ...defaultStyles.defaultText, color: colors.purp }}>{loading ? 'Loading' : 'Show'} more</Text>
         {loading ? (
-          <View style={{ paddingRight: 15 }}>
+          <View style={{ paddingHorizontal: 25 }}>
             <Loader size="small" loading={loading} full backgroundColor={colors.white} />
           </View>
         ) : (
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     height: 42,
     paddingHorizontal: 15,

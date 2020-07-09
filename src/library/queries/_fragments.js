@@ -289,6 +289,11 @@ export const BasicPost = gql`
     updates {
       ...UpdateFragment
     }
+    views {
+      id
+      name
+      profilePic
+    }
     _deleted
   }
   ${MinimalUser}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList, TouchableOpacity } from 'react-native';
-import { useQuery } from 'react-apollo';
+import { useQuery, useMutation } from 'react-apollo';
 import Feather from 'react-native-vector-icons/Feather';
 
 import colors from 'styles/colors';
@@ -17,6 +17,7 @@ import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import { UserContext } from 'library/utils/UserContext';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
@@ -72,6 +73,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   } = useQuery(FORYOU_POSTS_QUERY, {
     variables: {
       first: 10,
+      network,
     },
     onError: (e) => console.log('error loading for you posts', e),
     notifyOnNetworkStatusChange: true,
@@ -108,7 +110,14 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     notifyOnNetworkStatusChange: true,
   });
 
+    // VIEWED POST MUTATION
+    const [viewedPost] = useMutation(VIEWED_POST_MUTATION);
+
   useQuery(STORIES_HOME_QUERY);
+
+  const submitView = (postId) => {
+    
+  }
 
   // networkStatus states:
   // 1: loading
@@ -280,23 +289,38 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         renderSectionHeader={({ section }) => (
           <HomeTimelineHeader navigation={navigation} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
         )}
-        // renderSectionFooter={({ section }) => {
-        //   if (section.name === 'Network' && dataPostsNetwork.postsNetwork.pageInfo.hasNextPage) {
-        //     return <SeeMoreButton onPress={fetchMorePostsNetworkMethod} loading={fetchingMorePostsNetwork} />;
-        //   }
+        renderSectionFooter={({ section }) => {
+          if (activeTimeline === 0 && dataPostsForYou.postsForYou.pageInfo.hasNextPage) {
+            return <SeeMoreButton onPress={fetchMorePostsForYou} loading={fetchingMorePostsForYou} />;
+          }
+          if (activeTimeline === 1 && dataPostsNetwork.postsNetwork.pageInfo.hasNextPage) {
+            return <SeeMoreButton onPress={fetchMorePostsNetwork} loading={fetchingMorePostsNetwork} />;
+          }
+          if (activeTimeline === 2 && dataPostsMyGoals.postsMyGoals.pageInfo.hasNextPage) {
+            return <SeeMoreButton onPress={fetchMorePostsMyGoals} loading={fetchingMorePostsMyGoals} />;
+          }
 
-        //   if (section.name === 'For You' && fetchingMorePostsForYou) {
-        //     return (
-        //       <View style={{ width: '100%', height: 50, marginBottom: 15 }}>
-        //         <Loader loading={fetchingMorePostsForYou} size="small" />
-        //       </View>
-        //     );
-        //   }
-
-        //   return <View style={{ height: 15 }} />;
-        // }}
+          return <View style={{ height: 15 }} />;
+        }}
         renderItem={({ item, section }) => {
           return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
+        }}
+        viewabilityConfig={{
+          minimumViewTime: 100,
+          waitForInteraction: false,
+          itemVisiblePercentThreshold: 75,
+        }}
+        onViewableItemsChanged={({ viewableItems, changed}) => {
+          if (changed.length > 0) {
+            changed.forEach(({ index, isViewable, item }) => {
+              if (index >=0 && isViewable && item.node) {
+                if (typeof item.node === 'object' && item.node.id) {
+                  console.log('submitting view for ', item.node.id)
+                  viewedPost({ variables: { postId: item.node.id }})
+                } 
+              }
+            })
+          }
         }}
         onEndReachedThreshold={1.2}
         onEndReached={(info) => {

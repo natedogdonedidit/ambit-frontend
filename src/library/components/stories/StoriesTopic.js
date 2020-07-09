@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-apollo';
 import Feather from 'react-native-vector-icons/Feather';
@@ -15,8 +15,11 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import StoryBox from 'library/components/stories/StoryBox';
 import NewStoryButton from 'library/components/stories/NewStoryButton';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
+import { UserContext } from 'library/utils/UserContext';
 
 const StoriesTopic = ({ navigation, refetching, topicID }) => {
+  const { currentUserId } = useContext(UserContext);
+
   // QUERIES
   const {
     error: errorStories,
@@ -63,12 +66,12 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
         const newestUnseen = story.items.findIndex(({ views }) => {
           // return true if you have NOT viewed the story - this will set newestUnseen to that index
           if (views.length <= 0) return true
-      
+
           const viewedByMe = views.some(({ id }) => id === currentUserId);
           return !viewedByMe
         })
 
-        return <StoryBox key={`${story.id}-${newestUnseen}`} navigation={navigation} story={story} moreType="Topic" topicIDtoSearch={topicID} newestUnseen={newestUnseen}/>;
+        return <StoryBox key={`${story.id}-${newestUnseen}`} navigation={navigation} story={story} moreType="Topic" topicIDtoSearch={topicID} newestUnseen={newestUnseen} />;
       }
       return null;
     });
@@ -78,7 +81,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
     <ScrollView
       horizontal
       style={styles.stories}
-      contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 5 }}
+      contentContainerStyle={{ paddingVertical: 10, paddingRight: 15, paddingLeft: 5 }}
       showsHorizontalScrollIndicator={false}
     >
       {/* <NewStoryButton navigation={navigation} /> */}

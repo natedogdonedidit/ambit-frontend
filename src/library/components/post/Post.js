@@ -1,8 +1,8 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import { format } from 'date-fns';
 
 import colors from 'styles/colors';
@@ -37,6 +37,7 @@ const Post = ({
 }) => {
   // HOOKS
   const { currentUserId } = useContext(UserContext);
+  const client = useApolloClient()
 
   // MUTATIONS - like, share, delete
   const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
