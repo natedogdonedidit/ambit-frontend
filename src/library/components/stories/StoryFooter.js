@@ -105,6 +105,7 @@ const StoryFooter = ({
                       justifyContent: 'center',
                       backgroundColor: 'rgba(255,255,255,0.4)',
                       marginRight: 5,
+                      ...defaultStyles.shadowButton,
                     }}
                   >
                     {icon && (
@@ -130,7 +131,7 @@ const StoryFooter = ({
 
     return (
       <View style={{ paddingRight: 8, paddingBottom: 55, paddingLeft: 10 }}>
-        <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
+        {/* <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
           <ProfilePic size="medium" user={owner} navigation={navigation} disableVideo border borderWidth={0.5} />
           {!isMyPost && (
             <View
@@ -149,7 +150,7 @@ const StoryFooter = ({
               <Icon name="plus" solid size={10} color={colors.white} style={{ textAlign: 'center' }} />
             </View>
           )}
-        </View>
+        </View> */}
         <View
           style={{
             width: 50,
@@ -159,8 +160,21 @@ const StoryFooter = ({
             alignItems: 'center',
           }}
         >
-          <Icon name="heart" solid size={24} color="white" />
-          <Text style={{ ...defaultStyles.smallBold, color: 'white', paddingTop: 2 }}>427</Text>
+          <View
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              // marginTop: 24,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(255,255,255,0.4)',
+              ...defaultStyles.shadowButton
+            }}
+          >
+            <Icon name="heart" solid size={20} color="white" style={{ paddingTop: 2 }} />
+          </View>
+          {/* <Text style={{ ...defaultStyles.smallBold, color: 'white', paddingTop: 2 }}>427</Text> */}
         </View>
         <View
           style={{
@@ -171,7 +185,20 @@ const StoryFooter = ({
             alignItems: 'center',
           }}
         >
-          <Icon name="share" solid size={24} color="white" />
+                    <View
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 20,
+              // marginTop: 24,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'rgba(255,255,255,0.4)',
+              ...defaultStyles.shadowButton
+            }}
+          >
+            <Icon name="share" solid size={20} color="white" style={{ paddingTop: 1 }} />
+          </View>
         </View>
       </View>
     );

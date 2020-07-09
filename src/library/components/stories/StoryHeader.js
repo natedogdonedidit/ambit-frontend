@@ -31,7 +31,12 @@ const StoryHeader = ({ story, activeIndex, navigation }) => {
         <View style={styles.header}>
           <ProfilePic size="small" user={owner} navigation={navigation} disableVideo />
           <View>
-            <Text style={{ ...defaultStyles.defaultBold, color: 'white', paddingLeft: 8 }}>{owner.name}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
+              <Text style={{ ...defaultStyles.defaultBold, color: 'white', paddingRight: 10 }}>{owner.name}</Text>
+              <View style={{width: 46, height: 18, backgroundColor: colors.peach, borderRadius: 9, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ ...defaultStyles.smallSemibold, fontSize: 10, color: 'white' }}>Follow</Text>
+              </View>
+            </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
               {owner.headline && (
                 <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>{owner.headline}</Text>
