@@ -1,13 +1,13 @@
 import gql from 'graphql-tag';
-import { LoggedInUser } from 'library/queries/_fragments';
+import { AllTopicsFragment } from 'library/queries/_fragments';
 
 const EDIT_TOPICS_FREELANCE_MUTATION = gql`
-  mutation EDIT_TOPICS_FREELANCE_MUTATION($id: ID!, $topics: [TopicWhereUniqueInput]!) {
-    editTopicsFreelance(id: $id, topics: $topics) {
-      ...LoggedInUser
+  mutation EDIT_TOPICS_FREELANCE_MUTATION($topics: [TopicWhereUniqueInput]!) {
+    editTopicsFreelance(topics: $topics) {
+      ...AllTopicsFragment
     }
   }
-  ${LoggedInUser}
+  ${AllTopicsFragment}
 `;
 
 export default EDIT_TOPICS_FREELANCE_MUTATION;

@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, Animated, TouchableOpacity, FlatList, SectionList } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -11,39 +11,31 @@ import { getParentTopicID, getIconID, getTopicFromID } from 'library/utils';
 import Section from 'library/components/UI/Section';
 import TextButton from 'library/components/UI/buttons/TextButton';
 
-import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
-import Loader from 'library/components/UI/Loader';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const TopicsList = ({ navigation, scrollY, paddingTop }) => {
+  const { data } = useQuery(CURRENT_USER_QUERY);
 
-  // QUERY TO GET USERS TOPICS
-  const { data } = useQuery(CURRENT_USER_TOPICS);
+  let favoritesList = [];
 
-  // compiles the list of favoriteTopics whenever myTopics changes
-  const favoriteTopics = useMemo(() => {
-    let newFavoriteTopics = []
-    if (data) {
-      const { myTopics } = data;
-      if (myTopics) {
-        if (myTopics.topicsFocus.length > 0) {
-          newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.topicID)];
-        }
-        if (myTopics.topicsInterest.length > 0) {
-          if (newFavoriteTopics === []) {
-            newFavoriteTopics = [...myTopics.topicsInterest.map((top) => top.topicID)];
-          } else {
-            // only add topics that dont already exist
-            myTopics.topicsInterest.forEach((topic) => {
-              if (newFavoriteTopics.findIndex((favTopicID) => favTopicID === topic.topicID) === -1) {
-                newFavoriteTopics = [...newFavoriteTopics, topic.topicID];
-              }
-            });
+  const { userLoggedIn } = data;
+  if (userLoggedIn) {
+    if (userLoggedIn.topicsFocus.length > 0) {
+      favoritesList = [...userLoggedIn.topicsFocus];
+    }
+    if (userLoggedIn.topicsInterest.length > 0) {
+      if (favoritesList === []) {
+        favoritesList = [...userLoggedIn.topicsInterest];
+      } else {
+        // only add topics that dont already exist
+        userLoggedIn.topicsInterest.forEach((topic) => {
+          if (favoritesList.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
+            favoritesList = [...favoritesList, topic];
           }
-        }
+        });
       }
     }
-    return [...newFavoriteTopics]
-  }, [data])
+  }
 
   return (
     <SectionList
@@ -66,7 +58,7 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
       sections={[
         {
           title: 'My Topics',
-          data: favoriteTopics,
+          data: favoritesList,
         },
         {
           title: 'More Topics',
@@ -85,8 +77,8 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
       )}
       renderItem={({ item, section }) => {
         if (section.title === 'My Topics') {
-          const topicID = item;
-          const { parentTopic, color, icon, name } = getTopicFromID(topicID);
+          const { name, topicID } = item;
+          const { parentTopic, color, icon } = getTopicFromID(topicID);
 
           const isSubTopic = !!parentTopic;
           const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;

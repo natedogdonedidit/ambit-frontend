@@ -24,7 +24,7 @@ const HeaderNotifications = ({ navigation, handleMiddle, handleRight, user }) =>
       </TouchableOpacity>
       <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
         {/* <View style={styles.iconCircle}> */}
-        <Icon name="cog" size={20} color={colors.iconDark} />
+        {/* <Icon name="cog" size={20} color={colors.iconDark} /> */}
         {/* </View> */}
       </TouchableOpacity>
     </View>
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
+    zIndex: 100,
   },
   leftSide: {
     width: 60,

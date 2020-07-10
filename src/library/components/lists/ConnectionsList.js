@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, FlatList, SectionList, RefreshControl, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { useEffect} from 'react';
+import { StyleSheet, View, Text, FlatList, SectionList, RefreshControl, ActivityIndicator, TouchableOpacity, Animated } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
@@ -10,8 +10,9 @@ import Loader from 'library/components/UI/Loader';
 import Section from 'library/components/UI/Section';
 import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 import SuggestedConnection from './SuggestedConnection';
+import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
-const ConnectionsList = ({ navigation }) => {
+const ConnectionsList = ({ navigation, userLoggedIn, scrollY, showRefreshing, setShowRefreshing }) => {
   // QUERIES
   const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(ALL_CONNECTIONS_QUERY, {
     // fetchPolicy: 'cache-and-network',
@@ -24,10 +25,18 @@ const ConnectionsList = ({ navigation }) => {
   const loading = networkStatus === 1;
   const ok = networkStatus === 7;
 
+  useEffect(() => {
+    if (refetching) {
+      setShowRefreshing(true);
+    } else if (showRefreshing) {
+      setShowRefreshing(false);
+    }
+  }, [refetching]);
+
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
     return (
-      <View style={{ ...styles.timeline, paddingTop: +10, paddingBottom: 20 }}>
+      <View style={{ ...styles.timeline, paddingTop: 10, paddingBottom: 20 }}>
         <Text style={{ textAlign: 'center', width: '100%', color: 'red' }}>Error loading connections</Text>
         <TouchableOpacity onPress={() => refetch()}>
           <Text>Refetch</Text>
@@ -46,6 +55,7 @@ const ConnectionsList = ({ navigation }) => {
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
+    setShowRefreshing(true);
     refetch();
   };
 
@@ -53,11 +63,23 @@ const ConnectionsList = ({ navigation }) => {
   return (
     <View style={{ flex: 1 }}>
       <SectionList
-        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} size="small" />}
+        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
         refreshing={refetching}
         contentContainerStyle={{ paddingTop: 15, paddingBottom: 20 }}
         style={styles.timeline}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: scrollY,
+                },
+              },
+            },
+          ],
+          { useNativeDriver: false }
+        )}
         keyExtractor={(item, index) => item + index}
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
@@ -72,24 +94,32 @@ const ConnectionsList = ({ navigation }) => {
           },
           {
             name: 'Users',
-            title: 'More matches for you',
+            title: activeGoalsWithMatchesFiltered.length > 0 ? 'More matches for you' : 'Based on your topics',
             data: matches,
           },
         ]}
         renderSectionHeader={({ section }) => {
           // only need the headers if we have content in both sections
-          if (activeGoalsWithMatchesFiltered.length > 0 && matches.length > 0) {
-            return <Section text={section.title} marginTop={false} />;
+          if (section.name === 'Goals' && activeGoalsWithMatchesFiltered.length > 0) {
+            return <Section text={section.title} marginTop={false} />
           }
+
+          if (section.name === 'Users' && matches.length > 0) {
+            return <Section text={section.title} marginTop={false} />
+          }
+
         }}
         renderSectionFooter={({ section }) => {
-          // if (section.name === 'Goals' && activeGoalsWithMatches.length <= 0) {
-          //   return (
-          //     <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingVertical: 30, paddingHorizontal: 15 }}>
-          //       After you post a goal you'll find your matches here
-          //     </Text>
-          //   );
-          // }
+          if (section.name === 'Goals' && activeGoalsWithMatchesFiltered.length <= 0) {
+            return (
+              <View style={styles.createGoalMessage}>
+                <Text style={{ ...defaultStyles.largeMute, textAlign: 'center', paddingBottom: 10, paddingHorizontal: 15 }}>
+                  Create a goal and find your matches here
+                </Text>
+                <ButtonDefault onPress={() => navigation.navigate('NewPostModal', { userLoggedIn })}>Create a goal</ButtonDefault>
+              </View>
+            );
+          }
 
           if (section.name === 'Users' && matches.length <= 0) {
             return (
@@ -119,6 +149,17 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  createGoalMessage: {
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    backgroundColor: 'white',
+    marginBottom: 15,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.borderBlack,
+  }
 });
 
 export default ConnectionsList;

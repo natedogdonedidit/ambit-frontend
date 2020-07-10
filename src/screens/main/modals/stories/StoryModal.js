@@ -7,23 +7,25 @@ import { UserContext } from 'library/utils/UserContext';
 
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import StoryCard from 'library/components/stories/StoryCard';
 import Loader from 'library/components/UI/Loader';
 
+// option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
+// option 2: pass in an intro. Intro will play, then modal will close.
+// option 3: pass in firstStory, with a topicIDtoSearch. First story will play followed by more stories from that topic
+// option 4: pass in firstStory, with type = 'Home'. First story will play followed by more from your followers
+// option 5: pass in firstStory, with type = 'Profile'. First story will play followed by more from this user
+
+// moreType: 'Home', 'Topic', 'User', null means only show a single story
+
 const StoryModal = ({ navigation, route }) => {
-  const storyFlatlist = useRef();
-  const [disableOutterScroll, setDisableOutterScroll] = useState(false);
-  // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
-  // option 2: pass in an intro. Intro will play, then modal will close.
-  // option 3: pass in firstStory, with a topicIDtoSearch. First story will play followed by more stories from that topic
-  // option 4: pass in firstStory, with type = 'Home'. First story will play followed by more from your followers
-  // option 5: pass in firstStory, with type = 'Profile'. First story will play followed by more from this user
-
-  // moreType: 'Home', 'Topic', 'User', null means only show a single story
-
   const { story = null, intro = null, moreType = null, topicIDtoSearch } = route.params;
   const { width } = Dimensions.get('window');
+  const storyFlatlist = useRef();
+
+  const [disableOutterScroll, setDisableOutterScroll] = useState(false);
+  const [favoriteTopics, setFavoriteTopics] = useState(topicIDtoSearch ? [topicIDtoSearch] : [])
 
   // STATE
   const [storyQIndex, setStoryQIndex] = useState(0);
@@ -32,30 +34,32 @@ const StoryModal = ({ navigation, route }) => {
   // VARIABLES
 
   // QUERY TO GET USERS TOPICS
-  const { data } = useQuery(CURRENT_USER_QUERY);
-  let favoriteTopics = [topicIDtoSearch || null];
-  const { userLoggedIn } = data;
+  const { data } = useQuery(CURRENT_USER_TOPICS);
+  const { myTopics } = data;
 
   // effect compiles the list of favoriteTopics
   useEffect(() => {
-    if (userLoggedIn) {
-      if (userLoggedIn.topicsFocus.length > 0) {
-        favoriteTopics = [...favoriteTopics, ...userLoggedIn.topicsFocus.map((top) => top.topicID)];
+    let newFavoriteTopics = topicIDtoSearch ? [topicIDtoSearch] : []
+    if (myTopics) {
+      if (myTopics.topicsFocus.length > 0) {
+        newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.topicID)];
       }
-      if (userLoggedIn.topicsInterest.length > 0) {
-        if (favoriteTopics === []) {
-          favoriteTopics = [...userLoggedIn.topicsInterest.map((top) => top.topicID)];
+      if (myTopics.topicsInterest.length > 0) {
+        if (newFavoriteTopics === []) {
+          newFavoriteTopics = [...myTopics.topicsInterest.map((top) => top.topicID)];
         } else {
           // only add topics that dont already exist
-          userLoggedIn.topicsInterest.forEach((topic) => {
-            if (favoriteTopics.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
-              favoriteTopics = [...favoriteTopics, topic.topicID];
+          myTopics.topicsInterest.forEach((topic) => {
+            if (newFavoriteTopics.findIndex((favTopicID) => favTopicID === topic.topicID) === -1) {
+              newFavoriteTopics = [...newFavoriteTopics, topic.topicID];
             }
           });
         }
       }
     }
-  }, [userLoggedIn]);
+
+    setFavoriteTopics([...newFavoriteTopics])
+  }, [myTopics]);
 
   // scrolls to index when story index changes
   useEffect(() => {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
@@ -8,12 +8,13 @@ import defaultStyles from 'styles/defaultStyles';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
 import EDIT_TOPICS_INVEST_MUTATION from 'library/mutations/EDIT_TOPICS_INVEST_MUTATION';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
-const TopicsOfInvest = ({ navigation, userLoggedIn }) => {
-  const { id } = userLoggedIn;
-  const topics = userLoggedIn.topicsInvest || [];
+const TopicsOfInvest = ({ navigation, myTopics }) => {
+  const { topicsFocus, topicsInterest, topicsFreelance, topicsInvest: topics, topicsMentor } = myTopics;
   const topicsIDonly = topics.map((topic) => topic.topicID);
+
+  const client = useApolloClient()
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -50,23 +51,24 @@ const TopicsOfInvest = ({ navigation, userLoggedIn }) => {
     // run the mutation
     editTopicsInvest({
       variables: {
-        id,
         topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsInvest: {
           __typename: 'User',
-          ...userLoggedIn,
+          ...myTopics,
           topicsInvest: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
-        console.log('datareturned', dataReturned);
-        proxy.writeQuery({
-          query: CURRENT_USER_QUERY,
+        // console.log('dataReturned', dataReturned.editTopicsInvest);
+        // const data = proxy.readQuery({ query: CURRENT_USER_QUERY });
+
+        client.writeQuery({
+          query: CURRENT_USER_TOPICS,
           data: {
-            userLoggedIn: dataReturned.editTopicsInvest,
+            myTopics: dataReturned.editTopicsInvest,
           },
         });
       },
@@ -80,7 +82,7 @@ const TopicsOfInvest = ({ navigation, userLoggedIn }) => {
       const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+        <TouchableOpacity key={topicID} activeOpacity={1} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.topicRow }}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
 
@@ -88,14 +90,18 @@ const TopicsOfInvest = ({ navigation, userLoggedIn }) => {
               {name}
             </Text>
             {isSelected ? (
-              <View style={styles.addedButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-              </View>
+              <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                <View style={styles.addedButton}>
+                  <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
+                </View>
+              </TouchableOpacity>
             ) : (
-              <View style={styles.addButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.green }}>Add</Text>
-              </View>
-            )}
+                <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                  <View style={styles.addButton}>
+                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.green }}>Add</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
           </View>
         </TouchableOpacity>
       );

@@ -91,7 +91,7 @@ const HomeScreen = ({ navigation }) => {
           <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
         </View>
         <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
-          <TopicsList userLoggedIn={userLoggedIn} navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
+          <TopicsList navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
         </View>
       </ScrollView>
 

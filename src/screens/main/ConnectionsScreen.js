@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, RefreshControl, ActivityIndicator } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
@@ -15,6 +15,9 @@ import ConnectionsList from 'library/components/lists/ConnectionsList';
 const ConnectionsScreen = ({ navigation }) => {
   // OTHER HOOKS
   const insets = useSafeArea();
+  const [scrollY] = useState(new Animated.Value(0));
+  const [showRefreshing, setShowRefreshing] = useState(false);
+
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -31,8 +34,45 @@ const ConnectionsScreen = ({ navigation }) => {
         handleRight={() => navigation.navigate('Search')}
         navigation={navigation}
       />
+      {/* This is the loading animation */}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 15,
+          left: 0,
+          width: '100%',
+          height: 60,
+          justifyContent: 'flex-end',
+          // backgroundColor: 'pink',
+          transform: [
+            {
+              translateY: scrollY.interpolate({
+                inputRange: [-45, 0],
+                outputRange: [45, 0],
+                extrapolate: 'clamp',
+              }),
+            },
+          ],
+        }}
+      >
+        <View style={{ width: '100%', height: 60 }}>
+          <ActivityIndicator
+            style={{
+              width: '100%',
+              height: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+            }}
+            size="small"
+            color={colors.purp}
+            animating={showRefreshing}
+            hidesWhenStopped={false}
+          />
+        </View>
+      </Animated.View>
       <View style={{ flex: 1, top: -StyleSheet.hairlineWidth }}>
-        <ConnectionsList navigation={navigation} />
+        <ConnectionsList navigation={navigation} userLoggedIn={userLoggedIn} scrollY={scrollY} showRefreshing={showRefreshing} setShowRefreshing={setShowRefreshing} />
       </View>
 
       {/* Gives a solid background to the StatusBar */}

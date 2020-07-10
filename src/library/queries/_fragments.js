@@ -66,22 +66,8 @@ export const StoryFragment = gql`
   ${StoryItemFragment}
 `;
 
-export const MinimalUser = gql`
-  fragment MinimalUser on User {
-    id
-    name
-    profilePic
-    bannerPic
-    headline
-    bio
-    website
-    connectionsCount
-    followingCount
-    followersCount
-    location
-    locationID
-    locationLat
-    locationLon
+export const AllTopicsFragment = gql`
+  fragment AllTopicsFragment on User {
     topicsFocus {
       id
       topicID
@@ -107,6 +93,26 @@ export const MinimalUser = gql`
       topicID
       name
     }
+  }
+`;
+
+export const MinimalUser = gql`
+  fragment MinimalUser on User {
+    id
+    name
+    profilePic
+    bannerPic
+    headline
+    bio
+    website
+    connectionsCount
+    followingCount
+    followersCount
+    location
+    locationID
+    locationLat
+    locationLon
+    ...AllTopicsFragment
     intro {
       ...StoryFragment
     }
@@ -115,6 +121,7 @@ export const MinimalUser = gql`
     }
   }
   ${StoryFragment}
+  ${AllTopicsFragment}
 `;
 
 export const GroupFragment = gql`

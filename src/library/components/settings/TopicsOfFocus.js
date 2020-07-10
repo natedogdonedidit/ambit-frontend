@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
@@ -8,12 +8,14 @@ import defaultStyles from 'styles/defaultStyles';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
 import EDIT_TOPICS_FOCUS_MUTATION from 'library/mutations/EDIT_TOPICS_FOCUS_MUTATION';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
-const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
-  const { id } = userLoggedIn;
-  const topics = userLoggedIn.topicsFocus || [];
+const TopicsOfFocus = ({ navigation, myTopics }) => {
+  const { topicsFocus: topics, topicsInterest, topicsFreelance, topicsInvest, topicsMentor } = myTopics;
+
   const topicsIDonly = topics.map((topic) => topic.topicID);
+
+  const client = useApolloClient()
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -46,27 +48,17 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
     const newArrayTopicIDandType = newArray.map((topic) => {
       return { id: topic.topicID, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
     });
-    // console.log(newArrayTopicIDandType);
-    // console.log('opt resp', {
-    //   __typename: 'Mutation',
-    //   editTopicsFocus: {
-    //     __typename: 'User',
-    //     ...userLoggedIn,
-    //     topicsFocus: newArrayTopicIDandType,
-    //   },
-    // });
 
     // run the mutation
     editTopicsFocus({
       variables: {
-        id,
         topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsFocus: {
           __typename: 'User',
-          ...userLoggedIn,
+          ...myTopics,
           topicsFocus: newArrayTopicIDandType,
         },
       },
@@ -74,10 +66,10 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
         // console.log('dataReturned', dataReturned.editTopicsFocus);
         // const data = proxy.readQuery({ query: CURRENT_USER_QUERY });
 
-        proxy.writeQuery({
-          query: CURRENT_USER_QUERY,
+        client.writeQuery({
+          query: CURRENT_USER_TOPICS,
           data: {
-            userLoggedIn: dataReturned.editTopicsFocus,
+            myTopics: dataReturned.editTopicsFocus,
           },
         });
       },
@@ -91,7 +83,7 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
       const isSelected = topicsIDonly.includes(topicID);
 
       return (
-        <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+        <TouchableOpacity key={topicID} activeOpacity={1} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={{ ...styles.topicRow }}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
 
@@ -99,14 +91,18 @@ const TopicsOfFocus = ({ navigation, userLoggedIn }) => {
               {name}
             </Text>
             {isSelected ? (
-              <View style={styles.addedButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-              </View>
+              <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                <View style={styles.addedButton}>
+                  <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
+                </View>
+              </TouchableOpacity>
             ) : (
-              <View style={styles.addButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
-              </View>
-            )}
+                <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                  <View style={styles.addButton}>
+                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
           </View>
         </TouchableOpacity>
       );

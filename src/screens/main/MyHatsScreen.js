@@ -10,7 +10,7 @@ import TopicsOfFreelance from 'library/components/settings/TopicsOfFreelance';
 import TopicsOfInvest from 'library/components/settings/TopicsOfInvest';
 import TopicsOfMentor from 'library/components/settings/TopicsOfMentor';
 
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const MyHatsScreen = ({ navigation }) => {
   // ////////////////////////////////////////
@@ -20,7 +20,7 @@ const MyHatsScreen = ({ navigation }) => {
   // ////////////////////////////////////////
   // QUERIES
   // this is the single source of truth
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+  const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
   if (loading)
     return (
       <View style={styles.container}>
@@ -29,24 +29,15 @@ const MyHatsScreen = ({ navigation }) => {
       </View>
     );
   if (error) return <Text>{`Error! ${error}`}</Text>;
-  const { userLoggedIn } = data;
-
-  // ////////////////////////////////////////
-  // MUTATIONS
-
-  // //////////////////////////////////////////////////////
-  // CUSTOM FUNCTIONS
-
-  // //////////////////////////////////////////////////////
-  // RENDER FUNCTIONS
+  const { myTopics } = data;
 
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title="My Hats" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
-        <TopicsOfInvest navigation={navigation} userLoggedIn={userLoggedIn} />
-        <TopicsOfFreelance navigation={navigation} userLoggedIn={userLoggedIn} />
-        <TopicsOfMentor navigation={navigation} userLoggedIn={userLoggedIn} />
+        <TopicsOfInvest navigation={navigation} myTopics={myTopics} />
+        <TopicsOfFreelance navigation={navigation} myTopics={myTopics} />
+        <TopicsOfMentor navigation={navigation} myTopics={myTopics} />
       </ScrollView>
     </View>
   );

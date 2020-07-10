@@ -1,13 +1,13 @@
 import gql from 'graphql-tag';
-import { LoggedInUser } from 'library/queries/_fragments';
+import { AllTopicsFragment } from 'library/queries/_fragments';
 
 const EDIT_TOPICS_INTEREST_MUTATION = gql`
-  mutation EDIT_TOPICS_INTEREST_MUTATION($id: ID!, $topics: [TopicWhereUniqueInput]!) {
-    editTopicsInterest(id: $id, topics: $topics) {
-      ...LoggedInUser
+  mutation EDIT_TOPICS_INTEREST_MUTATION($topics: [TopicWhereUniqueInput]!) {
+    editTopicsInterest(topics: $topics) {
+      ...AllTopicsFragment
     }
   }
-  ${LoggedInUser}
+  ${AllTopicsFragment}
 `;
 
 export default EDIT_TOPICS_INTEREST_MUTATION;

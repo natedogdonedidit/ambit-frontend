@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
+    zIndex: 100,
   },
   leftSide: {
     width: 60,

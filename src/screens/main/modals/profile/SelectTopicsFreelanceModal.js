@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -10,20 +10,21 @@ import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import FreelanceList from 'library/components/lists/FreelanceList';
 
 import EDIT_TOPICS_FREELANCE_MUTATION from 'library/mutations/EDIT_TOPICS_FREELANCE_MUTATION';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsFreelanceModal = ({ navigation }) => {
+  const client = useApolloClient()
+
   const [selectedCategories, setSelectedCategories] = useState('');
 
   // ////////////////////////////////////////
   // QUERIES
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+  const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
   if (loading) return null;
   if (error) return <Text>{`Error! ${error}`}</Text>;
-  const { userLoggedIn } = data;
+  const { myTopics } = data;
   // this is the single source of truth
-  const { id } = userLoggedIn;
-  const topics = userLoggedIn.topicsFreelance || [];
+  const { topicsFreelance: topics } = myTopics;
   const topicsIDonly = topics.map((topic) => topic.topicID);
 
   // ////////////////////////////////////////
@@ -61,22 +62,24 @@ const SelectTopicsFreelanceModal = ({ navigation }) => {
     // run the mutation
     editTopicsFreelance({
       variables: {
-        id,
         topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsFreelance: {
           __typename: 'User',
-          ...userLoggedIn,
+          ...myTopics,
           topicsFreelance: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
-        proxy.writeQuery({
-          query: CURRENT_USER_QUERY,
+        // console.log('dataReturned', dataReturned.editTopicsFreelance);
+        // const data = proxy.readQuery({ query: CURRENT_USER_QUERY });
+
+        client.writeQuery({
+          query: CURRENT_USER_TOPICS,
           data: {
-            userLoggedIn: dataReturned.editTopicsFreelance,
+            myTopics: dataReturned.editTopicsFreelance,
           },
         });
       },

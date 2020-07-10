@@ -110,14 +110,10 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     notifyOnNetworkStatusChange: true,
   });
 
-    // VIEWED POST MUTATION
-    const [viewedPost] = useMutation(VIEWED_POST_MUTATION);
+  // VIEWED POST MUTATION
+  const [viewedPost] = useMutation(VIEWED_POST_MUTATION);
 
   useQuery(STORIES_HOME_QUERY);
-
-  const submitView = (postId) => {
-    
-  }
 
   // networkStatus states:
   // 1: loading
@@ -256,10 +252,10 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
                 {loading ? (
                   <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
                 ) : (
-                  <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-                    No posts were found
-                  </Text>
-                )}
+                    <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
+                      No posts were found
+                    </Text>
+                  )}
               </View>
             </>
           );
@@ -280,10 +276,10 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         sections={
           postsToShow.length > 0
             ? [
-                {
-                  data: postsToShow || [],
-                },
-              ]
+              {
+                data: postsToShow || [],
+              },
+            ]
             : []
         }
         renderSectionHeader={({ section }) => (
@@ -310,14 +306,14 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
           waitForInteraction: false,
           itemVisiblePercentThreshold: 75,
         }}
-        onViewableItemsChanged={({ viewableItems, changed}) => {
+        onViewableItemsChanged={({ viewableItems, changed }) => {
           if (changed.length > 0) {
             changed.forEach(({ index, isViewable, item }) => {
-              if (index >=0 && isViewable && item.node) {
+              if (index >= 0 && isViewable && item.node) {
                 if (typeof item.node === 'object' && item.node.id) {
                   console.log('submitting view for ', item.node.id)
-                  viewedPost({ variables: { postId: item.node.id }})
-                } 
+                  viewedPost({ variables: { postId: item.node.id } })
+                }
               }
             })
           }
@@ -345,12 +341,12 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
                   return newEdges.length
                     ? {
-                        postsForYou: {
-                          __typename: previousResult.postsForYou.__typename,
-                          edges: [...previousResult.postsForYou.edges, ...newEdges],
-                          pageInfo,
-                        },
-                      }
+                      postsForYou: {
+                        __typename: previousResult.postsForYou.__typename,
+                        edges: [...previousResult.postsForYou.edges, ...newEdges],
+                        pageInfo,
+                      },
+                    }
                     : previousResult;
                 },
               });
@@ -373,12 +369,12 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
                   return newEdges.length
                     ? {
-                        postsNetwork: {
-                          __typename: previousResult.postsNetwork.__typename,
-                          edges: [...previousResult.postsNetwork.edges, ...newEdges],
-                          pageInfo,
-                        },
-                      }
+                      postsNetwork: {
+                        __typename: previousResult.postsNetwork.__typename,
+                        edges: [...previousResult.postsNetwork.edges, ...newEdges],
+                        pageInfo,
+                      },
+                    }
                     : previousResult;
                 },
               });
@@ -401,12 +397,12 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
                   return newEdges.length
                     ? {
-                        postsMyGoals: {
-                          __typename: previousResult.postsMyGoals.__typename,
-                          edges: [...previousResult.postsMyGoals.edges, ...newEdges],
-                          pageInfo,
-                        },
-                      }
+                      postsMyGoals: {
+                        __typename: previousResult.postsMyGoals.__typename,
+                        edges: [...previousResult.postsMyGoals.edges, ...newEdges],
+                        pageInfo,
+                      },
+                    }
                     : previousResult;
                 },
               });

@@ -44,8 +44,6 @@ const NotificationListItem = ({ navigation, notification }) => {
       return navigation.navigate('Post', { post: comment.parentPost });
     }
     if (style === 'COMMENT_UPDATE') {
-      console.log(comment);
-      console.log(update);
       return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
     }
     if (style === 'COMMENT_COMMENT') {
@@ -143,7 +141,7 @@ const NotificationListItem = ({ navigation, notification }) => {
       return post.content;
     }
     if (style === 'LIKE_GOAL') {
-      return post.content;
+      return '';
     }
     if (style === 'LIKE_UPDATE') {
       return update.content;
@@ -169,7 +167,7 @@ const NotificationListItem = ({ navigation, notification }) => {
 
   // RETURN STATEMENT PULLS DATA FROM ABOVE FUNCTIONS
   return (
-    <TouchableOpacity activeOpacity={0.7} style={styles.container} onPress={getNotificationOnPress}>
+    <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={getNotificationOnPress}>
       <View style={styles.connection}>
         <View style={styles.profilePicView}>
           <ProfilePic size="medium" navigation={navigation} user={user} />
@@ -184,7 +182,7 @@ const NotificationListItem = ({ navigation, notification }) => {
               </Text>
             </View>
           </View>
-          <Text style={defaultStyles.defaultMute}>{getNotificationContent()}</Text>
+          {!!getNotificationContent() && <Text style={defaultStyles.defaultMute}>{getNotificationContent()}</Text>}
         </View>
       </View>
     </TouchableOpacity>

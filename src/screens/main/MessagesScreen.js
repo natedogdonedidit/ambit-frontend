@@ -51,8 +51,8 @@ const MessagesScreen = ({ navigation }) => {
       {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
       <FlatList
         // refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
-        onRefresh={refetch}
-        refreshing={refetching}
+        // onRefresh={refetch}
+        // refreshing={refetching}
         initialNumToRender={10} // speeds up load time
         style={styles.flatList}
         contentContainerStyle={styles.flatListContainer}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
@@ -9,20 +9,21 @@ import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import TopicsList from 'library/components/lists/TopicsList';
 
 import EDIT_TOPICS_FOCUS_MUTATION from 'library/mutations/EDIT_TOPICS_FOCUS_MUTATION';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsFocusModal = ({ navigation }) => {
   const [selectedCategories, setSelectedCategories] = useState('');
 
+  const client = useApolloClient()
+
   // ////////////////////////////////////////
   // QUERIES
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+  const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
   if (loading) return null;
   if (error) return <Text>{`Error! ${error}`}</Text>;
-  const { userLoggedIn } = data;
+  const { myTopics } = data;
   // this is the single source of truth
-  const { id } = userLoggedIn;
-  const topics = userLoggedIn.topicsFocus || [];
+  const { topicsFocus: topics } = myTopics;
   const topicsIDonly = topics.map((topic) => topic.topicID);
 
   // ////////////////////////////////////////
@@ -60,23 +61,24 @@ const SelectTopicsFocusModal = ({ navigation }) => {
     // run the mutation
     editTopicsFocus({
       variables: {
-        id,
         topics: newArrayTopicIDonly,
       },
       optimisticResponse: {
         __typename: 'Mutation',
         editTopicsFocus: {
           __typename: 'User',
-          ...userLoggedIn,
+          ...myTopics,
           topicsFocus: newArrayTopicIDandType,
         },
       },
       update: (proxy, { data: dataReturned }) => {
-        // console.log('datareturned', dataReturned);
-        proxy.writeQuery({
-          query: CURRENT_USER_QUERY,
+        // console.log('dataReturned', dataReturned.editTopicsFocus);
+        // const data = proxy.readQuery({ query: CURRENT_USER_QUERY });
+
+        client.writeQuery({
+          query: CURRENT_USER_TOPICS,
           data: {
-            userLoggedIn: dataReturned.editTopicsFocus,
+            myTopics: dataReturned.editTopicsFocus,
           },
         });
       },
