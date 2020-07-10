@@ -153,6 +153,7 @@ const NewPostModal = ({ navigation, route }) => {
         commentsCount: null,
         sharesCount: null,
         updates: [],
+        views: [],
         _deleted: false,
       };
 

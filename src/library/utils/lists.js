@@ -1986,11 +1986,18 @@ for (i = 0; i < topicsList.length; i++) {
 
 let j = 0;
 for (j = 0; j < freelanceList.length; j++) {
-  const { name, topicID, icon, color, image, parentTopic, children } = freelanceList[j]; // get main topic
+  const { name, topicID, icon, color, parentTopic, children } = freelanceList[j]; // get main topic
   // add the parent object
-  allTopicsArray.push({ name, topicID, icon, color, image, parentTopic });
+  allTopicsArray.push({ name, topicID, icon, color, parentTopic });
   // add the children
   allTopicsArray.push(...children);
+}
+
+let k = 0;
+for (k = 0; k < investList.length; k++) {
+  const { name, topicID, icon, color } = investList[k]; // get main topic
+  // add the parent object
+  allTopicsArray.push({ name, topicID, icon, color });
 }
 
 export const allTopics = [...allTopicsArray];
