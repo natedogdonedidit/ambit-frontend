@@ -9,7 +9,7 @@ import Loader from 'library/components/UI/Loader';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
-const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput, goal, topicID, locationLat, locationLon }) => {
+const SearchTimeline = ({ navigation, scrollY, activeTab, textInput, goal, topicID, locationLat, locationLon }) => {
   // STATE
 
   // QUERIES
@@ -85,7 +85,7 @@ const SearchTimeline = ({ navigation, scrollY, paddingTop, activeTab, textInput,
         refreshing={refetching}
         // initialNumToRender={10} // speeds up load time
         // contentContainerStyle={{ paddingBottom: 20 }}
-        contentContainerStyle={{ paddingTop: paddingTop + 2.5, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
         style={styles.timeline}
         ListHeaderComponent={
           <View

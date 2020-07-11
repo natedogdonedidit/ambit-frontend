@@ -143,7 +143,16 @@ const Comment = ({
   };
 
   const renderMedia = () => {
-    return <Image style={{ width: '100%', height: 160 }} source={{ uri: comment.image }} resizeMode="cover" />;
+    return (
+      <View style={{ width: '100%', height: 160 }}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate('ImageViewerModal', { images: [comment.image], index: 0 })}
+        >
+          <Image style={{ width: '100%', height: '100%' }} source={{ uri: comment.image }} resizeMode="cover" />
+        </TouchableOpacity>
+      </View>
+    )
   };
 
   if (comment._deleted) return null;

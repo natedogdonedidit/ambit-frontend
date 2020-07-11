@@ -21,9 +21,9 @@ const HeaderSearch = ({ user, handleLeft, handleRight, textInput, setTextInput }
         </TouchableOpacity>
 
         <View style={styles.middle}>
-          <Icon name="search" size={15} color={colors.black} />
+          <Icon name="search" size={18} color={colors.blueGray} />
           <TextInput
-            style={{ ...styles.searchBarView, ...defaultStyles.largeText, color: colors.darkGray }}
+            style={{ ...styles.searchBarView, ...defaultStyles.defaultText, color: colors.darkGray }}
             onChangeText={val => setTextInput(val)}
             value={textInput}
             placeholder="Search Ambit"
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.searchGray,
-    height: 34,
+    height: 36,
     borderRadius: 20,
     paddingHorizontal: 15,
   },

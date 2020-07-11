@@ -34,7 +34,12 @@ const EditLocationRadiusModal = ({ navigation, route }) => {
 
     if (!selecting) {
       try {
-        const res = await fetch(url);
+        const res = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        });
         if (res.status === 200) {
           const resJson = await res.json();
           let cities = [];
@@ -59,7 +64,12 @@ const EditLocationRadiusModal = ({ navigation, route }) => {
     const url = `http://geocoder.api.here.com/6.2/geocode.json?app_id=${app_id}&app_code=${app_code}&locationid=${locationId}&jsonattributes=1&gen=9`;
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
       if (response.status === 200) {
         const responseJson = await response.json();
         // console.log(responseJson);

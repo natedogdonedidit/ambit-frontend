@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery, useMutation } from 'react-apollo';
@@ -24,7 +24,7 @@ import HeaderBack from 'library/components/headers/HeaderBack';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import ProjectSquare from 'library/components/stories/ProjectSquare';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import ADD_TO_STORY_MUTATION from 'library/mutations/ADD_TO_STORY_MUTATION';
 import CREATE_STORY_ITEM_MUTATION from 'library/mutations/CREATE_STORY_ITEM_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
@@ -39,13 +39,41 @@ const SelectStoryTopicsModal = ({ navigation, route }) => {
   // MUTATIONS
 
   // QUERIES
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
-  const { userLoggedIn } = dataUser;
+  // const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
+  // const { userLoggedIn } = dataUser;
 
-  // get topicIDs from user
-  const topicIDs = getTopicIDsFromUser(userLoggedIn);
-  // get the full topic info from each ID (including story.id)
-  const myTopics = getFullTopicListFromIDs(topicIDs);
+  // // get topicIDs from user
+  // const topicIDs = getTopicIDsFromUser(userLoggedIn);
+  // // get the full topic info from each ID (including story.id)
+  // const myTopics = getFullTopicListFromIDs(topicIDs);
+
+  const { data } = useQuery(CURRENT_USER_TOPICS);
+
+  // compiles the list of favoriteTopics whenever myTopics changes
+  const favoriteTopics = useMemo(() => {
+    let newFavoriteTopics = []
+    if (data) {
+      const { myTopics } = data;
+      if (myTopics) {
+        if (myTopics.topicsFocus.length > 0) {
+          newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.topicID)];
+        }
+        if (myTopics.topicsInterest.length > 0) {
+          if (newFavoriteTopics === []) {
+            newFavoriteTopics = [...myTopics.topicsInterest.map((top) => top.topicID)];
+          } else {
+            // only add topics that dont already exist
+            myTopics.topicsInterest.forEach((topic) => {
+              if (newFavoriteTopics.findIndex((favTopicID) => favTopicID === topic.topicID) === -1) {
+                newFavoriteTopics = [...newFavoriteTopics, topic.topicID];
+              }
+            });
+          }
+        }
+      }
+    }
+    return [...newFavoriteTopics]
+  }, [data])
 
   const toggleTopic = (selectedTopicID) => {
     let newArray = [...selectedTopics];
@@ -60,13 +88,12 @@ const SelectStoryTopicsModal = ({ navigation, route }) => {
   };
 
   const renderTopics = () => {
-    if (myTopics.length < 1) {
+    if (favoriteTopics.length < 1) {
       return null;
     }
 
-    return myTopics.map((topic) => {
-      const { name, topicID } = topic;
-      const { icon, color } = getTopicFromID(topicID);
+    return favoriteTopics.map((topicID) => {
+      const { icon, color, name } = getTopicFromID(topicID);
 
       const selected = selectedTopics.includes(topicID);
 

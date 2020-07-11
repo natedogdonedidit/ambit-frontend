@@ -9,6 +9,7 @@ import defaultStyles from 'styles/defaultStyles';
 import { getGoalInfo } from 'library/utils';
 
 const Goal = ({ navigation, goal, subField, onPress }) => {
+  console.log(subField)
   return (
     // color background w/ black text
     <TouchableOpacity

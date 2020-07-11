@@ -183,7 +183,6 @@ const SearchScreen = ({ navigation, route }) => {
           locationLat={locationLat}
           locationLon={locationLon}
           scrollY={scrollY}
-          paddingTop={0}
         />
       </View>
     </View>

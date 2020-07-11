@@ -246,6 +246,7 @@ export const MinimalPost = gql`
     subField {
       id
       name
+      topicID
     }
     content
     images
@@ -270,6 +271,7 @@ export const BasicPost = gql`
     subField {
       id
       name
+      topicID
     }
     topics {
       id

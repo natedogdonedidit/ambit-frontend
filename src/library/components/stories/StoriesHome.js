@@ -39,7 +39,7 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
 
   useEffect(() => {
     if (networkStatusStories === 7 && refetching) {
-      console.log('refetching stories Home')
+      // console.log('refetching stories Home')
       refetchStories();
     }
   }, [refetching]);

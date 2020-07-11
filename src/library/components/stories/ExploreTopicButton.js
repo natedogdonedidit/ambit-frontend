@@ -37,7 +37,7 @@ const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
 
   useEffect(() => {
     if (networkStatusStories === 7 && refetching) {
-      console.log('refetching stories Topic', topicID)
+      // console.log('refetching stories Topic', topicID)
       refetchStories();
     }
   }, [refetching]);

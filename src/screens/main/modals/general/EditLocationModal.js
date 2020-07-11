@@ -18,9 +18,13 @@ const EditLocationModal = ({ navigation, route }) => {
     const app_id = 'h9qumdLXOxidgnOtyADi';
     const app_code = 'AeO_1-X9yngGRO4RHd_IsQ';
     const url = `http://autocomplete.geocoder.api.here.com/6.2/suggest.json?app_id=${app_id}&app_code=${app_code}&query=${locationInput}&maxresults=20&country=USA&resultType=areas`;
-
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
       if (res.status === 200) {
         const resJson = await res.json();
         let cities = [];
@@ -40,7 +44,12 @@ const EditLocationModal = ({ navigation, route }) => {
     const url = `http://geocoder.api.here.com/6.2/geocode.json?app_id=${app_id}&app_code=${app_code}&locationid=${locationId}&jsonattributes=1&gen=9`;
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
       if (response.status === 200) {
         const responseJson = await response.json();
         // console.log(responseJson);
