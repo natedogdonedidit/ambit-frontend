@@ -14,8 +14,8 @@ import { WebSocketLink } from 'apollo-link-ws';
 import { ApolloLink, split } from 'apollo-link';
 import { getMainDefinition } from 'apollo-utilities';
 // for analytics
-import analytics from '@segment/analytics-react-native'
-import mixpanel from '@segment/analytics-react-native-mixpanel'
+import analytics from '@segment/analytics-react-native';
+import mixpanel from '@segment/analytics-react-native-mixpanel';
 
 import { SafeAreaProvider, initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
 import { UserContextProvider } from 'library/utils/UserContext';
@@ -25,21 +25,17 @@ import { name as appName } from './app.json';
 
 // setup analytics
 const setupAnalytics = async () => {
-  await analytics.setup('zHxaKjU0CbDCYBLTEU1OsjIvU79jCbfc', {
-    using: [mixpanel],
-    // recordScreenViews: false,
-    trackAppLifecycleEvents: true,
-    trackAttributionData: true,
-  })
-    .then(() =>
-      console.log('Analytics is ready')
-    )
-    .catch(err =>
-      console.error('Something went wrong', err)
-    )
-}
-setupAnalytics()
-
+  await analytics
+    .setup('zHxaKjU0CbDCYBLTEU1OsjIvU79jCbfc', {
+      using: [mixpanel],
+      // recordScreenViews: false,
+      trackAppLifecycleEvents: true,
+      trackAttributionData: true,
+    })
+    .then(() => console.log('Analytics is ready'))
+    .catch((err) => console.error('Something went wrong', err));
+};
+setupAnalytics();
 
 // eslint-disable-next-line no-undef
 GLOBAL.Blob = null; // required so Network Inspect works on RNdebugger
@@ -67,7 +63,7 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/', // simulator
-    // ios: 'http://192.168.123.126:4000', // work
+    // ios: 'http://192.168.123.139:4000', // work
     // ios: 'http://192.168.1.214:4000', // home
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
@@ -81,7 +77,7 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/', // simulator
-    // ios: 'ws://192.168.123.126:4000', // work
+    // ios: 'ws://192.168.123.139:4000', // work
     // ios: 'ws://192.168.1.214:4000', // home
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats
@@ -149,8 +145,6 @@ const client = new ApolloClient({
     console.log('networkError', networkError);
   },
 });
-
-
 
 const App = () => {
   return (

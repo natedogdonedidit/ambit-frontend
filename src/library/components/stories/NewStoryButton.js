@@ -10,7 +10,11 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 
 const NewStoryButton = ({ navigation }) => {
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('CameraModal')} style={styles.storyBox}>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={() => navigation.navigate('CameraModal', { isIntro: false })}
+      style={styles.storyBox}
+    >
       <View
         style={{
           width: 60,

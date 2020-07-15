@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -10,13 +11,16 @@ const ProfilePic = ({
   navigation, // required
   user, // required
   size = 'medium',
-  disableVideo = false,
-  disableClick = false,
-  showBlue = false,
+  enableIntro = true,
+  enableStory = true,
+  enableClick = true,
   border = false,
   borderWidth = 1.6,
   extraBorder = 0, // adds a white ring around outside
   extraColorBorder = 0.4,
+  // disableVideo = false,
+  // disableClick = false,
+  // showBlue = false,
 }) => {
   // set the size of the profile pic
   let sizePX = 46;
@@ -40,6 +44,7 @@ const ProfilePic = ({
     }
   }
 
+  // const hasStory = false;
   let hasStory = false;
   if (user) {
     if (user.myStory) {
@@ -49,7 +54,10 @@ const ProfilePic = ({
     }
   }
 
-  const hasVideo = hasIntro || hasStory || showBlue;
+  const showIntro = enableIntro && hasIntro;
+  const showStory = enableStory && hasStory;
+
+  // const hasVideo = hasIntro || hasStory || showBlue;
 
   const whiteWidth = sizePX + 2 * borderWidth;
   const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraColorBorder + 2 * extraBorder;
@@ -60,8 +68,9 @@ const ProfilePic = ({
       width: sizePX,
       height: sizePX,
       borderRadius: sizePX / 2,
-      overflow: 'hidden',
+      // overflow: 'hidden',
       backgroundColor: 'white',
+      position: 'relative',
     },
     whiteBorder: {
       justifyContent: 'center',
@@ -69,12 +78,14 @@ const ProfilePic = ({
 
       width: whiteWidth,
       height: whiteWidth,
-      overflow: 'hidden',
+      // overflow: 'hidden',
 
       borderRadius: whiteWidth / 2,
       borderWidth,
       borderColor: 'white',
       backgroundColor: 'white',
+
+      position: 'relative',
     },
     profilePic: {
       width: '100%',
@@ -108,9 +119,174 @@ const ProfilePic = ({
       borderRadius: colorWidth / 2,
       borderWidth: extraBorder,
       borderColor: 'white',
+
+      position: 'relative',
     },
   });
 
+  const renderIntroIcon = () => {
+    // if only INTRO
+    if (showIntro && !showStory) {
+      // if small
+      if (size === 'small') {
+        return (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -6,
+              right: -2,
+              ...defaultStyles.shadow3,
+            }}
+          >
+            <View
+              style={{
+                position: 'absolute', // this sits behind the icon for a while background
+                top: 2,
+                right: 2,
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                backgroundColor: colors.white,
+              }}
+            />
+            <Icon name="play-circle" solid size={14} color={colors.green} />
+          </View>
+        );
+      }
+      if (size === 'medium') {
+        return (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -6,
+              right: -6,
+              ...defaultStyles.shadow3,
+            }}
+          >
+            <View
+              style={{
+                position: 'absolute', // this sits behind the icon for a while background
+                top: 2,
+                right: 2,
+                width: 14,
+                height: 14,
+                borderRadius: 7,
+                backgroundColor: colors.white,
+              }}
+            />
+            <Icon name="play-circle" solid size={18} color={colors.green} />
+          </View>
+        );
+      }
+      if (size === 'large') {
+        return (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -6,
+              right: -4,
+              ...defaultStyles.shadow3,
+            }}
+          >
+            <View
+              style={{
+                position: 'absolute', // this sits behind the icon for a while background
+                top: 2,
+                right: 2,
+                width: 14,
+                height: 14,
+                borderRadius: 7,
+                backgroundColor: colors.white,
+              }}
+            />
+            <Icon name="play-circle" solid size={18} color={colors.green} />
+          </View>
+        );
+      }
+    } else {
+      // if intro and story
+      // if small
+      if (size === 'small') {
+        return (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -4,
+              right: -4,
+              ...defaultStyles.shadow3,
+            }}
+          >
+            <View
+              style={{
+                position: 'absolute', // this sits behind the icon for a while background
+                top: 2,
+                right: 2,
+                width: 14,
+                height: 14,
+                borderRadius: 7,
+                backgroundColor: colors.white,
+              }}
+            />
+            <Icon name="play-circle" solid size={18} color={colors.green} />
+          </View>
+        );
+      }
+      if (size === 'medium') {
+        return (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: -1,
+              right: -1,
+              ...defaultStyles.shadow3,
+            }}
+          >
+            <View
+              style={{
+                position: 'absolute', // this sits behind the icon for a while background
+                top: 2,
+                right: 2,
+                width: 14,
+                height: 14,
+                borderRadius: 7,
+                backgroundColor: colors.white,
+              }}
+            />
+            <Icon name="play-circle" solid size={18} color={colors.green} />
+          </View>
+        );
+      }
+      if (size === 'large') {
+        return (
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => {
+              navigation.navigate('IntroModal', {
+                intro: user.intro,
+              });
+            }}
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              right: -36,
+              ...defaultStyles.shadow3,
+              backgroundColor: colors.green,
+              height: 24,
+              borderRadius: 10,
+              paddingHorizontal: 8,
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <Icon name="play" solid size={10} color={colors.white} />
+            <Text style={{ ...defaultStyles.smallSemibold, color: colors.white, paddingLeft: 4 }}>Intro</Text>
+          </TouchableOpacity>
+        );
+      }
+    }
+  };
+
+  // if no user passed in
   if (!user) {
     return (
       <View style={border ? styles.whiteBorder : styles.noBorder}>
@@ -119,21 +295,79 @@ const ProfilePic = ({
     );
   }
 
-  if (hasVideo && !disableVideo) {
+  // if theres a story or intro and enabled
+  if (showIntro || showStory) {
+    // if only STORY
+    if (showStory && !showIntro) {
+      return (
+        <View style={styles.introBorderBackground}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={styles.introBorder}
+            disabled={!enableClick}
+            onPress={() => {
+              navigation.navigate('StoryModal', {
+                story: user.myStory,
+                // intro: user.intro,
+              });
+            }}
+          >
+            <View style={{ ...styles.whiteBorder, overflow: 'hidden' }}>
+              <Image
+                style={styles.profilePic}
+                resizeMode="cover"
+                source={{
+                  uri: user.profilePic || profilePicExample,
+                }}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    // if only INTRO
+    if (showIntro && !showStory) {
+      return (
+        <View style={border ? styles.whiteBorder : styles.noBorder}>
+          <TouchableOpacity
+            style={[border ? styles.whiteBorder : styles.noBorder, { overflow: 'hidden' }]}
+            activeOpacity={0.7}
+            disabled={!enableClick}
+            onPress={() => {
+              navigation.navigate('IntroModal', {
+                intro: user.intro,
+              });
+            }}
+          >
+            <Image
+              style={styles.profilePic}
+              resizeMode="cover"
+              source={{
+                uri: user.profilePic || profilePicExample,
+              }}
+            />
+          </TouchableOpacity>
+          {renderIntroIcon()}
+        </View>
+      );
+    }
+
+    // if STORY and INTRO
     return (
       <View style={styles.introBorderBackground}>
         <TouchableOpacity
           activeOpacity={0.7}
           style={styles.introBorder}
-          disabled={disableClick}
+          disabled={!enableClick}
           onPress={() => {
             navigation.navigate('StoryModal', {
-              story: hasStory ? user.myStory : null,
-              intro: hasIntro ? user.intro : null,
+              story: user.myStory,
+              intro: user.intro,
             });
           }}
         >
-          <View style={styles.whiteBorder}>
+          <View style={{ ...styles.whiteBorder, overflow: 'hidden' }}>
             <Image
               style={styles.profilePic}
               resizeMode="cover"
@@ -143,28 +377,17 @@ const ProfilePic = ({
             />
           </View>
         </TouchableOpacity>
+        {renderIntroIcon()}
       </View>
     );
   }
 
-  if (disableClick) {
-    return (
-      <View style={border ? styles.whiteBorder : styles.noBorder}>
-        <Image
-          style={{ ...styles.profilePic }}
-          resizeMode="cover"
-          source={{
-            uri: user.profilePic || profilePicExample,
-          }}
-        />
-      </View>
-    );
-  }
-
+  // if no story or intro to show
   return (
-    <View style={border ? styles.whiteBorder : styles.noBorder}>
+    <View style={[border ? styles.whiteBorder : styles.noBorder, { overflow: 'hidden' }]}>
       <TouchableOpacity
         style={border ? styles.whiteBorder : styles.noBorder}
+        disabled={!enableClick}
         activeOpacity={0.9}
         onPress={() => navigation.navigate('Profile', { profileId: user.id })}
       >

@@ -24,16 +24,7 @@ import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import VIEWED_STORY_ITEM_MUTATION from 'library/mutations/VIEWED_STORY_ITEM_MUTATION';
 import { StoryItemFragment } from 'library/queries/_fragments';
-import { STORY_IMAGE_DURATION } from 'styles/constants'
-
-// custom hook to read previous props or state
-function usePrevious(value) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-}
+import { STORY_IMAGE_DURATION } from 'styles/constants';
 
 const StoryCard = ({
   navigation,
@@ -41,10 +32,8 @@ const StoryCard = ({
   isActive,
   tryGoToPrevStory,
   tryGoToNextStory,
-  favoriteTopics,
-  refreshCard,
-  setDisableOutterScroll,
-  // i,
+  favoriteTopics = [],
+  setDisableOutterScroll = () => null,
   storyKey,
 }) => {
   // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
@@ -54,7 +43,7 @@ const StoryCard = ({
   // option 5: pass in firstStory, with type = 'Profile'. First story will play followed by more from this user
 
   // moreType: 'Home', 'Topic', 'User', null means only show a single story
-  const client = useApolloClient()
+  const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
   const { width } = Dimensions.get('window');
 
@@ -63,11 +52,11 @@ const StoryCard = ({
   // will return the index of the newest unseen story item
   const newestUnseen = story.items.findIndex(({ views }) => {
     // return true if you have NOT viewed the story - this will set newestUnseen to that index
-    if (views.length <= 0) return true
+    if (views.length <= 0) return true;
 
     const viewedByMe = views.some(({ id }) => id === currentUserId);
-    return !viewedByMe
-  })
+    return !viewedByMe;
+  });
 
   // STATE
   const [hasError, setHasError] = useState(false);
@@ -76,10 +65,9 @@ const StoryCard = ({
   // const [storyQIndex, setStoryQIndex] = useState(0);
   // const [activeStory, setActiveStory] = useState(story || intro);
   const [activeIndex, setActiveIndex] = useState(newestUnseen > 0 ? newestUnseen : 0);
-  const [itemDuration, setItemDuration] = useState(10) // in seconds
-  const [videoStarted, setVideoStarted] = useState(false)
+  const [itemDuration, setItemDuration] = useState(10); // in seconds
+  const [videoStarted, setVideoStarted] = useState(false);
   const [isBuffering, setIsBuffering] = useState(true);
-  const [showIntroPreview, setShowIntroPreview] = useState(false);
   const [indexAddedToProfile, setIndexAddedToProfile] = useState([]);
   const [includedInProject, setIncludedInProject] = useState(false);
   const [includedInMyStory, setIncludedInMyStory] = useState(false);
@@ -96,7 +84,8 @@ const StoryCard = ({
   const { items } = story;
   const isEmpty = items.length < 1;
   const activeItem = { ...items[activeIndex] };
-  const isMyPost = activeItem.owner.id === currentUserId;
+  const isMyPost = story.id === currentUserId;
+  const isIntro = story.type === 'INTRO';
 
   // MUTATIONS
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
@@ -122,7 +111,6 @@ const StoryCard = ({
   const [viewedStoryItem, { loading: loadingViewMutation }] = useMutation(VIEWED_STORY_ITEM_MUTATION, {
     variables: { storyItemID: activeItem.id },
     update(cache, { data: { viewedStoryItem } }) {
-
       // We get a single item from cache.
       const storyItemInCache = client.readFragment({
         id: `StoryItem:${activeItem.id}`,
@@ -153,24 +141,32 @@ const StoryCard = ({
   useEffect(() => {
     if (activeItem.type === 'IMAGE') {
       // console.log('setting is buffering false in IMAGE')
-      setIsBuffering(false)
+      setIsBuffering(false);
     }
     if (isActive && !loadingViewMutation) {
-      viewedStoryItem()
+      viewedStoryItem();
     }
-  }, [activeIndex])
+  }, [activeIndex]);
 
   // anytime the story item changes, save the duration to state (if this story is active)
-
 
   // anytime the story item or duration changes
 
   // this is so when you open the "More" modal, the story unpauses when re-focused
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      if (pausedRef.current) {
-        setPaused(false);
-      }
+      // console.log('focussed - setting pause false');
+      setPaused(false);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  // this is so when you open the "Intro" modal, the story pauses when un-focused
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      // console.log('blurred - setting pause true');
+      setPaused(true);
     });
 
     return unsubscribe;
@@ -179,14 +175,16 @@ const StoryCard = ({
   // update heavy computation stuff only once when activeIndex changes
   // this stuff is mainly for deciding what to render in "More" modal
   useEffect(() => {
-    const now = new Date();
-    const solo = activeItem.stories.find((s) => s.type === 'SOLO');
-    setSoloStory(solo);
-    setIncludedInSolo(!!solo);
-    setIncludedInProject(!!activeItem.stories.find((s) => s.type === 'PROJECT'));
-    setIncludedInMyStory(
-      !!activeItem.stories.find((s) => s.type === 'MYSTORY' && differenceInHours(now, new Date(activeItem.createdAt)) < 24)
-    );
+    if (activeItem.stories) {
+      const now = new Date();
+      const solo = activeItem.stories.find((s) => s.type === 'SOLO');
+      setSoloStory(solo);
+      setIncludedInSolo(!!solo);
+      setIncludedInProject(!!activeItem.stories.find((s) => s.type === 'PROJECT'));
+      setIncludedInMyStory(
+        !!activeItem.stories.find((s) => s.type === 'MYSTORY' && differenceInHours(now, new Date(activeItem.createdAt)) < 24)
+      );
+    }
   }, [activeItem]);
 
   // if reached the end of photo timelimit - go to next item
@@ -225,7 +223,6 @@ const StoryCard = ({
 
         // if ()
       }
-
     }
   }, [isActive]);
 
@@ -233,8 +230,7 @@ const StoryCard = ({
   useEffect(() => {
     // setCurrentTime(0);
 
-    // only start the timer if showIntroPreview is false
-    if (!showIntroPreview && isActive) {
+    if (isActive) {
       // increment the timer ever X seconds
       const intervalID = setInterval(() => {
         if (activeItem.type === 'IMAGE' && isActive) {
@@ -251,7 +247,7 @@ const StoryCard = ({
 
       return () => clearInterval(intervalID);
     }
-  }, [activeIndex, showIntroPreview, isActive]);
+  }, [activeIndex, isActive]);
 
   if (isEmpty) {
     navigation.goBack();
@@ -262,7 +258,7 @@ const StoryCard = ({
     if (videoStarted && dataa.isBuffering) {
       // mid-video buffering will trigger this
 
-      console.log(`mid video buffer, setting isBuffering to ${dataa.isBuffering}`)
+      console.log(`mid video buffer, setting isBuffering to ${dataa.isBuffering}`);
       setIsBuffering(dataa.isBuffering);
     }
   };
@@ -271,8 +267,8 @@ const StoryCard = ({
     // when video first starts only
     if (currentTime > 0 && currentTime < 1) {
       // console.log('video started - setting buffering false', currentTime)
-      setVideoStarted(true)
-      setIsBuffering(false)
+      setVideoStarted(true);
+      setIsBuffering(false);
     }
     // if (isActive) {
     //   setCurrentTime(dataa.currentTime);
@@ -282,43 +278,49 @@ const StoryCard = ({
   const onReadyForDisplay = () => {
     // console.log('onReadyForDisplay')
     // setIsBuffering(false)
-  }
+  };
 
   const onLoadStart = () => {
     // console.log('onLoadStart')
     // setIsBuffering(true)
-  }
+  };
 
   const onLoad = () => {
     // console.log('onLoad')
     // setIsBuffering(false)
-  }
+  };
 
   const onVideoEnd = () => {
-    console.log('on video end')
+    console.log('on video end');
     incrementIndex();
   };
 
   // CUSTOM FUNCTIONS
 
   const incrementIndex = () => {
-    if (activeIndex < items.length - 1) {
-      setActiveIndex((prevState) => prevState + 1);
-      setIsBuffering(true)
-      setVideoStarted(false)
-    }
+    if (isIntro) {
+      navigation.goBack();
+    } else {
+      if (activeIndex < items.length - 1) {
+        setActiveIndex((prevState) => prevState + 1);
+        setIsBuffering(true);
+        setVideoStarted(false);
+      }
 
-    // if it was the last item in the activeStory
-    if (activeIndex === items.length - 1) {
-      tryGoToNextStory();
+      // if it was the last item in the activeStory
+      if (activeIndex === items.length - 1) {
+        tryGoToNextStory();
+      }
     }
   };
 
   const decrementIndex = () => {
-    if (activeIndex > 0) {
+    if (isIntro) {
+      navigation.goBack();
+    } else if (activeIndex > 0) {
       setActiveIndex((prevState) => prevState - 1);
-      setIsBuffering(true)
-      setVideoStarted(false)
+      setIsBuffering(true);
+      setVideoStarted(false);
     } else {
       tryGoToPrevStory();
     }
@@ -326,7 +328,7 @@ const StoryCard = ({
 
   const engagePause = () => {
     if (!paused) {
-      // console.log('setting paused to TRUE');
+      console.log('setting paused to TRUE');
       setPaused(true);
     }
   };
@@ -338,7 +340,7 @@ const StoryCard = ({
     }
   };
 
-  const handleDoubleTap = () => { };
+  const handleDoubleTap = () => {};
 
   const handleAddToProfile = () => {
     if (includedInSolo) {
@@ -491,7 +493,7 @@ const StoryCard = ({
       { cancelable: true },
     ]);
   };
-  const removeFromIntro = () => { };
+  const removeFromIntro = () => {};
   const determineOptions = () => {
     if (story.type === 'PROJECT') {
       return [
@@ -570,33 +572,6 @@ const StoryCard = ({
     );
   }
 
-  if (showIntroPreview) {
-    const { owner } = activeItem;
-
-    return (
-      <View style={styles.container}>
-        <StatusBar backgroundColor="black" barStyle="light-content" hidden />
-        <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: colors.gray60 }}>
-          <SafeAreaView style={{ flex: 1, padding: 10 }}>
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 100 }}>
-              <ProfilePic size="xlarge" user={owner} navigation={navigation} disableVideo />
-              <Text
-                style={{ paddingTop: 20, ...defaultStyles.headerMedium, color: 'white' }}
-              >{`${owner.firstName}'s Intro`}</Text>
-              <Text style={{ paddingTop: 5, ...defaultStyles.defaultSemibold, color: 'white', opacity: 0.8 }}>
-                Tap right side to view
-              </Text>
-            </View>
-            <View style={{ ...StyleSheet.absoluteFillObject, flexDirection: 'row', alignItems: 'stretch' }}>
-              <TouchableOpacity onPress={tryGoToPrevStory} style={{ flex: 1 }} />
-              <TouchableOpacity onPress={tryGoToNextStory} style={{ flex: 1 }} />
-            </View>
-          </SafeAreaView>
-        </View>
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={{ ...styles.container, width }}>
       {/* absolute positioned stuff */}
@@ -630,7 +605,7 @@ const StoryCard = ({
         paused={paused}
         storyKey={storyKey}
       />
-      <StoryHeader story={story} activeIndex={activeIndex} navigation={navigation} />
+      <StoryHeader story={story} activeIndex={activeIndex} navigation={navigation} engagePause={engagePause} />
       <StoryFooter
         story={story}
         activeIndex={activeIndex}

@@ -383,7 +383,7 @@ const CommentScreen = ({ navigation, route }) => {
 
             <View style={[styles.commentInput, isComment && { paddingLeft: 56 }]}>
               <View style={isComment ? styles.leftColumnSub : styles.leftColumn}>
-                <ProfilePic size="small" navigation={navigation} user={userLoggedIn} disableVideo />
+                <ProfilePic size="small" navigation={navigation} user={userLoggedIn} enableIntro={false} enableStory={false} />
               </View>
               <View style={{ ...styles.rightColumn }}>
                 <View style={{ paddingTop: 2, paddingBottom: 10 }}>

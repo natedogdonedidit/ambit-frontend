@@ -102,7 +102,7 @@ export const profilePicUpload = async (userId, uri) => {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: uploadData,
     });
@@ -140,7 +140,7 @@ export const bannerPicUpload = async (userId, uri) => {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: uploadData,
     });
@@ -178,7 +178,7 @@ export const postPicUpload = async (userId, uri) => {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: uploadData,
     });
@@ -214,7 +214,7 @@ export const introPicUpload = async (userId, uri) => {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: uploadData,
     });
@@ -226,7 +226,7 @@ export const introPicUpload = async (userId, uri) => {
   } catch (error) {
     console.log('an error occured trying to upload your photo');
     // console.error(error);
-    return error;
+    throw new Error('Image upload fail');
   }
 };
 
@@ -251,7 +251,7 @@ export const introVideoUpload = async (userId, uri) => {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: uploadData,
     });
@@ -264,7 +264,7 @@ export const introVideoUpload = async (userId, uri) => {
     console.log('fail2');
     console.log('an error occured trying to upload your photo');
     // console.error(error);
-    return error;
+    throw new Error('Video upload fail');
   }
 };
 
@@ -289,7 +289,7 @@ export const storyPicUpload = async (userId, uri) => {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: uploadData,
     });
@@ -301,7 +301,7 @@ export const storyPicUpload = async (userId, uri) => {
   } catch (error) {
     console.log('an error occured trying to upload your photo');
     console.log(error);
-    return error;
+    throw new Error('Image upload fail');
   }
 };
 
@@ -326,7 +326,7 @@ export const storyVideoUpload = async (userId, uri) => {
     const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: uploadData,
     });
@@ -339,7 +339,7 @@ export const storyVideoUpload = async (userId, uri) => {
     console.log('fail2');
     console.log('an error occured trying to upload your photo');
     // console.error(error);
-    return error;
+    throw new Error('Video upload fail');
   }
 };
 

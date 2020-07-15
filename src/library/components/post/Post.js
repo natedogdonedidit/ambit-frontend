@@ -37,7 +37,7 @@ const Post = ({
 }) => {
   // HOOKS
   const { currentUserId } = useContext(UserContext);
-  const client = useApolloClient()
+  const client = useApolloClient();
 
   // MUTATIONS - like, share, delete
   const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
@@ -391,7 +391,13 @@ const Post = ({
     <View style={[{ ...styles.postContainer }, showLine && { borderBottomWidth: 0 }]}>
       <View style={styles.post}>
         <View style={styles.leftColumn}>
-          <ProfilePic size="medium" user={post.owner} navigation={navigation} disableVideo={disableVideo} />
+          <ProfilePic
+            size="medium"
+            user={post.owner}
+            navigation={navigation}
+            enableIntro={!disableVideo}
+            enableStory={!disableVideo}
+          />
           {showLine && <View style={styles.threadLine} />}
         </View>
         <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 0 }]}>

@@ -22,14 +22,14 @@ const StoryFooter = ({
 }) => {
   const [topicsSorted, setTopicsSorted] = useState([]);
 
-  const { items, title, type, topics } = story;
+  const { owner, items, title, type, topics } = story;
   const activeItem = { ...items[activeIndex] };
 
-  const { owner, stories, views, plays } = activeItem;
+  const { stories, views, plays } = activeItem;
 
-  const indexOfProject = stories.findIndex((s) => s.type === 'PROJECT');
-  const project = indexOfProject !== -1 ? stories[indexOfProject] : null;
-  const soloStory = activeItem.stories.find((s) => s.type === 'SOLO');
+  const indexOfProject = stories ? stories.findIndex((s) => s.type === 'PROJECT') : 0;
+  const project = stories && indexOfProject !== -1 ? stories[indexOfProject] : null;
+  const soloStory = stories ? stories.find((s) => s.type === 'SOLO') : false;
   const saved = soloStory ? soloStory.save : false;
   const insets = useSafeArea();
 
@@ -132,7 +132,7 @@ const StoryFooter = ({
     return (
       <View style={{ paddingRight: 8, paddingBottom: 55, paddingLeft: 10 }}>
         {/* <View style={{ width: 50, height: 50, justifyContent: 'center', alignItems: 'center' }}>
-          <ProfilePic size="medium" user={owner} navigation={navigation} disableVideo border borderWidth={0.5} />
+          <ProfilePic size="medium" user={owner} navigation={navigation} enableIntro={false} enableStory={false} border borderWidth={0.5} />
           {!isMyPost && (
             <View
               style={{
@@ -169,7 +169,7 @@ const StoryFooter = ({
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: 'rgba(255,255,255,0.4)',
-              ...defaultStyles.shadowButton
+              ...defaultStyles.shadowButton,
             }}
           >
             <Icon name="heart" solid size={20} color="white" style={{ paddingTop: 2 }} />
@@ -185,7 +185,7 @@ const StoryFooter = ({
             alignItems: 'center',
           }}
         >
-                    <View
+          <View
             style={{
               width: 40,
               height: 40,
@@ -194,7 +194,7 @@ const StoryFooter = ({
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: 'rgba(255,255,255,0.4)',
-              ...defaultStyles.shadowButton
+              ...defaultStyles.shadowButton,
             }}
           >
             <Icon name="share" solid size={20} color="white" style={{ paddingTop: 1 }} />
@@ -205,15 +205,21 @@ const StoryFooter = ({
   };
 
   const renderTitle = () => {
-    // const { title, type, topics } = story;
+    if (type === 'INTRO') {
+      return (
+        <>
+          <Text style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,1)', paddingBottom: 12, paddingLeft: 8 }}>
+            {title || null}
+          </Text>
+        </>
+      );
+    }
 
     // if the active story is a project
     if (type === 'PROJECT') {
       return (
         <>
-          <Text
-            style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,1)', paddingBottom: 12, paddingLeft: 8 }}
-          >
+          <Text style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,1)', paddingBottom: 12, paddingLeft: 8 }}>
             {title || null}
             {'  '}
             <Icon name="caret-right" solid size={16} color="white" />
@@ -227,9 +233,7 @@ const StoryFooter = ({
     if (project) {
       return (
         <>
-          <Text
-            style={{ ...defaultStyles.largeSemibold, color: 'rgba(255,255,255,1)', paddingBottom: 12, paddingLeft: 8 }}
-          >
+          <Text style={{ ...defaultStyles.largeSemibold, color: 'rgba(255,255,255,1)', paddingBottom: 12, paddingLeft: 8 }}>
             {project.title || null}
             {'  '}
             <Icon name="caret-right" solid size={16} color="white" />

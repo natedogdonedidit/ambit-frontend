@@ -25,7 +25,7 @@ const StoryModal = ({ navigation, route }) => {
   const storyFlatlist = useRef();
 
   const [disableOutterScroll, setDisableOutterScroll] = useState(false);
-  const [favoriteTopics, setFavoriteTopics] = useState(topicIDtoSearch ? [topicIDtoSearch] : [])
+  const [favoriteTopics, setFavoriteTopics] = useState(topicIDtoSearch ? [topicIDtoSearch] : []);
 
   // STATE
   const [storyQIndex, setStoryQIndex] = useState(0);
@@ -35,11 +35,11 @@ const StoryModal = ({ navigation, route }) => {
 
   // QUERY TO GET USERS TOPICS
   const { data } = useQuery(CURRENT_USER_TOPICS);
-  const { myTopics } = data;
+  const { myTopics } = data || {};
 
   // effect compiles the list of favoriteTopics
   useEffect(() => {
-    let newFavoriteTopics = topicIDtoSearch ? [topicIDtoSearch] : []
+    let newFavoriteTopics = topicIDtoSearch ? [topicIDtoSearch] : [];
     if (myTopics) {
       if (myTopics.topicsFocus.length > 0) {
         newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.topicID)];
@@ -58,7 +58,7 @@ const StoryModal = ({ navigation, route }) => {
       }
     }
 
-    setFavoriteTopics([...newFavoriteTopics])
+    setFavoriteTopics([...newFavoriteTopics]);
   }, [myTopics]);
 
   // scrolls to index when story index changes

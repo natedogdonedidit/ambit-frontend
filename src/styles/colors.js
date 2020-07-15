@@ -78,6 +78,7 @@ const colors = {
   darkGray1: 'rgb(28,28,30)',
   darkGray2: 'rgb(44,44,46)',
   white: 'white',
+  storyButtonBackground: 'rgba(0,0,0,0.6)',
 
   // ------------------ //
   // --- old colors --- //

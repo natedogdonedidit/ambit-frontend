@@ -24,7 +24,6 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import ProjectSquare from 'library/components/stories/ProjectSquare';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-import ADD_TO_STORY_MUTATION from 'library/mutations/ADD_TO_STORY_MUTATION';
 import CREATE_STORY_ITEM_MUTATION from 'library/mutations/CREATE_STORY_ITEM_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 import StoryBox from 'library/components/stories/StoryBox';
@@ -67,7 +66,7 @@ const PostToModal = ({ navigation, route }) => {
   const { userLoggedIn } = dataUser;
 
   const stories = userLoggedIn.stories || [];
-  const projects = stories.filter(story => story.type === 'PROJECT');
+  const projects = stories.filter((story) => story.type === 'PROJECT');
   const myStoryID = userLoggedIn.myStory.id;
   // get topicIDs from user
   // const topicIDs = getTopicIDsFromUser(userLoggedIn);
@@ -82,7 +81,7 @@ const PostToModal = ({ navigation, route }) => {
 
   // project methods
   const handleProjectCreate = async (projectTitle, projectTopics) => {
-    const topicsForDB = projectTopics.map(topicID => {
+    const topicsForDB = projectTopics.map((topicID) => {
       return { topicID };
     });
 
@@ -115,7 +114,7 @@ const PostToModal = ({ navigation, route }) => {
     navigation.navigate('SelectStoryTopicsModal', { handleSend });
   };
 
-  const handleSend = async selectedTopics => {
+  const handleSend = async (selectedTopics) => {
     setCreatingStory(true);
     // if image, upload image, then save item to state
     if (capturedImage) {
@@ -140,7 +139,6 @@ const PostToModal = ({ navigation, route }) => {
             preview: uploadedImage,
             // text: '',
             link: '',
-            owner: { connect: { id: userLoggedIn.id } },
             stories: { connect: storiesConnect },
           };
 
@@ -154,7 +152,7 @@ const PostToModal = ({ navigation, route }) => {
 
           const selectedTopicsForDB =
             selectedTopics.length > 0
-              ? selectedTopics.map(topicID => {
+              ? selectedTopics.map((topicID) => {
                   return { topicID };
                 })
               : [];
@@ -165,7 +163,6 @@ const PostToModal = ({ navigation, route }) => {
             preview: uploadedImage,
             // text: '',
             link: '',
-            owner: { connect: { id: userLoggedIn.id } },
             stories: {
               connect: isStory ? [{ id: myStoryID }] : null,
               create: [
@@ -220,7 +217,6 @@ const PostToModal = ({ navigation, route }) => {
             // text: '',
             link: '',
             duration: uploadedVideo.duration,
-            owner: { connect: { id: userLoggedIn.id } },
             stories: { connect: storiesConnect },
           };
 
@@ -234,7 +230,7 @@ const PostToModal = ({ navigation, route }) => {
 
           const selectedTopicsForDB =
             selectedTopics.length > 0
-              ? selectedTopics.map(topicID => {
+              ? selectedTopics.map((topicID) => {
                   return { topicID };
                 })
               : [];
@@ -249,7 +245,6 @@ const PostToModal = ({ navigation, route }) => {
             // text: '',
             link: '',
             duration: uploadedVideo.duration,
-            owner: { connect: { id: userLoggedIn.id } },
             stories: {
               connect: isStory ? [{ id: myStoryID }] : null,
               create: [
@@ -348,7 +343,7 @@ const PostToModal = ({ navigation, route }) => {
     setIsStory(!isStory);
   };
 
-  const toggleProject = selectedProjectID => {
+  const toggleProject = (selectedProjectID) => {
     if (selectedProject === selectedProjectID) {
       // remove it
       setSelectedProject(null);
@@ -363,7 +358,14 @@ const PostToModal = ({ navigation, route }) => {
     return (
       <TouchableOpacity style={styles.storyRow} activeOpacity={1} onPress={toggleStory}>
         <View style={styles.leftSide}>
-          <ProfilePic size="medium" navigation={navigation} user={userLoggedIn} disableVideo disableClick />
+          <ProfilePic
+            size="medium"
+            navigation={navigation}
+            user={userLoggedIn}
+            enableIntro={false}
+            enableStory={false}
+            enableClick={false}
+          />
         </View>
 
         <View style={{ flex: 1 }}>
@@ -380,7 +382,7 @@ const PostToModal = ({ navigation, route }) => {
     );
   };
 
-  const renderTopics = proj => {
+  const renderTopics = (proj) => {
     if (proj.topics.length > 0) {
       return (
         <Text numberOfLines={1} style={{ ...defaultStyles.defaultBoldMute, paddingLeft: 10, paddingTop: 2 }}>
@@ -397,7 +399,7 @@ const PostToModal = ({ navigation, route }) => {
       return null;
     }
 
-    return projects.map(project => {
+    return projects.map((project) => {
       const selected = selectedProject === project.id;
 
       if (project.items.length > 0) {

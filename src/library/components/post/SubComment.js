@@ -148,7 +148,7 @@ const SubComment = ({
           <Image style={{ width: '100%', height: '100%' }} source={{ uri: comment.image }} resizeMode="cover" />
         </TouchableOpacity>
       </View>
-    )
+    );
   };
 
   // console.log(comment.content, isSubComment, lessPadding, lessTopPadding);
@@ -157,7 +157,13 @@ const SubComment = ({
     <View style={styles.commentContainer}>
       <View style={lessPadding ? styles.commentNoLine : styles.comment}>
         <View style={[styles.leftColumn]}>
-          <ProfilePic user={comment.owner} size="small" navigation={navigation} disableVideo={disableVideo} />
+          <ProfilePic
+            user={comment.owner}
+            size="small"
+            navigation={navigation}
+            enableIntro={!disableVideo}
+            enableStory={!disableVideo}
+          />
           {showLine && <View style={[{ ...styles.threadLine }]} />}
         </View>
         <View style={[styles.rightColumn, showLine && { paddingBottom: 24 }]}>

@@ -65,16 +65,16 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
           <>
             <MessageButton
               onPress={() => navigation.navigate('Chat', { otherUserPassedIn: user })}
-              buttonStyle={{ marginRight: 10 }}
+              buttonStyle={{ marginRight: 6 }}
             />
-            <ConnectButton onPress={() => null} buttonStyle={{ marginRight: 10 }} />
+            {/* <ConnectButton onPress={() => null} buttonStyle={{ marginRight: 10 }} /> */}
 
             <FollowButton userToFollow={user} setFollowersAdjustment={setFollowersAdjustment} />
           </>
         )}
       </View>
       <View style={styles.profilePicView}>
-        <ProfilePic user={user} intro={user.intro} navigation={navigation} size="large" border borderWidth={2.4} />
+        <ProfilePic user={user} navigation={navigation} size="large" border borderWidth={2.4} />
       </View>
     </View>
   );

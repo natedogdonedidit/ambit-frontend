@@ -156,7 +156,7 @@ const PostGroupTL = ({
         />
         <View style={styles.showLatestButton}>
           <View style={styles.leftColumn}>
-            <ProfilePic size="small" user={post.owner} navigation={navigation} disableVideo />
+            <ProfilePic size="small" user={post.owner} navigation={navigation} enableIntro={false} enableStory={false} />
           </View>
           <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Post', { post })} style={styles.rightColumn}>
             <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>

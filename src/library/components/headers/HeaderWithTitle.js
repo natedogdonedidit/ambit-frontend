@@ -17,7 +17,7 @@ const HeaderWithTitle = ({ navigation, handleMiddle, handleRight, user, title })
   return (
     <View style={{ ...styles.container }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
-        <ProfilePic user={userLoggedIn} size="small" disableVideo disableClick />
+        <ProfilePic user={userLoggedIn} size="small" enableIntro={false} enableStory={false} enableClick={false} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.headerSmall, color: colors.black }}>{title}</Text>

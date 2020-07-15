@@ -8,12 +8,12 @@ import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const StoryHeader = ({ story, activeIndex, navigation }) => {
+const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
   const [timeOfDay] = useState(new Date());
   const { items } = story;
   const activeItem = { ...items[activeIndex] };
 
-  const { owner } = activeItem;
+  const { owner } = story;
   const insets = useSafeArea();
 
   if (!owner) return null;
@@ -23,19 +23,16 @@ const StoryHeader = ({ story, activeIndex, navigation }) => {
 
   return (
     <View style={{ ...styles.absoluteTop, top: insets.top + 18 }}>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('Profile', { profileId: owner.id });
-        }}
-      >
-        <View style={styles.header}>
-          <ProfilePic size="small" user={owner} navigation={navigation} disableVideo />
+      <View style={styles.header}>
+        <ProfilePic size="small" user={owner} navigation={navigation} enableIntro={story.type !== 'INTRO'} enableStory={false} />
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('Profile', { profileId: owner.id });
+          }}
+        >
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
               <Text style={{ ...defaultStyles.defaultBold, color: 'white', paddingRight: 10 }}>{owner.name}</Text>
-              <View style={{width: 46, height: 18, backgroundColor: colors.peach, borderRadius: 9, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ ...defaultStyles.smallSemibold, fontSize: 10, color: 'white' }}>Follow</Text>
-              </View>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
               {owner.headline && (
@@ -49,7 +46,24 @@ const StoryHeader = ({ story, activeIndex, navigation }) => {
               </Text>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 12,
+          paddingHorizontal: 8,
+          height: 28,
+          borderRadius: 8,
+          backgroundColor: colors.peach,
+          justifyContent: 'center',
+          alignItems: 'center',
+          ...defaultStyles.shadowButton,
+        }}
+        onPress={() => null}
+      >
+        <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>Follow</Text>
       </TouchableOpacity>
     </View>
   );

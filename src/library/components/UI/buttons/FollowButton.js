@@ -12,18 +12,23 @@ import SINGLE_USER_BASIC from 'library/queries/SINGLE_USER_BASIC';
 
 const FollowButton = ({ userToFollow, setFollowersAdjustment }) => {
   const { data } = useQuery(CURRENT_USER_QUERY);
-  const { userLoggedIn } = data;
 
   // MUTATIONS - follow, connect
   const [editFollowing, { loading: loadingFollow }] = useMutation(EDIT_FOLLOWING_MUTATION, {
     refetchQueries: () => [{ query: CURRENT_USER_QUERY }, { query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
-    onError: e => {
+    onError: (e) => {
       console.log(e);
       Alert.alert('Oh no!', 'An error occured when trying to follow this user. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]);
     },
   });
+
+  if (!data) {
+    return null;
+  }
+
+  const { userLoggedIn } = data;
 
   if (!userLoggedIn) {
     return null;
@@ -33,7 +38,7 @@ const FollowButton = ({ userToFollow, setFollowersAdjustment }) => {
     return null;
   }
 
-  const alreadyFollowingInd = userLoggedIn.following.findIndex(u => u.id === userToFollow.id);
+  const alreadyFollowingInd = userLoggedIn.following.findIndex((u) => u.id === userToFollow.id);
   const alreadyFollowing = alreadyFollowingInd >= 0;
 
   const handleFollowClick = () => {

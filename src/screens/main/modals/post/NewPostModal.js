@@ -285,6 +285,7 @@ const NewPostModal = ({ navigation, route }) => {
         const newArray = imgs.map((img) => {
           // console.log('received image', img);
           // return { uri: img.path, width: img.width, height: img.height };
+          console.log(img.path);
           return img.path;
         });
 

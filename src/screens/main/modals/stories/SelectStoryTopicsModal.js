@@ -8,29 +8,10 @@ import Feather from 'react-native-vector-icons/Feather';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { UserContext } from 'library/utils/UserContext';
-import {
-  getTopicIDsFromUser,
-  getParentTopicFromID,
-  getFullTopicListFromIDs,
-  storyPicUpload,
-  storyVideoUpload,
-  getIconFromID,
-  createThumbnail,
-  getTopicFromID,
-} from 'library/utils';
+import { getTopicFromID } from 'library/utils';
 
-import Loader from 'library/components/UI/Loader';
 import HeaderBack from 'library/components/headers/HeaderBack';
-import ProfilePic from 'library/components/UI/ProfilePic';
-import ProjectSquare from 'library/components/stories/ProjectSquare';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
-import ADD_TO_STORY_MUTATION from 'library/mutations/ADD_TO_STORY_MUTATION';
-import CREATE_STORY_ITEM_MUTATION from 'library/mutations/CREATE_STORY_ITEM_MUTATION';
-import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
-import StoryBox from 'library/components/stories/StoryBox';
-import StoryBoxButton from 'library/components/stories/StoryBoxButton';
-import NewProjectButton from 'library/components/stories/NewProjectButton2';
 
 const SelectStoryTopicsModal = ({ navigation, route }) => {
   const { handleSend } = route.params;
@@ -51,7 +32,7 @@ const SelectStoryTopicsModal = ({ navigation, route }) => {
 
   // compiles the list of favoriteTopics whenever myTopics changes
   const favoriteTopics = useMemo(() => {
-    let newFavoriteTopics = []
+    let newFavoriteTopics = [];
     if (data) {
       const { myTopics } = data;
       if (myTopics) {
@@ -72,8 +53,8 @@ const SelectStoryTopicsModal = ({ navigation, route }) => {
         }
       }
     }
-    return [...newFavoriteTopics]
-  }, [data])
+    return [...newFavoriteTopics];
+  }, [data]);
 
   const toggleTopic = (selectedTopicID) => {
     let newArray = [...selectedTopics];

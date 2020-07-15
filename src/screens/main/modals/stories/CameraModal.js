@@ -1,15 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Alert, Image, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import Feather from 'react-native-vector-icons/Feather';
+import CameraRoll from '@react-native-community/cameraroll';
+import LinearGradient from 'react-native-linear-gradient';
+import { useSafeArea } from 'react-native-safe-area-context';
+
 import ImagePicker from 'react-native-image-crop-picker';
 import { RNCamera } from 'react-native-camera';
-import Video from 'react-native-video';
+import { useLazyQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { introPicUpload, introVideoUpload } from 'library/utils';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import CameraControls from 'library/components/camera/CameraControls';
+import CapturedStoryItem from 'library/components/camera/CapturedStoryItem';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import Loader from 'library/components/UI/Loader';
+import EditIntro from 'library/components/camera/EditIntro';
 
 const flashModeOrder = {
   auto: 'off',
@@ -18,195 +26,181 @@ const flashModeOrder = {
 };
 
 const CameraModal = ({ navigation, route }) => {
+  const insets = useSafeArea();
+
+  // params
+  const { isIntro } = route.params;
+
   // STATE
-  const [newStoryItem, setNewStoryItem] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  // const [newStoryItem, setNewStoryItem] = useState(null);
+  // const [uploading, setUploading] = useState(false);
   const [flashMode, setFlashMode] = useState('auto');
   const [direction, setDirection] = useState('back');
   const [mode, setMode] = useState('photo');
   const [recording, setRecording] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [capturedVideo, setCapturedVideo] = useState(null);
+  const [showEditIntro, setShowEditIntro] = useState(false);
+  const [firstImage, setFirstImage] = useState(null);
 
   const cameraRef = useRef(null);
-  const videoRef = useRef(null);
 
-  const takePicture = async () => {
-    if (cameraRef) {
-      const options = { quality: 0.5, base64: true };
-      const data = await cameraRef.current.takePictureAsync(options);
+  // get intro from cache
+  const [getUser, { loading, error, data }] = useLazyQuery(CURRENT_USER_QUERY, { fetchPolicy: 'cache-first' });
 
-      if (data.uri) {
-        setCapturedImage(data);
-      }
+  // only run the getUser query if we need the intro
+  useEffect(() => {
+    if (isIntro) {
+      getUser();
     }
-  };
+  }, []);
 
-  const takeVideo = async () => {
-    if (cameraRef && !recording) {
-      const options = {
-        mute: false,
-        maxDuration: 30,
-        quality: RNCamera.Constants.VideoQuality['720p'], // 288p, 480p, 720p, 1080p, 2160p
-      };
-
+  // get first photo from camera roll
+  useEffect(() => {
+    const getFirstPhoto = async () => {
       try {
-        const promise = cameraRef.current.recordAsync(options);
-
-        if (promise) {
-          setRecording(true);
-          const data = await promise;
-          console.log(data);
-          setCapturedVideo(data);
-        }
+        const res = await CameraRoll.getPhotos({ first: 1, assetType: 'photos' });
+        const firstImg = res.edges[0].node.image.uri;
+        setFirstImage(firstImg);
       } catch (e) {
-        console.error(e);
-        setRecording(false);
+        console.log(e);
       }
-    }
+    };
+    getFirstPhoto();
+  }, []);
+
+  const handleCameraRollButton = () => {
+    ImagePicker.openPicker({
+      multiple: false,
+      waitAnimationEnd: false,
+      includeExif: true,
+      // loadingLabelText: 'Uploading files',
+    })
+      .then((mediaSelected) => {
+        console.log(mediaSelected);
+        const isImage = mediaSelected.mime.startsWith('image');
+        const isVideo = mediaSelected.mime.startsWith('video');
+
+        if (isImage) {
+          setCapturedImage({ uri: mediaSelected.path });
+        } else if (isVideo) {
+          if (mediaSelected.duration < 31000) {
+            setCapturedVideo({ uri: mediaSelected.path });
+          } else {
+            Alert.alert('Oh no!', 'Please select a video 30 seconds or less!', [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+          }
+        }
+      })
+      .catch((e) => alert(e));
   };
 
-  const stopVideo = async () => {
-    await cameraRef.current.stopRecording();
-    setRecording(false);
-  };
-
-  const toggleMode = () => {
-    setMode(mode === 'photo' ? 'video' : 'photo');
-  };
-
-  const toggleFlash = () => {
-    setFlashMode(flashModeOrder[flashMode]);
-  };
-
-  const toggleDirection = () => {
-    setDirection(direction === 'back' ? 'front' : 'back');
-  };
-
-  const clearCapturedItem = () => {
-    setCapturedImage(null);
-    setCapturedVideo(null);
-  };
-
-  const handleSendTo = () => {
-    navigation.navigate('PostToModal', { capturedImage, capturedVideo });
-  };
-
-  const renderSnapButton = () => {
-    if (mode === 'photo') {
-      return <TouchableOpacity onPress={takePicture} style={styles.snapButton} />;
-    }
-
-    if (mode === 'video') {
-      if (recording) {
-        return (
-          <TouchableOpacity onPress={stopVideo} style={styles.snapButton}>
-            <View style={{ width: 16, height: 16, borderRadius: 1, backgroundColor: 'red' }} />
-          </TouchableOpacity>
-        );
-      }
-
-      return (
-        <TouchableOpacity onPress={takeVideo} style={styles.snapButton}>
-          <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: 'red' }} />
-        </TouchableOpacity>
-      );
-    }
-  };
-
-  if (capturedImage) {
-    if (capturedImage.uri) {
-      return (
-        <View style={{ flex: 1 }}>
-          <Image source={{ uri: capturedImage.uri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
-
-          <View style={styles.clearButton}>
-            <TouchableOpacity onPress={clearCapturedItem}>
-              <Feather name="x" size={30} color={colors.white} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.sendButton}>
-            <TouchableOpacity activeOpacity={0.8} onPress={handleSendTo} style={styles.sendButtonView}>
-              <Text style={{ ...defaultStyles.largeMedium }}>Share to</Text>
-              <Feather name="chevron-right" size={26} color={colors.purp} style={{ paddingTop: 4 }} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
-    }
+  if (isIntro && loading) {
+    return <Loader loading={loading} size="small" backgroundColor="transparent" />;
+  }
+  if (isIntro && error) {
+    navigation.goBack();
+    return null;
   }
 
-  if (capturedVideo) {
-    if (capturedVideo.uri) {
+  const renderCurrentIntro = () => {
+    if (isIntro && !loading && data) {
+      const { userLoggedIn } = data;
+      const { intro } = userLoggedIn;
+
       return (
-        <View style={{ flex: 1 }}>
-          <Video
-            source={{ uri: capturedVideo.uri }}
-            ref={videoRef}
-            style={{ height: '100%', width: '100%' }}
-            resizeMode="cover"
-            repeat
-          />
-
-          <View style={styles.clearButton}>
-            <TouchableOpacity onPress={clearCapturedItem}>
-              <Feather name="x" size={30} color={colors.white} />
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.sendButton}>
-            <TouchableOpacity activeOpacity={0.8} onPress={handleSendTo} style={styles.sendButtonView}>
-              <Text style={{ ...defaultStyles.hugeRegular }}>Share to</Text>
-              <Feather name="chevron-right" size={30} color={colors.purp} style={{ paddingTop: 4 }} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
-    }
-  }
-
-  return (
-    <View style={styles.container}>
-      <RNCamera ref={cameraRef} style={{ flex: 1, width: '100%' }} type={direction} flashMode={flashMode} keepAudioSession />
-      <View style={styles.controls}>
-        <View style={styles.controlsLeft}>
-          <TouchableOpacity onPress={() => null} style={{ paddingRight: 40 }} activeOpacity={0.7}>
-            <Feather name="square" size={26} color={colors.white} style={{ textAlign: 'center', paddingTop: 1 }} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={toggleFlash} activeOpacity={0.7}>
-            <View>
-              <Feather
-                name={flashMode === 'off' ? 'zap-off' : 'zap'}
-                size={26}
-                color={colors.white}
-                solid
-                style={{ textAlign: 'center', paddingTop: 1 }}
-              />
-              {flashMode === 'auto' && (
-                <View style={styles.autoText}>
-                  <Text style={{ ...defaultStyles.smallBold, color: colors.white }}>A</Text>
-                </View>
-              )}
-            </View>
-          </TouchableOpacity>
-        </View>
-        {renderSnapButton()}
-        <View style={styles.controlsRight}>
-          <TouchableOpacity onPress={toggleDirection} style={{ paddingRight: 40 }} activeOpacity={0.7}>
-            <Feather name="refresh-cw" size={26} color={colors.white} style={{ textAlign: 'center', paddingTop: 1 }} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={toggleMode} activeOpacity={0.7}>
-            <Feather
-              name={mode === 'photo' ? 'video' : 'camera'}
-              size={26}
-              color={colors.white}
-              solid
-              style={{ textAlign: 'center', paddingTop: 1 }}
+        <View style={{ position: 'absolute', top: 30, right: 12, width: 45, height: 70, borderRadius: 10 }}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('IntroModal', {
+                intro,
+              })
+            }
+          >
+            <Image
+              style={{ width: 45, height: 70, borderRadius: 10 }}
+              source={{ uri: intro.items[0].preview || '' }}
+              resizeMode="cover"
             />
           </TouchableOpacity>
         </View>
-      </View>
+      );
+    }
+    return null;
+  };
+
+  // if a image/video has been taken -> show preview component
+  if ((capturedImage && capturedImage.uri) || (capturedVideo && capturedVideo.uri)) {
+    // if this is a story -> show story Preview screen
+    if (isIntro) {
+      const { userLoggedIn } = data;
+      const { id, intro } = userLoggedIn;
+      return (
+        <CapturedStoryItem
+          navigation={navigation}
+          userId={id}
+          isIntro
+          intro={intro}
+          capturedImage={capturedImage}
+          capturedVideo={capturedVideo}
+          setCapturedVideo={setCapturedVideo}
+          setCapturedImage={setCapturedImage}
+        />
+      );
+    }
+    return (
+      <CapturedStoryItem
+        navigation={navigation}
+        userId={null}
+        isIntro={false}
+        intro={null}
+        capturedImage={capturedImage}
+        capturedVideo={capturedVideo}
+        setCapturedVideo={setCapturedVideo}
+        setCapturedImage={setCapturedImage}
+      />
+    );
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <RNCamera ref={cameraRef} style={{ flex: 1, width: '100%' }} type={direction} flashMode={flashMode} keepAudioSession />
+      <LinearGradient
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        colors={['transparent', 'rgba(0,0,0,0.5)']}
+        style={{ ...styles.linearGradientBottom, height: insets.bottom + 170 }}
+      />
+      <CameraControls
+        cameraRef={cameraRef}
+        setCapturedImage={setCapturedImage}
+        setCapturedVideo={setCapturedVideo}
+        recording={recording}
+        setRecording={setRecording}
+        mode={mode}
+        setMode={setMode}
+        flashMode={flashMode}
+        setFlashMode={setFlashMode}
+        flashModeOrder={flashModeOrder}
+        direction={direction}
+        setDirection={setDirection}
+        handleCameraRollButton={handleCameraRollButton}
+        firstImage={firstImage}
+      />
+      {isIntro && (
+        <View style={{ position: 'absolute', top: 30, left: 15 }}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.sideButton}
+            onPress={() => navigation.navigate('IntroInfoPopup')}
+            hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
+          >
+            <Icon name="question" solid size={16} color={colors.white} />
+          </TouchableOpacity>
+        </View>
+      )}
+      {renderCurrentIntro()}
     </View>
   );
 };
@@ -214,70 +208,22 @@ const CameraModal = ({ navigation, route }) => {
 export default CameraModal;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  controls: {
-    flexDirection: 'row',
-    width: '100%',
+  linearGradientBottom: {
     position: 'absolute',
     bottom: 0,
     left: 0,
-    // backgroundColor: 'rgba(0,0,0,0.1)',
-    paddingBottom: 60,
+    height: 170,
+    width: '100%',
   },
-  snapButton: {
-    height: 70,
-    width: 70,
+  sideButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.storyButtonBackground,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 35,
-    backgroundColor: colors.white,
-    borderWidth: 6,
-    borderColor: 'rgba(0,0,0,0.1)',
-  },
-  controlsLeft: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  controlsRight: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  autoText: {
-    position: 'absolute',
-    bottom: -2,
-    right: -1,
-  },
-  clearButton: {
-    position: 'absolute',
-    top: 24,
-    left: 10,
-  },
-  sendButton: {
-    position: 'absolute',
-    bottom: 15,
-    right: 15,
-
-    shadowOffset: { width: 0, height: 0 },
-    shadowColor: 'black',
-    shadowOpacity: 0.3,
-    shadowRadius: 14,
-  },
-  sendButtonView: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'white',
-    paddingRight: 6,
-    paddingLeft: 16,
-    // ...defaultStyles.shadow6,
-    // paddingVertical: 8,
+    marginBottom: 12,
+    ...defaultStyles.shadowButton,
   },
 });
 

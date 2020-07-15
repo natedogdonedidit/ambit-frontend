@@ -16,6 +16,7 @@ import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY';
 import MainDrawer from 'navigators/MainDrawer';
 // modals
 import StoryModal from 'screens/main/modals/stories/StoryModal';
+import IntroModal from 'screens/main/modals/stories/IntroModal';
 import CameraModal from 'screens/main/modals/stories/CameraModal';
 import PostToModal from 'screens/main/modals/stories/PostToModal';
 import NewProjectTitleModal from 'screens/main/modals/stories/NewProjectTitleModal';
@@ -50,7 +51,7 @@ import YearModal from 'screens/main/modals/general/YearModal';
 import MonthModal from 'screens/main/modals/general/MonthModal';
 import ForYouSettingsPopup from 'screens/main/modals/general/ForYouSettingsPopup';
 import EditStoryItemPopup from 'screens/main/modals/stories/EditStoryItemPopup';
-
+import IntroInfoPopup from 'screens/main/modals/stories/IntroInfoPopup';
 
 const Stack = createStackNavigator();
 
@@ -180,13 +181,18 @@ const MainStack = () => {
       mode="modal"
       headerMode="none"
     >
-      <Stack.Screen 
-        name="MainDrawer" 
-        component={MainDrawer}
-      />
+      <Stack.Screen name="MainDrawer" component={MainDrawer} />
 
       {/* modals */}
       <Stack.Screen name="StoryModal" component={StoryModal} />
+      <Stack.Screen
+        name="IntroModal"
+        component={IntroModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          gestureDirection: 'horizontal',
+        }}
+      />
       <Stack.Screen name="CameraModal" component={CameraModal} />
       <Stack.Screen
         name="PostToModal"
@@ -276,6 +282,7 @@ const MainStack = () => {
       <Stack.Screen name="EditSkillsPopup" component={EditSkillsPopup} options={halfModalOptions} />
       <Stack.Screen name="SelectorModal" component={SelectorModal} options={halfModalOptions} />
       <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} options={halfModalOptions} />
+      <Stack.Screen name="IntroInfoPopup" component={IntroInfoPopup} options={halfModalOptions} />
       <Stack.Screen name="ForYouSettingsPopup" component={ForYouSettingsPopup} options={halfModalOptions} />
       <Stack.Screen name="EditEducationModal" component={EditEducationModal} />
       <Stack.Screen name="EditExperienceModal" component={EditExperienceModal} />

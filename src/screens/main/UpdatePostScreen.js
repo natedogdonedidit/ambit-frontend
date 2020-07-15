@@ -96,7 +96,14 @@ const UpdatePostScreen = ({ navigation, route }) => {
 
           <View style={styles.update}>
             <View style={styles.leftColumn}>
-              <ProfilePic navigation={navigation} user={post.owner} size="small" disableVideo />
+              <ProfilePic
+                navigation={navigation}
+                user={post.owner}
+                size="small"
+                enableIntro={false}
+                enableStory={false}
+                enableClick={false}
+              />
             </View>
             <View style={styles.rightColumn}>
               <View style={{ height: 100, paddingTop: 0 }}>

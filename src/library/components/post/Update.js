@@ -52,7 +52,7 @@ const Update = ({
     onCompleted: () => {
       // closeModal();
     },
-    onError: error => {
+    onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to like this update. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -119,7 +119,13 @@ const Update = ({
     <View style={hideTopLine ? styles.updateContainerNoLine : styles.updateContainer}>
       <View style={styles.update}>
         <View style={styles.leftColumn}>
-          <ProfilePic navigation={navigation} user={post.owner} size="small" disableVideo={disableVideo} />
+          <ProfilePic
+            navigation={navigation}
+            user={post.owner}
+            size="small"
+            enableIntro={!disableVideo}
+            enableStory={!disableVideo}
+          />
           {showLine && <View style={styles.threadLine} />}
         </View>
         <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>

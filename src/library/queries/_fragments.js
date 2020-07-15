@@ -5,14 +5,6 @@ export const StoryItemFragment = gql`
   fragment StoryItemFragment on StoryItem {
     id
     createdAt
-    owner {
-      id
-      name
-      firstName
-      headline
-      location
-      profilePic
-    }
     stories {
       id
       type
@@ -46,9 +38,42 @@ export const StoryFragment = gql`
     owner {
       id
       name
+      firstName
       headline
       location
       profilePic
+      intro {
+        id
+        title
+        owner {
+          id
+          name
+          firstName
+          headline
+          location
+          profilePic
+        }
+        type
+        preview
+        showcase
+        save
+        items {
+          id
+          createdAt
+          type
+          url
+          preview
+          link
+          text
+          duration
+          views {
+            id
+            name
+            profilePic
+          }
+          plays
+        }
+      }
     }
     type
     preview

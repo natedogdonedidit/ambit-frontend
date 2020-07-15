@@ -26,7 +26,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const [showRefreshing, setShowRefreshing] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
-  const [activeTimeline, setActiveTimeline] = useState(0);
+  const [activeTimeline, setActiveTimeline] = useState(1);
 
   // QUERIES
 
@@ -252,10 +252,10 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
                 {loading ? (
                   <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
                 ) : (
-                    <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-                      No posts were found
-                    </Text>
-                  )}
+                  <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
+                    No posts were found
+                  </Text>
+                )}
               </View>
             </>
           );
@@ -276,10 +276,10 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         sections={
           postsToShow.length > 0
             ? [
-              {
-                data: postsToShow || [],
-              },
-            ]
+                {
+                  data: postsToShow || [],
+                },
+              ]
             : []
         }
         renderSectionHeader={({ section }) => (
@@ -311,11 +311,11 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             changed.forEach(({ index, isViewable, item }) => {
               if (index >= 0 && isViewable && item.node) {
                 if (typeof item.node === 'object' && item.node.id) {
-                  console.log('submitting view for ', item.node.id)
-                  viewedPost({ variables: { postId: item.node.id } })
+                  console.log('submitting view for ', item.node.id);
+                  viewedPost({ variables: { postId: item.node.id } });
                 }
               }
-            })
+            });
           }
         }}
         onEndReachedThreshold={1.2}
@@ -341,12 +341,12 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
                   return newEdges.length
                     ? {
-                      postsForYou: {
-                        __typename: previousResult.postsForYou.__typename,
-                        edges: [...previousResult.postsForYou.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
+                        postsForYou: {
+                          __typename: previousResult.postsForYou.__typename,
+                          edges: [...previousResult.postsForYou.edges, ...newEdges],
+                          pageInfo,
+                        },
+                      }
                     : previousResult;
                 },
               });
@@ -369,12 +369,12 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
                   return newEdges.length
                     ? {
-                      postsNetwork: {
-                        __typename: previousResult.postsNetwork.__typename,
-                        edges: [...previousResult.postsNetwork.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
+                        postsNetwork: {
+                          __typename: previousResult.postsNetwork.__typename,
+                          edges: [...previousResult.postsNetwork.edges, ...newEdges],
+                          pageInfo,
+                        },
+                      }
                     : previousResult;
                 },
               });
@@ -397,12 +397,12 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
                   return newEdges.length
                     ? {
-                      postsMyGoals: {
-                        __typename: previousResult.postsMyGoals.__typename,
-                        edges: [...previousResult.postsMyGoals.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
+                        postsMyGoals: {
+                          __typename: previousResult.postsMyGoals.__typename,
+                          edges: [...previousResult.postsMyGoals.edges, ...newEdges],
+                          pageInfo,
+                        },
+                      }
                     : previousResult;
                 },
               });

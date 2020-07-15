@@ -38,7 +38,7 @@ const CustomDrawer = ({ navigation }) => {
     <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
       <View>
         <TouchableOpacity style={styles.header} onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
-          <ProfilePic user={userLoggedIn} size="small" navigation={navigation} disableVideo />
+          <ProfilePic user={userLoggedIn} size="small" navigation={navigation} enableIntro={false} enableStory={false} />
           <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.firstName}!</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
@@ -48,7 +48,8 @@ const CustomDrawer = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('CreateIntroModal', { userLoggedIn });
+            // navigation.navigate('CreateIntroModal', { userLoggedIn });
+            navigation.navigate('CameraModal', { isIntro: true });
             navigation.closeDrawer();
           }}
         >

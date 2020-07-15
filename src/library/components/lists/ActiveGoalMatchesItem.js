@@ -21,7 +21,15 @@ const ActiveGoalMatchesItem = ({ navigation, item }) => {
       const left = -i * 8;
       return (
         <View key={i} style={{ top, left }}>
-          <ProfilePic navigation={navigation} user={user} size={40} border borderWidth={2} disableVideo />
+          <ProfilePic
+            navigation={navigation}
+            user={user}
+            size={40}
+            border
+            borderWidth={2}
+            enableIntro={false}
+            enableStory={false}
+          />
         </View>
       );
     });
