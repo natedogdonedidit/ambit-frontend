@@ -109,23 +109,25 @@ const CameraModal = ({ navigation, route }) => {
       const { userLoggedIn } = data;
       const { intro } = userLoggedIn;
 
-      return (
-        <View style={{ position: 'absolute', top: 30, right: 12, width: 45, height: 70, borderRadius: 10 }}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('IntroModal', {
-                intro,
-              })
-            }
-          >
-            <Image
-              style={{ width: 45, height: 70, borderRadius: 10 }}
-              source={{ uri: intro.items[0].preview || '' }}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-        </View>
-      );
+      if (intro.items) {
+        return (
+          <View style={{ position: 'absolute', top: 30, right: 12, width: 45, height: 70, borderRadius: 10 }}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('IntroModal', {
+                  intro,
+                })
+              }
+            >
+              <Image
+                style={{ width: 45, height: 70, borderRadius: 10 }}
+                source={{ uri: intro.items[0].preview || '' }}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          </View>
+        );
+      }
     }
     return null;
   };
