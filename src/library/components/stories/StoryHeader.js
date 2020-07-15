@@ -56,7 +56,7 @@ const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
           paddingHorizontal: 8,
           height: 28,
           borderRadius: 8,
-          backgroundColor: colors.peach,
+          backgroundColor: colors.purp,
           justifyContent: 'center',
           alignItems: 'center',
           ...defaultStyles.shadowButton,

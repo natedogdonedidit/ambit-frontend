@@ -180,27 +180,29 @@ const ProfilePic = ({
       }
       if (size === 'large') {
         return (
-          <View
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => {
+              navigation.navigate('IntroModal', {
+                intro: user.intro,
+              });
+            }}
             style={{
               position: 'absolute',
-              bottom: -6,
-              right: -4,
+              bottom: -4,
+              right: -36,
               ...defaultStyles.shadow3,
+              backgroundColor: colors.green,
+              height: 24,
+              borderRadius: 10,
+              paddingHorizontal: 8,
+              flexDirection: 'row',
+              alignItems: 'center',
             }}
           >
-            <View
-              style={{
-                position: 'absolute', // this sits behind the icon for a while background
-                top: 2,
-                right: 2,
-                width: 14,
-                height: 14,
-                borderRadius: 7,
-                backgroundColor: colors.white,
-              }}
-            />
-            <Icon name="play-circle" solid size={18} color={colors.green} />
-          </View>
+            <Icon name="play" solid size={10} color={colors.white} />
+            <Text style={{ ...defaultStyles.smallSemibold, color: colors.white, paddingLeft: 4 }}>Intro</Text>
+          </TouchableOpacity>
         );
       }
     } else {

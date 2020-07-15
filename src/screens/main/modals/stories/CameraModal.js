@@ -7,7 +7,7 @@ import { useSafeArea } from 'react-native-safe-area-context';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import { RNCamera } from 'react-native-camera';
-import { useLazyQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useLazyQuery, useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -46,14 +46,14 @@ const CameraModal = ({ navigation, route }) => {
   const cameraRef = useRef(null);
 
   // get intro from cache
-  const [getUser, { loading, error, data }] = useLazyQuery(CURRENT_USER_QUERY, { fetchPolicy: 'cache-first' });
+  const { loading, error, data } = useQuery(CURRENT_USER_QUERY, { fetchPolicy: 'cache-first' });
 
   // only run the getUser query if we need the intro
-  useEffect(() => {
-    if (isIntro) {
-      getUser();
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isIntro) {
+  //     getUser();
+  //   }
+  // }, []);
 
   // get first photo from camera roll
   useEffect(() => {
@@ -69,6 +69,17 @@ const CameraModal = ({ navigation, route }) => {
     getFirstPhoto();
   }, []);
 
+  if (loading) {
+    return <Loader loading={loading} size="small" backgroundColor="transparent" />;
+  }
+  if (error) {
+    navigation.goBack();
+    return null;
+  }
+
+  const { userLoggedIn } = data;
+  const { id, intro } = userLoggedIn;
+
   const handleCameraRollButton = () => {
     ImagePicker.openPicker({
       multiple: false,
@@ -77,7 +88,6 @@ const CameraModal = ({ navigation, route }) => {
       // loadingLabelText: 'Uploading files',
     })
       .then((mediaSelected) => {
-        console.log(mediaSelected);
         const isImage = mediaSelected.mime.startsWith('image');
         const isVideo = mediaSelected.mime.startsWith('video');
 
@@ -96,20 +106,9 @@ const CameraModal = ({ navigation, route }) => {
       .catch((e) => alert(e));
   };
 
-  if (isIntro && loading) {
-    return <Loader loading={loading} size="small" backgroundColor="transparent" />;
-  }
-  if (isIntro && error) {
-    navigation.goBack();
-    return null;
-  }
-
   const renderCurrentIntro = () => {
-    if (isIntro && !loading && data) {
-      const { userLoggedIn } = data;
-      const { intro } = userLoggedIn;
-
-      if (intro.items) {
+    if (isIntro) {
+      if (intro && intro.items) {
         return (
           <View style={{ position: 'absolute', top: 30, right: 12, width: 45, height: 70, borderRadius: 10 }}>
             <TouchableOpacity
@@ -119,11 +118,13 @@ const CameraModal = ({ navigation, route }) => {
                 })
               }
             >
-              <Image
-                style={{ width: 45, height: 70, borderRadius: 10 }}
-                source={{ uri: intro.items[0].preview || '' }}
-                resizeMode="cover"
-              />
+              {intro.items[0] && (
+                <Image
+                  style={{ width: 45, height: 70, borderRadius: 10 }}
+                  source={{ uri: intro.items[0] ? intro.items[0].preview : '' }}
+                  resizeMode="cover"
+                />
+              )}
             </TouchableOpacity>
           </View>
         );
@@ -136,8 +137,6 @@ const CameraModal = ({ navigation, route }) => {
   if ((capturedImage && capturedImage.uri) || (capturedVideo && capturedVideo.uri)) {
     // if this is a story -> show story Preview screen
     if (isIntro) {
-      const { userLoggedIn } = data;
-      const { id, intro } = userLoggedIn;
       return (
         <CapturedStoryItem
           navigation={navigation}

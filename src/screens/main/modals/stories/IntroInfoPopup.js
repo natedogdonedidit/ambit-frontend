@@ -28,16 +28,19 @@ const IntroInfoPopup = ({ navigation, route }) => {
         <View style={styles.transparentSection} />
       </TouchableWithoutFeedback>
       <SafeAreaView style={{ ...styles.modalView, top: topPadding, left: leftPadding }}>
+        <Text style={{ ...defaultStyles.largeMedium, textAlign: 'center', paddingBottom: 10 }}>
+          Hey nate! This would be a good spot to describe what an intro is
+        </Text>
         <View>
-          <Text style={{ ...defaultStyles.largeMedium, textAlign: 'center', paddingBottom: 10 }}>
-            Hey nate! This would be a good spot to describe what an intro is
-          </Text>
+          <ButtonDefault
+            onPress={goBack}
+            buttonStyle={{ marginBottom: 15 }}
+            textStyle={{ fontWeight: '400', color: 'white', fontSize: 18 }}
+          >
+            Got it
+          </ButtonDefault>
           <TextButton onPress={goBack}>See an example</TextButton>
         </View>
-
-        <ButtonDefault onPress={goBack} textStyle={{ fontWeight: '400', color: 'white', fontSize: 18 }}>
-          Got it
-        </ButtonDefault>
       </SafeAreaView>
     </View>
   );

@@ -16,7 +16,7 @@ const AppNavigator = () => {
   YellowBox.ignoreWarnings(['Non-serializable values were found in the navigation state']);
   const { currentUserId, loadingApp } = useContext(UserContext);
 
-  if (loadingApp) {
+  if (loadingApp && !currentUserId) {
     return <SplashScreen />;
   }
 

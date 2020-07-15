@@ -9,6 +9,8 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Loader from 'library/components/UI/Loader';
 
+const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
+
 const NewProjectButton2 = ({ navigation, userLoggedIn, loadingCreateStory }) => {
   return (
     <TouchableOpacity
@@ -21,7 +23,7 @@ const NewProjectButton2 = ({ navigation, userLoggedIn, loadingCreateStory }) => 
           style={{ width: '100%', height: '100%' }}
           resizeMode="cover"
           source={{
-            uri: userLoggedIn.profilePic,
+            uri: userLoggedIn.profilePic || profilePicExample,
           }}
         />
       </View>

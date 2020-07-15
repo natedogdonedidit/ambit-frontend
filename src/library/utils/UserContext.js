@@ -63,6 +63,7 @@ const UserContextProvider = (props) => {
       } else {
         signOut();
         setCurrentUserId(null);
+        setLoadingApp(false);
       }
     };
     fetchToken();
@@ -80,8 +81,10 @@ const UserContextProvider = (props) => {
   // determine if the app is loading
   useEffect(() => {
     if (loadingUser || loadingToken) {
+      // console.log(loadingUser, loadingToken)
       setLoadingApp(true);
     } else {
+      // console.log('settingFalse')
       setLoadingApp(false);
     }
   }, [loadingUser, loadingToken]);

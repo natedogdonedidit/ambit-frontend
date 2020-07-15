@@ -39,14 +39,15 @@ const CapturedStoryItem = ({
   };
 
   const handleSaveIntro = async () => {
-    setUploading(true);
     if (isIntro && intro) {
+      setUploading(true);
       let newItem = null;
 
       // upload media
       if (capturedImage && capturedImage.uri) {
         try {
           const uploadedImage = await storyPicUpload(userId, capturedImage.uri);
+          console.log(uploadedImage);
 
           const itemForMutation = {
             type: 'IMAGE',
@@ -88,13 +89,14 @@ const CapturedStoryItem = ({
 
       // run the mutation
       if (newItem) {
+        const deleteArray = intro.items.length > 0 ? [{ id: intro.items[0].id }] : null;
         try {
           await updateStory({
             variables: {
               id: intro.id,
               story: {
                 items: {
-                  delete: [{ id: intro.items[0].id }], // delete the previous intro
+                  delete: deleteArray, // delete the previous intro
                   create: [newItem],
                 },
               },
