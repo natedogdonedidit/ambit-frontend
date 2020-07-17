@@ -5,12 +5,15 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import StoryBox from 'library/components/stories/StoryBox';
+import { sortStoriesNewestFirst } from 'library/utils';
 
 const Showcase = ({ navigation, projects }) => {
   // console.log('projects', projects);
 
   const renderProjects = () => {
-    return projects.map(project => {
+    const projectsSorted = projects.sort(sortStoriesNewestFirst);
+
+    return projectsSorted.map((project) => {
       if (project.items.length > 0 && (project.type === 'SOLO' || project.type === 'PROJECT')) {
         return <StoryBox key={project.id} navigation={navigation} story={project} showProfilePic={false} />;
       }

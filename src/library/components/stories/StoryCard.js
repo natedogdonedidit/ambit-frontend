@@ -328,7 +328,7 @@ const StoryCard = ({
 
   const engagePause = () => {
     if (!paused) {
-      console.log('setting paused to TRUE');
+      // console.log('setting paused to TRUE');
       setPaused(true);
     }
   };

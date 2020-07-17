@@ -228,6 +228,7 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: large,
     // fontFamily: 'SFProText-Heavy',
+    fontWeight: '800',
   },
   largeDisplay: {
     color: colors.black,

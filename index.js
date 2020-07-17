@@ -3,6 +3,7 @@ import 'react-native-gesture-handler'; // required by React Navigation docs
 import React from 'react';
 import { AppRegistry, Platform } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
+import { enableScreens } from 'react-native-screens';
 
 // APOLLO SETUP AFTER SUBSCRIPTIONS
 import { ApolloClient } from 'apollo-client';
@@ -145,6 +146,8 @@ const client = new ApolloClient({
     console.log('networkError', networkError);
   },
 });
+
+enableScreens();
 
 const App = () => {
   return (

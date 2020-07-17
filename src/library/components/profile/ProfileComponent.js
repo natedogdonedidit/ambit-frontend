@@ -174,7 +174,7 @@ const ProfileComponent = ({
           backgroundColor: colors.blueGray,
           paddingTop: top,
           opacity: scrollY.interpolate({
-            inputRange: [0, 100],
+            inputRange: [90, 120],
             outputRange: [0, 1],
             extrapolate: 'clamp',
           }),

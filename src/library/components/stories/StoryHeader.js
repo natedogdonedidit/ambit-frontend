@@ -51,7 +51,7 @@ const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
       <TouchableOpacity
         style={{
           position: 'absolute',
-          top: 0,
+          top: 4,
           right: 12,
           paddingHorizontal: 8,
           height: 28,
