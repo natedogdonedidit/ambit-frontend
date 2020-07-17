@@ -16,6 +16,7 @@ import {
   storyVideoUpload,
   getIconFromID,
   createThumbnail,
+  sortStoriesNewestFirst,
 } from 'library/utils';
 
 import Loader from 'library/components/UI/Loader';
@@ -34,7 +35,7 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 
 const PostToModal = ({ navigation, route }) => {
   const { setCreatingStory } = useContext(UserContext);
-  const { capturedImage, capturedVideo } = route.params; // from camera modal
+  const { capturedImage, capturedVideo, textInput } = route.params; // from camera modal
 
   // const [uploading, setUploading] = useState(false);
   const [isStory, setIsStory] = useState(false);
@@ -102,6 +103,7 @@ const PostToModal = ({ navigation, route }) => {
 
       // add id to selected projects
       setSelectedProject(createdProject.data.createStory.id);
+      setIsStory(false);
     } catch (e) {
       console.log(e);
       Alert.alert('Oh no!', 'An error occured when trying to update your project. Try again later!', [
@@ -123,7 +125,7 @@ const PostToModal = ({ navigation, route }) => {
         const uploadedImage = await storyPicUpload(userLoggedIn.id, capturedImage.uri);
 
         if (selectedProject) {
-          // if here, connect MYSTORY? and PROJECT
+          // if here, connect PROJECT
 
           // add the project story id
           const storiesConnect = [{ id: selectedProject }];
@@ -137,7 +139,7 @@ const PostToModal = ({ navigation, route }) => {
             type: 'IMAGE',
             url: uploadedImage,
             preview: uploadedImage,
-            // text: '',
+            text: textInput,
             link: '',
             stories: { connect: storiesConnect },
           };
@@ -147,31 +149,31 @@ const PostToModal = ({ navigation, route }) => {
               storyItem: newStoryItem,
             },
           });
-        } else {
-          // if here, connect MYSTORY? and also create a SOLO story with Topics
+        } else if (isStory) {
+          // if here, connect MYSTORY
 
-          const selectedTopicsForDB =
-            selectedTopics.length > 0
-              ? selectedTopics.map((topicID) => {
-                  return { topicID };
-                })
-              : [];
+          // const selectedTopicsForDB =
+          //   selectedTopics.length > 0
+          //     ? selectedTopics.map((topicID) => {
+          //         return { topicID };
+          //       })
+          //     : [];
 
           const newStoryItem = {
             type: 'IMAGE',
             url: uploadedImage,
             preview: uploadedImage,
-            // text: '',
+            text: textInput,
             link: '',
             stories: {
               connect: isStory ? [{ id: myStoryID }] : null,
-              create: [
-                {
-                  type: 'SOLO',
-                  owner: { connect: { id: userLoggedIn.id } },
-                  topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
-                },
-              ],
+              // create: [
+              //   {
+              //     type: 'SOLO',
+              //     owner: { connect: { id: userLoggedIn.id } },
+              //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
+              //   },
+              // ],
             },
           };
 
@@ -203,9 +205,9 @@ const PostToModal = ({ navigation, route }) => {
           const storiesConnect = [{ id: selectedProject }];
 
           // if mystory is selected, add mystory id
-          if (isStory) {
-            storiesConnect.push({ id: myStoryID });
-          }
+          // if (isStory) {
+          //   storiesConnect.push({ id: myStoryID });
+          // }
 
           // create preview URL for video thumbnail by inserting "so_0.0"
           const preview = createThumbnail(uploadedVideo.url);
@@ -214,7 +216,7 @@ const PostToModal = ({ navigation, route }) => {
             type: 'VIDEO',
             url: uploadedVideo.url,
             preview,
-            // text: '',
+            text: textInput,
             link: '',
             duration: uploadedVideo.duration,
             stories: { connect: storiesConnect },
@@ -225,15 +227,15 @@ const PostToModal = ({ navigation, route }) => {
               storyItem: newStoryItem,
             },
           });
-        } else {
+        } else if (isStory) {
           // if here, connect MYSTORY? and also create a SOLO story with Topics
 
-          const selectedTopicsForDB =
-            selectedTopics.length > 0
-              ? selectedTopics.map((topicID) => {
-                  return { topicID };
-                })
-              : [];
+          // const selectedTopicsForDB =
+          //   selectedTopics.length > 0
+          //     ? selectedTopics.map((topicID) => {
+          //         return { topicID };
+          //       })
+          //     : [];
 
           // create preview URL for video thumbnail by inserting "so_0.0"
           const preview = createThumbnail(uploadedVideo.url);
@@ -242,18 +244,18 @@ const PostToModal = ({ navigation, route }) => {
             type: 'VIDEO',
             url: uploadedVideo.url,
             preview,
-            // text: '',
+            text: textInput,
             link: '',
             duration: uploadedVideo.duration,
             stories: {
               connect: isStory ? [{ id: myStoryID }] : null,
-              create: [
-                {
-                  type: 'SOLO',
-                  owner: { connect: { id: userLoggedIn.id } },
-                  topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
-                },
-              ],
+              // create: [
+              //   {
+              //     type: 'SOLO',
+              //     owner: { connect: { id: userLoggedIn.id } },
+              //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
+              //   },
+              // ],
             },
           };
 
@@ -340,7 +342,12 @@ const PostToModal = ({ navigation, route }) => {
   };
 
   const toggleStory = () => {
-    setIsStory(!isStory);
+    // if adding story - clear out project selected
+    if (!isStory) {
+      setSelectedProject(null);
+    }
+
+    setIsStory((prev) => !prev);
   };
 
   const toggleProject = (selectedProjectID) => {
@@ -350,6 +357,8 @@ const PostToModal = ({ navigation, route }) => {
     } else {
       // replace it with new ID
       setSelectedProject(selectedProjectID);
+      // clear out story selection
+      setIsStory(false);
     }
   };
 
@@ -369,7 +378,10 @@ const PostToModal = ({ navigation, route }) => {
         </View>
 
         <View style={{ flex: 1 }}>
-          <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>My Story</Text>
+          <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>My Weekly</Text>
+          <Text numberOfLines={1} style={{ ...defaultStyles.smallBoldMute, paddingLeft: 10, paddingTop: 4 }}>
+            Each post lasts 7 days
+          </Text>
         </View>
         <View style={{ width: 40 }}>
           {isStory ? (
@@ -385,7 +397,7 @@ const PostToModal = ({ navigation, route }) => {
   const renderTopics = (proj) => {
     if (proj.topics.length > 0) {
       return (
-        <Text numberOfLines={1} style={{ ...defaultStyles.defaultBoldMute, paddingLeft: 10, paddingTop: 2 }}>
+        <Text numberOfLines={1} style={{ ...defaultStyles.smallBoldMute, paddingLeft: 10, paddingTop: 4 }}>
           {proj.topics.map((top, i) => `${top.name}${i < proj.topics.length - 1 ? `, ` : ''}`)}
         </Text>
       );
@@ -399,7 +411,9 @@ const PostToModal = ({ navigation, route }) => {
       return null;
     }
 
-    return projects.map((project) => {
+    const projectsSorted = projects.sort(sortStoriesNewestFirst);
+
+    return projectsSorted.map((project) => {
       const selected = selectedProject === project.id;
 
       if (project.items.length > 0) {
@@ -432,22 +446,27 @@ const PostToModal = ({ navigation, route }) => {
   };
 
   const chooseHeaderButton = () => {
-    if (selectedProject) {
+    if (selectedProject || isStory) {
       return <ButtonHeader onPress={handleSend}>Send</ButtonHeader>;
     }
-    if (!selectedProject && !isStory) {
-      return (
-        <TextButton textStyle={styles.rightTextOpacity} onPress={() => null}>
-          Next
-        </TextButton>
-      );
-    }
-
     return (
-      <TextButton textStyle={styles.rightText} onPress={handleGoToTopicSelection}>
-        Next
-      </TextButton>
+      <ButtonHeader buttonStyle={{ opacity: 0.3 }} onPress={handleSend}>
+        Send
+      </ButtonHeader>
     );
+    // if (!selectedProject && !isStory) {
+    //   return (
+    //     <TextButton textStyle={styles.rightTextOpacity} onPress={() => null}>
+    //       Next
+    //     </TextButton>
+    //   );
+    // }
+
+    // return (
+    //   <TextButton textStyle={styles.rightText} onPress={handleGoToTopicSelection}>
+    //     Next
+    //   </TextButton>
+    // );
   };
 
   return (
@@ -460,9 +479,25 @@ const PostToModal = ({ navigation, route }) => {
       />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 10, paddingBottom: 20 }}>
         {renderAddToStory()}
-        <View style={{ paddingTop: 8, paddingBottom: 5 }}>
-          <Text style={{ ...defaultStyles.largeBold, color: colors.gray30 }}>My Projects</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            // alignItems: 'flex-end',
+            paddingTop: 16,
+            paddingBottom: 8,
+          }}
+        >
+          <View>
+            <Text style={{ ...defaultStyles.hugeHeavy, color: colors.purp }}>Topic Stories</Text>
+          </View>
+          {/* <View>
+            <TextButton onPress={() => null}>What's this?</TextButton>
+          </View> */}
         </View>
+        <Text style={{ ...defaultStyles.defaultMute, paddingBottom: 16 }}>
+          Build a cool project or story over time! Tag a topic to increase your reach...these never expire!
+        </Text>
         {newProject.id ? (
           <TouchableOpacity style={styles.projectRow} activeOpacity={1} onPress={() => toggleProject(newProject.id)}>
             <View style={styles.leftSide}>
@@ -496,7 +531,7 @@ const PostToModal = ({ navigation, route }) => {
             </View>
 
             <View style={{ flex: 1 }}>
-              <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>New Project</Text>
+              <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>New Topic Story</Text>
             </View>
           </TouchableOpacity>
         )}
@@ -520,7 +555,9 @@ const styles = StyleSheet.create({
   projectRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
   },
   topicRow: {
     flexDirection: 'row',

@@ -70,8 +70,9 @@ const NewProjectButton2 = ({ navigation, userLoggedIn, loadingCreateStory }) => 
         }}
       >
         <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>
-          New story or project
+          Create a
         </Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>story</Text>
       </View>
       {loadingCreateStory && (
         <View

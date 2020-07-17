@@ -110,7 +110,7 @@ const CameraModal = ({ navigation, route }) => {
     if (isIntro) {
       if (intro && intro.items) {
         return (
-          <View style={{ position: 'absolute', top: 30, right: 12, width: 45, height: 70, borderRadius: 10 }}>
+          <View style={{ position: 'absolute', top: insets.top + 15, right: 10, width: 45, height: 70, borderRadius: 10 }}>
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate('IntroModal', {
@@ -190,7 +190,7 @@ const CameraModal = ({ navigation, route }) => {
         firstImage={firstImage}
       />
       {isIntro && (
-        <View style={{ position: 'absolute', top: 30, left: 15 }}>
+        <View style={{ position: 'absolute', top: insets.top + 15, left: 10 }}>
           <TouchableOpacity
             activeOpacity={0.8}
             style={styles.sideButton}

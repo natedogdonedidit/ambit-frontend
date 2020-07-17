@@ -1,6 +1,17 @@
-import React, { useState, useRef } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
+  InputAccessoryView,
+  TextInput,
+  Button,
+} from 'react-native';
+import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import Video from 'react-native-video';
 
@@ -12,6 +23,8 @@ import { useMutation } from '@apollo/react-hooks';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import Loader from 'library/components/UI/Loader';
 
+const BAR_HEIGHT = 44;
+
 const CapturedStoryItem = ({
   navigation,
   userId,
@@ -22,8 +35,22 @@ const CapturedStoryItem = ({
   setCapturedVideo,
   setCapturedImage,
 }) => {
+  const insets = useSafeArea();
   const videoRef = useRef(null);
+  const textInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
+  const [textInput, setTextInput] = useState('');
+  const [textFocused, setTextFocused] = useState(false);
+
+  useEffect(() => {
+    if (textInputRef.current) {
+      if (textFocused) {
+        textInputRef.current.focus();
+      } else {
+        textInputRef.current.blur();
+      }
+    }
+  }, [textFocused]);
 
   // MUTATIONS FOR INTRO
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION);
@@ -35,7 +62,7 @@ const CapturedStoryItem = ({
   };
 
   const handleSendTo = () => {
-    navigation.navigate('PostToModal', { capturedImage, capturedVideo });
+    navigation.navigate('PostToModal', { capturedImage, capturedVideo, textInput });
   };
 
   const handleSaveIntro = async () => {
@@ -53,6 +80,7 @@ const CapturedStoryItem = ({
             type: 'IMAGE',
             url: uploadedImage,
             preview: uploadedImage,
+            text: textInput,
           };
 
           newItem = { ...itemForMutation };
@@ -75,6 +103,7 @@ const CapturedStoryItem = ({
             url: uploadedVideo.url,
             preview,
             duration: uploadedVideo.duration,
+            text: textInput,
           };
 
           newItem = { ...itemForMutation };
@@ -117,6 +146,10 @@ const CapturedStoryItem = ({
     }
   };
 
+  const handleTextButton = () => {
+    setTextFocused((prev) => !prev);
+  };
+
   // RENDER FUNCTIONS
   const renderMedia = () => {
     if (capturedImage && capturedImage.uri) {
@@ -143,7 +176,7 @@ const CapturedStoryItem = ({
 
       <TouchableOpacity
         activeOpacity={0.8}
-        style={styles.clearButton}
+        style={{ ...styles.clearButton, top: insets.top + 15 }}
         onPress={clearCapturedItem}
         hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
       >
@@ -151,13 +184,13 @@ const CapturedStoryItem = ({
       </TouchableOpacity>
 
       {isIntro ? (
-        <View style={styles.sendButton}>
+        <View style={{ ...styles.sendButton, bottom: insets.bottom + 30 }}>
           <TouchableOpacity activeOpacity={0.8} onPress={handleSaveIntro} style={styles.saveButtonView}>
             <Text style={{ ...defaultStyles.hugeMedium, color: colors.white }}>Save Intro</Text>
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.sendButton}>
+        <View style={{ ...styles.sendButton, bottom: insets.bottom + 30 }}>
           <TouchableOpacity activeOpacity={0.8} onPress={handleSendTo} style={styles.sendButtonView}>
             <Text style={{ ...defaultStyles.hugeMedium, color: colors.white }}>Share to</Text>
             <Feather name="chevron-right" size={30} color={colors.white} style={{ paddingTop: 4 }} />
@@ -165,11 +198,11 @@ const CapturedStoryItem = ({
         </View>
       )}
 
-      <View style={styles.sideButtons}>
+      <View style={{ ...styles.sideButtons, top: insets.top + 15 }}>
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.sideButton}
-          onPress={() => null}
+          onPress={handleTextButton}
           hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
         >
           <Feather name="type" size={24} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
@@ -183,7 +216,34 @@ const CapturedStoryItem = ({
           <Feather name="link" size={24} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
         </TouchableOpacity>
       </View>
+      {!!textInput && (
+        <TouchableOpacity onPress={handleTextButton} style={{ ...styles.textDisplay, bottom: insets.bottom + 30 }}>
+          <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>{textInput}</Text>
+        </TouchableOpacity>
+      )}
+
       {uploading && <Loader loading={uploading} size="small" />}
+      {textFocused && (
+        <InputAccessoryView backgroundColor="#fffffff7">
+          <View style={styles.textInputContainer}>
+            <TextInput
+              ref={textInputRef}
+              style={styles.textInput}
+              onChangeText={(text) => {
+                setTextInput(text);
+              }}
+              value={textInput}
+              placeholder="Add text to your story..."
+            />
+            <Button
+              onPress={() => {
+                handleTextButton();
+              }}
+              title="Done"
+            />
+          </View>
+        </InputAccessoryView>
+      )}
     </View>
   );
 };
@@ -203,7 +263,7 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     position: 'absolute',
-    top: 30,
+    bottom: 30,
     right: 10,
 
     shadowOffset: { width: 0, height: 0 },
@@ -235,7 +295,7 @@ const styles = StyleSheet.create({
   },
   sideButtons: {
     position: 'absolute',
-    top: 120,
+    top: 30,
     right: 10,
     alignItems: 'center',
   },
@@ -248,6 +308,39 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
     ...defaultStyles.shadowButton,
+  },
+  textDisplay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 15,
+    right: 150,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 15,
+    borderRadius: 10,
+    borderRadius: 25,
+  },
+
+  // text input
+  textInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+    height: BAR_HEIGHT,
+  },
+  textInput: {
+    flex: 1,
+    paddingLeft: 10,
+  },
+  text: {
+    padding: 10,
+    color: 'white',
+  },
+  textBubbleBackground: {
+    backgroundColor: '#2f7bf6',
+    borderRadius: 20,
+    width: 110,
+    margin: 20,
   },
 });
 

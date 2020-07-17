@@ -59,6 +59,12 @@ const styles = StyleSheet.create({
     // fontFamily: 'SFProText-Bold',
     fontWeight: '700',
   },
+  smallBoldMute: {
+    color: colors.gray40,
+    fontSize: small,
+    // fontFamily: 'SFProText-Bold',
+    fontWeight: '700',
+  },
 
   // FOR STORY SCREEN
   // storyBold: {

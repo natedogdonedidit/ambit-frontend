@@ -21,6 +21,7 @@ const BANNER_HEIGHT = 0;
 const TopicScreen = ({ navigation, route }) => {
   // PARAMS
   const { topicID, subTopic } = route.params;
+  // console.log(topicID);
   const activeTopic = getFullTopicFromID(topicID);
 
   // STATE

@@ -50,8 +50,53 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
 
   const stories = dataStories.storiesTopic;
 
-  if (stories.length <= 0) {
-    return <View style={{ height: 10 }} />;
+  const sortStoriesTopic = (a, b) => {
+    // if user story - check if viewed entire story (used in logic below)
+    const newestUnseenA = a.items.findIndex(({ views }) => {
+      // return true if you have NOT viewed the story - this will set newestUnseen to that index
+      if (views.length <= 0) return true;
+
+      const viewedByMe = views.some(({ id }) => id === currentUserId);
+      return !viewedByMe;
+    });
+    const viewedEntireStoryA = newestUnseenA === -1;
+
+    // if user story - check if viewed entire story (used in logic below)
+    const newestUnseenB = b.items.findIndex(({ views }) => {
+      // return true if you have NOT viewed the story - this will set newestUnseen to that index
+      if (views.length <= 0) return true;
+
+      const viewedByMe = views.some(({ id }) => id === currentUserId);
+      return !viewedByMe;
+    });
+    const viewedEntireStoryB = newestUnseenB === -1;
+
+    // if only A has been viewed entirely
+    if (viewedEntireStoryA && !viewedEntireStoryB) {
+      return 1;
+    }
+
+    // if only B has been viewed entirely
+    if (viewedEntireStoryB && !viewedEntireStoryA) {
+      return -1;
+    }
+
+    // if both or neither story have been viewed entirely
+    // grab the last item of each story, compare
+    if (a.items[a.items.length - 1].createdAt > b.items[b.items.length - 1].createdAt) {
+      // a is newer
+      return -1;
+    }
+
+    // b is newer
+    return 1;
+  };
+
+  const storiesSorted = stories.sort(sortStoriesTopic) || [];
+
+  if (storiesSorted.length <= 0) {
+    return null;
+    // return <View style={{ height: 10 }} />;
   }
 
   const renderStories = () => {
@@ -60,18 +105,26 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
       return null;
     }
 
-    return stories.map((story) => {
+    return storiesSorted.map((story) => {
       if (story.items.length > 0) {
-
         const newestUnseen = story.items.findIndex(({ views }) => {
           // return true if you have NOT viewed the story - this will set newestUnseen to that index
-          if (views.length <= 0) return true
+          if (views.length <= 0) return true;
 
           const viewedByMe = views.some(({ id }) => id === currentUserId);
-          return !viewedByMe
-        })
+          return !viewedByMe;
+        });
 
-        return <StoryBox key={`${story.id}-${newestUnseen}`} navigation={navigation} story={story} moreType="Topic" topicIDtoSearch={topicID} newestUnseen={newestUnseen} />;
+        return (
+          <StoryBox
+            key={`${story.id}-${newestUnseen}`}
+            navigation={navigation}
+            story={story}
+            moreType="Topic"
+            topicIDtoSearch={topicID}
+            newestUnseen={newestUnseen}
+          />
+        );
       }
       return null;
     });
@@ -85,7 +138,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
       showsHorizontalScrollIndicator={false}
     >
       {/* <NewStoryButton navigation={navigation} /> */}
-      <ExploreTopicButton navigation={navigation} topicID={topicID} />
+      {/* <ExploreTopicButton navigation={navigation} topicID={topicID} /> */}
       {renderStories()}
     </ScrollView>
   );

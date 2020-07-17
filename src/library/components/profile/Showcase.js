@@ -11,6 +11,7 @@ const Showcase = ({ navigation, projects }) => {
   // console.log('projects', projects);
 
   const renderProjects = () => {
+    // console.log(projects);
     const projectsSorted = projects.sort(sortStoriesNewestFirst);
 
     return projectsSorted.map((project) => {

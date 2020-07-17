@@ -13,6 +13,7 @@ import TopicsList from 'library/components/lists/TopicsList';
 import Loader from 'library/components/UI/Loader';
 import HeaderBack from 'library/components/headers/HeaderBack';
 import TextButton from 'library/components/UI/buttons/TextButton';
+import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const NewProjectTopicsModal = ({ navigation, route }) => {
   const { handleProjectCreate, projectTitle } = route.params;
@@ -25,12 +26,12 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
     navigation.navigate('PostToModal');
   };
 
-  const handleTopicSelect = selectedTopicID => {
+  const handleTopicSelect = (selectedTopicID) => {
     // build the new array of topics
     let newArray = [...selectedTopics];
     if (newArray.includes(selectedTopicID)) {
       // remove it
-      newArray = newArray.filter(topicID => topicID !== selectedTopicID);
+      newArray = newArray.filter((topicID) => topicID !== selectedTopicID);
     } else {
       // add it
       newArray = [...selectedTopics, selectedTopicID];
@@ -39,7 +40,7 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
     setSelectedTopics(newArray);
   };
 
-  const handleCategorySelect = category => {
+  const handleCategorySelect = (category) => {
     if (selectedCategories.includes(category)) {
       const index = selectedCategories.indexOf(category);
       if (index > -1) {
@@ -57,13 +58,13 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
       <HeaderBackBlank
         navigation={navigation}
         rightComponent={
-          <TextButton
-            textStyle={styles.rightText}
-            onPress={() => handleDone()}
-            // onPress={() => navigation.navigate('PostToModal', { projectTitle, selectedTopics })}
-          >
-            {selectedTopics.length < 1 ? 'Skip' : 'Done'}
-          </TextButton>
+          selectedTopics.length < 1 ? (
+            <TextButton textStyle={styles.rightText} onPress={handleDone}>
+              Skip
+            </TextButton>
+          ) : (
+            <ButtonHeader onPress={handleDone}>Done</ButtonHeader>
+          )
         }
       />
 
@@ -73,7 +74,7 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
             <Text style={defaultStyles.headerMedium}>Tag some topics</Text>
           </View>
           <View style={styles.subTitle}>
-            <Text style={defaultStyles.defaultMute}>Your project will get noticed more if you tag a topic</Text>
+            <Text style={defaultStyles.defaultMute}>Your story will get more views if you tag some relevant topics</Text>
           </View>
         </View>
         <TopicsList

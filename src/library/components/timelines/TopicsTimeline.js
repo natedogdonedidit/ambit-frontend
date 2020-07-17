@@ -81,7 +81,7 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
           return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
         }}
         onEndReachedThreshold={1.2}
-        onEndReached={info => {
+        onEndReached={(info) => {
           // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
           if (data.postsTopic.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
             fetchMore({

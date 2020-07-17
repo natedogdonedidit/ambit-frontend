@@ -15,8 +15,8 @@ const TopLinearFade = ({ disable = false }) => {
     <LinearGradient
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
-      colors={['rgba(0,0,0,0.4)', 'transparent']}
-      style={{ ...styles.linearGradientTop, height: insets.top + 80 }}
+      colors={['rgba(0,0,0,0.6)', 'transparent']}
+      style={{ ...styles.linearGradientTop, height: insets.top + 160 }}
     />
   );
 };

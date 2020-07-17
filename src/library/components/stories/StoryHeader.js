@@ -24,7 +24,7 @@ const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
   return (
     <View style={{ ...styles.absoluteTop, top: insets.top + 18 }}>
       <View style={styles.header}>
-        <ProfilePic size="small" user={owner} navigation={navigation} enableIntro={story.type !== 'INTRO'} enableStory={false} />
+        <ProfilePic size="small" user={owner} navigation={navigation} enableClick={story.type !== 'INTRO'} enableStory={false} />
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Profile', { profileId: owner.id });
@@ -45,8 +45,22 @@ const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
                 {timeDiff} {period}
               </Text>
             </View>
+            {/* <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
+              {owner.location && (
+                <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>{owner.location}</Text>
+              )}
+            </View> */}
           </View>
         </TouchableOpacity>
+        {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={{ ...defaultStyles.hugeBold, color: 'white' }}>{story.title || ''}</Text>
+          {story.title && (
+            <Icon name="circle" solid size={2} color={colors.white} style={{ alignSelf: 'center', paddingHorizontal: 5 }} />
+          )}
+          <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>
+            {timeDiff} {period}
+          </Text>
+        </View> */}
       </View>
       <TouchableOpacity
         style={{
@@ -79,7 +93,8 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    paddingHorizontal: 8,
+    alignItems: 'center',
+    paddingHorizontal: 12,
   },
 });
 

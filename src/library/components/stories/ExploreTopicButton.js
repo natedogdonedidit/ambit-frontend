@@ -15,7 +15,12 @@ const placeholderImage =
   'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80';
 
 const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
-  const { icon, color, image, name } = getTopicFromID(topicID);
+  // const { icon, color, image, name } = getTopicFromID(topicID);
+  const { parentTopic, color, icon, name, image } = getTopicFromID(topicID);
+
+  const isSubTopic = !!parentTopic;
+  const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;
+  const subTopic = isSubTopic ? topicID : null;
 
   // GETS STORIES FOR YOUR FAV TOPICS
   const {
@@ -60,13 +65,14 @@ const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
 
   return (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('StoryModal', {
-          story: topicStories[0],
-          moreType: 'Topic',
-          topicIDtoSearch: topicID,
-        })
-      }
+      onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })}
+      // onPress={() =>
+      //   navigation.navigate('StoryModal', {
+      //     story: topicStories[0],
+      //     moreType: 'Topic',
+      //     topicIDtoSearch: topicID,
+      //   })
+      // }
       style={styles.storyBox}
       activeOpacity={0.8}
     >

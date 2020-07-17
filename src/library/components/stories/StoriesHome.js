@@ -15,9 +15,9 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import NewStoryButton from 'library/components/stories/NewStoryButton';
 import StoryBox from 'library/components/stories/StoryBox';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
+import { UserContext } from 'library/utils/UserContext';
 import NewProjectButton from './NewProjectButton';
 import NewProjectButton3 from './NewProjectButton3';
-import { UserContext } from 'library/utils/UserContext';
 
 const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, setRefetchingStories, favoritesList }) => {
   const { currentUserId } = useContext(UserContext);
@@ -74,117 +74,134 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
 
     const userStories = dataStories.storiesHome;
 
-     // combine user and topic stories
-     const userAndTopicStories = [...userStories, ...favoritesList];
+    // combine user and topic stories
+    const userAndTopicStories = [...userStories, ...favoritesList];
 
-     // sort them
-     const sortStoriesHome = (a, b) => {
-       const isTopicStoryA = !!a.topicID;
-       const isTopicStoryB = !!b.topicID;
- 
-       // if user story - check if viewed entire story (used in logic below)
-       const newestUnseenA = isTopicStoryA ? 0 : a.items.findIndex(({ views }) => {
-         // return true if you have NOT viewed the story - this will set newestUnseen to that index
-         if (views.length <= 0) return true
- 
-         const viewedByMe = views.some(({ id }) => id === currentUserId);
-         return !viewedByMe
-       })
-       const viewedEntireStoryA = newestUnseenA === -1;
- 
-       // if user story - check if viewed entire story (used in logic below)
-       const newestUnseenB = isTopicStoryB ? 0 : b.items.findIndex(({ views }) => {
-         // return true if you have NOT viewed the story - this will set newestUnseen to that index
-         if (views.length <= 0) return true
- 
-         const viewedByMe = views.some(({ id }) => id === currentUserId);
-         return !viewedByMe
-       })
-       const viewedEntireStoryB = newestUnseenB === -1;
- 
-       // if both are user stories
-       if (!isTopicStoryA && !isTopicStoryB) {
- 
-         // if both stories have been viewed entirely
-         if (viewedEntireStoryA && viewedEntireStoryB) {
-           return -1
-         }
- 
-         // if only A has been viewed entirely
-         if (viewedEntireStoryA) {
-           return 1
-         }
- 
-         // if only B has been viewed entirely
-         if (viewedEntireStoryB) {
-           return -1
-         }
-       }
- 
-       // if both are topic stories
-       if (isTopicStoryA && isTopicStoryB) {
-         return -1
-       }
- 
-       // if only A is user story
-       if (!isTopicStoryA) {
-         // check if A has been viewed
-         if (viewedEntireStoryA) {
-           // if viewed already move A back
-           return 1
-         }
- 
-         return -1
-       }
- 
-       // if only B is user story
-       if (!isTopicStoryB) {
-         // check if B has been viewed
-         if (viewedEntireStoryB) {
-           // if viewed already move B back
-           return -1
-         }
- 
-         return 1
-       }
- 
- 
- 
-       // grab the last item of each story, compare
-       if (a.items[a.items.length - 1].createdAt > b.items[b.items.length - 1].createdAt) {
-         return -1;
-       }
- 
-       return 1;
-     };
- 
-     const userAndTopicStoriesSorted = userAndTopicStories.sort(sortStoriesHome) || [];
+    // sort them
+    const sortStoriesHome = (a, b) => {
+      const isTopicStoryA = !!a.topicID && !a.type;
+      const isTopicStoryB = !!b.topicID && !b.type;
+
+      // if user story - check if viewed entire story (used in logic below)
+      const newestUnseenA = isTopicStoryA
+        ? 0
+        : a.items.findIndex(({ views }) => {
+            // return true if you have NOT viewed the story - this will set newestUnseen to that index
+            if (views.length <= 0) return true;
+
+            const viewedByMe = views.some(({ id }) => id === currentUserId);
+            return !viewedByMe;
+          });
+      const viewedEntireStoryA = newestUnseenA === -1;
+
+      // if user story - check if viewed entire story (used in logic below)
+      const newestUnseenB = isTopicStoryB
+        ? 0
+        : b.items.findIndex(({ views }) => {
+            // return true if you have NOT viewed the story - this will set newestUnseen to that index
+            if (views.length <= 0) return true;
+
+            const viewedByMe = views.some(({ id }) => id === currentUserId);
+            return !viewedByMe;
+          });
+      const viewedEntireStoryB = newestUnseenB === -1;
+
+      // if both are user stories
+      if (!isTopicStoryA && !isTopicStoryB) {
+        // if both stories have been viewed entirely
+        if (viewedEntireStoryA && viewedEntireStoryB) {
+          return -1;
+        }
+
+        // if only A has been viewed entirely
+        if (viewedEntireStoryA) {
+          return 1;
+        }
+
+        // if only B has been viewed entirely
+        if (viewedEntireStoryB) {
+          return -1;
+        }
+      }
+
+      // if both are topic stories
+      if (isTopicStoryA && isTopicStoryB) {
+        return -1;
+      }
+
+      // if only A is user story
+      if (!isTopicStoryA) {
+        // check if A has been viewed
+        if (viewedEntireStoryA) {
+          // if viewed already move A back
+          return 1;
+        }
+
+        return -1;
+      }
+
+      // if only B is user story
+      if (!isTopicStoryB) {
+        // check if B has been viewed
+        if (viewedEntireStoryB) {
+          // if viewed already move B back
+          return -1;
+        }
+
+        return 1;
+      }
+
+      // grab the last item of each story, compare
+      if (a.items[a.items.length - 1].createdAt > b.items[b.items.length - 1].createdAt) {
+        return -1;
+      }
+
+      return 1;
+    };
+
+    const userAndTopicStoriesSorted = userAndTopicStories.sort(sortStoriesHome) || [];
 
     return userAndTopicStoriesSorted.map((story) => {
       // check if topic story
-      const isTopicStory = !!story.topicID;
+      const isTopicStory = !!story.topicID && !story.type;
 
       // if topic story
       if (isTopicStory) {
-        return <ExploreTopicButton key={story.topicID} navigation={navigation} story={null} topicID={story.topicID} refetching={refetching} />;
+        return (
+          <ExploreTopicButton
+            key={story.topicID}
+            navigation={navigation}
+            story={null}
+            topicID={story.topicID}
+            refetching={refetching}
+          />
+        );
       }
 
       // if user story
       if (story.items.length > 0) {
         const newestUnseen = story.items.findIndex(({ views }) => {
           // return true if you have NOT viewed the story - this will set newestUnseen to that index
-          if (views.length <= 0) return true
+          if (views.length <= 0) return true;
 
           const viewedByMe = views.some(({ id }) => id === currentUserId);
-          return !viewedByMe
-        })
+          return !viewedByMe;
+        });
 
-        return <StoryBox key={`${story.id}-${newestUnseen}`} navigation={navigation} story={story} moreType="Home" newestUnseen={newestUnseen} />;
+        return (
+          <StoryBox
+            key={`${story.id}-${newestUnseen}`}
+            navigation={navigation}
+            story={story}
+            moreType="Home"
+            newestUnseen={newestUnseen}
+          />
+        );
       }
 
-      return null
-    })
-  }
+      return null;
+    });
+  };
 
   return (
     <>

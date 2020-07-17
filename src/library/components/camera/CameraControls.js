@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import { RNCamera } from 'react-native-camera';
 
@@ -24,6 +24,8 @@ const CameraControls = ({
   handleCameraRollButton,
   firstImage,
 }) => {
+  const insets = useSafeArea();
+
   // CUSTOM FUNCTIONS
   const takePicture = async () => {
     if (cameraRef) {
@@ -99,7 +101,7 @@ const CameraControls = ({
   };
 
   return (
-    <View style={styles.controls}>
+    <View style={{ ...styles.controls, bottom: insets.bottom + 40 }}>
       <View style={styles.controlsLeft}>
         <TouchableOpacity onPress={handleCameraRollButton} style={{ paddingRight: 40 }} activeOpacity={0.7}>
           <View
@@ -156,10 +158,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     position: 'absolute',
-    bottom: 0,
+    bottom: 40,
     left: 0,
     // backgroundColor: 'rgba(0,0,0,0.1)',
-    paddingBottom: 40,
+    // paddingBottom: 40,
   },
   snapButton: {
     height: 80,

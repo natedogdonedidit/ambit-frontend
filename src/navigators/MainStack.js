@@ -188,10 +188,10 @@ const MainStack = () => {
       <Stack.Screen
         name="IntroModal"
         component={IntroModal}
-        options={{
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          gestureDirection: 'horizontal',
-        }}
+        // options={{
+        //   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        //   gestureDirection: 'horizontal',
+        // }}
       />
       <Stack.Screen name="CameraModal" component={CameraModal} />
       <Stack.Screen

@@ -67,8 +67,23 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
           }}
         >
           <Text numberOfLines={3} style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>
-            {isMyStory ? 'Your story' : story.owner.name}
+            {isMyStory ? 'Your weekly' : story.owner.name}
           </Text>
+        </View>
+        <View
+          style={{
+            position: 'absolute',
+            top: 7,
+            right: 8,
+          }}
+        >
+          <Icon
+            name="history"
+            size={18}
+            color={colors.white}
+            solid
+            style={{ textAlign: 'center', paddingTop: 1, ...defaultStyles.shadowButton }}
+          />
         </View>
       </TouchableOpacity>
     );

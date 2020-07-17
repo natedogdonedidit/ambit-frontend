@@ -13,7 +13,7 @@ const BottomLinearFade = ({ disable = false }) => {
     <LinearGradient
       start={{ x: 0.5, y: 0 }}
       end={{ x: 0.5, y: 1 }}
-      colors={['transparent', 'rgba(0,0,0,0.4)']}
+      colors={['transparent', 'rgba(0,0,0,0.8)']}
       style={styles.linearGradientBottom}
     />
   );
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
-    height: 140,
+    height: 500,
     width: '100%',
   },
 });
