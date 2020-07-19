@@ -7,7 +7,18 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 
-const StoryImage = ({ activeItem, videoRef, onProgress, onBuffer, onVideoEnd, isBuffering, paused, onLoad, onLoadStart, onReadyForDisplay }) => {
+const StoryImage = ({
+  activeItem,
+  videoRef,
+  onProgress,
+  onBuffer,
+  onVideoEnd,
+  isBuffering,
+  paused,
+  onLoad,
+  onLoadStart,
+  onReadyForDisplay,
+}) => {
   const renderMedia = () => {
     const { type, url } = activeItem;
 
@@ -36,10 +47,10 @@ const StoryImage = ({ activeItem, videoRef, onProgress, onBuffer, onVideoEnd, is
   };
 
   return (
-    <SafeAreaView style={StyleSheet.absoluteFill}>
+    <View style={StyleSheet.absoluteFill}>
       {renderMedia()}
       {isBuffering && <Loader loading={isBuffering} backgroundColor="transparent" color="white" size="small" />}
-    </SafeAreaView>
+    </View>
   );
 };
 

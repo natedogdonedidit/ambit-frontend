@@ -15,13 +15,12 @@ import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import Loader from 'library/components/UI/Loader';
 
 const TopicsList = ({ navigation, scrollY, paddingTop }) => {
-
   // QUERY TO GET USERS TOPICS
   const { data } = useQuery(CURRENT_USER_TOPICS);
 
   // compiles the list of favoriteTopics whenever myTopics changes
   const favoriteTopics = useMemo(() => {
-    let newFavoriteTopics = []
+    let newFavoriteTopics = [];
     if (data) {
       const { myTopics } = data;
       if (myTopics) {
@@ -42,8 +41,8 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
         }
       }
     }
-    return [...newFavoriteTopics]
-  }, [data])
+    return [...newFavoriteTopics];
+  }, [data]);
 
   return (
     <SectionList
@@ -73,6 +72,11 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
           data: topicsList,
         },
       ]}
+      ListEmptyComponent={
+        <View>
+          <Text>hey</Text>
+        </View>
+      }
       renderSectionHeader={({ section }) => (
         <Section
           text={section.title}

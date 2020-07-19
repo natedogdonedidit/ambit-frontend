@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Dimensions, Animated } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 
@@ -6,18 +6,33 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProgressBar from './ProgressBar';
 
-const StoryProgressBars = ({ story, activeIndex, incrementIndex, isActive, isBuffering, paused, storyKey }) => {
-  const insets = useSafeArea();
+const StoryProgressBars = ({ story, activeIndex, incrementIndex, storyIsActive, isBuffering, paused }) => {
+  const [storyKey, setStoryKey] = useState(1); // used so StoryCard re-renders each time change storyQIndex
+
+  useEffect(() => {
+    // if story goes from active to not active, reset the progress bar by changing the storyKey
+    setStoryKey((prevState) => prevState + 10);
+  }, [storyIsActive]);
 
   const renderProgressBars = () => {
-
     return story.items.map((item, i) => {
-      return <ProgressBar key={`${item.id}${storyKey}`} i={i} activeIndex={activeIndex} incrementIndex={incrementIndex} isActive={isActive} story={story} isBuffering={isBuffering} paused={paused}/>
+      return (
+        <ProgressBar
+          key={`${item.id}${storyKey}`}
+          i={i}
+          activeIndex={activeIndex}
+          incrementIndex={incrementIndex}
+          storyIsActive={storyIsActive}
+          story={story}
+          isBuffering={isBuffering}
+          paused={paused}
+        />
+      );
     });
   };
 
   return (
-    <View style={{ ...styles.absoluteTop, top: insets.top + 8 }}>
+    <View style={{ ...styles.absoluteTop, top: 8 }}>
       <View
         style={{
           width: '100%',

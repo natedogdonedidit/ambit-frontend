@@ -4,9 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { STORY_IMAGE_DURATION } from 'styles/constants'
+import { STORY_IMAGE_DURATION } from 'styles/constants';
 
-const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffering, paused }) => {
+const ProgressBar = ({ i, activeIndex, story, incrementIndex, storyIsActive, isBuffering, paused }) => {
   const [pausedValue, setPausedValue] = useState(0);
   const { width: screenWidth } = Dimensions.get('window');
   const [progressBar, setProgressBar] = useState(new Animated.Value(0));
@@ -27,8 +27,8 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
   const itemWidth = ratio * usableWidth;
 
   useEffect(() => {
-    // console.log(activeIndex, i, isActive, isBuffering, paused)
-    if (activeIndex === i && isActive && !isBuffering) {
+    // console.log(activeIndex, i, storyIsActive, isBuffering, paused)
+    if (activeIndex === i && storyIsActive && !isBuffering) {
       // start the animation, when complete, increment index
       // console.log(`starting animation for ${itemDuration} - ${pausedValue * itemDuration} sec`, thisItem.id)
 
@@ -44,38 +44,38 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
           if (thisItem.type === 'IMAGE') {
             // console.log('getting here should not!!')
             // console.log(i)
-            incrementIndex()
-            setProgressBar(new Animated.Value(0))
+            incrementIndex();
+            setProgressBar(new Animated.Value(0));
           }
         } else {
-          setProgressBar(new Animated.Value(0))
+          setProgressBar(new Animated.Value(0));
         }
-      })
+      });
 
-      progressBar.addListener(() => null) // remove this listener somewhere
+      progressBar.addListener(() => null); // remove this listener somewhere
     }
-  }, [activeIndex, isActive, paused, isBuffering])
+  }, [activeIndex, storyIsActive, paused, isBuffering]);
 
   useEffect(() => {
-    if (activeIndex === i && isActive) {
+    if (activeIndex === i && storyIsActive) {
       if (paused) {
         // console.log('stopping here paused', i)
-          progressBar.stopAnimation((value) => {
+        progressBar.stopAnimation((value) => {
           // console.log('stopping animation with value', value)
           // save the timestamp (from 0-1) of when it was paused so we can adjust the next Animated.timing above
-          setPausedValue(value)
-          setProgressBar(new Animated.Value(value))
-        })
+          setPausedValue(value);
+          setProgressBar(new Animated.Value(value));
+        });
       }
     }
 
     // if the index or story changes somehow - stop the animation
-    if (activeIndex > i || !isActive) {
+    if (activeIndex > i || !storyIsActive) {
       // console.log('stopping here', i, thisItem.id)
-      progressBar.stopAnimation()
-      setProgressBar(new Animated.Value(0))
+      progressBar.stopAnimation();
+      setProgressBar(new Animated.Value(0));
     }
-  }, [paused, activeIndex])
+  }, [paused, activeIndex]);
 
   // if its already been viewed
   if (i < activeIndex) {
@@ -95,12 +95,11 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
 
   // if its being viewed right now
   if (i === activeIndex) {
-
     const barLengthAnim = progressBar.interpolate({
       inputRange: [0, 1],
       outputRange: [-(itemWidth - 2), 0], // used with tranform
       // outputRange: [0, itemWidth -2], // used with width animation (useNativeDriver = false)
-    })
+    });
 
     return (
       <View
@@ -125,9 +124,11 @@ const ProgressBar = ({ i, activeIndex, story, incrementIndex, isActive, isBuffer
             borderRadius: 1.5,
             // marginRight: 5,
             backgroundColor: 'white',
-            transform: [{
-              translateX: barLengthAnim,
-            }]
+            transform: [
+              {
+                translateX: barLengthAnim,
+              },
+            ],
           }}
         />
       </View>

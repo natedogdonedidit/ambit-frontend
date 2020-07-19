@@ -29,12 +29,12 @@ import { STORY_IMAGE_DURATION } from 'styles/constants';
 const StoryCard = ({
   navigation,
   story,
-  isActive,
+  storyIsActive,
   tryGoToPrevStory,
   tryGoToNextStory,
   favoriteTopics = [],
   setDisableOutterScroll = () => null,
-  storyKey,
+  // storyKey,
 }) => {
   // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
   // option 2: pass in an intro. Intro will play, then modal will close.
@@ -68,12 +68,7 @@ const StoryCard = ({
   const [itemDuration, setItemDuration] = useState(10); // in seconds
   const [videoStarted, setVideoStarted] = useState(false);
   const [isBuffering, setIsBuffering] = useState(true);
-  const [indexAddedToProfile, setIndexAddedToProfile] = useState([]);
-  const [includedInProject, setIncludedInProject] = useState(false);
-  const [includedInMyStory, setIncludedInMyStory] = useState(false);
-  const [includedInSolo, setIncludedInSolo] = useState(false);
-  const [soloStory, setSoloStory] = useState(null);
-  const [paused, setPaused] = useState(!isActive);
+  const [paused, setPaused] = useState(!storyIsActive);
   // const [storiesViewed, setStoriesViewed] = useState([story.id]); // THIS IS A TEMPORARY SOLUTION TO ELIMINATE REPEAT STORIES
 
   // so I can read paused in my setInterval
@@ -84,7 +79,7 @@ const StoryCard = ({
   const { items } = story;
   const isEmpty = items.length < 1;
   const activeItem = { ...items[activeIndex] };
-  const isMyPost = story.id === currentUserId;
+  const isMyPost = story.owner.id === currentUserId;
   const isIntro = story.type === 'INTRO';
 
   // MUTATIONS
@@ -118,11 +113,15 @@ const StoryCard = ({
         fragmentName: 'StoryItemFragment',
       });
 
-      // console.log(`Added a view!!!: ${activeItem.views.length} -> ${viewedStoryItem.views.length}`)
-      // console.log(`Added a play!!!: ${activeItem.plays} -> ${viewedStoryItem.plays}`)
+      // console.log(`story item in cache ${storyItemInCache.plays}`);
+
+      // console.log(`Added a view!!!: ${activeItem.views.length} -> ${viewedStoryItem.views.length}`);
+      // console.log(`Added a play!!!: ${activeItem.plays} -> ${viewedStoryItem.plays}`);
 
       // Then, we update it.
       if (storyItemInCache) {
+        // console.log('gettinghere');
+
         // the new view is ALWAYS the currentUser
         client.writeFragment({
           id: `StoryItem:${activeItem.id}`,
@@ -143,7 +142,7 @@ const StoryCard = ({
       // console.log('setting is buffering false in IMAGE')
       setIsBuffering(false);
     }
-    if (isActive && !loadingViewMutation) {
+    if (storyIsActive && !loadingViewMutation) {
       viewedStoryItem();
     }
   }, [activeIndex]);
@@ -172,31 +171,9 @@ const StoryCard = ({
     return unsubscribe;
   }, [navigation]);
 
-  // update heavy computation stuff only once when activeIndex changes
-  // this stuff is mainly for deciding what to render in "More" modal
-  useEffect(() => {
-    if (activeItem.stories) {
-      const now = new Date();
-      const solo = activeItem.stories.find((s) => s.type === 'SOLO');
-      setSoloStory(solo);
-      setIncludedInSolo(!!solo);
-      setIncludedInProject(!!activeItem.stories.find((s) => s.type === 'PROJECT'));
-      setIncludedInMyStory(
-        !!activeItem.stories.find((s) => s.type === 'MYSTORY' && differenceInHours(now, new Date(activeItem.createdAt)) < 24)
-      );
-    }
-  }, [activeItem]);
-
-  // if reached the end of photo timelimit - go to next item
-  // useEffect(() => {
-  //   if (activeItem.type === 'IMAGE' && currentTime >= STORY_IMAGE_DURATION) {
-  //     incrementIndex();
-  //   }
-  // }, [currentTime]);
-
   useEffect(() => {
     // if changed from not active to active - unpause
-    // if (paused && isActive) {
+    // if (paused && storyIsActive) {
     //   if (activeItem.type === 'VIDEO') {
     //     videoRef.current.seek(0);
     //   }
@@ -205,7 +182,7 @@ const StoryCard = ({
     // }
 
     // if changed from active to not active - pause
-    if (!paused && !isActive) {
+    if (!paused && !storyIsActive) {
       setPaused(true);
       // setCurrentTime(0);
       if (activeIndex < items.length - 1) {
@@ -213,7 +190,7 @@ const StoryCard = ({
       }
     }
 
-    if (isActive) {
+    if (storyIsActive) {
       if (paused) {
         if (activeItem.type === 'VIDEO') {
           videoRef.current.seek(0);
@@ -224,16 +201,16 @@ const StoryCard = ({
         // if ()
       }
     }
-  }, [isActive]);
+  }, [storyIsActive]);
 
   // if the activeIndex changes always reset the current time to zero
   useEffect(() => {
     // setCurrentTime(0);
 
-    if (isActive) {
+    if (storyIsActive) {
       // increment the timer ever X seconds
       const intervalID = setInterval(() => {
-        if (activeItem.type === 'IMAGE' && isActive) {
+        if (activeItem.type === 'IMAGE' && storyIsActive) {
           if (!pausedRef.current) {
             // setCurrentTime((prevState) => prevState + 0.01);
           }
@@ -247,11 +224,7 @@ const StoryCard = ({
 
       return () => clearInterval(intervalID);
     }
-  }, [activeIndex, isActive]);
-
-  if (isEmpty) {
-    navigation.goBack();
-  }
+  }, [activeIndex, storyIsActive]);
 
   // VIDEO PLAYER CALLBACKS
   const onBuffer = (dataa) => {
@@ -270,7 +243,7 @@ const StoryCard = ({
       setVideoStarted(true);
       setIsBuffering(false);
     }
-    // if (isActive) {
+    // if (storyIsActive) {
     //   setCurrentTime(dataa.currentTime);
     // }
   };
@@ -341,21 +314,6 @@ const StoryCard = ({
   };
 
   const handleDoubleTap = () => {};
-
-  const handleAddToProfile = () => {
-    if (includedInSolo) {
-      setIndexAddedToProfile([...indexAddedToProfile, activeIndex]);
-      updateStory({
-        variables: {
-          id: soloStory.id,
-          story: {
-            save: true,
-          },
-        },
-        refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
-      });
-    }
-  };
 
   // functions for "More" modal
   const removeFromProject = () => {
@@ -434,65 +392,7 @@ const StoryCard = ({
       { cancelable: true },
     ]);
   };
-  const removeFromMyProfile = () => {
-    Alert.alert(`Are you sure you want to remove this ${activeItem.type.toLowerCase()} from your profile?`, '', [
-      {
-        text: 'Remove',
-        onPress: () => {
-          navigation.goBack(); // close options modal
 
-          // make new array for optimistic response
-          const newItemsArray = [...story.items];
-
-          // remove it
-          newItemsArray.splice(activeIndex, 1);
-
-          updateStory({
-            variables: {
-              id: story.id,
-              story: {
-                save: false,
-              },
-            },
-            optimisticResponse: {
-              __typename: 'Mutation',
-              updateStory: {
-                __typename: 'Story',
-                ...story,
-                save: false,
-              },
-            },
-            refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
-          });
-
-          navigation.goBack(); // close story modal
-        },
-      },
-      { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
-      { cancelable: true },
-    ]);
-  };
-  const deleteStoryForGood = () => {
-    Alert.alert(`Are you sure you want to delete this ${activeItem.type.toLowerCase()} for good?`, '', [
-      {
-        text: 'Delete',
-        onPress: () => {
-          navigation.goBack(); // close options modal
-
-          deleteStory({
-            variables: {
-              id: story.id,
-            },
-            refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
-          });
-
-          navigation.goBack(); // close story modal
-        },
-      },
-      { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
-      { cancelable: true },
-    ]);
-  };
   const removeFromIntro = () => {};
   const determineOptions = () => {
     if (story.type === 'PROJECT') {
@@ -510,37 +410,6 @@ const StoryCard = ({
           text: 'Remove from My Story',
           color: colors.peach,
           onPress: removeFromMyStory,
-        },
-      ];
-    }
-    if (story.type === 'SOLO') {
-      // if active SOLO but still exists on MYSTORY
-      if (includedInMyStory) {
-        return [
-          {
-            text: 'Remove from My Profile',
-            color: colors.peach,
-            onPress: removeFromMyProfile,
-          },
-        ];
-      }
-
-      if (activeItem.type === 'VIDEO') {
-        return [
-          {
-            text: 'Delete Video',
-            color: colors.peach,
-            onPress: deleteStoryForGood,
-          },
-        ];
-      }
-
-      // if SOLO and only exists on Profile - delete for good
-      return [
-        {
-          text: 'Delete Image',
-          color: colors.peach,
-          onPress: deleteStoryForGood,
         },
       ];
     }
@@ -572,51 +441,57 @@ const StoryCard = ({
     );
   }
 
+  if (isEmpty) {
+    console.log(story);
+    return null;
+    // navigation.goBack();
+  }
+
   return (
     <SafeAreaView style={{ ...styles.container, width }}>
-      {/* absolute positioned stuff */}
-      <StoryImage
-        activeItem={activeItem}
-        videoRef={videoRef}
-        onLoad={onLoad}
-        onLoadStart={onLoadStart}
-        onReadyForDisplay={onReadyForDisplay}
-        onProgress={onProgress}
-        onBuffer={onBuffer}
-        onVideoEnd={onVideoEnd}
-        isBuffering={isBuffering}
-        paused={paused}
-      />
-      <TopLinearFade />
-      <BottomLinearFade />
-      <StoryTapRegions
-        decrementIndex={decrementIndex}
-        incrementIndex={incrementIndex}
-        handleDoubleTap={handleDoubleTap}
-        engagePause={engagePause}
-        disengagePause={disengagePause}
-      />
-      <StoryProgressBars
-        story={story}
-        activeIndex={activeIndex}
-        incrementIndex={incrementIndex}
-        isActive={isActive}
-        isBuffering={isBuffering}
-        paused={paused}
-        storyKey={storyKey}
-      />
-      <StoryHeader story={story} activeIndex={activeIndex} navigation={navigation} engagePause={engagePause} />
-      <StoryFooter
-        story={story}
-        activeIndex={activeIndex}
-        isMyPost={isMyPost}
-        navigation={navigation}
-        indexAddedToProfile={indexAddedToProfile}
-        handleAddToProfile={handleAddToProfile}
-        handleMoreButton={handleMoreButton}
-        favoriteTopics={favoriteTopics}
-        setDisableOutterScroll={setDisableOutterScroll}
-      />
+      <View style={{ flex: 1 }}>
+        {/* absolute positioned stuff */}
+        <StoryImage
+          activeItem={activeItem}
+          videoRef={videoRef}
+          onLoad={onLoad}
+          onLoadStart={onLoadStart}
+          onReadyForDisplay={onReadyForDisplay}
+          onProgress={onProgress}
+          onBuffer={onBuffer}
+          onVideoEnd={onVideoEnd}
+          isBuffering={isBuffering}
+          paused={paused}
+        />
+        <TopLinearFade />
+        <BottomLinearFade />
+        <StoryTapRegions
+          decrementIndex={decrementIndex}
+          incrementIndex={incrementIndex}
+          handleDoubleTap={handleDoubleTap}
+          engagePause={engagePause}
+          disengagePause={disengagePause}
+        />
+        <StoryProgressBars
+          story={story}
+          activeIndex={activeIndex}
+          incrementIndex={incrementIndex}
+          storyIsActive={storyIsActive}
+          isBuffering={isBuffering}
+          paused={paused}
+          // storyKey={storyKey}
+        />
+        <StoryHeader story={story} activeIndex={activeIndex} navigation={navigation} engagePause={engagePause} />
+        <StoryFooter
+          story={story}
+          activeIndex={activeIndex}
+          isMyPost={isMyPost}
+          navigation={navigation}
+          handleMoreButton={handleMoreButton}
+          favoriteTopics={favoriteTopics}
+          setDisableOutterScroll={setDisableOutterScroll}
+        />
+      </View>
     </SafeAreaView>
   );
 };

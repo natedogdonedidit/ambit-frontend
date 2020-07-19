@@ -27,11 +27,7 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import CREATE_STORY_ITEM_MUTATION from 'library/mutations/CREATE_STORY_ITEM_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
-import StoryBox from 'library/components/stories/StoryBox';
-import StoryBoxButton from 'library/components/stories/StoryBoxButton';
-import NewProjectButton from 'library/components/stories/NewProjectButton2';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
-import TextButton from 'library/components/UI/buttons/TextButton';
 
 const PostToModal = ({ navigation, route }) => {
   const { setCreatingStory } = useContext(UserContext);

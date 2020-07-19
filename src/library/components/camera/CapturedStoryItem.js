@@ -74,7 +74,7 @@ const CapturedStoryItem = ({
       if (capturedImage && capturedImage.uri) {
         try {
           const uploadedImage = await storyPicUpload(userId, capturedImage.uri);
-          console.log(uploadedImage);
+          // console.log(uploadedImage);
 
           const itemForMutation = {
             type: 'IMAGE',

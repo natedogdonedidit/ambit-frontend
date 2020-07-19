@@ -14,7 +14,6 @@ const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
   const activeItem = { ...items[activeIndex] };
 
   const { owner } = story;
-  const insets = useSafeArea();
 
   if (!owner) return null;
 
@@ -22,7 +21,7 @@ const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
   const { timeDiff, period } = timeDifference(timeOfDay, createdAt);
 
   return (
-    <View style={{ ...styles.absoluteTop, top: insets.top + 18 }}>
+    <View style={{ ...styles.absoluteTop, top: 18 }}>
       <View style={styles.header}>
         <ProfilePic size="small" user={owner} navigation={navigation} enableClick={story.type !== 'INTRO'} enableStory={false} />
         <TouchableOpacity

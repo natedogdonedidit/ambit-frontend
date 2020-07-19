@@ -23,56 +23,11 @@ const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
   const subTopic = isSubTopic ? topicID : null;
 
   // GETS STORIES FOR YOUR FAV TOPICS
-  const {
-    error: errorStories,
-    data: dataStories,
-    refetch: refetchStories,
-    fetchMore: fetchMoreStories,
-    networkStatus: networkStatusStories,
-  } = useQuery(STORIES_TOPIC_QUERY, {
-    variables: {
-      topicID,
-    },
-    notifyOnNetworkStatusChange: true,
-  });
-
-  const refetchingStories = networkStatusStories === 4;
-  const fetchingMoreStories = networkStatusStories === 3;
-  const loadingStories = networkStatusStories === 1;
-
-  useEffect(() => {
-    if (networkStatusStories === 7 && refetching) {
-      // console.log('refetching stories Topic', topicID)
-      refetchStories();
-    }
-  }, [refetching]);
-
-  if (errorStories) {
-    console.log(errorStories);
-    return null;
-  }
-
-  if (loadingStories) {
-    // return null;
-    return <StoryBox loading />;
-  }
-
-  const topicStories = dataStories.storiesTopic;
-
-  if (topicStories.length <= 0) {
-    return null;
-  }
+  const { error, data, loading } = useQuery(STORIES_TOPIC_QUERY);
 
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })}
-      // onPress={() =>
-      //   navigation.navigate('StoryModal', {
-      //     story: topicStories[0],
-      //     moreType: 'Topic',
-      //     topicIDtoSearch: topicID,
-      //   })
-      // }
       style={styles.storyBox}
       activeOpacity={0.8}
     >

@@ -18,7 +18,7 @@ import { getMainDefinition } from 'apollo-utilities';
 import analytics from '@segment/analytics-react-native';
 import mixpanel from '@segment/analytics-react-native-mixpanel';
 
-import { SafeAreaProvider, initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaProvider, initialWindowSafeAreaInsets, initialWindowMetrics } from 'react-native-safe-area-context';
 import { UserContextProvider } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
 import AppNavigator from './App';
@@ -152,7 +152,7 @@ enableScreens();
 const App = () => {
   return (
     <ApolloProvider client={client}>
-      <SafeAreaProvider initialSafeAreaInsets={initialWindowSafeAreaInsets}>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics} initialSafeAreaInsets={initialWindowSafeAreaInsets}>
         <UserContextProvider>
           <AppNavigator />
         </UserContextProvider>

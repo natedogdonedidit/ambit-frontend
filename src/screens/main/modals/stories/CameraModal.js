@@ -7,17 +7,15 @@ import { useSafeArea } from 'react-native-safe-area-context';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import { RNCamera } from 'react-native-camera';
-import { useLazyQuery, useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/react-hooks';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { introPicUpload, introVideoUpload } from 'library/utils';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import CameraControls from 'library/components/camera/CameraControls';
 import CapturedStoryItem from 'library/components/camera/CapturedStoryItem';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import Loader from 'library/components/UI/Loader';
-import EditIntro from 'library/components/camera/EditIntro';
 
 const flashModeOrder = {
   auto: 'off',
@@ -32,28 +30,18 @@ const CameraModal = ({ navigation, route }) => {
   const { isIntro } = route.params;
 
   // STATE
-  // const [newStoryItem, setNewStoryItem] = useState(null);
-  // const [uploading, setUploading] = useState(false);
   const [flashMode, setFlashMode] = useState('auto');
   const [direction, setDirection] = useState('back');
   const [mode, setMode] = useState('photo');
   const [recording, setRecording] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [capturedVideo, setCapturedVideo] = useState(null);
-  const [showEditIntro, setShowEditIntro] = useState(false);
   const [firstImage, setFirstImage] = useState(null);
 
   const cameraRef = useRef(null);
 
   // get intro from cache
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY, { fetchPolicy: 'cache-first' });
-
-  // only run the getUser query if we need the intro
-  // useEffect(() => {
-  //   if (isIntro) {
-  //     getUser();
-  //   }
-  // }, []);
 
   // get first photo from camera roll
   useEffect(() => {
@@ -227,86 +215,3 @@ const styles = StyleSheet.create({
     ...defaultStyles.shadowButton,
   },
 });
-
-// MUTAION
-// const [editIntro, { loading: loadingMutation, error, data }] = useMutation(EDIT_INTRO_MUTATION, {
-//   variables: {
-//     userId: user.id,
-//     title: storyTitle,
-//     items: storyItems,
-//   },
-//   onCompleted: () => {
-//     navigation.goBack();
-//   },
-//   onError: () =>
-//     Alert.alert('Oh no!', 'An error occured when trying to create your story. Try again later!', [
-//       { text: 'OK', onPress: () => console.log('OK Pressed') },
-//     ]),
-// });
-
-// useEffect(() => {
-//   if (!newStoryItem) {
-//     addNewVideo();
-//   }
-// }, []);
-
-// ADD MEDIA
-// const addNewVideo = () => {
-//   ImagePicker.openCamera({
-//     mediaType: 'video',
-//     useFrontCamera: true,
-//     includeExif: true,
-//   }).then(async recordedVideo => {
-//     console.log(recordedVideo);
-
-//     setUploading(true);
-//     try {
-//       // 1. upload video. Divide into 10s incrememnts?
-//       const uploadedVideo = await introVideoUpload(user.id, recordedVideo.path);
-//       // console.log('uploaded video', uploadedVideo);
-//       const newStoryItem = {
-//         type: 'video',
-//         url: uploadedVideo.url,
-//         text: '',
-//         link: '',
-//         duration: uploadedVideo.duration,
-//         owner: { connect: { id: user.id } },
-//       };
-//       // 2 add video to story
-//       setNewStoryItem(newStoryItem);
-//       setUploading(false);
-//     } catch (e) {
-//       setUploading(false);
-//       console.log(e);
-//       Alert.alert('Oh no!', 'We could not upload your video. Try again later!', [
-//         { text: 'OK', onPress: () => console.log('OK Pressed') },
-//       ]);
-//     }
-//   });
-// };
-
-// const addNewPhoto = () => {
-//   ImagePicker.openCamera({
-//     mediaType: 'photo',
-//     useFrontCamera: true,
-//     includeExif: true,
-//   }).then(async img => {
-//     // 1. upload image
-//     setUploading(true);
-//     try {
-//       const uploadedImage = await introPicUpload(user.id, img.path);
-//       // console.log('uploaded image', uploadedImage);
-//       const newStoryItem = { type: 'photo', url: uploadedImage, text: '', link: '', owner: { connect: { id: user.id } } };
-//       // add image to story
-//       setNewStoryItem(newStoryItem);
-//       setUploading(false);
-//     } catch (e) {
-//       setUploading(false);
-//       Alert.alert('Oh no!', 'We could not upload your picture. Try again later!', [
-//         { text: 'OK', onPress: () => console.log('OK Pressed') },
-//       ]);
-//     }
-//   });
-// };
-
-// const loading = loadingMutation || uploading;

@@ -39,7 +39,7 @@ const IntroModal = ({ navigation, route }) => {
         navigation={navigation}
         story={intro}
         storyKey={1}
-        isActive
+        storyIsActive
         tryGoToPrevStory={tryGoToPrevStory}
         tryGoToNextStory={tryGoToNextStory}
       />

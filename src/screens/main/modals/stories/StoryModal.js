@@ -29,13 +29,25 @@ const StoryModal = ({ navigation, route }) => {
 
   // STATE
   const [storyQIndex, setStoryQIndex] = useState(0);
-  const [storyKey, setStoryKey] = useState(0); // used so StoryCard re-renders each time change storyQIndex
+  const [storyQ, setStoryQ] = useState(!moreType ? [story] : []);
 
   // VARIABLES
 
   // QUERY TO GET USERS TOPICS
   const { data } = useQuery(CURRENT_USER_TOPICS);
   const { myTopics } = data || {};
+
+  // EFFECTS
+  useEffect(() => {
+    if (moreType === 'Home') {
+      console.log('gettingStoriesHome');
+      getStoriesHome();
+    }
+
+    if (moreType === 'Topic') {
+      getStoriesTopic();
+    }
+  }, [moreType]);
 
   // effect compiles the list of favoriteTopics
   useEffect(() => {
@@ -102,58 +114,45 @@ const StoryModal = ({ navigation, route }) => {
     notifyOnNetworkStatusChange: true,
   });
 
+  // console.log(dataStoriesHome);
+
   const refetchingStoriesHome = networkStatusStoriesHome === 4;
   const fetchingMoreStoriesHome = networkStatusStoriesHome === 3;
   const loadingStoriesHome = networkStatusStoriesHome === 1;
 
   // an array of the stories up next, start with the first story (passed in)
-  let storyQ = story ? [story] : [];
+  // let storyQ = story ? [story] : [];
 
   // used to add topic stories to Q
-  if (moreType === 'Topic' && dataStoriesTopic) {
-    if (dataStoriesTopic.storiesTopic) {
-      // remove the story passed in from the query results
-      const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => {
-        if (story) {
-          return s.items.length > 0 && s.id !== story.id;
-        }
-        return s.items.length > 0;
-      });
-
-      storyQ = [...storyQ, ...storiesToAdd];
+  useEffect(() => {
+    // used to add home stories to Q
+    if (moreType === 'Topic' && !loadingStoriesTopic && dataStoriesTopic) {
+      if (dataStoriesTopic.storiesTopic) {
+        // remove the story passed in from the query results
+        const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.id !== story.id && s.items.length > 0);
+        setStoryQ([story, ...storiesToAdd]);
+      }
     }
-  }
+  }, [loadingStoriesTopic, dataStoriesTopic]);
 
   // used to add home stories to Q
-  if (moreType === 'Home' && dataStoriesHome) {
-    if (dataStoriesHome.storiesHome) {
-      // remove the story passed in from the query results
-      const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id && s.items.length > 0);
-
-      storyQ = [...storyQ, ...storiesToAdd];
-    }
-  }
-
-  // EFFECTS
   useEffect(() => {
-    if (moreType === 'Home') {
-      getStoriesHome();
+    if (moreType === 'Home' && !loadingStoriesHome && dataStoriesHome) {
+      if (dataStoriesHome.storiesHome) {
+        // remove the story passed in from the query results
+        const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id && s.items.length > 0);
+        setStoryQ([story, ...storiesToAdd]);
+      }
     }
-
-    if (moreType === 'Topic') {
-      getStoriesTopic();
-    }
-  }, [moreType]);
+  }, [loadingStoriesHome, dataStoriesHome]);
 
   // CUSTOM FUNCTIONS
   const goToPrevStory = () => {
     setStoryQIndex((prevState) => prevState - 1);
-    setStoryKey((prevState) => prevState + 10);
   };
 
   const goToNextStory = () => {
     setStoryQIndex((prevState) => prevState + 1);
-    setStoryKey((prevState) => prevState + 10);
   };
 
   const tryGoToNextStory = () => {
@@ -192,16 +191,16 @@ const StoryModal = ({ navigation, route }) => {
   if (storyQ.length <= 0) {
     return (
       <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: 'black' }}>
-        <Loader size="small" />
+        <Loader size="small" backgroundColor="transparent" color="white" />
       </View>
     );
   }
 
-  // console.log(storyQ)
+  // console.log(storyQ);
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="black" barStyle="light-content" hidden />
+      <StatusBar backgroundColor="black" barStyle="light-content" hidden animated={false} />
       <FlatList
         ref={storyFlatlist}
         horizontal
@@ -210,7 +209,7 @@ const StoryModal = ({ navigation, route }) => {
         decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={100}
-        initialNumToRender={2}
+        // initialNumToRender={2}
         bounces={false}
         disableIntervalMomentum
         disableScrollViewPanResponder
@@ -218,14 +217,19 @@ const StoryModal = ({ navigation, route }) => {
         data={storyQ}
         scrollEnabled={!disableOutterScroll}
         renderItem={({ item, index }) => {
+          // console.log(index);
+          // console.log(index, item.id);
+          // if (item.id === 'ckcqk0zgf203x09730r9mlygp') {
+          //   console.log(item);
+          // }
           return (
             <StoryCard
               // key={`${index}${storyKey}`} // for forcing a re-render. this isnt so good bc then cant save activeIndex of that story
               key={index}
               navigation={navigation}
               story={item}
-              storyKey={storyKey}
-              isActive={index === storyQIndex}
+              // storyKey={storyKey}
+              storyIsActive={index === storyQIndex}
               tryGoToPrevStory={tryGoToPrevStory}
               tryGoToNextStory={tryGoToNextStory}
               favoriteTopics={favoriteTopics}

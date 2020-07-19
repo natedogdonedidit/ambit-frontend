@@ -54,6 +54,10 @@ export const sortChats = (a, b) => {
 };
 
 export const sortStoriesNewestFirst = (a, b) => {
+  // if theres no items
+  if (a.items.length <= 0 || b.items.length <= 0) {
+    return 1;
+  }
   // grab the last item of each story, compare
   if (a.items[a.items.length - 1].createdAt > b.items[b.items.length - 1].createdAt) {
     return -1;

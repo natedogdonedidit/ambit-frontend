@@ -1,23 +1,15 @@
 import React, { useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { useQuery, useLazyQuery } from 'react-apollo';
-import Feather from 'react-native-vector-icons/Feather';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import LinearGradient from 'react-native-linear-gradient';
+import { StyleSheet, View, ScrollView } from 'react-native';
+import { useQuery } from 'react-apollo';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
-import Loader from 'library/components/UI/Loader';
-import ProfilePic from 'library/components/UI/ProfilePic';
-import NewStoryButton from 'library/components/stories/NewStoryButton';
 import StoryBox from 'library/components/stories/StoryBox';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
 import { UserContext } from 'library/utils/UserContext';
 import NewProjectButton from './NewProjectButton';
-import NewProjectButton3 from './NewProjectButton3';
 
 const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, setRefetchingStories, favoritesList }) => {
   const { currentUserId } = useContext(UserContext);
@@ -211,11 +203,8 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
         contentContainerStyle={{ paddingVertical: 10, paddingRight: 15, paddingLeft: 5 }}
         showsHorizontalScrollIndicator={false}
       >
-        {/* <NewStoryButton navigation={navigation} /> */}
-        <NewProjectButton3 navigation={navigation} userLoggedIn={userLoggedIn} />
+        <NewProjectButton navigation={navigation} userLoggedIn={userLoggedIn} />
         {renderStories()}
-        {/* {renderUserStories()}
-        {renderTopicStories()} */}
       </ScrollView>
       <View style={{ height: 10, backgroundColor: colors.lightGray }} />
     </>
