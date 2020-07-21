@@ -124,6 +124,7 @@ const CapturedStoryItem = ({
             variables: {
               id: intro.id,
               story: {
+                lastUpdated: new Date(),
                 items: {
                   delete: deleteArray, // delete the previous intro
                   create: [newItem],

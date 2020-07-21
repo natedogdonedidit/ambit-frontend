@@ -22,6 +22,8 @@ const CustomDrawer = ({ navigation }) => {
   const { userLoggedIn } = data;
   if (!userLoggedIn) return null;
 
+  // console.log(userLoggedIn);
+
   const handleLogout = async () => {
     try {
       // attempt to sign out (remove JWT token to storage)

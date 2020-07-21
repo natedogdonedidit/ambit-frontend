@@ -14,7 +14,6 @@ import HeaderSearch from 'library/components/headers/HeaderSearch';
 import Error from 'library/components/UI/Error';
 // import SearchTabs from 'library/components/search/SearchTabs';
 import { HEADER_HEIGHT } from 'styles/constants';
-// import TimelineTabs from 'library/components/timelines/TimelineTabs';
 import { getTopicFromID } from 'library/utils';
 
 const DROPDOWNS_HEIGHT = 40;

@@ -26,6 +26,7 @@ import ProjectSquare from 'library/components/stories/ProjectSquare';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import CREATE_STORY_ITEM_MUTATION from 'library/mutations/CREATE_STORY_ITEM_MUTATION';
+import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
@@ -42,12 +43,23 @@ const PostToModal = ({ navigation, route }) => {
   const [newProject, setNewProject] = useState({});
 
   // MUTATIONS
-  const [createStoryItem] = useMutation(CREATE_STORY_ITEM_MUTATION, {
+  // const [createStoryItem] = useMutation(CREATE_STORY_ITEM_MUTATION, {
+  //   refetchQueries: [{ query: CURRENT_USER_QUERY }, { query: STORIES_HOME_QUERY }],
+  //   onError: () =>
+  //     Alert.alert('Oh no!', 'An error occured when trying to update your story. Try again later!', [
+  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
+  //     ]),
+  // });
+
+  const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
     refetchQueries: [{ query: CURRENT_USER_QUERY }, { query: STORIES_HOME_QUERY }],
-    onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to update your story. Try again later!', [
+    // onCompleted: () => {},
+    onError: (error) => {
+      console.log(error);
+      Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
+      ]);
+    },
   });
 
   const [createStory, { loading: loadingCreateStory }] = useMutation(CREATE_STORY_MUTATION, {
@@ -124,12 +136,12 @@ const PostToModal = ({ navigation, route }) => {
           // if here, connect PROJECT
 
           // add the project story id
-          const storiesConnect = [{ id: selectedProject }];
+          // const storiesConnect = [{ id: selectedProject }];
 
           // if mystory is selected, add mystory id
-          if (isStory) {
-            storiesConnect.push({ id: myStoryID });
-          }
+          // if (isStory) {
+          //   storiesConnect.push({ id: myStoryID });
+          // }
 
           const newStoryItem = {
             type: 'IMAGE',
@@ -137,12 +149,17 @@ const PostToModal = ({ navigation, route }) => {
             preview: uploadedImage,
             text: textInput,
             link: '',
-            stories: { connect: storiesConnect },
           };
 
-          createStoryItem({
+          updateStory({
             variables: {
-              storyItem: newStoryItem,
+              id: selectedProject,
+              story: {
+                lastUpdated: new Date(),
+                items: {
+                  create: [newStoryItem],
+                },
+              },
             },
           });
         } else if (isStory) {
@@ -161,21 +178,27 @@ const PostToModal = ({ navigation, route }) => {
             preview: uploadedImage,
             text: textInput,
             link: '',
-            stories: {
-              connect: isStory ? [{ id: myStoryID }] : null,
-              // create: [
-              //   {
-              //     type: 'SOLO',
-              //     owner: { connect: { id: userLoggedIn.id } },
-              //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
-              //   },
-              // ],
-            },
+            // stories: {
+            //   connect: isStory ? [{ id: myStoryID }] : null,
+            // create: [
+            //   {
+            //     type: 'SOLO',
+            //     owner: { connect: { id: userLoggedIn.id } },
+            //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
+            //   },
+            // ],
+            // },
           };
 
-          createStoryItem({
+          updateStory({
             variables: {
-              storyItem: newStoryItem,
+              id: myStoryID,
+              story: {
+                lastUpdated: new Date(),
+                items: {
+                  create: [newStoryItem],
+                },
+              },
             },
           });
         }
@@ -198,7 +221,7 @@ const PostToModal = ({ navigation, route }) => {
           // if here, connect MYSTORY? and PROJECT
 
           // add the project story id
-          const storiesConnect = [{ id: selectedProject }];
+          // const storiesConnect = [{ id: selectedProject }];
 
           // if mystory is selected, add mystory id
           // if (isStory) {
@@ -215,12 +238,18 @@ const PostToModal = ({ navigation, route }) => {
             text: textInput,
             link: '',
             duration: uploadedVideo.duration,
-            stories: { connect: storiesConnect },
+            // stories: { connect: storiesConnect },
           };
 
-          createStoryItem({
+          updateStory({
             variables: {
-              storyItem: newStoryItem,
+              id: selectedProject,
+              story: {
+                lastUpdated: new Date(),
+                items: {
+                  create: [newStoryItem],
+                },
+              },
             },
           });
         } else if (isStory) {
@@ -243,21 +272,27 @@ const PostToModal = ({ navigation, route }) => {
             text: textInput,
             link: '',
             duration: uploadedVideo.duration,
-            stories: {
-              connect: isStory ? [{ id: myStoryID }] : null,
-              // create: [
-              //   {
-              //     type: 'SOLO',
-              //     owner: { connect: { id: userLoggedIn.id } },
-              //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
-              //   },
-              // ],
-            },
+            // stories: {
+            //   connect: isStory ? [{ id: myStoryID }] : null,
+            // create: [
+            //   {
+            //     type: 'SOLO',
+            //     owner: { connect: { id: userLoggedIn.id } },
+            //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
+            //   },
+            // ],
+            // },
           };
 
-          createStoryItem({
+          updateStory({
             variables: {
-              storyItem: newStoryItem,
+              id: myStoryID,
+              story: {
+                lastUpdated: new Date(),
+                items: {
+                  create: [newStoryItem],
+                },
+              },
             },
           });
         }
@@ -374,9 +409,9 @@ const PostToModal = ({ navigation, route }) => {
         </View>
 
         <View style={{ flex: 1 }}>
-          <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>My Weekly</Text>
+          <Text style={{ ...defaultStyles.largeMedium, paddingLeft: 10 }}>My Week</Text>
           <Text numberOfLines={1} style={{ ...defaultStyles.smallBoldMute, paddingLeft: 10, paddingTop: 4 }}>
-            Each post lasts 7 days
+            Posts stay up for 7 days
           </Text>
         </View>
         <View style={{ width: 40 }}>

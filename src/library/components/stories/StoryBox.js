@@ -67,7 +67,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
           }}
         >
           <Text numberOfLines={3} style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>
-            {isMyStory ? 'Your weekly' : story.owner.name}
+            {isMyStory ? 'Your story' : story.owner.name}
           </Text>
         </View>
         <View

@@ -1,13 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { format } from 'date-fns';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import LIKE_UPDATE_MUTATION from 'library/mutations/LIKE_UPDATE_MUTATION';
+import UNLIKE_UPDATE_MUTATION from 'library/mutations/UNLIKE_UPDATE_MUTATION';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Heart from 'library/components/UI/icons/Heart';
@@ -17,6 +18,7 @@ import Chevron from 'library/components/UI/icons/Chevron';
 import DELETE_UPDATE_MUTATION from 'library/mutations/DELETE_UPDATE_MUTATION';
 import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 import { UserContext } from 'library/utils/UserContext';
+import { UpdateFragment } from 'library/queries/_fragments';
 
 const Update = ({
   post,
@@ -31,33 +33,44 @@ const Update = ({
   hideTopLine = false,
 }) => {
   // HOOKS
+  const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
+
+  const [isLiked, setIsLiked] = useState(update.likedByMe); // this is the source of truth
+  const [likesCount, setLikesCount] = useState(update.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
   const [likeUpdate, { loading: loadingLike }] = useMutation(LIKE_UPDATE_MUTATION, {
     variables: {
       updateId: update.id,
     },
-    refetchQueries: {},
-    optimisticResponse: {
-      __typename: 'Mutation',
-      likeUpdate: {
-        id: update.id,
-        __typename: 'Update',
-        ...update,
-        likedByMe: !update.likedByMe,
-        likesCount: update.likedByMe ? update.likesCount - 1 || null : update.likesCount + 1,
-      },
+    update: (proxy, { data: dataReturned }) => {
+      client.writeFragment({
+        id: `Update:${update.id}`,
+        fragment: UpdateFragment,
+        fragmentName: 'UpdateFragment',
+        data: {
+          ...dataReturned.likeUpdate,
+        },
+      });
     },
-    onCompleted: () => {
-      // closeModal();
+  });
+
+  const [unlikeUpdate, { loading: loadingUnlike }] = useMutation(UNLIKE_UPDATE_MUTATION, {
+    variables: {
+      updateId: update.id,
     },
-    onError: (error) => {
-      console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to like this update. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+    update: (proxy, { data: dataReturned }) => {
+      client.writeFragment({
+        id: `Update:${update.id}`,
+        fragment: UpdateFragment,
+        fragmentName: 'UpdateFragment',
+        data: {
+          ...dataReturned.unlikeUpdate,
+        },
+      });
     },
+    onError: () => null,
   });
 
   // DELETE MUTATION
@@ -73,6 +86,12 @@ const Update = ({
       ]),
   });
 
+  // when cache update comes in...update state!
+  useEffect(() => {
+    setIsLiked(update.likedByMe);
+    setLikesCount(update.likesCount);
+  }, [update.likedByMe, update.likesCount]);
+
   // VARIABLES
   const containsMedia = !!update.image;
   // for dates
@@ -82,6 +101,18 @@ const Update = ({
   const isMyPost = currentUserId === post.owner.id;
 
   // CUSTOM FUNCTIONS
+  const handleLike = async () => {
+    if (isLiked && !loadingUnlike && !loadingLike) {
+      setIsLiked(false);
+      setLikesCount(likesCount - 1);
+      unlikeUpdate();
+    } else if (!isLiked && !loadingLike && !loadingUnlike) {
+      setIsLiked(true);
+      setLikesCount(likesCount + 1);
+      likeUpdate();
+    }
+  };
+
   const determineOptions = () => {
     if (isMyPost) {
       return [
@@ -105,10 +136,6 @@ const Update = ({
   const handleMoreButton = () => {
     const options = determineOptions();
     navigation.navigate('SelectorModal', { options });
-  };
-
-  const handleLike = () => {
-    if (!loadingLike) likeUpdate();
   };
 
   const renderMedia = () => {
@@ -192,7 +219,7 @@ const Update = ({
                     <Comment onPress={() => navigation.navigate('Comment', { post, update, isUpdate: true })} />
                   </View>
                   <View style={{ paddingLeft: 25 }}>
-                    <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={handleLike} />
                   </View>
                   <View style={{ paddingLeft: 25 }}>
                     <Share onPress={() => null} />
@@ -209,8 +236,8 @@ const Update = ({
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
                   </View>
                   <View style={styles.button}>
-                    <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.likesCount}</Text>
+                    <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={handleLike} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount === 0 ? null : likesCount}</Text>
                   </View>
                   <View style={styles.button}>
                     <Share onPress={() => null} />

@@ -1,13 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/react-hooks';
 
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import LIKE_COMMENT_MUTATION from 'library/mutations/LIKE_COMMENT_MUTATION';
+import UNLIKE_COMMENT_MUTATION from 'library/mutations/UNLIKE_COMMENT_MUTATION';
 import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
 import { CommentFragment } from 'library/queries/_fragments';
 
@@ -27,32 +28,44 @@ const SubComment = ({
   lessPadding = false,
   disableVideo = false,
 }) => {
+  const client = useApolloClient();
+  const { currentUserId } = useContext(UserContext);
+
+  const [isLiked, setIsLiked] = useState(comment.likedByMe); // this is the source of truth
+  const [likesCount, setLikesCount] = useState(comment.likesCount); // this is the source of truth
   // ////////////////////////////////////////////////////////////////
   // MUTATIONS - like, share, delete
   const [likeComment, { loading: loadingLike }] = useMutation(LIKE_COMMENT_MUTATION, {
     variables: {
-      id: comment.id,
+      commentId: comment.id,
     },
-    refetchQueries: {},
-    optimisticResponse: {
-      __typename: 'Mutation',
-      likeComment: {
-        id: comment.id,
-        __typename: 'Comment',
-        ...comment,
-        likedByMe: !comment.likedByMe,
-        likesCount: comment.likedByMe ? comment.likesCount - 1 || null : comment.likesCount + 1,
-      },
+    update: (proxy, { data: dataReturned }) => {
+      client.writeFragment({
+        id: `Comment:${comment.id}`,
+        fragment: CommentFragment,
+        fragmentName: 'CommentFragment',
+        data: {
+          ...dataReturned.likeComment,
+        },
+      });
     },
-    onCompleted: () => {
-      // closeModal();
+  });
+
+  const [unlikeComment, { loading: loadingUnlike }] = useMutation(UNLIKE_COMMENT_MUTATION, {
+    variables: {
+      commentId: comment.id,
     },
-    onError: (error) => {
-      console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to like this comment. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+    update: (proxy, { data: dataReturned }) => {
+      client.writeFragment({
+        id: `Comment:${comment.id}`,
+        fragment: CommentFragment,
+        fragmentName: 'CommentFragment',
+        data: {
+          ...dataReturned.unlikeComment,
+        },
+      });
     },
+    onError: () => null,
   });
 
   // DELETE MUTATIONS
@@ -70,8 +83,13 @@ const SubComment = ({
       ]),
   });
 
-  // HOOKS & VARIABLES
-  const { currentUserId } = useContext(UserContext);
+  // when cache update comes in...update state!
+  useEffect(() => {
+    setIsLiked(comment.likedByMe);
+    setLikesCount(comment.likesCount);
+  }, [comment.likedByMe, comment.likesCount]);
+
+  // VARIABLES
   const isMyPost = comment.owner.id === currentUserId;
   const containsMedia = !!comment.image;
 
@@ -80,6 +98,18 @@ const SubComment = ({
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
 
   // CUSTOM FUNCTIONS
+  const handleLike = async () => {
+    if (isLiked && !loadingUnlike && !loadingLike) {
+      setIsLiked(false);
+      setLikesCount(likesCount - 1);
+      unlikeComment();
+    } else if (!isLiked && !loadingLike && !loadingUnlike) {
+      setIsLiked(true);
+      setLikesCount(likesCount + 1);
+      likeComment();
+    }
+  };
+
   const handleDelete = () => {
     deleteComment({
       optimisticResponse: {
@@ -132,10 +162,6 @@ const SubComment = ({
   const handleMoreButton = () => {
     const options = determineOptions();
     navigation.navigate('SelectorModal', { options });
-  };
-
-  const handleLike = () => {
-    if (!loadingLike) likeComment();
   };
 
   const renderMedia = () => {
@@ -233,8 +259,8 @@ const SubComment = ({
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount}</Text>
                 </View>
                 <View style={styles.button}>
-                  <Heart color={comment.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.likesCount}</Text>
+                  <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={handleLike} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount === 0 ? null : likesCount}</Text>
                 </View>
               </View>
             </View>

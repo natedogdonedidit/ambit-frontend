@@ -8,7 +8,7 @@ import colors from 'styles/colors';
 
 const Heart = ({ onPress, size = 16, color = colors.iconGray }) => {
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.5} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.5} hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}>
       <Icon name="heart" solid size={size} color={color} />
     </TouchableOpacity>
   );

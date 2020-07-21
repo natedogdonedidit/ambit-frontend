@@ -3,9 +3,6 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import Loader from 'library/components/UI/Loader';
-import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, setActiveTimeline }) => {
   return (
@@ -17,21 +14,29 @@ const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, s
     >
       <View style={styles.sectionHeader}>
         <View style={styles.buttons}>
-          <TouchableOpacity activeOpacity={0.9} onPress={() => setActiveTimeline(0)}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => setActiveTimeline(0)}
+            hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}
+          >
             <Text style={activeTimeline === 0 ? styles.selectedButton : styles.nonSelectedButton}>For you</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.9} onPress={() => setActiveTimeline(1)} style={{ paddingLeft: 20 }}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={() => setActiveTimeline(1)}
+            style={{ paddingLeft: 20 }}
+            hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}
+          >
             <Text style={activeTimeline === 1 ? styles.selectedButton : styles.nonSelectedButton}>Following</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity activeOpacity={0.9} onPress={() => setActiveTimeline(2)} style={{ paddingLeft: 20 }}>
-            <Text style={activeTimeline === 2 ? styles.selectedButton : styles.nonSelectedButton}>My Goals</Text>
-          </TouchableOpacity> */}
         </View>
 
-        {/* <TouchableOpacity onPress={() => setActiveTimeline(2)}>
-          <Ionicons name="ios-rocket" size={22} color={activeTimeline === 2 ? colors.purp : colors.iconGray} />
-        </TouchableOpacity> */}
-        <TouchableOpacity activeOpacity={0.9} onPress={() => setActiveTimeline(2)} style={{ paddingLeft: 20 }}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => setActiveTimeline(2)}
+          style={{ paddingLeft: 20 }}
+          hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}
+        >
           <Text style={activeTimeline === 2 ? styles.selectedButton : styles.nonSelectedButton2}>My Goals</Text>
         </TouchableOpacity>
       </View>

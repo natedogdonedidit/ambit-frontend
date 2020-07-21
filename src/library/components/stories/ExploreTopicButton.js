@@ -23,7 +23,11 @@ const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
   const subTopic = isSubTopic ? topicID : null;
 
   // GETS STORIES FOR YOUR FAV TOPICS
-  const { error, data, loading } = useQuery(STORIES_TOPIC_QUERY);
+  const { error, data, loading } = useQuery(STORIES_TOPIC_QUERY, {
+    variables: {
+      topicID,
+    },
+  });
 
   return (
     <TouchableOpacity

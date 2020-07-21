@@ -40,7 +40,7 @@ const StoryModal = ({ navigation, route }) => {
   // EFFECTS
   useEffect(() => {
     if (moreType === 'Home') {
-      console.log('gettingStoriesHome');
+      // console.log('gettingStoriesHome');
       getStoriesHome();
     }
 

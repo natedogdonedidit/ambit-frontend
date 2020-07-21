@@ -16,6 +16,8 @@ export const StoryItemFragment = gql`
         name
       }
     }
+    likedByMe
+    likesCount
     type
     url
     preview
@@ -66,6 +68,8 @@ export const StoryFragment = gql`
           link
           text
           duration
+          likedByMe
+          likesCount
           views {
             id
             name
@@ -142,6 +146,9 @@ export const MinimalUser = gql`
       ...StoryFragment
     }
     myStory {
+      ...StoryFragment
+    }
+    latestProject {
       ...StoryFragment
     }
   }

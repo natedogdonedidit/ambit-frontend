@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { sub, isBefore } from 'date-fns';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -31,7 +32,8 @@ const ProfilePic = ({
     sizePX = 110;
   }
 
-  // const hasPitch = !!pitch;
+  // NOTE: GO BACK TO VERSION 0.0.15 CODE IF YOU WANT TO GO BACK TO INTRO ONLY LOGIC!!
+
   let hasIntro = false;
   if (user) {
     if (user.intro) {
@@ -41,7 +43,6 @@ const ProfilePic = ({
     }
   }
 
-  // const hasStory = false;
   let hasStory = false;
   if (user) {
     if (user.myStory) {
@@ -51,9 +52,69 @@ const ProfilePic = ({
     }
   }
 
-  const showIntro = enableIntro && hasIntro;
-  // const showStory = enableStory && hasStory;
-  const showStory = false;
+  let hasProject = false;
+  if (user) {
+    if (user.latestProject) {
+      if (user.latestProject.items.length > 0) {
+        hasProject = true;
+      }
+    }
+  }
+
+  let showIntro = false;
+  let showStory = false;
+  let showProject = false;
+
+  let storyToShow = null;
+
+  // decide if we should show project
+
+  if (enableStory && hasProject) {
+    if (hasStory) {
+      // if you have a story AND a project, only show project if its less than 7 days old
+
+      // decide if the project is greater than 7 days old
+      const someDayAgo = sub(new Date(), { hours: 24 * 7 });
+      const isTooOld = isBefore(new Date(user.latestProject.lastUpdated), someDayAgo);
+
+      // if the project is too old or this is the profile screen...show the mystory
+      if (isTooOld || size === 'large') {
+        showStory = true;
+        storyToShow = { ...user.myStory };
+      } else {
+        showProject = true;
+        storyToShow = { ...user.latestProject };
+      }
+    } else if (hasIntro && enableIntro) {
+      // if you don't have a MyStory...show latest project...unless its too old
+
+      // decide if the project is greater than 30 days old
+      const someDayAgo2 = sub(new Date(), { hours: 24 * 30 });
+      const isTooOld2 = isBefore(new Date(user.latestProject.lastUpdated), someDayAgo2);
+
+      // if the project is too old...show the mystory
+      if (isTooOld2) {
+        showIntro = true;
+        storyToShow = { ...user.intro };
+      } else {
+        showProject = true;
+        storyToShow = { ...user.latestProject };
+      }
+    } else {
+      showProject = true;
+      storyToShow = { ...user.latestProject };
+    }
+
+    // if you dont have a project...but you have a story...show story
+  } else if (hasStory && enableStory) {
+    showStory = true;
+    storyToShow = { ...user.myStory };
+
+    // if you dont have a project or a story...but you have an intro...show intro
+  } else if (hasIntro && enableIntro) {
+    showIntro = true;
+    storyToShow = { ...user.intro };
+  }
 
   const whiteWidth = sizePX + 2 * borderWidth;
   const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraColorBorder + 2 * extraBorder;
@@ -121,7 +182,7 @@ const ProfilePic = ({
 
   const renderIntroIcon = () => {
     // if only INTRO
-    if (showIntro && !showStory) {
+    if (hasIntro && enableIntro) {
       // if small
       if (size === 'small') {
         return null;
@@ -150,6 +211,7 @@ const ProfilePic = ({
               flexDirection: 'row',
               alignItems: 'center',
             }}
+            hitSlop={{ top: 10, left: 10, right: 15, bottom: 15 }}
           >
             <Icon name="play" solid size={10} color={colors.white} />
             <Text style={{ ...defaultStyles.smallSemibold, color: colors.white, paddingLeft: 4 }}>Intro</Text>
@@ -169,8 +231,8 @@ const ProfilePic = ({
     );
   }
 
-  // if theres a story or intro and enabled
-  if (showIntro) {
+  // if theres a story or intro or project and enabled...show the blue ring
+  if (showIntro || showProject || showStory) {
     // if STORY and INTRO
     return (
       <View style={styles.introBorderBackground}>
@@ -179,10 +241,15 @@ const ProfilePic = ({
           style={styles.introBorder}
           disabled={!enableClick}
           onPress={() => {
-            navigation.navigate('IntroModal', {
-              // story: user.myStory,
-              intro: user.intro,
-            });
+            if (showIntro) {
+              navigation.navigate('IntroModal', {
+                intro: user.intro,
+              });
+            } else {
+              navigation.navigate('StoryModal', {
+                story: storyToShow,
+              });
+            }
           }}
         >
           <View style={{ ...styles.whiteBorder, overflow: 'hidden' }}>

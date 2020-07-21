@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { BasicPost } from 'library/queries/_fragments';
 
-const LIKE_POST = gql`
+const LIKE_POST_MUTATION = gql`
   mutation LIKE_POST($postId: ID!) {
     likePost(postId: $postId) {
       ...BasicPost
@@ -10,4 +10,4 @@ const LIKE_POST = gql`
   ${BasicPost}
 `;
 
-export default LIKE_POST;
+export default LIKE_POST_MUTATION;

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
-import { useSafeArea, initialWindowSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeArea } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/react-hooks';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -33,11 +33,6 @@ const HomeScreen = ({ navigation }) => {
 
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
-
-  // useEffect(() => {
-  //   console.log('i see home screen')
-  //   analytics.screen('Home Screen')
-  // })
 
   // if home position changes to 0, scroll to begininning (used for when user presses Home tab)
   useEffect(() => {
@@ -75,8 +70,8 @@ const HomeScreen = ({ navigation }) => {
     <View style={{ ...styles.container, paddingTop: top }}>
       <StatusBar barStyle="dark-content" networkActivityIndicatorVisible={creatingStory} />
 
+      {/* horizontal scrollView */}
       <ScrollView
-        // horizontal scrollView
         ref={horizontalScrollRef}
         style={{ flex: 1 }} // must give a fixed height here of the onEndReached doesnt work in FlatLists
         horizontal
@@ -109,8 +104,8 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
+      {/* this contains the Header, Banner, and Tabs. They all slide up together clamped at SLIDE_HEIGHT */}
       <Animated.View
-        // this contains the Header, Banner, and Tabs. They all slide up together clamped at SLIDE_HEIGHT
         style={{
           position: 'absolute',
           top: 0,

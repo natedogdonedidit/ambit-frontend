@@ -23,6 +23,8 @@ import StoryFooter from 'library/components/stories/StoryFooter';
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import VIEWED_STORY_ITEM_MUTATION from 'library/mutations/VIEWED_STORY_ITEM_MUTATION';
+import LIKE_STORYITEM_MUTATION from 'library/mutations/LIKE_STORYITEM_MUTATION';
+import UNLIKE_STORYITEM_MUTATION from 'library/mutations/UNLIKE_STORYITEM_MUTATION';
 import { StoryItemFragment } from 'library/queries/_fragments';
 import { STORY_IMAGE_DURATION } from 'styles/constants';
 
@@ -43,9 +45,9 @@ const StoryCard = ({
   // option 5: pass in firstStory, with type = 'Profile'. First story will play followed by more from this user
 
   // moreType: 'Home', 'Topic', 'User', null means only show a single story
+  const { width } = Dimensions.get('window');
   const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
-  const { width } = Dimensions.get('window');
 
   const videoRef = useRef(null);
 
@@ -65,6 +67,8 @@ const StoryCard = ({
   // const [storyQIndex, setStoryQIndex] = useState(0);
   // const [activeStory, setActiveStory] = useState(story || intro);
   const [activeIndex, setActiveIndex] = useState(newestUnseen > 0 ? newestUnseen : 0);
+  const [isLiked, setIsLiked] = useState(story.items[newestUnseen > 0 ? newestUnseen : 0].likedByMe);
+  const [likesCount, setLikesCount] = useState(story.items[newestUnseen > 0 ? newestUnseen : 0].likesCount);
   const [itemDuration, setItemDuration] = useState(10); // in seconds
   const [videoStarted, setVideoStarted] = useState(false);
   const [isBuffering, setIsBuffering] = useState(true);
@@ -83,6 +87,39 @@ const StoryCard = ({
   const isIntro = story.type === 'INTRO';
 
   // MUTATIONS
+  const [likeStoryItem, { loading: loadingLike }] = useMutation(LIKE_STORYITEM_MUTATION, {
+    variables: {
+      storyItemId: activeItem.id,
+    },
+    update: (proxy, { data: dataReturned }) => {
+      client.writeFragment({
+        id: `StoryItem:${activeItem.id}`,
+        fragment: StoryItemFragment,
+        fragmentName: 'StoryItemFragment',
+        data: {
+          ...dataReturned.likeStoryItem,
+        },
+      });
+    },
+  });
+
+  const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UNLIKE_STORYITEM_MUTATION, {
+    variables: {
+      storyItemId: activeItem.id,
+    },
+    update: (proxy, { data: dataReturned }) => {
+      client.writeFragment({
+        id: `StoryItem:${activeItem.id}`,
+        fragment: StoryItemFragment,
+        fragmentName: 'StoryItemFragment',
+        data: {
+          ...dataReturned.unlikeStoryItem,
+        },
+      });
+    },
+    onError: () => null,
+  });
+
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
     // onCompleted: () => {},
     onError: (error) => {
@@ -135,6 +172,11 @@ const StoryCard = ({
       }
     },
   });
+
+  useEffect(() => {
+    setIsLiked(activeItem.likedByMe);
+    setLikesCount(activeItem.likesCount);
+  }, [story.items, activeIndex]);
 
   // anytime the story item changes, add the user to viewed list
   useEffect(() => {
@@ -269,6 +311,17 @@ const StoryCard = ({
   };
 
   // CUSTOM FUNCTIONS
+  const handleLike = async () => {
+    if (isLiked && !loadingUnlike && !loadingLike) {
+      setIsLiked(false);
+      setLikesCount(likesCount - 1);
+      unlikeStoryItem();
+    } else if (!isLiked && !loadingLike && !loadingUnlike) {
+      setIsLiked(true);
+      setLikesCount(likesCount + 1);
+      likeStoryItem();
+    }
+  };
 
   const incrementIndex = () => {
     if (isIntro) {
@@ -490,6 +543,9 @@ const StoryCard = ({
           handleMoreButton={handleMoreButton}
           favoriteTopics={favoriteTopics}
           setDisableOutterScroll={setDisableOutterScroll}
+          handleLike={handleLike}
+          isLiked={isLiked}
+          likesCount={likesCount}
         />
       </View>
     </SafeAreaView>

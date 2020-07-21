@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
@@ -9,6 +9,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference, isCustomGoalTest } from 'library/utils';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
+import UNLIKE_POST_MUTATION from 'library/mutations/UNLIKE_POST_MUTATION';
 import { BasicPost } from 'library/queries/_fragments';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -23,7 +24,6 @@ import Location from 'library/components/post/Location';
 import GoalStatus from 'library/components/post/GoalStatus';
 import { UserContext } from 'library/utils/UserContext';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
-import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
 import EDIT_GOALSTATUS_MUTATION from 'library/mutations/EDIT_GOALSTATUS_MUTATION';
 
 const Post = ({
@@ -37,6 +37,9 @@ const Post = ({
 }) => {
   // HOOKS
   const { currentUserId } = useContext(UserContext);
+  const [isLiked, setIsLiked] = useState(post.likedByMe); // this is the source of truth
+  const [likesCount, setLikesCount] = useState(post.likesCount); // this is the source of truth
+
   const client = useApolloClient();
 
   // MUTATIONS - like, share, delete
@@ -44,26 +47,34 @@ const Post = ({
     variables: {
       postId: post.id,
     },
-    refetchQueries: {},
-    optimisticResponse: {
-      __typename: 'Mutation',
-      likePost: {
-        id: post.id,
-        __typename: 'Post',
-        ...post,
-        likedByMe: !post.likedByMe,
-        likesCount: post.likedByMe ? post.likesCount - 1 || null : post.likesCount + 1,
-      },
+    update: (proxy, { data: dataReturned }) => {
+      client.writeFragment({
+        id: `Post:${post.id}`,
+        fragment: BasicPost,
+        fragmentName: 'BasicPost',
+        data: {
+          // __typename: 'Post',
+          ...dataReturned.likePost,
+        },
+      });
     },
-    onCompleted: () => {
-      // closeModal();
+  });
+
+  const [unlikePost, { loading: loadingUnlike }] = useMutation(UNLIKE_POST_MUTATION, {
+    variables: {
+      postId: post.id,
     },
-    onError: (error) => {
-      console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to like this post. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+    update: (proxy, { data: dataReturned }) => {
+      client.writeFragment({
+        id: `Post:${post.id}`,
+        fragment: BasicPost,
+        fragmentName: 'BasicPost',
+        data: {
+          ...dataReturned.unlikePost,
+        },
+      });
     },
+    onError: () => null,
   });
 
   // DELETE POST MUTATION
@@ -88,19 +99,34 @@ const Post = ({
       ]),
   });
 
+  // when cache update comes in...update state!
+  useEffect(() => {
+    setIsLiked(post.likedByMe);
+    setLikesCount(post.likesCount);
+  }, [post.likedByMe, post.likesCount]);
+
   // VARIABLES
   const containsMedia = post.video || post.images.length > 0;
-  // const containsTopics = !!post.subField || !!post.topics;
   const isMyPost = currentUserId === post.owner.id;
 
   // for dates
   const createdAt = new Date(post.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, createdAt);
   const formatedDate = format(createdAt, 'M/d/yy h:mm a');
-  // for goal remaining time
-  // const lastUpdated = new Date(post.lastUpdated);
 
   // CUSTOM FUNCTIONS
+  const handleLike = async () => {
+    if (isLiked && !loadingUnlike && !loadingLike) {
+      setIsLiked(false);
+      setLikesCount(likesCount - 1);
+      unlikePost();
+    } else if (!isLiked && !loadingLike && !loadingUnlike) {
+      setIsLiked(true);
+      setLikesCount(likesCount + 1);
+      likePost();
+    }
+  };
+
   const handleDelete = () => {
     deletePost({
       optimisticResponse: {
@@ -257,10 +283,6 @@ const Post = ({
     navigation.navigate('SelectorModal', { options });
   };
 
-  const handleLike = () => {
-    if (!loadingLike) likePost();
-  };
-
   const renderMedia = () => {
     if (post.images.length === 1) {
       return (
@@ -405,7 +427,7 @@ const Post = ({
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
-              hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
+              hitSlop={{ top: 5, left: 0, bottom: 20, right: 20 }}
             >
               <View style={styles.name}>
                 <Text style={{ ...defaultStyles.largeSemibold }} numberOfLines={1}>
@@ -475,8 +497,10 @@ const Post = ({
               </View>
               <View style={styles.likesRow}>
                 <View style={{ flexDirection: 'row' }}>
-                  {!!post.likesCount && (
-                    <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{post.likesCount} Likes</Text>
+                  {!!likesCount && (
+                    <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>
+                      {likesCount === 0 ? null : `${likesCount} Like${likesCount > 1 ? 's' : ''}`}
+                    </Text>
                   )}
                   {!!post.sharesCount && (
                     <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>{post.sharesCount} Shares</Text>
@@ -487,7 +511,7 @@ const Post = ({
                     <Comment onPress={() => navigation.navigate('Comment', { post })} />
                   </View>
                   <View style={{ paddingLeft: 30 }}>
-                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                   </View>
                   <View style={{ paddingLeft: 30 }}>
                     <Share onPress={() => null} />
@@ -504,8 +528,8 @@ const Post = ({
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
                   </View>
                   <View style={styles.button}>
-                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount}</Text>
+                    <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount === 0 ? null : likesCount}</Text>
                   </View>
                   <View style={styles.button}>
                     <Share onPress={() => null} />

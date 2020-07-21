@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -7,56 +7,57 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { getTopicFromID } from 'library/utils';
 
-const StoryFooter = ({ story, activeIndex, isMyPost, handleMoreButton, favoriteTopics, setDisableOutterScroll }) => {
+const StoryFooter = ({
+  navigation,
+  story,
+  activeIndex,
+  isMyPost,
+  handleMoreButton,
+  favoriteTopics,
+  setDisableOutterScroll,
+  handleLike,
+  isLiked,
+  likesCount,
+}) => {
   const [topicsSorted, setTopicsSorted] = useState([]);
 
   const { owner, items, title, type, topics } = story;
   const activeItem = { ...items[activeIndex] };
+  const { intro } = owner;
+  // const hasIntro = type === 'INTRO' ? true : intro.items.length > 0;
+  const showIntroButton = type !== 'INTRO' && intro.items.length > 0;
 
   const { stories, views, plays, text, link } = activeItem;
 
-  const indexOfProject = stories ? stories.findIndex((s) => s.type === 'PROJECT') : 0;
-  const project = stories && indexOfProject !== -1 ? stories[indexOfProject] : null;
-  const soloStory = stories ? stories.find((s) => s.type === 'SOLO') : false;
-
   useEffect(() => {
-    let topicsToShow = [];
+    if (type === 'PROJECT' && topics && topics.length > 0) {
+      // sort the topics based on favoriteTopics array passed in
+      const sortTopics = (a, b) => {
+        const indexOfA = favoriteTopics.indexOf(a.topicID);
+        const indexOfB = favoriteTopics.indexOf(b.topicID);
 
-    if (project) {
-      topicsToShow = project.topics ? [...project.topics] : [];
-    } else if (soloStory) {
-      topicsToShow = soloStory.topics ? [...soloStory.topics] : [];
-    } else if (topics) {
-      topicsToShow = [...topics];
-    }
-
-    // sort the topics based on favoriteTopics array passed in
-    const sortTopics = (a, b) => {
-      const indexOfA = favoriteTopics.indexOf(a.topicID);
-      const indexOfB = favoriteTopics.indexOf(b.topicID);
-
-      // if a is a favorite but not b
-      if (indexOfA >= 0 && indexOfB === -1) {
-        return -1;
-      }
-      // if b is a favorite but not a
-      if (indexOfB >= 0 && indexOfA === -1) {
-        return 1;
-      }
-      // if both are favorites
-      if (indexOfA >= 0 && indexOfB >= 0) {
-        if (indexOfA < indexOfB) {
+        // if a is a favorite but not b
+        if (indexOfA >= 0 && indexOfB === -1) {
           return -1;
         }
-        return 1;
-      }
-      // if neither are favorites
-      return -1;
-    };
-
-    const topicsSortedNew = topicsToShow.sort(sortTopics);
-    setTopicsSorted(topicsSortedNew);
-  }, [story, favoriteTopics, activeIndex]);
+        // if b is a favorite but not a
+        if (indexOfB >= 0 && indexOfA === -1) {
+          return 1;
+        }
+        // if both are favorites
+        if (indexOfA >= 0 && indexOfB >= 0) {
+          if (indexOfA < indexOfB) {
+            return -1;
+          }
+          return 1;
+        }
+        // if neither are favorites
+        return -1;
+      };
+      const topicsSortedNew = topics.sort(sortTopics);
+      setTopicsSorted(topicsSortedNew);
+    }
+  }, [story.topics, favoriteTopics]);
 
   const renderTopics = () => {
     const hasTopics = topicsSorted.length > 0;
@@ -78,24 +79,6 @@ const StoryFooter = ({ story, activeIndex, isMyPost, handleMoreButton, favoriteT
             style={{ flexDirection: 'row' }}
           >
             <>
-              {owner.location && (
-                <View
-                  style={{
-                    height: 26,
-                    paddingHorizontal: 6,
-                    borderRadius: 6,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: 'rgba(255,255,255,0.4)',
-                    marginRight: 5,
-                    ...defaultStyles.shadowButton,
-                  }}
-                >
-                  <Icon name="map-marker-alt" solid size={10} color={colors.white} style={{ paddingRight: 6 }} />
-                  <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{owner.location}</Text>
-                </View>
-              )}
               {hasTopics &&
                 topicsSorted.map((topic) => {
                   const { icon, color } = getTopicFromID(topic.topicID);
@@ -122,6 +105,24 @@ const StoryFooter = ({ story, activeIndex, isMyPost, handleMoreButton, favoriteT
                     </View>
                   );
                 })}
+              {owner.location && (
+                <View
+                  style={{
+                    height: 26,
+                    paddingHorizontal: 6,
+                    borderRadius: 6,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: 'rgba(255,255,255,0.4)',
+                    marginRight: 5,
+                    ...defaultStyles.shadowButton,
+                  }}
+                >
+                  <Icon name="map-marker-alt" solid size={10} color={colors.white} style={{ paddingRight: 6, paddingLeft: 2 }} />
+                  <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{owner.location}</Text>
+                </View>
+              )}
             </>
           </TouchableOpacity>
         </ScrollView>
@@ -135,16 +136,45 @@ const StoryFooter = ({ story, activeIndex, isMyPost, handleMoreButton, favoriteT
   const renderActions = () => {
     return (
       <View style={{ paddingRight: 8, paddingBottom: 55, paddingLeft: 10, alignItems: 'center' }}>
-        <View style={styles.sideButtonCircle}>
-          <Icon name="heart" solid size={20} color="white" style={{ paddingTop: 2 }} />
-          {!!plays && <Text style={styles.sideButtonText}>{plays}</Text>}
-        </View>
-        <View style={styles.sideButtonCircle}>
+        <TouchableOpacity
+          onPress={handleLike}
+          style={styles.sideButtonCircle}
+          hitSlop={{ top: 15, left: 15, bottom: 15, right: 15 }}
+        >
+          <Icon name="heart" solid size={20} color={isLiked ? colors.peach : colors.white} style={{ paddingTop: 2 }} />
+          <Text style={styles.sideButtonText}>{likesCount === 0 ? null : likesCount}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => null}
+          style={styles.sideButtonCircle}
+          hitSlop={{ top: 15, left: 15, bottom: 15, right: 15 }}
+        >
           <Icon name="share" solid size={20} color="white" style={{ paddingTop: 1 }} />
-        </View>
-        <View style={styles.sideButtonCircle}>
-          <Icon name={link ? 'link' : 'user'} solid size={20} color="white" style={{ paddingTop: 1 }} />
-        </View>
+          <Text style={styles.sideButtonText}>12</Text>
+        </TouchableOpacity>
+
+        {showIntroButton ? (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('IntroModal', {
+                intro,
+              });
+            }}
+            style={styles.sideButtonCircle}
+            hitSlop={{ top: 15, left: 15, bottom: 15, right: 15 }}
+          >
+            <Image source={require('../../assets/images/dueces.png')} style={{ width: 22, height: 22 }} />
+            <Text style={styles.sideButtonText}>{intro.items[0].likesCount === 0 ? null : intro.items[0].likesCount}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Profile', { profileId: owner.id })}
+            style={styles.sideButtonCircle}
+            hitSlop={{ top: 15, left: 15, bottom: 15, right: 15 }}
+          >
+            <Icon name={link ? 'link' : 'user'} solid size={20} color="white" style={{ paddingTop: 1 }} />
+          </TouchableOpacity>
+        )}
       </View>
     );
   };
