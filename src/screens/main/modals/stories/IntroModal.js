@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, StatusBar, Alert, ScrollView, Dimensions, FlatList, Text } from 'react-native';
 
-import StoryCard from 'library/components/stories/StoryCard';
+import Story from 'library/components/stories/Story';
 
 // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
 // option 2: pass in an intro. Intro will play, then modal will close.
@@ -17,7 +17,7 @@ const IntroModal = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />
-      <StoryCard
+      <Story
         navigation={navigation}
         story={intro}
         storyKey={1}

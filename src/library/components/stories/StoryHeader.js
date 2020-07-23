@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import React, { useMemo } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
@@ -8,22 +7,35 @@ import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
-  const [timeOfDay] = useState(new Date());
-  const { items } = story;
-  const activeItem = { ...items[activeIndex] };
+// ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
+function areEqual(prevProps, nextProps) {
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  */
 
-  const { owner } = story;
+  if (prevProps.activeItem === nextProps.activeItem) {
+    return true;
+  }
+
+  return false;
+}
+
+function StoryHeader({ owner, type, activeItem, navigation }) {
+  // MEMO VALUES
+  const { timeDiff, period } = useMemo(() => {
+    const createdAt = new Date(activeItem.createdAt);
+    const timeOfDay = new Date();
+    return timeDifference(timeOfDay, createdAt);
+  }, [activeItem]);
 
   if (!owner) return null;
-
-  const createdAt = new Date(activeItem.createdAt);
-  const { timeDiff, period } = timeDifference(timeOfDay, createdAt);
 
   return (
     <View style={{ ...styles.absoluteTop, top: 18 }}>
       <View style={styles.header}>
-        <ProfilePic size="small" user={owner} navigation={navigation} enableClick={story.type !== 'INTRO'} enableStory={false} />
+        <ProfilePic size="small" user={owner} navigation={navigation} enableClick={type !== 'INTRO'} enableStory={false} />
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Profile', { profileId: owner.id });
@@ -44,22 +56,8 @@ const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
                 {timeDiff} {period}
               </Text>
             </View>
-            {/* <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
-              {owner.location && (
-                <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>{owner.location}</Text>
-              )}
-            </View> */}
           </View>
         </TouchableOpacity>
-        {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ ...defaultStyles.hugeBold, color: 'white' }}>{story.title || ''}</Text>
-          {story.title && (
-            <Icon name="circle" solid size={2} color={colors.white} style={{ alignSelf: 'center', paddingHorizontal: 5 }} />
-          )}
-          <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>
-            {timeDiff} {period}
-          </Text>
-        </View> */}
       </View>
       <TouchableOpacity
         style={{
@@ -80,7 +78,7 @@ const StoryHeader = ({ story, activeIndex, navigation, engagePause }) => {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   absoluteTop: {
@@ -97,4 +95,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StoryHeader;
+export default React.memo(StoryHeader, areEqual);

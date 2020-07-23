@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from 'react';
+import { StyleSheet, View, Text, Image } from 'react-native';
 import Video from 'react-native-video';
 
-import colors from 'styles/colors';
-import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 
-const StoryImage = ({
-  activeItem,
-  videoRef,
-  onProgress,
-  onBuffer,
-  onVideoEnd,
-  isBuffering,
-  paused,
-  onLoad,
-  onLoadStart,
-  onReadyForDisplay,
-}) => {
-  const renderMedia = () => {
+function StoryImage({ activeItem, videoRef, isBuffering, paused, incrementIndex, setCurrentTime, setIsBuffering }) {
+  function onProgress(data) {
+    setCurrentTime(data.currentTime);
+  }
+
+  function onBuffer(data) {
+    console.log('on buffering', data.isBuffering);
+    setIsBuffering(data.isBuffering);
+  }
+
+  function onEnd() {
+    console.log('on video end');
+    incrementIndex();
+  }
+
+  function renderMedia() {
     const { type, url } = activeItem;
 
     if (type === 'IMAGE') {
@@ -32,19 +32,16 @@ const StoryImage = ({
           ref={videoRef}
           style={styles.fill}
           resizeMode="cover"
-          progressUpdateInterval={500}
+          progressUpdateInterval={50}
           onProgress={onProgress}
-          onLoad={onLoad}
-          onLoadStart={onLoadStart}
-          onReadyForDisplay={onReadyForDisplay}
           onBuffer={onBuffer}
-          onEnd={onVideoEnd}
+          onEnd={onEnd}
           paused={paused}
         />
       );
     }
     return <Text>Oopsss</Text>;
-  };
+  }
 
   return (
     <View style={StyleSheet.absoluteFill}>
@@ -52,7 +49,7 @@ const StoryImage = ({
       {isBuffering && <Loader loading={isBuffering} backgroundColor="transparent" color="white" size="small" />}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   fill: {
@@ -62,4 +59,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StoryImage;
+export default React.memo(StoryImage);

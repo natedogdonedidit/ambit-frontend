@@ -1,14 +1,10 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import { StyleSheet, View, StatusBar, Alert, ScrollView, Dimensions, FlatList, Text } from 'react-native';
-import { useLazyQuery, useQuery } from '@apollo/react-hooks';
-
-// import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
-import { UserContext } from 'library/utils/UserContext';
+import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, View, StatusBar, Dimensions, FlatList } from 'react-native';
+import { useLazyQuery } from '@apollo/react-hooks';
 
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
-import StoryCard from 'library/components/stories/StoryCard';
+import Story from 'library/components/stories/Story';
 import Loader from 'library/components/UI/Loader';
 
 // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
@@ -20,7 +16,7 @@ import Loader from 'library/components/UI/Loader';
 // moreType: 'Home', 'Topic', 'User', null means only show a single story
 
 const StoryModal = ({ navigation, route }) => {
-  const { story = null, intro = null, moreType = null, topicIDtoSearch } = route.params;
+  const { story = null, moreType = null, topicIDtoSearch } = route.params;
   const { width } = Dimensions.get('window');
   const storyFlatlist = useRef();
 
@@ -28,57 +24,35 @@ const StoryModal = ({ navigation, route }) => {
   const [favoriteTopics, setFavoriteTopics] = useState(topicIDtoSearch ? [topicIDtoSearch] : []);
 
   // STATE
-  const [storyQIndex, setStoryQIndex] = useState(0);
-  const [storyQ, setStoryQ] = useState(!moreType ? [story] : []);
-
-  // VARIABLES
+  const [storyQ, setStoryQ] = useState([story]);
+  const [activeStoryIndex, setActiveStoryIndex] = useState(0);
 
   // QUERY TO GET USERS TOPICS
-  const { data } = useQuery(CURRENT_USER_TOPICS);
-  const { myTopics } = data || {};
-
-  // EFFECTS
-  useEffect(() => {
-    if (moreType === 'Home') {
-      // console.log('gettingStoriesHome');
-      getStoriesHome();
-    }
-
-    if (moreType === 'Topic') {
-      getStoriesTopic();
-    }
-  }, [moreType]);
-
+  // this if for getting the favorite topics for sorting...UNCOMMENT LATER
+  // const { data } = useQuery(CURRENT_USER_TOPICS);
+  // const { myTopics } = data || {};
   // effect compiles the list of favoriteTopics
-  useEffect(() => {
-    let newFavoriteTopics = topicIDtoSearch ? [topicIDtoSearch] : [];
-    if (myTopics) {
-      if (myTopics.topicsFocus.length > 0) {
-        newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.topicID)];
-      }
-      if (myTopics.topicsInterest.length > 0) {
-        if (newFavoriteTopics === []) {
-          newFavoriteTopics = [...myTopics.topicsInterest.map((top) => top.topicID)];
-        } else {
-          // only add topics that dont already exist
-          myTopics.topicsInterest.forEach((topic) => {
-            if (newFavoriteTopics.findIndex((favTopicID) => favTopicID === topic.topicID) === -1) {
-              newFavoriteTopics = [...newFavoriteTopics, topic.topicID];
-            }
-          });
-        }
-      }
-    }
-
-    setFavoriteTopics([...newFavoriteTopics]);
-  }, [myTopics]);
-
-  // scrolls to index when story index changes
-  useEffect(() => {
-    if (storyQ.length > 0) {
-      storyFlatlist.current.scrollToIndex({ index: storyQIndex, viewPosition: 0.5 });
-    }
-  }, [storyQIndex]);
+  // useEffect(() => {
+  //   let newFavoriteTopics = topicIDtoSearch ? [topicIDtoSearch] : [];
+  //   if (myTopics) {
+  //     if (myTopics.topicsFocus.length > 0) {
+  //       newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.topicID)];
+  //     }
+  //     if (myTopics.topicsInterest.length > 0) {
+  //       if (newFavoriteTopics === []) {
+  //         newFavoriteTopics = [...myTopics.topicsInterest.map((top) => top.topicID)];
+  //       } else {
+  //         // only add topics that dont already exist
+  //         myTopics.topicsInterest.forEach((topic) => {
+  //           if (newFavoriteTopics.findIndex((favTopicID) => favTopicID === topic.topicID) === -1) {
+  //             newFavoriteTopics = [...newFavoriteTopics, topic.topicID];
+  //           }
+  //         });
+  //       }
+  //     }
+  //   }
+  //   setFavoriteTopics([...newFavoriteTopics]);
+  // }, [myTopics]);
 
   // QUERIES - to get next stories
   const [
@@ -114,14 +88,38 @@ const StoryModal = ({ navigation, route }) => {
     notifyOnNetworkStatusChange: true,
   });
 
-  // console.log(dataStoriesHome);
-
   const refetchingStoriesHome = networkStatusStoriesHome === 4;
   const fetchingMoreStoriesHome = networkStatusStoriesHome === 3;
   const loadingStoriesHome = networkStatusStoriesHome === 1;
 
-  // an array of the stories up next, start with the first story (passed in)
-  // let storyQ = story ? [story] : [];
+  // EFFECTS
+  useEffect(() => {
+    if (moreType === 'Home') {
+      getStoriesHome();
+    }
+
+    if (moreType === 'Topic') {
+      getStoriesTopic();
+    }
+  }, [moreType]);
+
+  // scrolls to index when story index changes
+  useEffect(() => {
+    if (storyQ.length > 0) {
+      storyFlatlist.current.scrollToIndex({ index: activeStoryIndex, viewPosition: 0.5 });
+    }
+  }, [activeStoryIndex]);
+
+  // used to add home stories to Q
+  useEffect(() => {
+    if (moreType === 'Home' && !loadingStoriesHome && dataStoriesHome) {
+      if (dataStoriesHome.storiesHome) {
+        // remove the story passed in from the query results
+        const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id && s.items.length > 0);
+        setStoryQ([story, ...storiesToAdd]);
+      }
+    }
+  }, [loadingStoriesHome, dataStoriesHome]);
 
   // used to add topic stories to Q
   useEffect(() => {
@@ -135,42 +133,31 @@ const StoryModal = ({ navigation, route }) => {
     }
   }, [loadingStoriesTopic, dataStoriesTopic]);
 
-  // used to add home stories to Q
-  useEffect(() => {
-    if (moreType === 'Home' && !loadingStoriesHome && dataStoriesHome) {
-      if (dataStoriesHome.storiesHome) {
-        // remove the story passed in from the query results
-        const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id && s.items.length > 0);
-        setStoryQ([story, ...storiesToAdd]);
-      }
-    }
-  }, [loadingStoriesHome, dataStoriesHome]);
-
   // CUSTOM FUNCTIONS
-  const goToPrevStory = () => {
-    setStoryQIndex((prevState) => prevState - 1);
-  };
+  function goToPrevStory() {
+    setActiveStoryIndex((prevState) => prevState - 1);
+  }
 
-  const goToNextStory = () => {
-    setStoryQIndex((prevState) => prevState + 1);
-  };
+  function goToNextStory() {
+    setActiveStoryIndex((prevState) => prevState + 1);
+  }
 
-  const tryGoToNextStory = () => {
-    // console.log('going to next story', storyQIndex)
-    if (storyQIndex < storyQ.length - 1) {
+  function tryGoToNextStory() {
+    console.log('going to next story', activeStoryIndex, storyQ.length);
+    if (activeStoryIndex < storyQ.length - 1) {
       goToNextStory();
     } else {
       // if there are no more stories in the Q, and there is no intro to play...then close the modal
       navigation.goBack();
     }
-  };
+  }
 
-  const tryGoToPrevStory = () => {
-    // console.log('going to prev story', storyQIndex)
-    if (storyQIndex > 0) {
+  function tryGoToPrevStory() {
+    // console.log('going to prev story', activeStoryIndex)
+    if (activeStoryIndex > 0) {
       goToPrevStory();
     }
-  };
+  }
 
   const handleSwipe = ({ nativeEvent }) => {
     const { contentOffset, layoutMeasurement } = nativeEvent;
@@ -179,8 +166,8 @@ const StoryModal = ({ navigation, route }) => {
     const newStoryQIndex = Math.round(contentOffset.x / layoutMeasurement.width);
 
     // compare newIndex to previous index and make sure within bounds
-    if (newStoryQIndex !== storyQIndex) {
-      if (newStoryQIndex > storyQIndex) {
+    if (newStoryQIndex !== activeStoryIndex) {
+      if (newStoryQIndex > activeStoryIndex) {
         tryGoToNextStory();
       } else {
         tryGoToPrevStory();
@@ -197,6 +184,7 @@ const StoryModal = ({ navigation, route }) => {
   }
 
   // console.log(storyQ);
+  // console.log(storyQ.length);
 
   return (
     <View style={styles.container}>
@@ -204,12 +192,15 @@ const StoryModal = ({ navigation, route }) => {
       <FlatList
         ref={storyFlatlist}
         horizontal
+        initialNumToRender={1}
+        windowSize={3}
+        maxToRenderPerBatch={1}
+        // removeClippedSubviews
         snapToAlignment="start"
         snapToInterval={width}
         decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={100}
-        // initialNumToRender={2}
         bounces={false}
         disableIntervalMomentum
         disableScrollViewPanResponder
@@ -217,19 +208,15 @@ const StoryModal = ({ navigation, route }) => {
         data={storyQ}
         scrollEnabled={!disableOutterScroll}
         renderItem={({ item, index }) => {
-          // console.log(index);
           // console.log(index, item.id);
-          // if (item.id === 'ckcqk0zgf203x09730r9mlygp') {
-          //   console.log(item);
-          // }
+          const storyIsActive = index === activeStoryIndex;
+
           return (
-            <StoryCard
-              // key={`${index}${storyKey}`} // for forcing a re-render. this isnt so good bc then cant save activeIndex of that story
-              key={index}
+            <Story
+              key={item.id}
               navigation={navigation}
               story={item}
-              // storyKey={storyKey}
-              storyIsActive={index === storyQIndex}
+              storyIsActive={storyIsActive}
               tryGoToPrevStory={tryGoToPrevStory}
               tryGoToNextStory={tryGoToNextStory}
               favoriteTopics={favoriteTopics}
@@ -256,3 +243,55 @@ const styles = StyleSheet.create({
 });
 
 export default StoryModal;
+
+// fill the storyQ
+// useEffect(() => {
+//   fillStoryQ();
+// }, [activeStoryIndex, moreType, loadingStoriesHome, dataStoriesHome, loadingStoriesTopic, dataStoriesTopic]);
+
+// const fillStoryQ = () => {
+//   const numStoriesDesireToAdd = activeStoryIndex + 1 + STORYQ_BUFFER - storyQ.length;
+
+//   // first, check if we need to add some stories
+//   if (numStoriesDesireToAdd > 0) {
+//     // for HOME stories
+//     if (moreType === 'Home' && dataStoriesHome && dataStoriesHome.storiesHome) {
+//       // filter the Query results to only stories not alraedy in the Q
+//       const storiesAvailableToAdd = dataStoriesHome.storiesHome.filter((s) => {
+//         const alreadyInQ = storyQ.findIndex((st) => st.id === s.id) >= 0; // if this returns >= 0 it's already in Q
+//         return !alreadyInQ && s.items.length > 0;
+//       });
+
+//       if (storiesAvailableToAdd.length > 0) {
+//         // calculate the number of stories we need to add to storyQ (can't be more than length of storiesAvailableToAdd)
+//         const numStoriesToAdd = Math.min(storiesAvailableToAdd.length, numStoriesDesireToAdd);
+
+//         // grab the stories we want to add from storiesAvailableToAdd
+//         const storiesToAdd = storiesAvailableToAdd.splice(0, numStoriesToAdd);
+
+//         // add the new stories to the Q
+//         setStoryQ((prev) => [...prev, ...storiesToAdd]);
+//       }
+//     }
+
+//     // for TOPIC stories
+//     if (moreType === 'Topics' && dataStoriesTopic && dataStoriesTopic.storiesTopic) {
+//       // filter the Query results to only stories not alraedy in the Q
+//       const storiesAvailableToAdd = dataStoriesTopic.storiesTopic.filter((s) => {
+//         const alreadyInQ = storyQ.findIndex((st) => st.id === s.id) >= 0; // if this returns >= 0 it's already in Q
+//         return !alreadyInQ && s.items.length > 0;
+//       });
+
+//       if (storiesAvailableToAdd.length > 0) {
+//         // calculate the number of stories we need to add to storyQ (can't be more than length of storiesAvailableToAdd)
+//         const numStoriesToAdd = Math.min(storiesAvailableToAdd.length, numStoriesDesireToAdd);
+
+//         // grab the stories we want to add from storiesAvailableToAdd
+//         const storiesToAdd = storiesAvailableToAdd.splice(0, numStoriesToAdd);
+
+//         // add the new stories to the Q
+//         setStoryQ((prev) => [...prev, ...storiesToAdd]);
+//       }
+//     }
+//   }
+// };

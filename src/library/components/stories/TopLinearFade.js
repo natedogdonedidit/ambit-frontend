@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
-import colors from 'styles/colors';
-import defaultStyles from 'styles/defaultStyles';
-
-const TopLinearFade = ({ disable = false }) => {
+function TopLinearFade({ disable = false }) {
   const insets = useSafeArea();
 
   if (disable) return null;
@@ -19,7 +16,7 @@ const TopLinearFade = ({ disable = false }) => {
       style={{ ...styles.linearGradientTop, height: insets.top + 160 }}
     />
   );
-};
+}
 
 const styles = StyleSheet.create({
   linearGradientTop: {
@@ -31,4 +28,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopLinearFade;
+export default React.memo(TopLinearFade);

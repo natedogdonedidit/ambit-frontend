@@ -6,28 +6,88 @@ import Feather from 'react-native-vector-icons/Feather';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { getTopicFromID } from 'library/utils';
+import { useMutation } from 'react-apollo';
+import LIKE_STORYITEM_MUTATION from 'library/mutations/LIKE_STORYITEM_MUTATION';
+import UNLIKE_STORYITEM_MUTATION from 'library/mutations/UNLIKE_STORYITEM_MUTATION';
+import { StoryItemFragment } from 'library/queries/_fragments';
 
-const StoryFooter = ({
+// ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
+function areEqual(prevProps, nextProps) {
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  */
+
+  if (prevProps.itemIsActive === nextProps.itemIsActive) {
+    return true;
+  }
+
+  return false;
+}
+
+function StoryFooter({
   navigation,
   story,
-  activeIndex,
+  item,
+  itemIsActive,
   isMyPost,
   handleMoreButton,
   favoriteTopics,
   setDisableOutterScroll,
-  handleLike,
-  isLiked,
-  likesCount,
-}) => {
-  const [topicsSorted, setTopicsSorted] = useState([]);
+}) {
+  // console.log(item.likedByMe, item.text);
 
-  const { owner, items, title, type, topics } = story;
-  const activeItem = { ...items[activeIndex] };
+  const [topicsSorted, setTopicsSorted] = useState([]);
+  const [isLiked, setIsLiked] = useState(item.likedByMe);
+  const [likesCount, setLikesCount] = useState(item.likesCount);
+  // console.log(isLiked, item.text);
+
+  const { owner, title, type, topics } = story;
   const { intro } = owner;
-  // const hasIntro = type === 'INTRO' ? true : intro.items.length > 0;
   const showIntroButton = type !== 'INTRO' && intro.items.length > 0;
 
-  const { stories, views, plays, text, link } = activeItem;
+  const { id, plays, text, link } = item;
+
+  // MUTATIONS
+  const [likeStoryItem, { loading: loadingLike }] = useMutation(LIKE_STORYITEM_MUTATION, {
+    variables: {
+      storyItemId: id,
+    },
+    // update: (proxy, { data: dataReturned }) => {
+    //   client.writeFragment({
+    //     id: `StoryItem:${id}`,
+    //     fragment: StoryItemFragment,
+    //     fragmentName: 'StoryItemFragment',
+    //     data: {
+    //       ...dataReturned.likeStoryItem,
+    //     },
+    //   });
+    // },
+  });
+
+  const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UNLIKE_STORYITEM_MUTATION, {
+    variables: {
+      storyItemId: id,
+    },
+    // update: (proxy, { data: dataReturned }) => {
+    //   client.writeFragment({
+    //     id: `StoryItem:${id}`,
+    //     fragment: StoryItemFragment,
+    //     fragmentName: 'StoryItemFragment',
+    //     data: {
+    //       ...dataReturned.unlikeStoryItem,
+    //     },
+    //   });
+    // },
+    onError: () => null,
+  });
+
+  // useEffect(() => {
+  //   console.log('setting to:', item.likedByMe, isLiked, item.text);
+  //   setIsLiked(item.likedByMe);
+  //   setLikesCount(item.likesCount);
+  // }, [item]);
 
   useEffect(() => {
     if (type === 'PROJECT' && topics && topics.length > 0) {
@@ -59,6 +119,25 @@ const StoryFooter = ({
     }
   }, [story.topics, favoriteTopics]);
 
+  // if the item isn't active...don't render anything. But this will allow us to keep our state (isLiked, likeCount)
+  if (!itemIsActive) {
+    return null;
+  }
+
+  // FUNCTIONS
+  const handleLike = async () => {
+    if (isLiked && !loadingUnlike && !loadingLike) {
+      setIsLiked(false);
+      setLikesCount(likesCount - 1);
+      unlikeStoryItem();
+    } else if (!isLiked && !loadingLike && !loadingUnlike) {
+      setIsLiked(true);
+      setLikesCount(likesCount + 1);
+      likeStoryItem();
+    }
+  };
+
+  // RENDER FUNCTIONS
   const renderTopics = () => {
     const hasTopics = topicsSorted.length > 0;
 
@@ -322,7 +401,7 @@ const StoryFooter = ({
       <View style={styles.sideButtonContainer}>{renderActions()}</View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -372,4 +451,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StoryFooter;
+export default React.memo(StoryFooter, areEqual);

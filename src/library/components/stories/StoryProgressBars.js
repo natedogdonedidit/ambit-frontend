@@ -1,33 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Dimensions, Animated } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import React, { useMemo } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import colors from 'styles/colors';
-import defaultStyles from 'styles/defaultStyles';
+import { STORY_IMAGE_DURATION } from 'styles/constants';
 import ProgressBar from './ProgressBar';
+import ProgressBarStatic from './ProgressBarStatic';
 
-const StoryProgressBars = ({ story, activeIndex, incrementIndex, storyIsActive, isBuffering, paused }) => {
-  const [storyKey, setStoryKey] = useState(1); // used so StoryCard re-renders each time change storyQIndex
-
-  useEffect(() => {
-    // if story goes from active to not active, reset the progress bar by changing the storyKey
-    setStoryKey((prevState) => prevState + 10);
-  }, [storyIsActive]);
+function StoryProgressBars({ items, activeItemIndex, currentTime }) {
+  // get the entire length of the story items added together
+  const storyLength = useMemo(() => {
+    return items.reduce((total, item) => {
+      const itemLength = item.duration || STORY_IMAGE_DURATION;
+      return total + itemLength;
+    }, 0);
+  });
 
   const renderProgressBars = () => {
-    return story.items.map((item, i) => {
-      return (
-        <ProgressBar
-          key={`${item.id}${storyKey}`}
-          i={i}
-          activeIndex={activeIndex}
-          incrementIndex={incrementIndex}
-          storyIsActive={storyIsActive}
-          story={story}
-          isBuffering={isBuffering}
-          paused={paused}
-        />
-      );
+    return items.map((item, i) => {
+      const itemIsActive = activeItemIndex === i;
+      const itemNotPlayed = activeItemIndex < i;
+      const itemHasPlayed = activeItemIndex > i;
+
+      if (itemNotPlayed || itemHasPlayed) {
+        return (
+          <ProgressBarStatic key={item.id} duration={item.duration} storyLength={storyLength} itemHasPlayed={itemHasPlayed} />
+        );
+      }
+
+      if (itemIsActive) {
+        return <ProgressBar key={item.id} duration={item.duration} storyLength={storyLength} currentTime={currentTime} />;
+      }
+
+      return null;
     });
   };
 
@@ -35,7 +38,6 @@ const StoryProgressBars = ({ story, activeIndex, incrementIndex, storyIsActive, 
     <View style={{ ...styles.absoluteTop, top: 8 }}>
       <View
         style={{
-          width: '100%',
           flexDirection: 'row',
           alignItems: 'center',
           paddingLeft: 10,
@@ -47,7 +49,7 @@ const StoryProgressBars = ({ story, activeIndex, incrementIndex, storyIsActive, 
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   absoluteTop: {
@@ -59,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StoryProgressBars;
+export default React.memo(StoryProgressBars);

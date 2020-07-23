@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
-import colors from 'styles/colors';
-import defaultStyles from 'styles/defaultStyles';
-
-const BottomLinearFade = ({ disable = false }) => {
+function BottomLinearFade({ disable = false }) {
   if (disable) return null;
 
   return (
@@ -17,7 +14,7 @@ const BottomLinearFade = ({ disable = false }) => {
       style={styles.linearGradientBottom}
     />
   );
-};
+}
 
 const styles = StyleSheet.create({
   linearGradientBottom: {
@@ -29,4 +26,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BottomLinearFade;
+export default React.memo(BottomLinearFade);

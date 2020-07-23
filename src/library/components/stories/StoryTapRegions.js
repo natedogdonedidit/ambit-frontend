@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from 'react';
+import { StyleSheet, View, TouchableWithoutFeedback } from 'react-native';
 
-import colors from 'styles/colors';
-import defaultStyles from 'styles/defaultStyles';
-
-const StoryTapRegions = ({ decrementIndex, incrementIndex, handleDoubleTap, engagePause, disengagePause }) => {
+function StoryTapRegions({ decrementIndex, incrementIndex, handleDoubleTap, engagePause, disengagePause }) {
   const LONG_TAP_DURATION = 200;
 
   return (
@@ -36,7 +32,7 @@ const StoryTapRegions = ({ decrementIndex, incrementIndex, handleDoubleTap, enga
       </TouchableWithoutFeedback>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -46,4 +42,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StoryTapRegions;
+export default React.memo(StoryTapRegions);
