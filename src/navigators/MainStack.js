@@ -185,14 +185,7 @@ const MainStack = () => {
 
       {/* modals */}
       <Stack.Screen name="StoryModal" component={StoryModal} />
-      <Stack.Screen
-        name="IntroModal"
-        component={IntroModal}
-        // options={{
-        //   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        //   gestureDirection: 'horizontal',
-        // }}
-      />
+      <Stack.Screen name="IntroModal" component={IntroModal} />
       <Stack.Screen name="CameraModal" component={CameraModal} />
       <Stack.Screen
         name="PostToModal"

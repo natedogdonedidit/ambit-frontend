@@ -31,7 +31,7 @@ const HomeStack = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('tabPress', e => {
+    const unsubscribe = navigation.addListener('tabPress', (e) => {
       // Prevent default behavior
 
       // Do something manually
@@ -48,28 +48,28 @@ const HomeStack = ({ navigation, route }) => {
         component={HomeScreen}
         listeners={{
           focus: () => {
-            console.log('User opened Home Screen')
-            analytics.screen('Home Screen')
+            console.log('User opened Home Screen');
+            analytics.screen('Home Screen');
           },
         }}
       />
-      <Stack.Screen 
-        name="Profile" 
+      <Stack.Screen
+        name="Profile"
         component={ProfileScreen}
         listeners={{
           focus: () => {
-            console.log('User opened Profile Screen')
-            analytics.screen('Profile Screen')
+            console.log('User opened Profile Screen');
+            analytics.screen('Profile Screen');
           },
         }}
       />
-      <Stack.Screen 
-        name="Post" 
+      <Stack.Screen
+        name="Post"
         component={PostScreen}
         listeners={{
           focus: () => {
-            console.log('User opened Post Screen')
-            analytics.screen('Post Screen')
+            console.log('User opened Post Screen');
+            analytics.screen('Post Screen');
           },
         }}
       />

@@ -4,19 +4,42 @@ import Video from 'react-native-video';
 
 import Loader from 'library/components/UI/Loader';
 
-function StoryImage({ activeItem, videoRef, isBuffering, paused, incrementIndex, setCurrentTime, setIsBuffering }) {
+function StoryImage({
+  activeItem,
+  videoRef,
+  paused,
+  setPaused,
+  isBuffering,
+  setIsBuffering,
+  incrementIndex,
+  videoStarted,
+  setVideoStarted,
+  storyIsActive,
+}) {
   function onProgress(data) {
-    setCurrentTime(data.currentTime);
+    if (data.currentTime > 0 && !videoStarted) {
+      setVideoStarted(true);
+    }
   }
 
   function onBuffer(data) {
-    console.log('on buffering', data.isBuffering);
-    setIsBuffering(data.isBuffering);
+    if (data.isBuffering && !isBuffering) {
+      setIsBuffering(data.isBuffering);
+    } else if (!data.isBuffering && isBuffering) {
+      setIsBuffering(data.isBuffering);
+    }
   }
 
   function onEnd() {
-    console.log('on video end');
     incrementIndex();
+  }
+
+  function onPlaybackRateChange({ playbackRate }) {
+    if (playbackRate === 0 && !paused) {
+      setPaused(true);
+    } else if (playbackRate > 0 && paused) {
+      setPaused(false);
+    }
   }
 
   function renderMedia() {
@@ -26,13 +49,19 @@ function StoryImage({ activeItem, videoRef, isBuffering, paused, incrementIndex,
       return <Image source={{ uri: url }} style={styles.fill} resizeMode="cover" />;
     }
     if (type === 'VIDEO') {
+      // this prevents video from starting unless the storyIsActive
+      if (!storyIsActive) {
+        return null;
+      }
+
       return (
         <Video
           source={{ uri: url }}
           ref={videoRef}
           style={styles.fill}
           resizeMode="cover"
-          progressUpdateInterval={50}
+          progressUpdateInterval={5000}
+          onPlaybackRateChange={onPlaybackRateChange}
           onProgress={onProgress}
           onBuffer={onBuffer}
           onEnd={onEnd}
@@ -46,7 +75,7 @@ function StoryImage({ activeItem, videoRef, isBuffering, paused, incrementIndex,
   return (
     <View style={StyleSheet.absoluteFill}>
       {renderMedia()}
-      {isBuffering && <Loader loading={isBuffering} backgroundColor="transparent" color="white" size="small" />}
+      {isBuffering && <Loader loading={paused} backgroundColor="transparent" color="white" size="small" />}
     </View>
   );
 }

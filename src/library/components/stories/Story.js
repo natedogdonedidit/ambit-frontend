@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext, useMemo } from 'react';
-import { StyleSheet, View, Text, Alert, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, Alert, Dimensions, InteractionManager } from 'react-native';
 import { useMutation, useApolloClient } from '@apollo/react-hooks';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -52,7 +52,7 @@ function Story({
   setDisableOutterScroll,
 }) {
   const { width } = Dimensions.get('window');
-  const client = useApolloClient();
+  // const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
   const videoRef = useRef(null);
 
@@ -68,15 +68,16 @@ function Story({
   }, []);
 
   // STATE
-  const [currentTime, setCurrentTime] = useState(0);
+  // const [currentTime, setCurrentTime] = useState(0);
   const [hasError, setHasError] = useState(false);
   const [activeItemIndex, setActiveItemIndex] = useState(newestUnseen > 0 ? newestUnseen : 0);
   const [isBuffering, setIsBuffering] = useState(false);
-  const [paused, setPaused] = useState(true);
+  const [paused, setPaused] = useState(false);
+  const [videoStarted, setVideoStarted] = useState(false);
 
   // so I can read paused in my setInterval
-  const pausedRef = useRef(paused);
-  pausedRef.current = paused;
+  // const pausedRef = useRef(paused);
+  // pausedRef.current = paused;
 
   // VARIABLES
   const { items, owner, type, preview, topics } = story;
@@ -100,8 +101,8 @@ function Story({
   });
 
   const [viewedStoryItem] = useMutation(VIEWED_STORY_ITEM_MUTATION, {
-    variables: { storyItemID: activeItem.id },
-    ignoreResults: true,
+    // variables: { storyItemID: activeItem.id },
+    // ignoreResults: true,
     // update(cache, { data: dataReturned }) {
     //   // We get a single item from cache.
     //   const storyItemInCache = client.readFragment({
@@ -109,15 +110,12 @@ function Story({
     //     fragment: StoryItemFragment,
     //     fragmentName: 'StoryItemFragment',
     //   });
-
     //   // console.log(`story item in cache ${storyItemInCache.plays}`);
     //   // console.log(`Added a view!!!: ${activeItem.views.length} -> ${viewedStoryItem.views.length}`);
     //   // console.log(`Added a play!!!: ${activeItem.plays} -> ${viewedStoryItem.plays}`);
-
     //   // Then, we update it.
     //   if (storyItemInCache) {
     //     // console.log('gettinghere');
-
     //     // the new view is ALWAYS the currentUser
     //     client.writeFragment({
     //       id: `StoryItem:${activeItem.id}`,
@@ -132,39 +130,51 @@ function Story({
     // },
   });
 
+  function resetState() {
+    setPaused(false);
+    setVideoStarted(false);
+    setIsBuffering(false);
+  }
+
   function incrementIndex() {
+    // reset state everytime story item changes
+    resetState();
+
     if (type === 'INTRO') {
       navigation.goBack();
     } else if (activeItemIndex < items.length - 1) {
-      setCurrentTime(0);
+      // setCurrentTime(0);
       setActiveItemIndex((prevState) => prevState + 1);
     } else {
-      setCurrentTime(0);
+      // setCurrentTime(0);
       tryGoToNextStory();
     }
   }
 
   function decrementIndex() {
+    // reset state everytime story item changes
+    resetState();
+
     if (type === 'INTRO') {
       navigation.goBack();
     } else if (activeItemIndex > 0) {
-      setCurrentTime(0);
+      // setCurrentTime(0);
       setActiveItemIndex((prevState) => prevState - 1);
     } else {
-      setCurrentTime(0);
+      // setCurrentTime(0);
       tryGoToPrevStory();
     }
   }
 
   // EFFECTS
-  // if reached the end of IMAGE time limit - go to next item
   useEffect(() => {
-    if (activeItem.type === 'IMAGE' && currentTime >= STORY_IMAGE_DURATION) {
-      incrementIndex();
+    // reset state everytime story becomes active
+    if (storyIsActive) {
+      resetState();
     }
-  }, [currentTime]);
+  }, [storyIsActive]);
 
-  // this is so when you open the "More" modal, the story unpauses when re-focused
+  // this is so story unpauses when you close Intro or the "More" modal
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       // console.log('focussed - setting pause false');
@@ -183,56 +193,17 @@ function Story({
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(() => {
-    // if changed from active to not active - pause
-    if (!paused && !storyIsActive) {
-      setPaused(true);
-      setCurrentTime(0);
-      if (activeItemIndex < items.length - 1) {
-        setActiveItemIndex((prevState) => prevState + 1);
-      }
-    }
-
-    // if changed from not active to active - unpause
-    if (storyIsActive) {
-      if (paused) {
-        if (activeItem.type === 'VIDEO') {
-          videoRef.current.seek(0);
-        }
-        setCurrentTime(0);
-        setPaused(false);
-      }
-    }
-  }, [storyIsActive]);
-
   // anytime the story item changes, add the user to viewed list
   useEffect(() => {
     if (storyIsActive) {
-      // viewedStoryItem();
+      InteractionManager.runAfterInteractions(() => {
+        console.log('viewing story', activeItem.id);
+        viewedStoryItem({
+          variables: { storyItemID: activeItem.id },
+        });
+      });
     }
   }, [activeItemIndex]);
-
-  useEffect(() => {
-    setCurrentTime(0);
-
-    if (storyIsActive) {
-      // increment the timer ever X seconds
-      const intervalID = setInterval(() => {
-        if (activeItem.type === 'IMAGE' && storyIsActive) {
-          if (!pausedRef.current) {
-            setCurrentTime((prevState) => prevState + 0.1);
-          }
-        }
-      }, 100);
-
-      // if the new item is a video...clear the inverval
-      if (activeItem.type === 'VIDEO') {
-        clearInterval(intervalID);
-      }
-
-      return () => clearInterval(intervalID);
-    }
-  }, [activeItemIndex, storyIsActive]);
 
   // CUSTOM FUNCTIONS
   function engagePause() {
@@ -408,8 +379,10 @@ function Story({
           isBuffering={isBuffering}
           setIsBuffering={setIsBuffering}
           paused={paused}
+          setPaused={setPaused}
           incrementIndex={incrementIndex}
-          setCurrentTime={setCurrentTime}
+          storyIsActive={storyIsActive}
+          setVideoStarted={setVideoStarted}
         />
         <TopLinearFade />
         <BottomLinearFade />
@@ -420,7 +393,14 @@ function Story({
           engagePause={engagePause}
           disengagePause={disengagePause}
         />
-        <StoryProgressBars items={items} activeItemIndex={activeItemIndex} currentTime={currentTime} />
+        <StoryProgressBars
+          items={items}
+          activeItemIndex={activeItemIndex}
+          paused={paused}
+          storyIsActive={storyIsActive}
+          incrementIndex={incrementIndex}
+          videoStarted={videoStarted}
+        />
         <StoryHeader owner={owner} type={type} activeItem={activeItem} navigation={navigation} />
         {renderAllFooters()}
       </View>

@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import { StyleSheet, View, StatusBar, Alert, ScrollView, Dimensions, FlatList, Text } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, StatusBar, InteractionManager } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import Story from 'library/components/stories/Story';
 
@@ -14,17 +15,23 @@ import Story from 'library/components/stories/Story';
 const IntroModal = ({ navigation, route }) => {
   const { intro = null } = route.params;
 
+  useFocusEffect(
+    React.useCallback(() => {
+      // creating handle when modal focuses
+      // this allows us to stack up mutations so they fun after the modal blurs
+      console.log('creating interaction handle on Intro');
+      const handle2 = InteractionManager.createInteractionHandle();
+      return () => {
+        console.log('clearing interaction handle on Intro');
+        InteractionManager.clearInteractionHandle(handle2);
+      };
+    }, [])
+  );
+
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor="black" barStyle="light-content" hidden />
-      <Story
-        navigation={navigation}
-        story={intro}
-        storyKey={1}
-        storyIsActive
-        tryGoToPrevStory={() => null}
-        tryGoToNextStory={() => null}
-      />
+      <Story navigation={navigation} story={intro} storyIsActive tryGoToPrevStory={() => null} tryGoToNextStory={() => null} />
     </View>
   );
 };

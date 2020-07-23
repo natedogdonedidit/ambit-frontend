@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, InteractionManager } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -41,6 +41,8 @@ function StoryFooter({
   const [topicsSorted, setTopicsSorted] = useState([]);
   const [isLiked, setIsLiked] = useState(item.likedByMe);
   const [likesCount, setLikesCount] = useState(item.likesCount);
+  const [sentMutation, setSentMutation] = useState(false);
+
   // console.log(isLiked, item.text);
 
   const { owner, title, type, topics } = story;
@@ -51,9 +53,9 @@ function StoryFooter({
 
   // MUTATIONS
   const [likeStoryItem, { loading: loadingLike }] = useMutation(LIKE_STORYITEM_MUTATION, {
-    variables: {
-      storyItemId: id,
-    },
+    // variables: {
+    //   storyItemId: id,
+    // },
     // update: (proxy, { data: dataReturned }) => {
     //   client.writeFragment({
     //     id: `StoryItem:${id}`,
@@ -67,9 +69,9 @@ function StoryFooter({
   });
 
   const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UNLIKE_STORYITEM_MUTATION, {
-    variables: {
-      storyItemId: id,
-    },
+    // variables: {
+    //   storyItemId: id,
+    // },
     // update: (proxy, { data: dataReturned }) => {
     //   client.writeFragment({
     //     id: `StoryItem:${id}`,
@@ -82,12 +84,6 @@ function StoryFooter({
     // },
     onError: () => null,
   });
-
-  // useEffect(() => {
-  //   console.log('setting to:', item.likedByMe, isLiked, item.text);
-  //   setIsLiked(item.likedByMe);
-  //   setLikesCount(item.likesCount);
-  // }, [item]);
 
   useEffect(() => {
     if (type === 'PROJECT' && topics && topics.length > 0) {
@@ -126,14 +122,23 @@ function StoryFooter({
 
   // FUNCTIONS
   const handleLike = async () => {
-    if (isLiked && !loadingUnlike && !loadingLike) {
+    // sent mutation makes it so you can only send 1 mutation per mount
+    if (isLiked && !sentMutation) {
+      setSentMutation(true);
       setIsLiked(false);
       setLikesCount(likesCount - 1);
-      unlikeStoryItem();
-    } else if (!isLiked && !loadingLike && !loadingUnlike) {
+      InteractionManager.runAfterInteractions(() => {
+        console.log('unlike story', id);
+        unlikeStoryItem({ variables: { storyItemId: id } });
+      });
+    } else if (!isLiked && !sentMutation) {
+      setSentMutation(true);
       setIsLiked(true);
       setLikesCount(likesCount + 1);
-      likeStoryItem();
+      InteractionManager.runAfterInteractions(() => {
+        console.log('unlike story', id);
+        likeStoryItem({ variables: { storyItemId: id } });
+      });
     }
   };
 
@@ -243,7 +248,7 @@ function StoryFooter({
             hitSlop={{ top: 15, left: 15, bottom: 15, right: 15 }}
           >
             <Image source={require('../../assets/images/dueces.png')} style={{ width: 22, height: 22 }} />
-            <Text style={styles.sideButtonText}>{intro.items[0].likesCount === 0 ? null : intro.items[0].likesCount}</Text>
+            <Text style={styles.sideButtonText}>{intro.items[0].plays === 0 ? null : intro.items[0].plays}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity

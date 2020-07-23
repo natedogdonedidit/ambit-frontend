@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, StatusBar, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, View, StatusBar, Dimensions, FlatList, InteractionManager } from 'react-native';
 import { useLazyQuery } from '@apollo/react-hooks';
+import { useFocusEffect } from '@react-navigation/native';
 
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
@@ -26,6 +27,19 @@ const StoryModal = ({ navigation, route }) => {
   // STATE
   const [storyQ, setStoryQ] = useState([story]);
   const [activeStoryIndex, setActiveStoryIndex] = useState(0);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // creating handle when modal focuses
+      // this allows us to stack up mutations so they fun after the modal blurs
+      console.log('creating interaction handle');
+      const handle = InteractionManager.createInteractionHandle();
+      return () => {
+        console.log('clearing interaction handle');
+        InteractionManager.clearInteractionHandle(handle);
+      };
+    }, [])
+  );
 
   // QUERY TO GET USERS TOPICS
   // this if for getting the favorite topics for sorting...UNCOMMENT LATER
@@ -143,7 +157,7 @@ const StoryModal = ({ navigation, route }) => {
   }
 
   function tryGoToNextStory() {
-    console.log('going to next story', activeStoryIndex, storyQ.length);
+    // console.log('going to next story', activeStoryIndex, storyQ.length);
     if (activeStoryIndex < storyQ.length - 1) {
       goToNextStory();
     } else {
