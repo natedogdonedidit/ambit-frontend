@@ -32,10 +32,10 @@ const StoryModal = ({ navigation, route }) => {
     React.useCallback(() => {
       // creating handle when modal focuses
       // this allows us to stack up mutations so they fun after the modal blurs
-      console.log('creating interaction handle');
+      // console.log('creating interaction handle');
       const handle = InteractionManager.createInteractionHandle();
       return () => {
-        console.log('clearing interaction handle');
+        // console.log('clearing interaction handle');
         InteractionManager.clearInteractionHandle(handle);
       };
     }, [])
@@ -221,6 +221,7 @@ const StoryModal = ({ navigation, route }) => {
         onMomentumScrollEnd={handleSwipe}
         data={storyQ}
         scrollEnabled={!disableOutterScroll}
+        getItemLayout={(data, index) => ({ length: width, offset: width * index, index })}
         renderItem={({ item, index }) => {
           // console.log(index, item.id);
           const storyIsActive = index === activeStoryIndex;

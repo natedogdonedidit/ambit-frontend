@@ -128,7 +128,7 @@ function StoryFooter({
       setIsLiked(false);
       setLikesCount(likesCount - 1);
       InteractionManager.runAfterInteractions(() => {
-        console.log('unlike story', id);
+        // console.log('unlike story', id);
         unlikeStoryItem({ variables: { storyItemId: id } });
       });
     } else if (!isLiked && !sentMutation) {
@@ -136,7 +136,7 @@ function StoryFooter({
       setIsLiked(true);
       setLikesCount(likesCount + 1);
       InteractionManager.runAfterInteractions(() => {
-        console.log('unlike story', id);
+        // console.log('unlike story', id);
         likeStoryItem({ variables: { storyItemId: id } });
       });
     }

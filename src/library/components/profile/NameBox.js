@@ -11,11 +11,19 @@ import SmallGrayButton from 'library/components/UI/buttons/SmallGrayButton';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+// user is from SINGLE_USER_BASIC
 const NameBox = ({ user, navigation, isMyProfile }) => {
-  const [followersAdjustment, setFollowersAdjustment] = useState(0);
+  const [followingCount, setFollowingCount] = useState(user.followingCount);
+  const [followersCount, setFollowersCount] = useState(user.followersCount);
 
+  // sync state with SINGLE_USER_QUERY
   useEffect(() => {
-    setFollowersAdjustment(0);
+    setFollowingCount(user.followingCount);
+  }, [user.followingCount]);
+
+  // sync state with SINGLE_USER_QUERY
+  useEffect(() => {
+    setFollowersCount(user.followersCount);
   }, [user.followersCount]);
 
   // custom functions
@@ -29,19 +37,19 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       <View style={styles.stats}>
         <TouchableOpacity
           style={{ flexDirection: 'row' }}
-          onPress={() => navigation.navigate('Followers', { userID: user.id, followersCount: user.followersCount })}
+          onPress={() => navigation.navigate('Followers', { userID: user.id, followersCount })}
         >
           <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
-            {user.followersCount + followersAdjustment}
+            {followersCount || 0}
           </Text>
           <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Followers</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{ flexDirection: 'row' }}
-          onPress={() => navigation.navigate('Following', { userID: user.id, followingCount: user.followingCount })}
+          onPress={() => navigation.navigate('Following', { userID: user.id, followingCount })}
         >
           <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
-            {user.followingCount || 0}
+            {followingCount || 0}
           </Text>
           <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Following</Text>
         </TouchableOpacity>
@@ -69,7 +77,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
             />
             {/* <ConnectButton onPress={() => null} buttonStyle={{ marginRight: 10 }} /> */}
 
-            <FollowButton userToFollow={user} setFollowersAdjustment={setFollowersAdjustment} />
+            <FollowButton userToFollow={user} setFollowersCount={setFollowersCount} />
           </>
         )}
       </View>

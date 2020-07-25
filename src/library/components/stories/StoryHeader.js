@@ -6,6 +6,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import FollowButton from 'library/components/UI/buttons/FollowButton';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
 function areEqual(prevProps, nextProps) {
@@ -22,7 +23,7 @@ function areEqual(prevProps, nextProps) {
   return false;
 }
 
-function StoryHeader({ owner, type, activeItem, navigation }) {
+function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
   // MEMO VALUES
   const { timeDiff, period } = useMemo(() => {
     const createdAt = new Date(activeItem.createdAt);
@@ -59,23 +60,17 @@ function StoryHeader({ owner, type, activeItem, navigation }) {
           </View>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={{
-          position: 'absolute',
-          top: 4,
-          right: 12,
-          paddingHorizontal: 8,
-          height: 28,
-          borderRadius: 8,
-          backgroundColor: colors.purp,
-          justifyContent: 'center',
-          alignItems: 'center',
-          ...defaultStyles.shadowButton,
-        }}
-        onPress={() => null}
-      >
-        <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>Follow</Text>
-      </TouchableOpacity>
+      {!isMyPost && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 4,
+            right: 12,
+          }}
+        >
+          <FollowButton userToFollow={owner} small />
+        </View>
+      )}
     </View>
   );
 }

@@ -177,7 +177,6 @@ function Story({
   // this is so story unpauses when you close Intro or the "More" modal
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      // console.log('focussed - setting pause false');
       setPaused(false);
     });
 
@@ -197,7 +196,6 @@ function Story({
   useEffect(() => {
     if (storyIsActive) {
       InteractionManager.runAfterInteractions(() => {
-        console.log('viewing story', activeItem.id);
         viewedStoryItem({
           variables: { storyItemID: activeItem.id },
         });
@@ -383,6 +381,7 @@ function Story({
           incrementIndex={incrementIndex}
           storyIsActive={storyIsActive}
           setVideoStarted={setVideoStarted}
+          videoStarted={videoStarted}
         />
         <TopLinearFade />
         <BottomLinearFade />
@@ -401,7 +400,7 @@ function Story({
           incrementIndex={incrementIndex}
           videoStarted={videoStarted}
         />
-        <StoryHeader owner={owner} type={type} activeItem={activeItem} navigation={navigation} />
+        <StoryHeader owner={owner} type={type} activeItem={activeItem} navigation={navigation} isMyPost={isMyPost} />
         {renderAllFooters()}
       </View>
     </SafeAreaView>

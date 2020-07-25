@@ -25,12 +25,14 @@ function ProgressBar({ duration, storyLength, paused, incrementIndex, videoStart
 
   // EFFECTS
   useEffect(() => {
+    // console.log(paused, videoStarted, !duration, animationStarted, pausedValue);
     // start animation if 1) not paused 2) video started OR IMAGE 3) animation not started or after a pause
     if (!paused && (videoStarted || !duration) && (!animationStarted || !!pausedValue)) {
       if (!animationStarted) {
         setAnimationStarted(true);
       }
 
+      console.log('starting animation');
       Animated.timing(progressBar, {
         toValue: 1,
         duration: (1 - pausedValue) * itemDuration * 1000,

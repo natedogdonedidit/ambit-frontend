@@ -49,6 +49,9 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'COMMENT_COMMENT') {
       return navigation.navigate('Post', { post: comment.parentPost });
     }
+    if (style === 'NEW_FOLLOWER') {
+      return navigation.navigate('Profile', { profileId: userID });
+    }
 
     return null;
   };
@@ -129,6 +132,15 @@ const NotificationListItem = ({ navigation, notification }) => {
         <Text>
           <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
           <Text style={defaultStyles.defaultLight}> replied to your comment</Text>
+        </Text>
+      );
+    }
+
+    if (style === 'NEW_FOLLOWER') {
+      return (
+        <Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> followed you</Text>
         </Text>
       );
     }

@@ -17,7 +17,8 @@ function StoryImage({
   storyIsActive,
 }) {
   function onProgress(data) {
-    if (data.currentTime > 0 && !videoStarted) {
+    // sometimes this will not fire when video starts...so i must set progressUpdateInterval low so the function will call again quickly
+    if (data.currentTime >= 0 && !videoStarted) {
       setVideoStarted(true);
     }
   }
@@ -35,7 +36,8 @@ function StoryImage({
   }
 
   function onPlaybackRateChange({ playbackRate }) {
-    if (playbackRate === 0 && !paused) {
+    // had to add videoStarted to logic. Otherwise, this will pause the video before it even starts
+    if (playbackRate === 0 && !paused && videoStarted) {
       setPaused(true);
     } else if (playbackRate > 0 && paused) {
       setPaused(false);
@@ -60,7 +62,7 @@ function StoryImage({
           ref={videoRef}
           style={styles.fill}
           resizeMode="cover"
-          progressUpdateInterval={5000}
+          progressUpdateInterval={300}
           onPlaybackRateChange={onPlaybackRateChange}
           onProgress={onProgress}
           onBuffer={onBuffer}

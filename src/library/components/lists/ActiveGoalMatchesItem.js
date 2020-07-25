@@ -60,7 +60,7 @@ const ActiveGoalMatchesItem = ({ navigation, item }) => {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ flexDirection: 'row', paddingTop: 10 }}
+          contentContainerStyle={{ flexDirection: 'row', paddingVertical: 10 }}
         >
           {renderProfilePics()}
         </ScrollView>
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // paddingRight: 15,
     paddingTop: 12,
-    paddingBottom: 17,
+    paddingBottom: 8,
     backgroundColor: 'white',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,

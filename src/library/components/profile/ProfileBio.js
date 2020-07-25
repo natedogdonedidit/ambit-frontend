@@ -40,12 +40,13 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
   const hasSkills = user.skills ? user.skills.length > 0 : false;
   const hasStories = user.stories ? user.stories.length > 0 : false;
 
+  const showAbout = isMyProfile || useOpenToBox || !!user.about;
   const showExperience = isMyProfile || hasExperience;
   const showEducation = isMyProfile || hasEducation;
   const showSkills = isMyProfile || hasSkills;
 
   const showcaseProjects = hasStories
-    ? user.stories.filter(project => project.items.length > 0 && (project.type === 'SOLO' || project.type === 'PROJECT'))
+    ? user.stories.filter((project) => project.items.length > 0 && (project.type === 'SOLO' || project.type === 'PROJECT'))
     : [];
 
   const showShowcase = isMyProfile || showcaseProjects.length > 0;
@@ -76,23 +77,25 @@ const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
 
   return (
     <View style={styles.content}>
-      <View style={styles.contentSection}>
-        <View style={{ ...styles.contentHeader, paddingBottom: 10 }}>
-          <Text style={{ ...defaultStyles.hugeMedium }}>About</Text>
-          {isMyProfile && (
-            <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditAboutModal', { user })}>
-              Edit
-            </TextButton>
+      {showAbout && (
+        <View style={styles.contentSection}>
+          <View style={{ ...styles.contentHeader, paddingBottom: 10 }}>
+            <Text style={{ ...defaultStyles.hugeMedium }}>About</Text>
+            {isMyProfile && (
+              <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditAboutModal', { user })}>
+                Edit
+              </TextButton>
+            )}
+          </View>
+          {!!user.about && <Text style={{ ...defaultStyles.defaultText, paddingBottom: 10 }}>{user.about}</Text>}
+          {(useOpenToBox || !!user.location) && (
+            <View style={styles.detailsBox}>
+              {renderLocation()}
+              {renderOpenTo()}
+            </View>
           )}
         </View>
-        {!!user.about && <Text style={{ ...defaultStyles.defaultText, paddingBottom: 10 }}>{user.about}</Text>}
-        {(useOpenToBox || !!user.location) && (
-          <View style={styles.detailsBox}>
-            {renderLocation()}
-            {renderOpenTo()}
-          </View>
-        )}
-      </View>
+      )}
       {showShowcase && (
         <View style={{ ...styles.projectsSection }}>
           <View style={{ ...styles.contentHeader, paddingHorizontal: 20 }}>

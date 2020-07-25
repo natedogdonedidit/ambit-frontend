@@ -34,7 +34,7 @@ const FollowersScreen = ({ navigation, route }) => {
     return (
       <View style={{ ...styles.container }}>
         <HeaderBack handleRight={() => null} title="Followers" navigation={navigation} />
-        <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
+        <Loader loading={loading} size="small" full={false} backgroundColor={colors.lightGray} />
       </View>
     );
   }

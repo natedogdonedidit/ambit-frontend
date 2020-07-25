@@ -311,7 +311,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             changed.forEach(({ index, isViewable, item }) => {
               if (index >= 0 && isViewable && item.node) {
                 if (typeof item.node === 'object' && item.node.id) {
-                  console.log('submitting view for ', item.node.id);
+                  // console.log('submitting view for ', item.node.id);
                   viewedPost({ variables: { postId: item.node.id } });
                 }
               }
