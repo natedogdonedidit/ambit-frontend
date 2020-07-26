@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, RefreshControl, FlatList, Image, ActivityIndicator, ScrollView } from 'react-native';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';

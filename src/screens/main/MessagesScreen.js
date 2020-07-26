@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';

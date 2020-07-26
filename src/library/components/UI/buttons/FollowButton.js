@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, Text, View, Alert } from 'react-native';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
@@ -59,7 +59,7 @@ const FollowButton = ({ userToFollow, setFollowersCount, small = false }) => {
   }, [isFollowing]);
 
   const followMutation = async () => {
-    // create new following array with new user in it
+    // // create new following array with new user in it
     // const newFollowing = [{ __typename: 'User', ...userToFollow }, ...data.userLoggedIn.following];
 
     followUser({
@@ -73,6 +73,7 @@ const FollowButton = ({ userToFollow, setFollowersCount, small = false }) => {
       //   },
       // },
       // update: (proxy, { data: dataReturned }) => {
+      //   // console.log(data.userLoggedIn === dataReturned.unfollowUser);
       //   proxy.writeQuery({
       //     query: CURRENT_USER_QUERY,
       //     data: {
@@ -84,11 +85,11 @@ const FollowButton = ({ userToFollow, setFollowersCount, small = false }) => {
   };
 
   const unfollowMutation = async () => {
-    // create new array
+    // // create new array
     // const newFollowing = [...data.userLoggedIn.following];
-    // find the index of the user we are unfollowing
+    // // find the index of the user we are unfollowing
     // const alreadyFollowingInd = userLoggedIn.following.findIndex((u) => u.id === userToFollow.id);
-    // remove user from array
+    // // remove user from array
     // newFollowing.splice(alreadyFollowingInd, 1);
 
     unfollowUser({
@@ -102,6 +103,8 @@ const FollowButton = ({ userToFollow, setFollowersCount, small = false }) => {
       //   },
       // },
       // update: (proxy, { data: dataReturned }) => {
+      //   // console.log(data.userLoggedIn === dataReturned.unfollowUser);
+
       //   proxy.writeQuery({
       //     query: CURRENT_USER_QUERY,
       //     data: {

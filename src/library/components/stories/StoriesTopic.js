@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';

@@ -12,7 +12,7 @@ import {
   KeyboardAvoidingView,
   InputAccessoryView,
 } from 'react-native';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 // import Editor, { displayTextWithMentions } from 'react-native-mentions-editor';
 import ImagePicker from 'react-native-image-crop-picker';
 // import Image from 'react-native-scalable-image';

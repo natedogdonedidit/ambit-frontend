@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { DetailUpdate } from 'library/queries/_fragments';
 
 export default SINGLE_UPDATE_QUERY = gql`

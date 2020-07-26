@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import EDIT_SKILLS_MUTATION from 'library/mutations/EDIT_SKILLS_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';

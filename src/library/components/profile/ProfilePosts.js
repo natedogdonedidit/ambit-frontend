@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, FlatList } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';

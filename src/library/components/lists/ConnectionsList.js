@@ -1,6 +1,16 @@
-import React, { useEffect} from 'react';
-import { StyleSheet, View, Text, FlatList, SectionList, RefreshControl, ActivityIndicator, TouchableOpacity, Animated } from 'react-native';
-import { useQuery } from 'react-apollo';
+import React, { useEffect } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  SectionList,
+  RefreshControl,
+  ActivityIndicator,
+  TouchableOpacity,
+  Animated,
+} from 'react-native';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -8,9 +18,9 @@ import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY'; // co
 import Loader from 'library/components/UI/Loader';
 
 import Section from 'library/components/UI/Section';
+import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 import SuggestedConnection from './SuggestedConnection';
-import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
 const ConnectionsList = ({ navigation, userLoggedIn, scrollY, showRefreshing, setShowRefreshing }) => {
   // QUERIES
@@ -101,13 +111,12 @@ const ConnectionsList = ({ navigation, userLoggedIn, scrollY, showRefreshing, se
         renderSectionHeader={({ section }) => {
           // only need the headers if we have content in both sections
           if (section.name === 'Goals' && activeGoalsWithMatchesFiltered.length > 0) {
-            return <Section text={section.title} marginTop={false} />
+            return <Section text={section.title} marginTop={false} />;
           }
 
           if (section.name === 'Users' && matches.length > 0) {
-            return <Section text={section.title} marginTop={false} />
+            return <Section text={section.title} marginTop={false} />;
           }
-
         }}
         renderSectionFooter={({ section }) => {
           if (section.name === 'Goals' && activeGoalsWithMatchesFiltered.length <= 0) {
@@ -159,7 +168,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
-  }
+  },
 });
 
 export default ConnectionsList;

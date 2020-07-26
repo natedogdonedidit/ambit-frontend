@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { StoryItemFragment } from 'library/queries/_fragments';
 
 const UNLIKE_STORYITEM_MUTATION = gql`

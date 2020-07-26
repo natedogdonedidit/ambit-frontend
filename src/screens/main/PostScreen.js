@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View, ScrollView, Alert, Text } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 import colors from 'styles/colors';
@@ -17,7 +17,6 @@ import Post from 'library/components/post/Post';
 import Popover from 'library/components/UI/Popover';
 
 import { UserContext } from 'library/utils/UserContext';
-import { useMutation } from 'react-apollo';
 import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
 import { BasicPost } from 'library/queries/_fragments';
 import { DAYS_TILL_INACTIVE } from 'styles/constants';

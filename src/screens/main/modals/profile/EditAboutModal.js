@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Alert, KeyboardAvoidingView, ScrollView, TextInput } from 'react-native';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';

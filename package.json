@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@apollo/client": "^3.0.2",
     "@react-native-community/async-storage": "^1.11.0",
     "@react-native-community/cameraroll": "^4.0.0",
     "@react-native-community/masked-view": "^0.1.10",
@@ -19,20 +20,11 @@
     "@react-navigation/stack": "^5.6.2",
     "@segment/analytics-react-native": "^1.2.1",
     "@segment/analytics-react-native-mixpanel": "^1.2.1",
-    "apollo-cache-inmemory": "^1.6.6",
-    "apollo-client": "^2.6.10",
-    "apollo-link": "^1.2.14",
-    "apollo-link-context": "^1.0.20",
-    "apollo-link-error": "^1.1.13",
-    "apollo-link-http": "^1.5.17",
-    "apollo-link-ws": "^1.0.20",
     "date-fns": "^2.14.0",
-    "graphql": "^15.2.0",
-    "graphql-tag": "^2.10.3",
+    "graphql": "^15.3.0",
     "immutability-helper": "^3.1.1",
     "lodash-move": "^1.1.1",
     "react": "16.11.0",
-    "react-apollo": "^3.1.5",
     "react-native": "0.62.2",
     "react-native-camera": "^3.31.0",
     "react-native-fit-image": "^1.5.5",
@@ -67,7 +59,7 @@
     "jest": "26.0.1",
     "metro-react-native-babel-preset": "0.59.0",
     "prettier": "^2.0.5",
-    "react-native-clean-project": "^3.3.0",
+    "react-native-clean-project": "^3.4.0",
     "react-test-renderer": "16.13.1"
   },
   "jest": {

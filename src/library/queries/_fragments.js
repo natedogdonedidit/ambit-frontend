@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 // NON-DEPENDENT FRAGMENTS
 export const StoryItemFragment = gql`

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';

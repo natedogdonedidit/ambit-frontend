@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/client';
 import { format } from 'date-fns';
 
 import colors from 'styles/colors';

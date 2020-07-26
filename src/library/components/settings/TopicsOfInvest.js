@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/client';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
@@ -14,7 +14,7 @@ const TopicsOfInvest = ({ navigation, myTopics }) => {
   const { topicsFocus, topicsInterest, topicsFreelance, topicsInvest: topics, topicsMentor } = myTopics;
   const topicsIDonly = topics.map((topic) => topic.topicID);
 
-  const client = useApolloClient()
+  const client = useApolloClient();
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -96,12 +96,12 @@ const TopicsOfInvest = ({ navigation, myTopics }) => {
                 </View>
               </TouchableOpacity>
             ) : (
-                <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-                  <View style={styles.addButton}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.green }}>Add</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                <View style={styles.addButton}>
+                  <Text style={{ ...defaultStyles.defaultMedium, color: colors.green }}>Add</Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </TouchableOpacity>
       );

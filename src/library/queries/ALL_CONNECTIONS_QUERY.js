@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { DetailPost, MinimalUser } from 'library/queries/_fragments';
 
 export default ALL_CONNECTIONS_QUERY = gql`

@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert, TextInput, KeyboardAvoidingView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useQuery, useMutation } from 'react-apollo';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import Feather from 'react-native-vector-icons/Feather';
+import { StyleSheet, View, Text, TextInput } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import Loader from 'library/components/UI/Loader';
 import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 

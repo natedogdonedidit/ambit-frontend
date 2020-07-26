@@ -1,23 +1,13 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { UserContext } from 'library/utils/UserContext';
-import {
-  getTopicIDsFromUser,
-  getParentTopicFromID,
-  getFullTopicListFromIDs,
-  storyPicUpload,
-  storyVideoUpload,
-  getIconFromID,
-  createThumbnail,
-  sortStoriesNewestFirst,
-} from 'library/utils';
+import { storyPicUpload, storyVideoUpload, createThumbnail, sortStoriesNewestFirst } from 'library/utils';
 
 import Loader from 'library/components/UI/Loader';
 import HeaderPostToModal from 'library/components/headers/HeaderPostToModal';
@@ -25,7 +15,6 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import ProjectSquare from 'library/components/stories/ProjectSquare';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-import CREATE_STORY_ITEM_MUTATION from 'library/mutations/CREATE_STORY_ITEM_MUTATION';
 import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';

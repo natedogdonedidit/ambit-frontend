@@ -12,7 +12,7 @@ import {
   InputAccessoryView,
   Dimensions,
 } from 'react-native';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';

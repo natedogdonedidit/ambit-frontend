@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 

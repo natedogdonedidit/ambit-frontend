@@ -19,7 +19,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
 import { createThumbnail, storyPicUpload, storyVideoUpload } from 'library/utils';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import Loader from 'library/components/UI/Loader';
 

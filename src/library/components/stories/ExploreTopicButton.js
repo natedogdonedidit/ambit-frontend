@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 
 import { getIconFromID, getTopicFromID } from 'library/utils';
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
-import { useQuery } from 'react-apollo';
+import { useQuery } from '@apollo/client';
 import StoryBox from 'library/components/stories/StoryBox';
 
 const placeholderImage =

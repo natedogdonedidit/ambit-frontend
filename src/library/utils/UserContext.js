@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, createContext } from 'react'
 import { Alert } from 'react-native';
-import { useApolloClient, useMutation, useLazyQuery } from '@apollo/react-hooks';
+import { useApolloClient, useMutation, useLazyQuery } from '@apollo/client';
 
 import { signIn, signOut, getToken } from 'library/utils/authUtil'
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';

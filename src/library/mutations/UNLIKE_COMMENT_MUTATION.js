@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { CommentFragment } from 'library/queries/_fragments';
 
 const UNLIKE_COMMENT_MUTATION = gql`

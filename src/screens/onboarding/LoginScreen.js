@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
 // import { NavigationEvents } from 'react-navigation';
 // import { HeaderBackButton } from 'react-navigation-stack';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import { UserContext } from 'library/utils/UserContext';
 import LOGIN_MUTATION from 'library/mutations/LOGIN_MUTATION';

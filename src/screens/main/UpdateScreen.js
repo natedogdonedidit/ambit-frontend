@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import HeaderBack from 'library/components/headers/HeaderBack';
@@ -42,14 +42,14 @@ const UpdateScreen = ({ navigation, route }) => {
     return null;
   }
 
-  const update = post.updates.find(u => u.id === updatePassedIn.id);
+  const update = post.updates.find((u) => u.id === updatePassedIn.id);
 
   if (!update) {
     navigation.goBack();
     return null;
   }
 
-  const updateInd = post.updates.findIndex(u => u.id === updatePassedIn.id);
+  const updateInd = post.updates.findIndex((u) => u.id === updatePassedIn.id);
 
   // CUSTOM FUNCTIONS
   const renderUpdate = () => {

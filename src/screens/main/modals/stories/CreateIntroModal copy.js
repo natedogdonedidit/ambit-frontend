@@ -14,7 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ImagePicker from 'react-native-image-crop-picker';
 import ImageScalable from 'react-native-scalable-image';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import move from 'lodash-move';
 import Video from 'react-native-video';
 

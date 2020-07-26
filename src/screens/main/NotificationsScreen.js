@@ -2,7 +2,7 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View, FlatList, Text, ActivityIndicator, RefreshControl, Animated, StatusBar } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';

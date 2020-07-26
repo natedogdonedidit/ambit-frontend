@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';

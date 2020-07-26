@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-import { useQuery, useSubscription } from '@apollo/react-hooks';
+import { useQuery, useSubscription } from '@apollo/client';
 import analytics from '@segment/analytics-react-native';
 
 import { UserContext } from 'library/utils/UserContext';
@@ -69,6 +69,9 @@ const MainStack = () => {
     notifyOnNetworkStatusChange: true,
   });
   const userOk = networkStatusUser === 7;
+  // useEffect(() => {
+  //   console.log('re-rendering main stack', networkStatusUser);
+  // });
 
   // NOTIFICATIONS QUERY
   const {

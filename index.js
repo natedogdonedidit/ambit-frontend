@@ -2,18 +2,24 @@
 import 'react-native-gesture-handler'; // required by React Navigation docs
 import React from 'react';
 import { AppRegistry, Platform } from 'react-native';
-import { ApolloProvider } from 'react-apollo';
 import { enableScreens } from 'react-native-screens';
 
 // APOLLO SETUP AFTER SUBSCRIPTIONS
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache, defaultDataIdFromObject } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
-import { onError } from 'apollo-link-error';
-import { setContext } from 'apollo-link-context';
-import { WebSocketLink } from 'apollo-link-ws';
-import { ApolloLink, split } from 'apollo-link';
-import { getMainDefinition } from 'apollo-utilities';
+import {
+  ApolloProvider,
+  ApolloClient,
+  InMemoryCache,
+  ApolloLink,
+  HttpLink,
+  split,
+  // defaultDataIdFromObject,
+} from '@apollo/client';
+// import { defaultDataIdFromObject } from '@apollo/client/cache';
+import { onError } from '@apollo/client/link/error';
+import { setContext } from '@apollo/client/link/context';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { getMainDefinition } from '@apollo/client/utilities';
+
 // for analytics
 import analytics from '@segment/analytics-react-native';
 import mixpanel from '@segment/analytics-react-native-mixpanel';
@@ -108,38 +114,56 @@ const client = new ApolloClient({
   connectToDevTools: true,
   link: ApolloLink.from([errorLink, authLink, link]),
   cache: new InMemoryCache({
-    // dataIdFromObject: o => o.id,
-    dataIdFromObject: (object) => {
-      switch (object.__typename) {
-        case 'MessageConnection':
-          // console.log('in dataIdFromObject', object);
-          if (object.id) {
-            return `MessageConnection:${object.id}`;
-          }
-          return `MessageConnection:${object.edges[0].node.to.id}`;
-        // case 'Topic':
-        //   console.log('in dataIdFromObject', object);
-        //   if (object.topicID) {
-        //     return `Topic:${object.topicID}`;
-        //   }
-        //   return defaultDataIdFromObject(object);
-
-        default:
-          return defaultDataIdFromObject(object);
-      }
-    },
-    cacheRedirects: {
+    typePolicies: {
       Query: {
-        user: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'User', id: args.id }),
-        singlePost: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'Post', id: args.id }),
-        group: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'Group', id: args.id }),
-        // messages: (_, args, { getCacheKey }) => `GroupC:${args.groupID}`,
-        messages: (_, args, { getCacheKey }) => {
-          // console.log('in cacheredirect', args.groupID);
-          return getCacheKey({ __typename: 'MessageConnection', id: `${args.groupID}` });
+        fields: {
+          user(existingData, { args, toReference }) {
+            return existingData || toReference({ __typename: 'User', id: args.id });
+          },
+          singlePost(existingData, { args, toReference }) {
+            return existingData || toReference({ __typename: 'Post', id: args.id });
+          },
+          group(existingData, { args, toReference }) {
+            return existingData || toReference({ __typename: 'Group', id: args.id });
+          },
+          messages(existingData, { args, toReference }) {
+            return existingData || toReference({ __typename: 'MessageConnection', id: `${args.groupID}` });
+          },
         },
       },
     },
+    // dataIdFromObject: o => o.id,
+    // dataIdFromObject: (object) => {
+    //   switch (object.__typename) {
+    //     case 'MessageConnection':
+    //       // console.log('in dataIdFromObject', object);
+    //       if (object.id) {
+    //         return `MessageConnection:${object.id}`;
+    //       }
+    //       return `MessageConnection:${object.edges[0].node.to.id}`;
+    //     // case 'Topic':
+    //     //   console.log('in dataIdFromObject', object);
+    //     //   if (object.topicID) {
+    //     //     return `Topic:${object.topicID}`;
+    //     //   }
+    //     //   return defaultDataIdFromObject(object);
+
+    //     default:
+    //       return defaultDataIdFromObject(object);
+    //   }
+    // },
+    // cacheRedirects: {
+    //   Query: {
+    //     user: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'User', id: args.id }),
+    //     singlePost: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'Post', id: args.id }),
+    //     group: (_, args, { getCacheKey }) => getCacheKey({ __typename: 'Group', id: args.id }),
+    //     // messages: (_, args, { getCacheKey }) => `GroupC:${args.groupID}`,
+    //     messages: (_, args, { getCacheKey }) => {
+    //       // console.log('in cacheredirect', args.groupID);
+    //       return getCacheKey({ __typename: 'MessageConnection', id: `${args.groupID}` });
+    //     },
+    //   },
+    // },
   }),
   onError: ({ networkError, graphQLErrors }) => {
     console.log('graphQLErrors', graphQLErrors);

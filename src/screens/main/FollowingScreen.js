@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';

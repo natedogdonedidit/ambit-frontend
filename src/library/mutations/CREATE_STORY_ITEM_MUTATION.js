@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 // import { LoggedInUser } from 'library/queries/_fragments';
 
 const CREATE_STORY_ITEM_MUTATION = gql`

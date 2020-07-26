@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -12,7 +12,7 @@ import EDIT_TOPICS_INTEREST_MUTATION from 'library/mutations/EDIT_TOPICS_INTERES
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsInterestModal = ({ navigation }) => {
-  const client = useApolloClient()
+  const client = useApolloClient();
 
   const [selectedCategories, setSelectedCategories] = useState('');
 

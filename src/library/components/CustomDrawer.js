@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { UserContext } from 'library/utils/UserContext';

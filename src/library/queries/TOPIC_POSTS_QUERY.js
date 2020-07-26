@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { BasicPost } from 'library/queries/_fragments';
 
 // QUERY NAME MUST MATCH TOPICID!!!!!

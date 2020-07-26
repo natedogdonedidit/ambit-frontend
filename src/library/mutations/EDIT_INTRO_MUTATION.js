@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { MinimalUser } from 'library/queries/_fragments';
 
 const EDIT_INTRO_MUTATION = gql`

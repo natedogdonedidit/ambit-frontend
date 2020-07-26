@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList, TouchableOpacity } from 'react-native';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
 
 import colors from 'styles/colors';

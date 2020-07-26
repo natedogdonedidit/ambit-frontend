@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/client';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import colors from 'styles/colors';

@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { AllTopicsFragment } from 'library/queries/_fragments';
 
 const EDIT_TOPICS_FOCUS_MUTATION = gql`

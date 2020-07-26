@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { DetailPost } from 'library/queries/_fragments';
 
 export default POST_COMMENTS_QUERY = gql`

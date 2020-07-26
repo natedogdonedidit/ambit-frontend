@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import { UserContext } from 'library/utils/UserContext';
 import SIGNUP_MUTATION from 'library/mutations/SIGNUP_MUTATION';

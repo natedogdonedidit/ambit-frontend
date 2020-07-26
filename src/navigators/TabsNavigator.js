@@ -2,8 +2,8 @@ import React, { useContext, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { UserContext } from 'library/utils/UserContext';
-import { useQuery } from '@apollo/react-hooks';
-import analytics from '@segment/analytics-react-native'
+import { useQuery } from '@apollo/client';
+import analytics from '@segment/analytics-react-native';
 
 import HomeStack from 'navigators/HomeStack';
 import PeopleStack from 'navigators/PeopleStack';
@@ -15,7 +15,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import BellDot from 'library/components/UI/icons/BellDot';
 import EnvelopeDot from 'library/components/UI/icons/EnvelopeDot';
 import colors from 'styles/colors';
-
 
 const Tabs = createBottomTabNavigator();
 
@@ -30,19 +29,17 @@ const TabsNavigator = ({ navigation }) => {
 
   // any time this page loads or a new user id logs in...send the identify event
   useEffect(() => {
-
     if (currentUserId && userLoggedIn) {
       const { name, email } = userLoggedIn;
 
-      console.log(`sending identify for ${currentUserId}, ${name}, ${email}`)
+      console.log(`sending identify for ${currentUserId}, ${name}, ${email}`);
 
       analytics.identify(currentUserId, {
         name,
         email,
       });
     }
-
-  }, [currentUserId])
+  }, [currentUserId]);
 
   let unReadMessagesCount = 0;
   if (userData) {

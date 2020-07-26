@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, StatusBar, Dimensions, FlatList, InteractionManager } from 'react-native';
-import { useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
 
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';

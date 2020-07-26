@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { MessageFragment } from 'library/queries/_fragments';
 
 const CREATE_MESSAGE_MUTATION = gql`

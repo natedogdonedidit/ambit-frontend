@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/client';
 
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';

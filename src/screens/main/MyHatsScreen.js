@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, ScrollView } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import HeaderBack from 'library/components/headers/HeaderBack';
 import colors from 'styles/colors';

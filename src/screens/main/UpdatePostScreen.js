@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, TextInput, Alert, ScrollView, KeyboardAvoidingView } from 'react-native';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';

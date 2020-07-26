@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { StyleSheet, View, TouchableOpacity, Animated, Text, ScrollView } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import { useSafeArea } from 'react-native-safe-area-context';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';

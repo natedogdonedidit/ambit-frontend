@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 const DELETE_POST_MUTATION = gql`
   mutation DELETE_POST_MUTATION($id: ID!, $ownerID: ID!) {

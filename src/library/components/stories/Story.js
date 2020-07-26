@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext, useMemo } from 'react';
 import { StyleSheet, View, Text, Alert, Dimensions, InteractionManager } from 'react-native';
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/client';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserContext } from 'library/utils/UserContext';

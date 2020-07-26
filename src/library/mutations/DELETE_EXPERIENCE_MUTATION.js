@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { DetailedUser } from 'library/queries/_fragments';
 
 const DELETE_EXPERIENCE_MUTATION = gql`

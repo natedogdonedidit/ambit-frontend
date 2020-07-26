@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { NotificationFragment } from 'library/queries/_fragments';
 
 export default NOTIFICATIONS_QUERY = gql`

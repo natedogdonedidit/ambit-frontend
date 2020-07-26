@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
-import { useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useMutation, useApolloClient } from '@apollo/client';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';

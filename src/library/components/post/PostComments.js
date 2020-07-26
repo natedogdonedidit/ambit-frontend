@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';

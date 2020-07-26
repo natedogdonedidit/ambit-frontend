@@ -11,7 +11,7 @@ import {
   Switch,
   KeyboardAvoidingView,
 } from 'react-native';
-import { useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/client';
 import { UserContext } from 'library/utils/UserContext';
 
 import CREATE_EDUCATION_MUTATION from 'library/mutations/CREATE_EDUCATION_MUTATION';

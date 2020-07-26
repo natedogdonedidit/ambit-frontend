@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import ImagePicker from 'react-native-image-crop-picker';
 
 import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
