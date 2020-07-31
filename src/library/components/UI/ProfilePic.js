@@ -196,7 +196,10 @@ const ProfilePic = ({
             activeOpacity={0.9}
             onPress={() => {
               navigation.navigate('IntroModal', {
-                intro: user.intro,
+                intro: {
+                  ...user.intro,
+                  owner: { ...user },
+                },
               });
             }}
             style={{
@@ -243,11 +246,17 @@ const ProfilePic = ({
           onPress={() => {
             if (showIntro) {
               navigation.navigate('IntroModal', {
-                intro: user.intro,
+                intro: {
+                  ...user.intro,
+                  owner: { ...user },
+                },
               });
             } else {
               navigation.navigate('StoryModal', {
-                story: storyToShow,
+                story: {
+                  ...storyToShow,
+                  owner: { ...user },
+                },
               });
             }
           }}

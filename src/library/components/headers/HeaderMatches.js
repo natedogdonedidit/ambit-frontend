@@ -8,10 +8,10 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { HEADER_HEIGHT } from 'styles/constants';
-import CURRENT_USER_QUERY_HEADER from 'library/queries/CURRENT_USER_QUERY_HEADER';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const HeaderMatches = ({ navigation, handleMiddle, handleRight }) => {
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY_HEADER);
+  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
   const { userLoggedIn } = data;
 
   return (

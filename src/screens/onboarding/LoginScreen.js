@@ -1,14 +1,13 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
 // import { NavigationEvents } from 'react-navigation';
 // import { HeaderBackButton } from 'react-navigation-stack';
-import { useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 
 import { UserContext } from 'library/utils/UserContext';
-import LOGIN_MUTATION from 'library/mutations/LOGIN_MUTATION';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import LOGIN_QUERY from 'library/queries/LOGIN_QUERY';
 
-const LoginScreen = props => {
+const LoginScreen = (props) => {
   // state declaration
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,36 +17,34 @@ const LoginScreen = props => {
   const { navigation } = props;
 
   // MUTATIONS
-  const [login, { loading, error }] = useMutation(LOGIN_MUTATION, {
+  const [login, { loading, data, error }] = useLazyQuery(LOGIN_QUERY, {
     variables: {
       email,
       password,
     },
     // wait for the response from the mutation, write User data (returned from mutation)
     // into cache CURRENT_USER_QUERY
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: CURRENT_USER_QUERY,
-        data: {
-          userLoggedIn: dataReturned.login.user,
-        },
-      });
-    },
-    onCompleted: () => {},
-    onError: err => {
-      console.log(err);
-      // Alert.alert('Oh no!', 'An error occured when trying to login. Try again later!', [
-      //   { text: 'OK', onPress: () => console.log('OK Pressed') },
-      // ]);
-    },
+    // update: (proxy, { data: dataReturned }) => {
+    //   proxy.writeQuery({
+    //     query: CURRENT_USER_QUERY,
+    //     data: {
+    //       userLoggedIn: dataReturned.login.user,
+    //     },
+    //   });
+    // },
   });
+
+  useEffect(() => {
+    if (data && data.login && data.login.token && data.login.user)
+      // 2. store token & ID to storage, save user in CTX
+      loginCTX(data.login);
+  }, [data]);
 
   const onLoginSubmit = async () => {
     try {
       // 1. send login request to backend
-      const res = await login();
-      // 2. store token in storage, save user in CTX
-      await loginCTX(res.data.login);
+      console.log('sending login to backend');
+      login();
     } catch (e) {
       // Backend GraphQL errors would lead us here
       console.log('ERROR LOGGING IN TO BACKEND:', e.message);
@@ -70,14 +67,14 @@ const LoginScreen = props => {
           style={styles.input}
           placeholder="Email"
           value={email}
-          onChangeText={val => setEmail(val)}
+          onChangeText={(val) => setEmail(val)}
           editable={!loading}
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
           value={password}
-          onChangeText={val => setPassword(val)}
+          onChangeText={(val) => setPassword(val)}
           secureTextEntry
           editable={!loading}
         />

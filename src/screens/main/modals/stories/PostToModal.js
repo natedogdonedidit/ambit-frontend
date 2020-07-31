@@ -7,12 +7,13 @@ import Feather from 'react-native-vector-icons/Feather';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { UserContext } from 'library/utils/UserContext';
-import { storyPicUpload, storyVideoUpload, createThumbnail, sortStoriesNewestFirst } from 'library/utils';
+import { storyPicUpload, storyVideoUpload, createThumbnail, sortStoriesNewestFirst, getTopicFromID } from 'library/utils';
 
 import Loader from 'library/components/UI/Loader';
 import HeaderPostToModal from 'library/components/headers/HeaderPostToModal';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import ProjectSquare from 'library/components/stories/ProjectSquare';
+import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
@@ -20,7 +21,7 @@ import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const PostToModal = ({ navigation, route }) => {
-  const { setCreatingStory } = useContext(UserContext);
+  const { currentUserId, setCreatingStory } = useContext(UserContext);
   const { capturedImage, capturedVideo, textInput } = route.params; // from camera modal
 
   // const [uploading, setUploading] = useState(false);
@@ -41,7 +42,7 @@ const PostToModal = ({ navigation, route }) => {
   // });
 
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
-    refetchQueries: [{ query: CURRENT_USER_QUERY }, { query: STORIES_HOME_QUERY }],
+    refetchQueries: [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }, { query: STORIES_HOME_QUERY }],
     // onCompleted: () => {},
     onError: (error) => {
       console.log(error);
@@ -60,14 +61,16 @@ const PostToModal = ({ navigation, route }) => {
   });
 
   // QUERIES
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
-  const { userLoggedIn } = dataUser;
+  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(SINGLE_USER_BIO, {
+    variables: { id: currentUserId },
+  });
+  const { user } = dataUser;
 
-  const stories = userLoggedIn.stories || [];
-  const projects = stories.filter((story) => story.type === 'PROJECT');
-  const myStoryID = userLoggedIn.myStory.id;
+  const stories = user ? user.stories : [];
+  const projects = user ? [...stories].filter((story) => story.type === 'PROJECT') : [];
+  const myStoryID = user ? user.myStory.id : '';
   // get topicIDs from user
-  // const topicIDs = getTopicIDsFromUser(userLoggedIn);
+  // const topicIDs = getTopicIDsFromUser(user);
   // get the full topic info from each ID (including story.id)
   // const myTopics = getFullTopicListFromIDs(topicIDs);
 
@@ -88,9 +91,10 @@ const PostToModal = ({ navigation, route }) => {
         variables: {
           story: {
             type: 'PROJECT',
+            lastUpdated: new Date(),
             title: projectTitle,
             topics: { connect: topicsForDB },
-            owner: { connect: { id: userLoggedIn.id } },
+            owner: { connect: { id: currentUserId } },
           },
         },
       });
@@ -119,7 +123,7 @@ const PostToModal = ({ navigation, route }) => {
     if (capturedImage) {
       navigation.navigate('Home');
       try {
-        const uploadedImage = await storyPicUpload(userLoggedIn.id, capturedImage.uri);
+        const uploadedImage = await storyPicUpload(currentUserId, capturedImage.uri);
 
         if (selectedProject) {
           // if here, connect PROJECT
@@ -172,7 +176,7 @@ const PostToModal = ({ navigation, route }) => {
             // create: [
             //   {
             //     type: 'SOLO',
-            //     owner: { connect: { id: userLoggedIn.id } },
+            //     owner: { connect: { id: currentUserId } },
             //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
             //   },
             // ],
@@ -204,7 +208,7 @@ const PostToModal = ({ navigation, route }) => {
     if (capturedVideo) {
       navigation.navigate('Home');
       try {
-        const uploadedVideo = await storyVideoUpload(userLoggedIn.id, capturedVideo.uri);
+        const uploadedVideo = await storyVideoUpload(currentUserId, capturedVideo.uri);
 
         if (selectedProject) {
           // if here, connect MYSTORY? and PROJECT
@@ -266,7 +270,7 @@ const PostToModal = ({ navigation, route }) => {
             // create: [
             //   {
             //     type: 'SOLO',
-            //     owner: { connect: { id: userLoggedIn.id } },
+            //     owner: { connect: { id: currentUserId } },
             //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
             //   },
             // ],
@@ -297,7 +301,7 @@ const PostToModal = ({ navigation, route }) => {
     // if (capturedVideo) {
     //   navigation.navigate('Home');
     //   try {
-    //     const uploadedVideo = await storyVideoUpload(userLoggedIn.id, capturedVideo.uri);
+    //     const uploadedVideo = await storyVideoUpload(currentUserId, capturedVideo.uri);
 
     //     let storyIDsForDB = [];
 
@@ -342,7 +346,7 @@ const PostToModal = ({ navigation, route }) => {
     //       preview,
     //       duration: uploadedVideo.duration,
     //       link: '',
-    //       owner: { connect: { id: userLoggedIn.id } },
+    //       owner: { connect: { id: currentUserId } },
     //       story: { connect: storyIDsForDB },
     //     };
 
@@ -390,7 +394,7 @@ const PostToModal = ({ navigation, route }) => {
           <ProfilePic
             size="medium"
             navigation={navigation}
-            user={userLoggedIn}
+            user={user}
             enableIntro={false}
             enableStory={false}
             enableClick={false}
@@ -418,7 +422,10 @@ const PostToModal = ({ navigation, route }) => {
     if (proj.topics.length > 0) {
       return (
         <Text numberOfLines={1} style={{ ...defaultStyles.smallBoldMute, paddingLeft: 10, paddingTop: 4 }}>
-          {proj.topics.map((top, i) => `${top.name}${i < proj.topics.length - 1 ? `, ` : ''}`)}
+          {proj.topics.map((top, i) => {
+            const { name } = getTopicFromID(top.topicID);
+            return `${name}${i < proj.topics.length - 1 ? `, ` : ''}`;
+          })}
         </Text>
       );
     }

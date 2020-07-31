@@ -2,40 +2,45 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, Text, View, Alert } from 'react-native';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import FOLLOW_MUTATION from 'library/mutations/FOLLOW_MUTATION';
 import UNFOLLOW_MUTATION from 'library/mutations/UNFOLLOW_MUTATION';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import SINGLE_USER_BASIC from 'library/queries/SINGLE_USER_BASIC';
+import { MinimalUser } from 'library/queries/_fragments';
 
-const FollowButton = ({ userToFollow, setFollowersCount, small = false }) => {
+const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStory = false }) => {
+  const client = useApolloClient();
+
   const [isFollowing, setIsFollowing] = useState(false);
   const [buttonPressed, setButtonPressed] = useState(false);
 
   // MUTATIONS - follow, connect
   const [followUser, { loading: loadingFollow }] = useMutation(FOLLOW_MUTATION, {
     // refetchQueries: () => [{ query: CURRENT_USER_QUERY }, { query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
-    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
+    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { id: userToFollowID } }],
     onError: () => null,
   });
 
   const [unfollowUser, { loading: loadingUnfollow }] = useMutation(UNFOLLOW_MUTATION, {
     // refetchQueries: () => [{ query: CURRENT_USER_QUERY }, { query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
-    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
+    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { id: userToFollowID } }],
     onError: () => null,
   });
 
   // QUERY - need this to know if we're following this user or not
-  const { data, loadingUser, errorUser } = useQuery(CURRENT_USER_QUERY);
+  const { data, loadingUser, errorUser } = useQuery(CURRENT_USER_FOLLOWING);
+  // console.log(data);
 
   // syncs isFollowing with cache (should only update once because cache-only)
   useEffect(() => {
-    if (data && data.userLoggedIn && data.userLoggedIn.following) {
-      const alreadyFollowingInd = userLoggedIn.following.findIndex((u) => u.id === userToFollow.id);
+    if (data && data.iFollow) {
+      const alreadyFollowingInd = data.iFollow.findIndex((id) => id === userToFollowID);
+      // console.log(alreadyFollowingInd);
       const alreadyFollowing = alreadyFollowingInd >= 0;
       // console.log('set isFollowing to::', alreadyFollowing);
       setIsFollowing(alreadyFollowing);
@@ -60,27 +65,21 @@ const FollowButton = ({ userToFollow, setFollowersCount, small = false }) => {
 
   const followMutation = async () => {
     // // create new following array with new user in it
-    // const newFollowing = [{ __typename: 'User', ...userToFollow }, ...data.userLoggedIn.following];
-
     followUser({
-      variables: { userID: userToFollow.id },
-      // optimisticResponse: {
-      //   __typename: 'Mutation',
-      //   followUser: {
-      //     __typename: 'User',
-      //     ...data.userLoggedIn,
-      //     following: newFollowing,
-      //   },
-      // },
-      // update: (proxy, { data: dataReturned }) => {
-      //   // console.log(data.userLoggedIn === dataReturned.unfollowUser);
-      //   proxy.writeQuery({
-      //     query: CURRENT_USER_QUERY,
-      //     data: {
-      //       userLoggedIn: dataReturned.followUser,
-      //     },
-      //   });
-      // },
+      variables: { userID: userToFollowID },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        followUser: [...data.iFollow, userToFollowID],
+      },
+      update: (proxy, { data: dataReturned }) => {
+        // console.log(data.userLoggedIn === dataReturned.unfollowUser);
+        client.writeQuery({
+          query: CURRENT_USER_FOLLOWING,
+          data: {
+            iFollow: [...dataReturned.followUser],
+          },
+        });
+      },
     });
   };
 
@@ -92,26 +91,25 @@ const FollowButton = ({ userToFollow, setFollowersCount, small = false }) => {
     // // remove user from array
     // newFollowing.splice(alreadyFollowingInd, 1);
 
-    unfollowUser({
-      variables: { userID: userToFollow.id },
-      // optimisticResponse: {
-      //   __typename: 'Mutation',
-      //   unfollowUser: {
-      //     __typename: 'User',
-      //     ...data.userLoggedIn,
-      //     following: newFollowing,
-      //   },
-      // },
-      // update: (proxy, { data: dataReturned }) => {
-      //   // console.log(data.userLoggedIn === dataReturned.unfollowUser);
+    const newFollowing = [...data.iFollow];
+    const alreadyFollowingInd = data.iFollow.findIndex((id) => id === userToFollowID);
+    newFollowing.splice(alreadyFollowingInd, 1);
 
-      //   proxy.writeQuery({
-      //     query: CURRENT_USER_QUERY,
-      //     data: {
-      //       userLoggedIn: dataReturned.unfollowUser,
-      //     },
-      //   });
-      // },
+    unfollowUser({
+      variables: { userID: userToFollowID },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        unfollowUser: newFollowing,
+      },
+      update: (proxy, { data: dataReturned }) => {
+        // console.log('yo', dataReturned.unfollowUser);
+        client.writeQuery({
+          query: CURRENT_USER_FOLLOWING,
+          data: {
+            iFollow: [...dataReturned.unfollowUser],
+          },
+        });
+      },
     });
   };
 
@@ -154,13 +152,16 @@ const FollowButton = ({ userToFollow, setFollowersCount, small = false }) => {
     return null;
   }
 
-  const { userLoggedIn } = data;
+  // const { userLoggedIn } = data;
 
-  if (!userLoggedIn || !userLoggedIn.following) {
-    return null;
-  }
+  // if (!userLoggedIn || !userLoggedIn.following) {
+  //   return null;
+  // }
 
   if (small) {
+    if (onStory && isFollowing) {
+      return null;
+    }
     return (
       <TouchableOpacity onPress={() => requestAnimationFrame(onPressFollow)} activeOpacity={0.5}>
         <View style={isFollowing ? styles.buttonActiveSmall : styles.buttonSmall}>

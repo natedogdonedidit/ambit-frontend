@@ -22,9 +22,9 @@ import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 import SuggestedConnection from './SuggestedConnection';
 
-const ConnectionsList = ({ navigation, userLoggedIn, scrollY, showRefreshing, setShowRefreshing }) => {
+const ConnectionsList = ({ navigation, scrollY, showRefreshing, setShowRefreshing }) => {
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(ALL_CONNECTIONS_QUERY, {
+  const { error, data, refetch, fetchMore, networkStatus } = useQuery(ALL_CONNECTIONS_QUERY, {
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
@@ -125,7 +125,7 @@ const ConnectionsList = ({ navigation, userLoggedIn, scrollY, showRefreshing, se
                 <Text style={{ ...defaultStyles.largeMute, textAlign: 'center', paddingBottom: 10, paddingHorizontal: 15 }}>
                   Create a goal and find your matches here
                 </Text>
-                <ButtonDefault onPress={() => navigation.navigate('NewPostModal', { userLoggedIn })}>Create a goal</ButtonDefault>
+                {/* <ButtonDefault onPress={() => navigation.navigate('NewPostModal', {  })}>Create a goal</ButtonDefault> */}
               </View>
             );
           }

@@ -13,14 +13,18 @@ import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import NotificationListItem from 'library/components/lists/NotificationListItem';
 import { UserContext } from 'library/utils/UserContext';
+import { useEffect } from 'react';
 
 const NotificationsScreen = ({ navigation }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
   const { clearNotifications } = useContext(UserContext);
-  navigation.addListener('focus', () => {
-    clearNotifications();
-  });
+
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      clearNotifications();
+    });
+  }, []);
 
   const insets = useSafeArea();
 

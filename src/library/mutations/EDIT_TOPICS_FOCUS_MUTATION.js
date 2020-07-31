@@ -1,13 +1,16 @@
 import { gql } from '@apollo/client';
-import { AllTopicsFragment } from 'library/queries/_fragments';
+// import { AllTopicsFragment } from 'library/queries/_fragments';
 
 const EDIT_TOPICS_FOCUS_MUTATION = gql`
   mutation EDIT_TOPICS_FOCUS_MUTATION($topics: [TopicWhereUniqueInput]!) {
     editTopicsFocus(topics: $topics) {
-      ...AllTopicsFragment
+      topicsFocus {
+        id
+        topicID
+        name
+      }
     }
   }
-  ${AllTopicsFragment}
 `;
 
 export default EDIT_TOPICS_FOCUS_MUTATION;

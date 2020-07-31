@@ -1,100 +1,6 @@
 import { gql } from '@apollo/client';
 
 // NON-DEPENDENT FRAGMENTS
-export const StoryItemFragment = gql`
-  fragment StoryItemFragment on StoryItem {
-    id
-    createdAt
-    stories {
-      id
-      type
-      title
-      save
-      topics {
-        id
-        topicID
-        name
-      }
-    }
-    likedByMe
-    likesCount
-    type
-    url
-    preview
-    link
-    text
-    duration
-    views {
-      id
-      name
-      profilePic
-    }
-    plays
-  }
-`;
-
-export const StoryFragment = gql`
-  fragment StoryFragment on Story {
-    id
-    title
-    owner {
-      id
-      name
-      firstName
-      headline
-      location
-      profilePic
-      intro {
-        id
-        title
-        owner {
-          id
-          name
-          firstName
-          headline
-          location
-          profilePic
-        }
-        type
-        preview
-        showcase
-        save
-        items {
-          id
-          createdAt
-          type
-          url
-          preview
-          link
-          text
-          duration
-          likedByMe
-          likesCount
-          views {
-            id
-            name
-            profilePic
-          }
-          plays
-        }
-      }
-    }
-    type
-    preview
-    showcase
-    save
-    topics {
-      id
-      topicID
-      name
-    }
-    items {
-      ...StoryItemFragment
-    }
-  }
-  ${StoryItemFragment}
-`;
-
 export const AllTopicsFragment = gql`
   fragment AllTopicsFragment on User {
     topicsFocus {
@@ -125,35 +31,122 @@ export const AllTopicsFragment = gql`
   }
 `;
 
+export const UpdateFragment = gql`
+  fragment UpdateFragment on Update {
+    id
+    createdAt
+    content
+    image
+    likesCount
+    likedByMe
+    commentsCount
+    sharesCount
+    parentPost {
+      id
+      owner {
+        id
+      }
+    }
+    _deleted
+  }
+`;
+
+export const StoryItemFragment = gql`
+  fragment StoryItemFragment on StoryItem {
+    id
+    createdAt
+    type
+    url
+    preview
+    link
+    text
+    duration
+    likedByMe
+    likesCount
+    viewedByMe
+    plays
+  }
+`;
+
+// this is for places where the owner is already there...aka MinimalUser fragment
+export const StoryNoOwner = gql`
+  fragment StoryNoOwner on Story {
+    id
+    title
+    type
+    showcase
+    topics {
+      id
+      topicID
+    }
+    items {
+      ...StoryItemFragment
+    }
+  }
+  ${StoryItemFragment}
+`;
+
+// used for queries that only grab stories...StoriesHome / StoriesTopic
+export const StoryWithOwner = gql`
+  fragment StoryWithOwner on Story {
+    id
+    title
+    owner {
+      id
+      name
+      firstName
+      headline
+      location
+      profilePic
+      intro {
+        id
+        title
+        type
+        items {
+          ...StoryItemFragment
+        }
+      }
+    }
+    type
+    showcase
+    topics {
+      id
+      topicID
+    }
+    items {
+      ...StoryItemFragment
+    }
+  }
+  ${StoryItemFragment}
+`;
+
 export const MinimalUser = gql`
   fragment MinimalUser on User {
     id
     name
+    firstName
     profilePic
     bannerPic
     headline
     bio
     website
-    connectionsCount
-    followingCount
-    followersCount
     location
     locationID
     locationLat
     locationLon
-    ...AllTopicsFragment
     intro {
-      ...StoryFragment
+      ...StoryNoOwner
     }
     myStory {
-      ...StoryFragment
+      ...StoryNoOwner
     }
     latestProject {
-      ...StoryFragment
+      ...StoryNoOwner
     }
+    followingCount
+    followersCount
   }
-  ${StoryFragment}
-  ${AllTopicsFragment}
+  ${StoryNoOwner}
 `;
 
 export const GroupFragment = gql`
@@ -200,95 +193,7 @@ export const MessageFragment = gql`
   ${GroupFragment}
 `;
 
-export const FullSkills = gql`
-  fragment FullSkills on Skill {
-    id
-    skill
-    isExpert
-  }
-`;
-
-export const FullExperience = gql`
-  fragment FullExperience on Experience {
-    id
-    name
-    subText
-    startDateMonth
-    startDateYear
-    endDateMonth
-    endDateYear
-    location
-    locationID
-    locationLat
-    locationLon
-    currentRole
-  }
-`;
-
-export const FullEducation = gql`
-  fragment FullEducation on Education {
-    id
-    name
-    subText
-    startDateMonth
-    startDateYear
-    endDateMonth
-    endDateYear
-    location
-    locationID
-    locationLat
-    locationLon
-    currentRole
-  }
-`;
-
-// UPDATE FRAGMENTS
-export const UpdateFragment = gql`
-  fragment UpdateFragment on Update {
-    id
-    createdAt
-    content
-    image
-    likesCount
-    likedByMe
-    commentsCount
-    sharesCount
-    parentPost {
-      id
-      owner {
-        id
-      }
-    }
-    _deleted
-  }
-`;
-
 // POSTS FRAGMENTS
-export const MinimalPost = gql`
-  fragment MinimalPost on Post {
-    id
-    createdAt
-    lastUpdated
-    owner {
-      ...MinimalUser
-    }
-    isGoal
-    goal
-    goalStatus
-    subField {
-      id
-      name
-      topicID
-    }
-    content
-    images
-    video
-    pitch
-    _deleted
-  }
-  ${MinimalUser}
-`;
-
 export const BasicPost = gql`
   fragment BasicPost on Post {
     id
@@ -302,17 +207,14 @@ export const BasicPost = gql`
     goalStatus
     subField {
       id
-      name
       topicID
     }
     topics {
       id
       topicID
-      name
       parentTopic {
         id
         topicID
-        name
       }
     }
     location
@@ -322,18 +224,12 @@ export const BasicPost = gql`
     content
     images
     video
-    pitch
     likesCount
     likedByMe
     commentsCount
     sharesCount
     updates {
       ...UpdateFragment
-    }
-    views {
-      id
-      name
-      profilePic
     }
     _deleted
   }
@@ -384,11 +280,6 @@ export const CommentFragment = gql`
       image
       likesCount
       likedByMe
-      commentsCount
-      comments {
-        id
-        _deleted
-      }
       _deleted
     }
     _deleted
@@ -412,46 +303,61 @@ export const DetailPost = gql`
   ${CommentFragment}
 `;
 
-export const DetailedUser = gql`
-  fragment DetailedUser on User {
+export const UserProfileFragment = gql`
+  fragment UserProfileFragment on User {
     ...MinimalUser
-    createdAt
     firstName
     lastName
     email
     about
-    connections {
-      ...MinimalUser
-    }
-    following {
-      ...MinimalUser
-    }
-    followers {
-      ...MinimalUser
+    followingCount
+    followersCount
+    ...AllTopicsFragment
+    stories {
+      ...StoryWithOwner
     }
     skills {
-      ...FullSkills
+      id
+      skill
+      isExpert
     }
     experience {
-      ...FullExperience
+      id
+      name
+      subText
+      startDateMonth
+      startDateYear
+      endDateMonth
+      endDateYear
+      location
+      locationID
+      locationLat
+      locationLon
+      currentRole
     }
     education {
-      ...FullEducation
-    }
-    stories {
-      ...StoryFragment
+      id
+      name
+      subText
+      startDateMonth
+      startDateYear
+      endDateMonth
+      endDateYear
+      location
+      locationID
+      locationLat
+      locationLon
+      currentRole
     }
   }
   ${MinimalUser}
-  ${FullSkills}
-  ${FullExperience}
-  ${FullEducation}
-  ${StoryFragment}
+  ${AllTopicsFragment}
+  ${StoryWithOwner}
 `;
 
-export const LoggedInUser = gql`
-  fragment LoggedInUser on User {
-    ...DetailedUser
+export const UserWithMessages = gql`
+  fragment UserWithMessages on User {
+    ...MinimalUser
     groups {
       ...GroupFragment
     }
@@ -460,7 +366,7 @@ export const LoggedInUser = gql`
     }
     unReadMessagesCount
   }
-  ${DetailedUser}
+  ${MinimalUser}
   ${GroupFragment}
   ${MessageFragment}
 `;
@@ -480,7 +386,7 @@ export const NotificationFragment = gql`
       ...MinimalUser
     }
     post {
-      ...MinimalPost
+      ...BasicPost
     }
     update {
       ...UpdateFragment
@@ -491,7 +397,7 @@ export const NotificationFragment = gql`
     seen
   }
   ${MinimalUser}
-  ${MinimalPost}
+  ${BasicPost}
   ${UpdateFragment}
   ${CommentFragment}
 `;

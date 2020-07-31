@@ -4,8 +4,6 @@ import { StyleSheet, View, Text, Alert } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import FollowButton from 'library/components/UI/buttons/FollowButton';
-import ConnectButton from 'library/components/UI/buttons/ConnectButton';
-import ThreeDotsButton from 'library/components/UI/buttons/ThreeDotsButton';
 import MessageButton from 'library/components/UI/buttons/MessageButton';
 import SmallGrayButton from 'library/components/UI/buttons/SmallGrayButton';
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -77,7 +75,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
             />
             {/* <ConnectButton onPress={() => null} buttonStyle={{ marginRight: 10 }} /> */}
 
-            <FollowButton userToFollow={user} setFollowersCount={setFollowersCount} />
+            <FollowButton userToFollowID={user.id} setFollowersCount={setFollowersCount} />
           </>
         )}
       </View>

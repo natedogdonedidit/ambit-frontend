@@ -1,12 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useMutation } from '@apollo/client';
 
 import { UserContext } from 'library/utils/UserContext';
 import SIGNUP_MUTATION from 'library/mutations/SIGNUP_MUTATION';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
-const CreateAccountScreen = props => {
+const CreateAccountScreen = (props) => {
   // state declaration
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -16,7 +15,7 @@ const CreateAccountScreen = props => {
   const { loginCTX } = useContext(UserContext);
 
   // navigation
-  const { navigation } = props;
+  // const { navigation } = props;
 
   // MUTATIONS
   const [signup, { loading, error }] = useMutation(SIGNUP_MUTATION, {
@@ -28,21 +27,14 @@ const CreateAccountScreen = props => {
     },
     // wait for the response from the mutation, write User data (returned from mutation)
     // into cache CURRENT_USER_QUERY
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: CURRENT_USER_QUERY,
-        data: {
-          userLoggedIn: dataReturned.signup.user,
-        },
-      });
-    },
-    onCompleted: () => {},
-    onError: err => {
-      console.log(err);
-      // Alert.alert('Oh no!', 'An error occured when trying to login. Try again later!', [
-      //   { text: 'OK', onPress: () => console.log('OK Pressed') },
-      // ]);
-    },
+    // update: (proxy, { data: dataReturned }) => {
+    //   proxy.writeQuery({
+    //     query: CURRENT_USER_QUERY,
+    //     data: {
+    //       userLoggedIn: dataReturned.signup.user,
+    //     },
+    //   });
+    // },
   });
 
   const onSignupSubmit = async () => {
@@ -78,21 +70,21 @@ const CreateAccountScreen = props => {
         style={styles.input}
         placeholder="First Name"
         value={firstName}
-        onChangeText={val => setFirstName(val)}
+        onChangeText={(val) => setFirstName(val)}
         editable={!loading}
       />
       <TextInput
         style={styles.input}
         placeholder="Last Name"
         value={lastName}
-        onChangeText={val => setLastName(val)}
+        onChangeText={(val) => setLastName(val)}
         editable={!loading}
       />
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
-        onChangeText={val => setEmail(val)}
+        onChangeText={(val) => setEmail(val)}
         autoCapitalize="none"
         editable={!loading}
       />
@@ -100,7 +92,7 @@ const CreateAccountScreen = props => {
         style={styles.input}
         placeholder="Password"
         value={password}
-        onChangeText={val => setPassword(val)}
+        onChangeText={(val) => setPassword(val)}
         secureTextEntry
         editable={!loading}
       />

@@ -13,9 +13,18 @@ import EDIT_TOPICS_FREELANCE_MUTATION from 'library/mutations/EDIT_TOPICS_FREELA
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsFreelanceModal = ({ navigation }) => {
-  const client = useApolloClient()
+  const client = useApolloClient();
 
   const [selectedCategories, setSelectedCategories] = useState('');
+
+  // ////////////////////////////////////////
+  // MUTATIONS
+  const [editTopicsFreelance] = useMutation(EDIT_TOPICS_FREELANCE_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // ////////////////////////////////////////
   // QUERIES
@@ -28,61 +37,55 @@ const SelectTopicsFreelanceModal = ({ navigation }) => {
   const topicsIDonly = topics.map((topic) => topic.topicID);
 
   // ////////////////////////////////////////
-  // MUTATIONS
-  const [editTopicsFreelance] = useMutation(EDIT_TOPICS_FREELANCE_MUTATION, {
-    onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
-  });
-
-  // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
   const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
-    // build the new array of topics
-    let newArray = [];
-    if (topicsIDonly.includes(selectedTopicID)) {
-      // remove it
-      newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
-    } else {
-      // add it
-      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
-    }
+    requestAnimationFrame(() => {
+      // build the new array of topics
+      let newArray = [];
+      if (topicsIDonly.includes(selectedTopicID)) {
+        // remove it
+        newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
+      } else {
+        // add it
+        newArray = [...topics, { id: selectedTopicID, topicID: selectedTopicID, name: selectedTopicName }];
+      }
 
-    // for mutation
-    const newArrayTopicIDonly = newArray.map((topic) => {
-      return { topicID: topic.topicID };
-    });
+      // for mutation
+      const newArrayTopicIDonly = newArray.map((topic) => {
+        return { topicID: topic.topicID };
+      });
 
-    // for optimistic response
-    const newArrayTopicIDandType = newArray.map((topic) => {
-      return { id: topic.topicID, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
-    });
+      // for optimistic response
+      const newArrayTopicIDandType = newArray.map((topic) => {
+        return { id: topic.id, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+      });
 
-    // run the mutation
-    editTopicsFreelance({
-      variables: {
-        topics: newArrayTopicIDonly,
-      },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        editTopicsFreelance: {
-          __typename: 'User',
-          ...myTopics,
-          topicsFreelance: newArrayTopicIDandType,
+      // run the mutation
+      editTopicsFreelance({
+        variables: {
+          topics: newArrayTopicIDonly,
         },
-      },
-      update: (proxy, { data: dataReturned }) => {
-        // console.log('dataReturned', dataReturned.editTopicsFreelance);
-        // const data = proxy.readQuery({ query: CURRENT_USER_QUERY });
-
-        client.writeQuery({
-          query: CURRENT_USER_TOPICS,
-          data: {
-            myTopics: dataReturned.editTopicsFreelance,
+        optimisticResponse: {
+          __typename: 'Mutation',
+          editTopicsFreelance: {
+            __typename: 'User',
+            topicsFreelance: [...newArrayTopicIDandType],
           },
-        });
-      },
+        },
+        update: (proxy, { data: dataReturned }) => {
+          const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
+
+          client.writeQuery({
+            query: CURRENT_USER_TOPICS,
+            data: {
+              myTopics: {
+                ...dataCache.myTopics,
+                topicsFreelance: [...dataReturned.editTopicsFreelance.topicsFreelance],
+              },
+            },
+          });
+        },
+      });
     });
   };
 

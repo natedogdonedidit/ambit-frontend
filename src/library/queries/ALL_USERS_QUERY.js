@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
-import { DetailedUser } from 'library/queries/_fragments';
+import { MinimalUser } from 'library/queries/_fragments';
 
 const ALL_USERS_QUERY = gql`
   query ALL_USERS_QUERY {
     users {
-      ...DetailedUser
+      ...MinimalUser
     }
   }
-  ${DetailedUser}
+  ${MinimalUser}
 `;
 
 export default ALL_USERS_QUERY;

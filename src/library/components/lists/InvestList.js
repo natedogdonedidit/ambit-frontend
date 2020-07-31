@@ -58,22 +58,22 @@ const styles = StyleSheet.create({
   },
   // add button
   addButton: {
-    height: 30,
+    height: 32,
     width: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.blueGray,
+    borderColor: colors.green,
     opacity: 0.9,
   },
   addedButton: {
-    height: 30,
+    height: 32,
     width: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
-    backgroundColor: colors.blueGray,
+    borderRadius: 16,
+    backgroundColor: colors.green,
   },
   addBottomBorder: {
     borderBottomWidth: StyleSheet.hairlineWidth,

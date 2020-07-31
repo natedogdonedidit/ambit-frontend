@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,7 +12,7 @@ import {
   InputAccessoryView,
   Dimensions,
 } from 'react-native';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -21,7 +21,7 @@ import Image from 'react-native-scalable-image';
 import FitImage from 'react-native-fit-image';
 
 import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
-import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
 import { postPicUpload, getTopicID, addMainTopics, getNetworkIDsFromUser, getTopicFromID } from 'library/utils';
@@ -34,7 +34,7 @@ import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 
 const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
-  const { userLoggedIn, topicsPassedIn = [] } = route.params;
+  const { topicsPassedIn = [] } = route.params;
 
   const { width } = Dimensions.get('window');
 
@@ -45,16 +45,26 @@ const NewPostModal = ({ navigation, route }) => {
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState('');
-  const [pitch, setPitch] = useState('');
-  const [location, setLocation] = useState(userLoggedIn.location);
-  const [locationID, setLocationID] = useState(userLoggedIn.locationID);
-  const [locationLat, setLocationLat] = useState(userLoggedIn.locationLat);
-  const [locationLon, setLocationLon] = useState(userLoggedIn.locationLon);
+  const [location, setLocation] = useState('');
+  const [locationID, setLocationID] = useState('');
+  const [locationLat, setLocationLat] = useState('');
+  const [locationLon, setLocationLon] = useState('');
 
   const [uploading, setUploading] = useState(false);
 
   // HOOKS
   const { currentUserId } = useContext(UserContext);
+
+  const { loading: loadingUser, error, data } = useQuery(CURRENT_USER_QUERY);
+
+  useEffect(() => {
+    if (data && data.userLoggedIn) {
+      setLocation(data.userLoggedIn.location || null);
+      setLocationID(data.userLoggedIn.locationID || null);
+      setLocationLat(data.userLoggedIn.locationLat || null);
+      setLocationLon(data.userLoggedIn.locationLon || null);
+    }
+  }, [data]);
 
   // MUTATIONS
   const [createPost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
@@ -72,7 +82,6 @@ const NewPostModal = ({ navigation, route }) => {
         locationLon,
         content,
         video,
-        pitch,
         images: { set: images },
         lastUpdated: new Date(),
         owner: {
@@ -89,6 +98,10 @@ const NewPostModal = ({ navigation, route }) => {
   });
 
   const loading = loadingCreate || uploading;
+
+  if (loadingUser) {
+    return null;
+  }
 
   // CUSTOM FUNCTIONS
   const handleBack = () => {
@@ -143,17 +156,15 @@ const NewPostModal = ({ navigation, route }) => {
         locationLon,
         content,
         video,
-        pitch,
         images: uploadedImages,
         createdAt: new Date(),
         lastUpdated: new Date(),
-        owner: { ...userLoggedIn },
+        owner: { ...data.userLoggedIn },
         likesCount: null,
         likedByMe: false,
         commentsCount: null,
         sharesCount: null,
         updates: [],
-        views: [],
         _deleted: false,
       };
 
@@ -172,7 +183,6 @@ const NewPostModal = ({ navigation, route }) => {
             locationLon,
             content,
             video,
-            pitch,
             images: { set: uploadedImages },
             lastUpdated: new Date(),
             owner: {
@@ -248,7 +258,7 @@ const NewPostModal = ({ navigation, route }) => {
 
   const attemptUploads = () => {
     const uploadImagesPromises = images.map((image) => {
-      const imageObject = postPicUpload(userLoggedIn.id, image);
+      const imageObject = postPicUpload(data.userLoggedIn.id, image);
       return imageObject;
     });
 
@@ -285,7 +295,7 @@ const NewPostModal = ({ navigation, route }) => {
         const newArray = imgs.map((img) => {
           // console.log('received image', img);
           // return { uri: img.path, width: img.width, height: img.height };
-          console.log(img.path);
+          // console.log(img.path);
           return img.path;
         });
 
@@ -539,7 +549,7 @@ const NewPostModal = ({ navigation, route }) => {
 
             <View style={styles.postInputView}>
               <View style={styles.leftSide}>
-                <ProfilePicBasic pic={userLoggedIn.profilePic} size={34} />
+                <ProfilePicBasic pic={data.userLoggedIn.profilePic} size={34} />
               </View>
               <View style={styles.rightSide}>
                 <TextInput

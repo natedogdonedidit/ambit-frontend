@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
-import { DetailedUser } from 'library/queries/_fragments';
+import { UserProfileFragment } from 'library/queries/_fragments';
 
 const EDIT_SKILLS_MUTATION = gql`
   mutation EDIT_SKILLS_MUTATION($id: ID!, $skills: [SkillCreateWithoutOwnerInput!]) {
     editSkills(id: $id, skills: $skills) {
-      ...DetailedUser
+      ...UserProfileFragment
     }
   }
-  ${DetailedUser}
+  ${UserProfileFragment}
 `;
 
 export default EDIT_SKILLS_MUTATION;

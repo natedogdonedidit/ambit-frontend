@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, RefreshControl, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, StatusBar, Animated, ActivityIndicator } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
-import { useQuery } from '@apollo/client';
-
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
@@ -18,22 +15,10 @@ const ConnectionsScreen = ({ navigation }) => {
   const [scrollY] = useState(new Animated.Value(0));
   const [showRefreshing, setShowRefreshing] = useState(false);
 
-
-  // QUERIES
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
-  if (errorUser) return <Error error={errorUser} />;
-  if (loadingUser) return <Loader backgroundColor={colors.lightGray} loading={loadingUser} />;
-  const { userLoggedIn } = dataUser;
-
   return (
     <View style={{ ...styles.container, paddingTop: insets.top }}>
       <StatusBar barStyle="dark-content" />
-      <HeaderMatches
-        user={userLoggedIn}
-        handleMiddle={() => null}
-        handleRight={() => navigation.navigate('Search')}
-        navigation={navigation}
-      />
+      <HeaderMatches handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
       {/* This is the loading animation */}
       <Animated.View
         style={{
@@ -72,7 +57,12 @@ const ConnectionsScreen = ({ navigation }) => {
         </View>
       </Animated.View>
       <View style={{ flex: 1, top: -StyleSheet.hairlineWidth }}>
-        <ConnectionsList navigation={navigation} userLoggedIn={userLoggedIn} scrollY={scrollY} showRefreshing={showRefreshing} setShowRefreshing={setShowRefreshing} />
+        <ConnectionsList
+          navigation={navigation}
+          scrollY={scrollY}
+          showRefreshing={showRefreshing}
+          setShowRefreshing={setShowRefreshing}
+        />
       </View>
 
       {/* Gives a solid background to the StatusBar */}

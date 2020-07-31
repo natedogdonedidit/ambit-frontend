@@ -58,11 +58,11 @@ function Story({
 
   // will return the index of the newest unseen story item - only runs on first render
   const newestUnseen = useMemo(() => {
-    return story.items.findIndex(({ views }) => {
+    return story.items.findIndex(({ viewedByMe }) => {
       // return true if you have NOT viewed the story - this will set newestUnseen to that index
-      if (views.length <= 0) return true;
+      // if (views.length <= 0) return true;
 
-      const viewedByMe = views.some(({ id }) => id === currentUserId);
+      // const viewedByMe = views.some(({ id }) => id === currentUserId);
       return !viewedByMe;
     });
   }, []);

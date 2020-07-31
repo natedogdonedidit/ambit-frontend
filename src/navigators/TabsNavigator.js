@@ -21,11 +21,9 @@ const Tabs = createBottomTabNavigator();
 const TabsNavigator = ({ navigation }) => {
   const { unReadNotifications, currentUserId } = useContext(UserContext);
 
-  const { data: userData, networkStatus: networkStatusUser } = useQuery(CURRENT_USER_QUERY, {
-    notifyOnNetworkStatusChange: true,
-  });
+  const { data } = useQuery(CURRENT_USER_QUERY);
 
-  const { userLoggedIn } = userData;
+  const { userLoggedIn } = data;
 
   // any time this page loads or a new user id logs in...send the identify event
   useEffect(() => {
@@ -41,14 +39,14 @@ const TabsNavigator = ({ navigation }) => {
     }
   }, [currentUserId]);
 
-  let unReadMessagesCount = 0;
-  if (userData) {
-    if (userData.userLoggedIn) {
-      if (userData.userLoggedIn.unReadMessagesCount) {
-        unReadMessagesCount = userData.userLoggedIn.unReadMessagesCount;
-      }
-    }
-  }
+  // let unReadMessagesCount = 0;
+  // if (data) {
+  //   if (data.userLoggedIn) {
+  //     if (data.userLoggedIn.unReadMessagesCount) {
+  //       unReadMessagesCount = data.userLoggedIn.unReadMessagesCount;
+  //     }
+  //   }
+  // }
 
   return (
     <Tabs.Navigator
@@ -76,7 +74,7 @@ const TabsNavigator = ({ navigation }) => {
         name="InboxStack"
         component={InboxStack}
         options={{
-          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessagesCount} />,
+          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={0} />,
         }}
       />
     </Tabs.Navigator>

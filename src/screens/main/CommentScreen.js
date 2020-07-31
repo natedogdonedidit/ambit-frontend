@@ -25,7 +25,6 @@ import HeaderBack from 'library/components/headers/HeaderBack';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import ALL_USERS_QUERY from 'library/queries/ALL_USERS_QUERY';
 import CREATE_COMMENT_MUTATION from 'library/mutations/CREATE_COMMENT_MUTATION';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useMutation, useApolloClient } from '@apollo/client';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,12 +10,14 @@ import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import EDIT_TOPICS_FOCUS_MUTATION from 'library/mutations/EDIT_TOPICS_FOCUS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
-const TopicsOfFocus = ({ navigation, myTopics }) => {
-  const { topicsFocus: topics, topicsInterest, topicsFreelance, topicsInvest, topicsMentor } = myTopics;
+function TopicsOfFocus({ navigation, myTopics }) {
+  const client = useApolloClient();
 
-  const topicsIDonly = topics.map((topic) => topic.topicID);
+  const { topicsFocus: topics } = myTopics;
 
-  const client = useApolloClient()
+  const topicsIDonly = useMemo(() => {
+    return topics.map((topic) => topic.topicID);
+  }, [topics]);
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -29,50 +31,53 @@ const TopicsOfFocus = ({ navigation, myTopics }) => {
   // //////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
   const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
-    // build the new array of topics
-    let newArray = [];
-    if (topicsIDonly.includes(selectedTopicID)) {
-      // remove it
-      newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
-    } else {
-      // add it
-      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
-    }
+    requestAnimationFrame(() => {
+      // build the new array of topics
+      let newArray = [];
+      if (topicsIDonly.includes(selectedTopicID)) {
+        // remove it
+        newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
+      } else {
+        // add it
+        newArray = [...topics, { id: selectedTopicID, topicID: selectedTopicID, name: selectedTopicName }];
+      }
 
-    // for mutation
-    const newArrayTopicIDonly = newArray.map((topic) => {
-      return { topicID: topic.topicID };
-    });
+      // for mutation
+      const newArrayTopicIDonly = newArray.map((topic) => {
+        return { topicID: topic.topicID };
+      });
 
-    // for optimistic response
-    const newArrayTopicIDandType = newArray.map((topic) => {
-      return { id: topic.topicID, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
-    });
+      // for optimistic response
+      const newArrayTopicIDandType = newArray.map((topic) => {
+        return { id: topic.id, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+      });
 
-    // run the mutation
-    editTopicsFocus({
-      variables: {
-        topics: newArrayTopicIDonly,
-      },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        editTopicsFocus: {
-          __typename: 'User',
-          ...myTopics,
-          topicsFocus: newArrayTopicIDandType,
+      // run the mutation
+      editTopicsFocus({
+        variables: {
+          topics: newArrayTopicIDonly,
         },
-      },
-      update: (proxy, { data: dataReturned }) => {
-        // console.log('dataReturned', dataReturned.editTopicsFocus);
-        // const data = proxy.readQuery({ query: CURRENT_USER_QUERY });
-
-        client.writeQuery({
-          query: CURRENT_USER_TOPICS,
-          data: {
-            myTopics: dataReturned.editTopicsFocus,
+        optimisticResponse: {
+          __typename: 'Mutation',
+          editTopicsFocus: {
+            __typename: 'User',
+            topicsFocus: [...newArrayTopicIDandType],
           },
-        });
-      },
+        },
+        update: (proxy, { data: dataReturned }) => {
+          const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
+
+          client.writeQuery({
+            query: CURRENT_USER_TOPICS,
+            data: {
+              myTopics: {
+                ...dataCache.myTopics,
+                topicsFocus: [...dataReturned.editTopicsFocus.topicsFocus],
+              },
+            },
+          });
+        },
+      });
     });
   };
 
@@ -91,18 +96,18 @@ const TopicsOfFocus = ({ navigation, myTopics }) => {
               {name}
             </Text>
             {isSelected ? (
-              <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
                 <View style={styles.addedButton}>
                   <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
                 </View>
               </TouchableOpacity>
             ) : (
-                <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-                  <View style={styles.addButton}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                <View style={styles.addButton}>
+                  <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </TouchableOpacity>
       );
@@ -119,7 +124,7 @@ const TopicsOfFocus = ({ navigation, myTopics }) => {
       <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>Add some topics</ButtonDefault>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   section: {
@@ -150,23 +155,23 @@ const styles = StyleSheet.create({
   },
   // add button
   addButton: {
-    height: 30,
+    height: 32,
     width: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: colors.purp,
     opacity: 0.9,
   },
   addedButton: {
-    height: 30,
+    height: 32,
     width: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 16,
     backgroundColor: colors.purp,
   },
 });
 
-export default TopicsOfFocus;
+export default React.memo(TopicsOfFocus);

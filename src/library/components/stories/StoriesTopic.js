@@ -52,21 +52,21 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
 
   const sortStoriesTopic = (a, b) => {
     // if user story - check if viewed entire story (used in logic below)
-    const newestUnseenA = a.items.findIndex(({ views }) => {
+    const newestUnseenA = a.items.findIndex(({ viewedByMe }) => {
       // return true if you have NOT viewed the story - this will set newestUnseen to that index
-      if (views.length <= 0) return true;
+      // if (views.length <= 0) return true;
 
-      const viewedByMe = views.some(({ id }) => id === currentUserId);
+      // const viewedByMe = views.some(({ id }) => id === currentUserId);
       return !viewedByMe;
     });
     const viewedEntireStoryA = newestUnseenA === -1;
 
     // if user story - check if viewed entire story (used in logic below)
-    const newestUnseenB = b.items.findIndex(({ views }) => {
+    const newestUnseenB = b.items.findIndex(({ viewedByMe }) => {
       // return true if you have NOT viewed the story - this will set newestUnseen to that index
-      if (views.length <= 0) return true;
+      // if (views.length <= 0) return true;
 
-      const viewedByMe = views.some(({ id }) => id === currentUserId);
+      // const viewedByMe = views.some(({ id }) => id === currentUserId);
       return !viewedByMe;
     });
     const viewedEntireStoryB = newestUnseenB === -1;
@@ -92,7 +92,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
     return 1;
   };
 
-  const storiesSorted = stories.sort(sortStoriesTopic) || [];
+  const storiesSorted = [...stories].sort(sortStoriesTopic) || [];
 
   if (storiesSorted.length <= 0) {
     return null;
@@ -107,11 +107,11 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
 
     return storiesSorted.map((story) => {
       if (story.items.length > 0) {
-        const newestUnseen = story.items.findIndex(({ views }) => {
+        const newestUnseen = story.items.findIndex(({ viewedByMe }) => {
           // return true if you have NOT viewed the story - this will set newestUnseen to that index
-          if (views.length <= 0) return true;
+          // if (views.length <= 0) return true;
 
-          const viewedByMe = views.some(({ id }) => id === currentUserId);
+          // const viewedByMe = views.some(({ id }) => id === currentUserId);
           return !viewedByMe;
         });
 

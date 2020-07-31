@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "Ambit1-tvOS.app"
-               BlueprintName = "Ambit1-tvOS"
-               ReferencedContainer = "container:Ambit2.xcodeproj">
+               BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+               BuildableName = "Ambit2.app"
+               BlueprintName = "Ambit1"
+               ReferencedContainer = "container:Ambit1.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "Ambit1-tvOSTests.xctest"
-               BlueprintName = "Ambit1-tvOSTests"
-               ReferencedContainer = "container:Ambit2.xcodeproj">
+               BlueprintIdentifier = "00E356ED1AD99517003FC87E"
+               BuildableName = "Ambit1Tests.xctest"
+               BlueprintName = "Ambit1Tests"
+               ReferencedContainer = "container:Ambit1.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -54,10 +54,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "Ambit1-tvOS.app"
-            BlueprintName = "Ambit1-tvOS"
-            ReferencedContainer = "container:Ambit2.xcodeproj">
+            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            BuildableName = "Ambit2.app"
+            BlueprintName = "Ambit1"
+            ReferencedContainer = "container:Ambit1.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -71,10 +71,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "Ambit1-tvOS.app"
-            BlueprintName = "Ambit1-tvOS"
-            ReferencedContainer = "container:Ambit2.xcodeproj">
+            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            BuildableName = "Ambit2.app"
+            BlueprintName = "Ambit1"
+            ReferencedContainer = "container:Ambit1.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

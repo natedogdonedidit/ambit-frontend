@@ -42,47 +42,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.lightGray,
   },
-  section: {
-    paddingHorizontal: 15,
-    paddingVertical: 20,
-    marginTop: 20,
-    backgroundColor: colors.white,
-    alignItems: 'center',
-  },
-  topicsSection: {
-    width: '100%',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
-    marginBottom: 30,
-  },
-  topicRow: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 48,
-    alignItems: 'center',
-    paddingHorizontal: 5,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
-  },
-  // add button
-  addButton: {
-    height: 30,
-    width: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: colors.purp,
-    opacity: 0.9,
-  },
-  addedButton: {
-    height: 30,
-    width: 70,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    backgroundColor: colors.purp,
-  },
 });
 
 export default MyTopicsScreen;

@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/client';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderMessages from 'library/components/headers/HeaderMessages';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import FullWidthTabs from 'library/components/UI/FullWidthTabs';
@@ -25,7 +25,7 @@ const MessagesScreen = ({ navigation }) => {
   const insets = useSafeArea();
 
   // QUERIES
-  const { loading: loadingUser, error: errorUser, data: dataUser, refetch, networkStatus } = useQuery(CURRENT_USER_QUERY, {
+  const { loading: loadingUser, error: errorUser, data: dataUser, refetch, networkStatus } = useQuery(CURRENT_USER_MESSAGES, {
     notifyOnNetworkStatusChange: true,
   });
   const refetching = networkStatus === 4;
@@ -37,12 +37,12 @@ const MessagesScreen = ({ navigation }) => {
       <View style={{ ...styles.container, paddingTop: insets.top }}>
         <HeaderMessages handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
         {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
-        <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
+        <Loader loading={loading} full={false} size="small" backgroundColor={colors.lightGray} />
       </View>
     );
-  const { userLoggedIn } = dataUser;
+  const { userMessages } = dataUser;
 
-  const groups = userLoggedIn.groups || [];
+  const groups = [...userMessages.groups] || [];
   groups.sort(sortChats); // sort groups by date
 
   return (
@@ -76,7 +76,7 @@ const MessagesScreen = ({ navigation }) => {
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
           // console.log(item);
-          return <ChatListItem navigation={navigation} userLoggedIn={userLoggedIn} group={item} currentTime={currentTime} />;
+          return <ChatListItem navigation={navigation} userMessages={userMessages} group={item} currentTime={currentTime} />;
         }}
       />
     </View>

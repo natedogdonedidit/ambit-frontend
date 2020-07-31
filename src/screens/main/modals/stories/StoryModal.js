@@ -1,12 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { StyleSheet, View, StatusBar, Dimensions, FlatList, InteractionManager } from 'react-native';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
 
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import Story from 'library/components/stories/Story';
 import Loader from 'library/components/UI/Loader';
+import { combineFavoriteTopics } from 'library/utils';
 
 // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
 // option 2: pass in an intro. Intro will play, then modal will close.
@@ -22,7 +24,6 @@ const StoryModal = ({ navigation, route }) => {
   const storyFlatlist = useRef();
 
   const [disableOutterScroll, setDisableOutterScroll] = useState(false);
-  const [favoriteTopics, setFavoriteTopics] = useState(topicIDtoSearch ? [topicIDtoSearch] : []);
 
   // STATE
   const [storyQ, setStoryQ] = useState([story]);
@@ -42,31 +43,20 @@ const StoryModal = ({ navigation, route }) => {
   );
 
   // QUERY TO GET USERS TOPICS
-  // this if for getting the favorite topics for sorting...UNCOMMENT LATER
-  // const { data } = useQuery(CURRENT_USER_TOPICS);
-  // const { myTopics } = data || {};
-  // effect compiles the list of favoriteTopics
-  // useEffect(() => {
-  //   let newFavoriteTopics = topicIDtoSearch ? [topicIDtoSearch] : [];
-  //   if (myTopics) {
-  //     if (myTopics.topicsFocus.length > 0) {
-  //       newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.topicID)];
-  //     }
-  //     if (myTopics.topicsInterest.length > 0) {
-  //       if (newFavoriteTopics === []) {
-  //         newFavoriteTopics = [...myTopics.topicsInterest.map((top) => top.topicID)];
-  //       } else {
-  //         // only add topics that dont already exist
-  //         myTopics.topicsInterest.forEach((topic) => {
-  //           if (newFavoriteTopics.findIndex((favTopicID) => favTopicID === topic.topicID) === -1) {
-  //             newFavoriteTopics = [...newFavoriteTopics, topic.topicID];
-  //           }
-  //         });
-  //       }
-  //     }
-  //   }
-  //   setFavoriteTopics([...newFavoriteTopics]);
-  // }, [myTopics]);
+  const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
+
+  const favoriteTopics = useMemo(() => {
+    const initialFavs = topicIDtoSearch ? [topicIDtoSearch] : [];
+
+    if (dataTopics && dataTopics.myTopics) {
+      const myFavs = combineFavoriteTopics(dataTopics.myTopics);
+      const myFavIDs = myFavs.map((fav) => fav.id);
+
+      return [...initialFavs, ...myFavIDs];
+    }
+
+    return initialFavs;
+  }, [dataTopics, topicIDtoSearch]);
 
   // QUERIES - to get next stories
   const [

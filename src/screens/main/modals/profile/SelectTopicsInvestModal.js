@@ -12,7 +12,16 @@ import EDIT_TOPICS_INVEST_MUTATION from 'library/mutations/EDIT_TOPICS_INVEST_MU
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsInvestModal = ({ navigation }) => {
-  const client = useApolloClient()
+  const client = useApolloClient();
+
+  // ////////////////////////////////////////
+  // MUTATIONS
+  const [editTopicsInvest] = useMutation(EDIT_TOPICS_INVEST_MUTATION, {
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // ////////////////////////////////////////
   // QUERIES
@@ -25,61 +34,55 @@ const SelectTopicsInvestModal = ({ navigation }) => {
   const topicsIDonly = topics.map((topic) => topic.topicID);
 
   // ////////////////////////////////////////
-  // MUTATIONS
-  const [editTopicsInvest] = useMutation(EDIT_TOPICS_INVEST_MUTATION, {
-    onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
-  });
-
-  // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
   const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
-    // build the new array of topics
-    let newArray = [];
-    if (topicsIDonly.includes(selectedTopicID)) {
-      // remove it
-      newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
-    } else {
-      // add it
-      newArray = [...topics, { topicID: selectedTopicID, name: selectedTopicName }];
-    }
+    requestAnimationFrame(() => {
+      // build the new array of topics
+      let newArray = [];
+      if (topicsIDonly.includes(selectedTopicID)) {
+        // remove it
+        newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
+      } else {
+        // add it
+        newArray = [...topics, { id: selectedTopicID, topicID: selectedTopicID, name: selectedTopicName }];
+      }
 
-    // for mutation
-    const newArrayTopicIDonly = newArray.map((topic) => {
-      return { topicID: topic.topicID };
-    });
+      // for mutation
+      const newArrayTopicIDonly = newArray.map((topic) => {
+        return { topicID: topic.topicID };
+      });
 
-    // for optimistic response
-    const newArrayTopicIDandType = newArray.map((topic) => {
-      return { id: topic.topicID, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
-    });
+      // for optimistic response
+      const newArrayTopicIDandType = newArray.map((topic) => {
+        return { id: topic.id, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+      });
 
-    // run the mutation
-    editTopicsInvest({
-      variables: {
-        topics: newArrayTopicIDonly,
-      },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        editTopicsInvest: {
-          __typename: 'User',
-          ...myTopics,
-          topicsInvest: newArrayTopicIDandType,
+      // run the mutation
+      editTopicsInvest({
+        variables: {
+          topics: newArrayTopicIDonly,
         },
-      },
-      update: (proxy, { data: dataReturned }) => {
-        // console.log('dataReturned', dataReturned.editTopicsInvest);
-        // const data = proxy.readQuery({ query: CURRENT_USER_QUERY });
-
-        client.writeQuery({
-          query: CURRENT_USER_TOPICS,
-          data: {
-            myTopics: dataReturned.editTopicsInvest,
+        optimisticResponse: {
+          __typename: 'Mutation',
+          editTopicsInvest: {
+            __typename: 'User',
+            topicsInvest: [...newArrayTopicIDandType],
           },
-        });
-      },
+        },
+        update: (proxy, { data: dataReturned }) => {
+          const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
+
+          client.writeQuery({
+            query: CURRENT_USER_TOPICS,
+            data: {
+              myTopics: {
+                ...dataCache.myTopics,
+                topicsInvest: [...dataReturned.editTopicsInvest.topicsInvest],
+              },
+            },
+          });
+        },
+      });
     });
   };
 

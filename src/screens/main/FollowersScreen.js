@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/client';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderBack from 'library/components/headers/HeaderBack';
-import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+import SINGLE_USER_FOLLOWERS from 'library/queries/SINGLE_USER_FOLLOWERS';
 
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
@@ -16,14 +16,14 @@ const FollowersScreen = ({ navigation, route }) => {
   const { userID, followersCount } = route.params;
 
   // QUERIES
-  const { error, data, refetch, networkStatus } = useQuery(SINGLE_USER_BIO, {
+  const { error, data, refetch, networkStatus } = useQuery(SINGLE_USER_FOLLOWERS, {
     variables: { id: userID },
     notifyOnNetworkStatusChange: true,
   });
 
-  useEffect(() => {
-    refetch();
-  }, [followersCount]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [followersCount]);
 
   const refetching = networkStatus === 4;
   const loading = networkStatus === 1;
@@ -39,8 +39,7 @@ const FollowersScreen = ({ navigation, route }) => {
     );
   }
 
-  const { user } = data;
-  const { followers } = user;
+  const { userFollowers } = data;
 
   return (
     <View style={{ ...styles.container }}>
@@ -55,7 +54,7 @@ const FollowersScreen = ({ navigation, route }) => {
           <View
             style={[
               { height: 15 },
-              followers.length > 0 && {
+              userFollowers.length > 0 && {
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 borderBottomColor: colors.borderBlack,
               },
@@ -65,7 +64,7 @@ const FollowersScreen = ({ navigation, route }) => {
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>No followers</Text>
         }
-        data={followers}
+        data={userFollowers}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
           // console.log(item);

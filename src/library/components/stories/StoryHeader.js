@@ -68,7 +68,7 @@ function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
             right: 12,
           }}
         >
-          <FollowButton userToFollow={owner} small />
+          <FollowButton userToFollowID={owner.id} small onStory />
         </View>
       )}
     </View>

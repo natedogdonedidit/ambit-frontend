@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import { useQuery } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
@@ -8,10 +9,18 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Loader from 'library/components/UI/Loader';
+import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
-const NewProjectButton = ({ navigation, userLoggedIn, loadingCreateStory }) => {
+const NewProjectButton = ({ navigation, loadingCreateStory }) => {
+  const { data } = useQuery(CURRENT_USER_QUERY);
+  const { userLoggedIn } = data;
+
+  if (!data || !userLoggedIn) {
+    return null;
+  }
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}

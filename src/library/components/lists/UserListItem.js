@@ -29,8 +29,8 @@ const UserListItem = ({ navigation, user }) => {
           {/* {user.location && <Text style={defaultStyles.defaultMute}>{user.location}</Text>} */}
           {user.bio && <Text style={{ ...defaultStyles.defaultText, paddingTop: 8 }}>{user.bio}</Text>}
           {!isMe && (
-            <View style={{ paddingTop: 8, paddingRight: 8, flexDirection: 'row', justifyContent: 'flex-end' }}>
-              <FollowButton userToFollow={user} />
+            <View style={{ paddingTop: 0, paddingRight: 12, position: 'absolute', top: 0, right: 0 }}>
+              <FollowButton userToFollowID={user.id} />
             </View>
           )}
         </View>
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   rightSide: {
     flex: 1,
     paddingRight: 15,
+    position: 'relative',
   },
   reasonRow: {
     flexDirection: 'row',

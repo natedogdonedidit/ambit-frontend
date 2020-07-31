@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
-import { DetailedUser } from 'library/queries/_fragments';
+import { UserProfileFragment } from 'library/queries/_fragments';
 
 const EDIT_EDUCATION_MUTATION = gql`
   mutation EDIT_EDUCATION_MUTATION($owner: ID!, $id: ID!, $education: EducationUpdateInput!) {
     editEducation(owner: $owner, id: $id, education: $education) {
-      ...DetailedUser
+      ...UserProfileFragment
     }
   }
-  ${DetailedUser}
+  ${UserProfileFragment}
 `;
 
 export default EDIT_EDUCATION_MUTATION;

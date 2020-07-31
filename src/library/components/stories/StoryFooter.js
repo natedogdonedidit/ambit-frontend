@@ -52,36 +52,9 @@ function StoryFooter({
   const { id, plays, text, link } = item;
 
   // MUTATIONS
-  const [likeStoryItem, { loading: loadingLike }] = useMutation(LIKE_STORYITEM_MUTATION, {
-    // variables: {
-    //   storyItemId: id,
-    // },
-    // update: (proxy, { data: dataReturned }) => {
-    //   client.writeFragment({
-    //     id: `StoryItem:${id}`,
-    //     fragment: StoryItemFragment,
-    //     fragmentName: 'StoryItemFragment',
-    //     data: {
-    //       ...dataReturned.likeStoryItem,
-    //     },
-    //   });
-    // },
-  });
+  const [likeStoryItem, { loading: loadingLike }] = useMutation(LIKE_STORYITEM_MUTATION);
 
   const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UNLIKE_STORYITEM_MUTATION, {
-    // variables: {
-    //   storyItemId: id,
-    // },
-    // update: (proxy, { data: dataReturned }) => {
-    //   client.writeFragment({
-    //     id: `StoryItem:${id}`,
-    //     fragment: StoryItemFragment,
-    //     fragmentName: 'StoryItemFragment',
-    //     data: {
-    //       ...dataReturned.unlikeStoryItem,
-    //     },
-    //   });
-    // },
     onError: () => null,
   });
 
@@ -110,10 +83,10 @@ function StoryFooter({
         // if neither are favorites
         return -1;
       };
-      const topicsSortedNew = topics.sort(sortTopics);
+      const topicsSortedNew = [...topics].sort(sortTopics);
       setTopicsSorted(topicsSortedNew);
     }
-  }, [story.topics, favoriteTopics]);
+  }, [topics, favoriteTopics]);
 
   // if the item isn't active...don't render anything. But this will allow us to keep our state (isLiked, likeCount)
   if (!itemIsActive) {
@@ -128,16 +101,38 @@ function StoryFooter({
       setIsLiked(false);
       setLikesCount(likesCount - 1);
       InteractionManager.runAfterInteractions(() => {
-        // console.log('unlike story', id);
-        unlikeStoryItem({ variables: { storyItemId: id } });
+        console.log('unlike story', id);
+        unlikeStoryItem({
+          variables: { storyItemId: id },
+          optimisticResponse: {
+            __typename: 'Mutation',
+            unlikeStoryItem: {
+              __typename: 'StoryItem',
+              ...item,
+              likedByMe: false,
+              likesCount: item.likesCount - 1,
+            },
+          },
+        });
       });
     } else if (!isLiked && !sentMutation) {
       setSentMutation(true);
       setIsLiked(true);
       setLikesCount(likesCount + 1);
       InteractionManager.runAfterInteractions(() => {
-        // console.log('unlike story', id);
-        likeStoryItem({ variables: { storyItemId: id } });
+        console.log('like story', id);
+        likeStoryItem({
+          variables: { storyItemId: id },
+          optimisticResponse: {
+            __typename: 'Mutation',
+            likeStoryItem: {
+              __typename: 'StoryItem',
+              ...item,
+              likedByMe: true,
+              likesCount: item.likesCount + 1,
+            },
+          },
+        });
       });
     }
   };
@@ -165,7 +160,7 @@ function StoryFooter({
             <>
               {hasTopics &&
                 topicsSorted.map((topic) => {
-                  const { icon, color } = getTopicFromID(topic.topicID);
+                  const { icon, color, name } = getTopicFromID(topic.topicID);
 
                   return (
                     <View
@@ -185,7 +180,7 @@ function StoryFooter({
                       {icon && (
                         <Icon name={icon} solid size={14} color={colors[color] || colors.blueGray} style={{ paddingRight: 6 }} />
                       )}
-                      <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{topic.name}</Text>
+                      <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{name}</Text>
                     </View>
                   );
                 })}
@@ -241,7 +236,10 @@ function StoryFooter({
           <TouchableOpacity
             onPress={() => {
               navigation.navigate('IntroModal', {
-                intro,
+                intro: {
+                  ...intro,
+                  owner: { ...owner },
+                },
               });
             }}
             style={styles.sideButtonCircle}

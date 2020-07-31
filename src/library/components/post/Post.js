@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation, useApolloClient } from '@apollo/client';
@@ -26,7 +26,7 @@ import { UserContext } from 'library/utils/UserContext';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import EDIT_GOALSTATUS_MUTATION from 'library/mutations/EDIT_GOALSTATUS_MUTATION';
 
-const Post = ({
+function Post({
   post,
   currentTime,
   navigation,
@@ -34,45 +34,47 @@ const Post = ({
   showLine = false,
   hideButtons = false,
   disableVideo = false,
-}) => {
+}) {
   // HOOKS
-  const { currentUserId } = useContext(UserContext);
-  const [isLiked, setIsLiked] = useState(post.likedByMe); // this is the source of truth
-  const [likesCount, setLikesCount] = useState(post.likesCount); // this is the source of truth
-
   const client = useApolloClient();
+  const { currentUserId } = useContext(UserContext);
+
+  useEffect(() => {
+    // console.log('post rendered...', post.id);
+  }, [post]);
+
+  // STATE
+  // const [isLiked, setIsLiked] = useState(post.likedByMe); // this is the source of truth
+  // const [likesCount, setLikesCount] = useState(post.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
-  const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
+  const [likePost] = useMutation(LIKE_POST_MUTATION, {
     variables: {
       postId: post.id,
     },
-    update: (proxy, { data: dataReturned }) => {
-      client.writeFragment({
-        id: `Post:${post.id}`,
-        fragment: BasicPost,
-        fragmentName: 'BasicPost',
-        data: {
-          // __typename: 'Post',
-          ...dataReturned.likePost,
-        },
-      });
+    optimisticResponse: {
+      __typename: 'Mutation',
+      likePost: {
+        __typename: 'Post',
+        ...post,
+        likedByMe: true,
+        likesCount: post.likesCount + 1,
+      },
     },
   });
 
-  const [unlikePost, { loading: loadingUnlike }] = useMutation(UNLIKE_POST_MUTATION, {
+  const [unlikePost] = useMutation(UNLIKE_POST_MUTATION, {
     variables: {
       postId: post.id,
     },
-    update: (proxy, { data: dataReturned }) => {
-      client.writeFragment({
-        id: `Post:${post.id}`,
-        fragment: BasicPost,
-        fragmentName: 'BasicPost',
-        data: {
-          ...dataReturned.unlikePost,
-        },
-      });
+    optimisticResponse: {
+      __typename: 'Mutation',
+      unlikePost: {
+        __typename: 'Post',
+        ...post,
+        likedByMe: false,
+        likesCount: post.likesCount - 1,
+      },
     },
     onError: () => null,
   });
@@ -83,8 +85,30 @@ const Post = ({
       id: post.id,
       ownerID: post.owner.id,
     },
-    onCompleted: () =>
-      Alert.alert('Done!', "You're post was successfully deleted", [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
+    optimisticResponse: {
+      __typename: 'Mutation',
+      deletePost: { __typename: 'Post', id: post.id },
+    },
+    update(cache, { data }) {
+      // We get a single item from cache.
+      const postInCache = client.readFragment({
+        id: `Post:${post.id}`,
+        fragment: BasicPost,
+        fragmentName: 'BasicPost',
+      });
+      // Then, we update it.
+      if (postInCache) {
+        client.writeFragment({
+          id: `Post:${post.id}`,
+          fragment: BasicPost,
+          fragmentName: 'BasicPost',
+          data: {
+            ...post,
+            _deleted: true,
+          },
+        });
+      }
+    },
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -100,60 +124,47 @@ const Post = ({
   });
 
   // when cache update comes in...update state!
-  useEffect(() => {
-    setIsLiked(post.likedByMe);
-    setLikesCount(post.likesCount);
-  }, [post.likedByMe, post.likesCount]);
+  // useEffect(() => {
+  //   setIsLiked(post.likedByMe);
+  //   setLikesCount(post.likesCount);
+  // }, [post.likedByMe, post.likesCount]);
 
-  // VARIABLES
-  const containsMedia = post.video || post.images.length > 0;
-  const isMyPost = currentUserId === post.owner.id;
+  // CALCULATE THESE VARIABLES ONCE UPON RENDER - THEY SHOULD NEVER CHANGE
+  const { containsMedia, isMyPost, timeDiff, period, formatedDate } = useMemo(() => {
+    const containsMedia1 = post.video || post.images.length > 0;
+    const isMyPost1 = currentUserId === post.owner.id;
 
-  // for dates
-  const createdAt = new Date(post.createdAt);
-  const { timeDiff, period } = timeDifference(currentTime, createdAt);
-  const formatedDate = format(createdAt, 'M/d/yy h:mm a');
+    // for dates
+    const createdAt1 = new Date(post.createdAt);
+    const { timeDiff: timeDiff1, period: period1 } = timeDifference(currentTime, createdAt1);
+    const formatedDate1 = format(createdAt1, 'M/d/yy h:mm a');
+
+    return {
+      containsMedia: containsMedia1,
+      isMyPost: isMyPost1,
+      timeDiff: Math.max(timeDiff1, 0),
+      period: period1,
+      formatedDate: formatedDate1,
+    };
+  }, []);
 
   // CUSTOM FUNCTIONS
   const handleLike = async () => {
-    if (isLiked && !loadingUnlike && !loadingLike) {
-      setIsLiked(false);
-      setLikesCount(likesCount - 1);
-      unlikePost();
-    } else if (!isLiked && !loadingLike && !loadingUnlike) {
-      setIsLiked(true);
-      setLikesCount(likesCount + 1);
-      likePost();
-    }
+    requestAnimationFrame(() => {
+      if (post.likedByMe) {
+        // setIsLiked(false);
+        // setLikesCount(likesCount - 1);
+        unlikePost();
+      } else if (!post.likedByMe) {
+        // setIsLiked(true);
+        // setLikesCount(likesCount + 1);
+        likePost();
+      }
+    });
   };
 
   const handleDelete = () => {
-    deletePost({
-      optimisticResponse: {
-        __typename: 'Mutation',
-        deletePost: { __typename: 'Post', id: post.id },
-      },
-      update(cache, { data }) {
-        // We get a single item from cache.
-        const postInCache = cache.readFragment({
-          id: `Post:${post.id}`,
-          fragment: BasicPost,
-          fragmentName: 'BasicPost',
-        });
-        // Then, we update it.
-        if (postInCache) {
-          cache.writeFragment({
-            id: `Post:${post.id}`,
-            fragment: BasicPost,
-            fragmentName: 'BasicPost',
-            data: {
-              ...post,
-              _deleted: true,
-            },
-          });
-        }
-      },
-    });
+    deletePost();
   };
 
   const updateGoalStatus = (newStatus) => {
@@ -497,9 +508,9 @@ const Post = ({
               </View>
               <View style={styles.likesRow}>
                 <View style={{ flexDirection: 'row' }}>
-                  {!!likesCount && (
+                  {!!post.likesCount && (
                     <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>
-                      {likesCount === 0 ? null : `${likesCount} Like${likesCount > 1 ? 's' : ''}`}
+                      {post.likesCount === 0 ? null : `${post.likesCount} Like${post.likesCount > 1 ? 's' : ''}`}
                     </Text>
                   )}
                   {!!post.sharesCount && (
@@ -511,7 +522,7 @@ const Post = ({
                     <Comment onPress={() => navigation.navigate('Comment', { post })} />
                   </View>
                   <View style={{ paddingLeft: 30 }}>
-                    <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
                   </View>
                   <View style={{ paddingLeft: 30 }}>
                     <Share onPress={() => null} />
@@ -525,11 +536,15 @@ const Post = ({
                 <View style={styles.buttons}>
                   <View style={styles.button}>
                     <Comment onPress={() => navigation.navigate('Comment', { post })} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount}</Text>
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
+                      {post.commentsCount <= 0 ? null : post.commentsCount}
+                    </Text>
                   </View>
                   <View style={styles.button}>
-                    <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount === 0 ? null : likesCount}</Text>
+                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
+                      {post.likesCount <= 0 ? null : post.likesCount}
+                    </Text>
                   </View>
                   <View style={styles.button}>
                     <Share onPress={() => null} />
@@ -543,7 +558,7 @@ const Post = ({
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   postContainer: {
@@ -651,4 +666,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Post;
+function areEqual(prevProps, nextProps) {
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  */
+
+  if (prevProps.post === nextProps.post) return true;
+
+  // console.log(prevProps.post.id);
+
+  return false;
+}
+
+export default React.memo(Post, areEqual);

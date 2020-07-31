@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
 import colors from 'styles/colors';
@@ -7,17 +7,17 @@ import { getTopicFromID } from 'library/utils';
 
 const Topic = ({ navigation, topicToShow }) => {
   // get the full topic
-  const topic = getTopicFromID(topicToShow.topicID);
+  const { name, parentTopic, topicID } = useMemo(() => getTopicFromID(topicToShow.topicID), [topicToShow.topicID]);
 
-  const isSubTopic = !!topic.parentTopic;
-  
-  const mainTopicID = isSubTopic ? topic.parentTopic.topicID : topic.topicID;
-  const subTopic = isSubTopic ? topic.topicID : null;
+  const isSubTopic = !!parentTopic;
+
+  const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;
+  const subTopic = isSubTopic ? topicID : null;
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })} activeOpacity={0.3}>
       <View style={styles.topic}>
-        <Text style={defaultStyles.smallMute}>{topic.name}</Text>
+        <Text style={defaultStyles.smallMute}>{name}</Text>
       </View>
     </TouchableOpacity>
   );

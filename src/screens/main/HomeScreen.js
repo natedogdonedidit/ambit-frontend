@@ -1,28 +1,32 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
-import { useQuery } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+// import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import HeaderHome from 'library/components/headers/HeaderHome';
-import Error from 'library/components/UI/Error';
+// import Error from 'library/components/UI/Error';
 
 import HomeTimeline from 'library/components/timelines/HomeTimeline';
 import TopicsList from 'library/components/timelines/TopicsList';
+import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY';
+import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 import { HEADER_HEIGHT } from 'styles/constants';
 import { UserContext } from 'library/utils/UserContext';
-import analytics from '@segment/analytics-react-native';
+// import analytics from '@segment/analytics-react-native';
 
 const SLIDE_HEIGHT = HEADER_HEIGHT - StyleSheet.hairlineWidth;
 
 const HomeScreen = ({ navigation }) => {
+  const client = useApolloClient();
+
   // CONTEXT
-  const { homePosition, setHomePosition, creatingStory } = useContext(UserContext);
+  const { homePosition, setHomePosition, creatingStory, currentUserId } = useContext(UserContext);
 
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
@@ -41,10 +45,22 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [homePosition]);
 
+  useEffect(() => {
+    // pre-fetch my suggested connections (probably a better way)
+    client.query({
+      query: SINGLE_USER_BIO,
+      variables: { id: currentUserId },
+    });
+
+    client.query({
+      query: ALL_CONNECTIONS_QUERY,
+    });
+  }, []);
+
   // QUERIES
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
-  if (errorUser) return <Error error={errorUser} />;
-  const { userLoggedIn } = dataUser;
+  // const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
+  // if (errorUser) return <Error error={errorUser} />;
+  // const { userLoggedIn } = dataUser;
 
   // if press top button --> auto scroll
   const handleTopicsButton = () => {
@@ -95,7 +111,7 @@ const HomeScreen = ({ navigation }) => {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            navigation.navigate('NewPostModal', { userLoggedIn });
+            navigation.navigate('NewPostModal', { topicsPassedIn: [] });
           }}
         >
           <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
@@ -130,7 +146,6 @@ const HomeScreen = ({ navigation }) => {
           }}
         >
           <HeaderHome
-            user={userLoggedIn}
             handleMiddle={() => null}
             navigation={navigation}
             handleTopicsButton={handleTopicsButton}

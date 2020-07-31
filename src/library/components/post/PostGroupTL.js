@@ -8,7 +8,7 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import Post from 'library/components/post/Post';
 import Update from 'library/components/post/Update';
 
-const PostGroupTL = ({
+function PostGroupTL({
   navigation,
   currentTime,
   post,
@@ -19,7 +19,7 @@ const PostGroupTL = ({
   updateInd = null,
   showAll = false,
   disableVideo = false,
-}) => {
+}) {
   const hasUpdates = post.updates.length > 0;
 
   const renderAllUpdates = () => {
@@ -167,7 +167,7 @@ const PostGroupTL = ({
       </TouchableOpacity>
     </>
   );
-};
+}
 
 const styles = StyleSheet.create({
   showLatestButton: {
@@ -193,4 +193,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostGroupTL;
+function areEqual(prevProps, nextProps) {
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  */
+
+  if (prevProps.post === nextProps.posts) return true;
+
+  return false;
+}
+
+export default React.memo(PostGroupTL, areEqual);

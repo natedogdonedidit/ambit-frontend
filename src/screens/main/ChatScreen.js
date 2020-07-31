@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/client';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderBack from 'library/components/headers/HeaderBack';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
 import ChatBox from 'library/components/chat/ChatBox';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
@@ -20,7 +20,7 @@ const ChatScreen = ({ navigation, route }) => {
   const { currentUserId } = useContext(UserContext);
 
   // get the list of groups of the logged in user
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
+  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_MESSAGES);
 
   if (errorUser) return <Error error={errorUser} />;
   if (loadingUser) {
@@ -31,19 +31,19 @@ const ChatScreen = ({ navigation, route }) => {
       </View>
     );
   }
-  const { userLoggedIn } = dataUser;
-  const { groups } = userLoggedIn;
+  const { userMessages } = dataUser;
+  const { groups } = userMessages;
 
   // get Group based on otherUserPassedIn
-  const group = groups.find(c => {
+  const group = groups.find((c) => {
     // get the other user in the chat
-    const otherUser = c.users.find(user => user.id !== currentUserId);
+    const otherUser = c.users.find((user) => user.id !== currentUserId);
 
     // see if it equals the userPassedIn, if it does return the group
     return otherUser.id === otherUserPassedIn.id;
   });
 
-  const unReadMessageGroupIDs = userLoggedIn.unReadMessages.map(unRead => unRead.to.id);
+  const unReadMessageGroupIDs = userMessages.unReadMessages.map((unRead) => unRead.to.id);
   const hasUnread = group ? unReadMessageGroupIDs.includes(group.id) : false;
 
   return (
@@ -52,7 +52,7 @@ const ChatScreen = ({ navigation, route }) => {
       <ChatBox
         navigation={navigation}
         groupPassedIn={group}
-        userLoggedIn={userLoggedIn}
+        userMessages={userMessages}
         otherUserPassedIn={otherUserPassedIn}
         hasUnread={hasUnread}
       />

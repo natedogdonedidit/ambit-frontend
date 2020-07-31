@@ -14,9 +14,9 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   YellowBox.ignoreWarnings(['Non-serializable values were found in the navigation state']);
-  const { currentUserId, loadingApp } = useContext(UserContext);
+  const { currentUserId, loadingToken } = useContext(UserContext);
 
-  if (loadingApp && !currentUserId) {
+  if (loadingToken) {
     return <SplashScreen />;
   }
 

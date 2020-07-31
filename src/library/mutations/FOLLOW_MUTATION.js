@@ -1,13 +1,10 @@
 import { gql } from '@apollo/client';
-import { LoggedInUser } from 'library/queries/_fragments';
+// import { LoggedInUser } from 'library/queries/_fragments';
 
 const FOLLOW_MUTATION = gql`
   mutation FOLLOW_MUTATION($userID: ID!) {
-    followUser(userID: $userID) {
-      ...LoggedInUser
-    }
+    followUser(userID: $userID)
   }
-  ${LoggedInUser}
 `;
 
 export default FOLLOW_MUTATION;

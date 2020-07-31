@@ -32,7 +32,7 @@ function ProgressBar({ duration, storyLength, paused, incrementIndex, videoStart
         setAnimationStarted(true);
       }
 
-      console.log('starting animation');
+      // console.log('starting animation');
       Animated.timing(progressBar, {
         toValue: 1,
         duration: (1 - pausedValue) * itemDuration * 1000,

@@ -17,8 +17,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 
 import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import CURRENT_USER_QUERY_HEADER from 'library/queries/CURRENT_USER_QUERY_HEADER';
+// import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import { profilePicUpload, bannerPicUpload, sortExperiences } from 'library/utils';
 
 import colors from 'styles/colors';
@@ -77,15 +76,15 @@ const EditProfileModalComponent = ({ navigation, user }) => {
         bannerPic,
       },
     },
-    refetchQueries: () => [{ query: CURRENT_USER_QUERY_HEADER }],
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: CURRENT_USER_QUERY,
-        data: {
-          userLoggedIn: dataReturned.editBio,
-        },
-      });
-    },
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }],
+    // update: (proxy, { data: dataReturned }) => {
+    //   proxy.writeQuery({
+    //     query: CURRENT_USER_QUERY,
+    //     data: {
+    //       userLoggedIn: dataReturned.editBio,
+    //     },
+    //   });
+    // },
     onCompleted: () => {
       navigation.goBack();
     },

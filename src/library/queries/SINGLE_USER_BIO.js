@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
-import { DetailedUser } from 'library/queries/_fragments';
+import { UserProfileFragment } from 'library/queries/_fragments';
 
 const SINGLE_USER_BIO = gql`
   query SINGLE_USER_BIO($id: ID!) {
     user(id: $id) {
-      ...DetailedUser
+      ...UserProfileFragment
     }
   }
-  ${DetailedUser}
+  ${UserProfileFragment}
 `;
 
 export default SINGLE_USER_BIO;

@@ -16,17 +16,21 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
       const isSelected = activeTopicIDs.includes(topicID);
 
       return (
-        <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+        <TouchableOpacity key={topicID} activeOpacity={1} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={styles.subRow}>
             <Text style={styles.subRowText}>{name}</Text>
             {isSelected ? (
-              <View style={styles.addedButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-              </View>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                <View style={styles.addedButton}>
+                  <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
+                </View>
+              </TouchableOpacity>
             ) : (
-              <View style={styles.addButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.blueGray }}>Add</Text>
-              </View>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+                <View style={styles.addButton}>
+                  <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
+                </View>
+              </TouchableOpacity>
             )}
           </View>
         </TouchableOpacity>
@@ -82,7 +86,7 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
                   </View>
                 ) : (
                   <View style={styles.addButton}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.blueGray }}>Add</Text>
+                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
                   </View>
                 )}
               </View>
@@ -134,29 +138,29 @@ const styles = StyleSheet.create({
   },
   // add button
   addButton: {
-    height: 30,
+    height: 32,
     width: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.blueGray,
+    borderColor: colors.purp,
     opacity: 0.9,
   },
   addedButton: {
-    height: 30,
+    height: 32,
     width: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
-    backgroundColor: colors.blueGray,
+    borderRadius: 16,
+    backgroundColor: colors.purp,
   },
   countCircle: {
     width: 24,
     height: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.blueGray,
+    backgroundColor: colors.purp,
     borderRadius: 12,
     marginHorizontal: 12,
   },

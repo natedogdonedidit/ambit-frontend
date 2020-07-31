@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, ScrollView, Text, Image } from 'react-native';
 
 import colors from 'styles/colors';
@@ -12,10 +12,12 @@ const Showcase = ({ navigation, projects }) => {
 
   const renderProjects = () => {
     // console.log(projects);
-    const projectsSorted = projects.sort(sortStoriesNewestFirst);
+    const projectsSorted = useMemo(() => {
+      return [...projects].sort(sortStoriesNewestFirst);
+    }, [projects]);
 
     return projectsSorted.map((project) => {
-      if (project.items.length > 0 && (project.type === 'SOLO' || project.type === 'PROJECT')) {
+      if (project.items.length > 0 && project.type === 'PROJECT') {
         return <StoryBox key={project.id} navigation={navigation} story={project} showProfilePic={false} />;
       }
       return null;

@@ -1,16 +1,16 @@
 import { gql } from '@apollo/client';
-import { LoggedInUser } from 'library/queries/_fragments';
+import { MinimalUser } from 'library/queries/_fragments';
 
 const SIGNUP_MUTATION = gql`
   mutation SIGNUP_MUTATION($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
     signup(firstName: $firstName, lastName: $lastName, email: $email, password: $password) {
       token
       user {
-        ...LoggedInUser
+        ...MinimalUser
       }
     }
   }
-  ${LoggedInUser}
+  ${MinimalUser}
 `;
 
 export default SIGNUP_MUTATION;

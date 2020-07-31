@@ -2,32 +2,24 @@
 
 import React, { useState, useEffect, createContext } from 'react'
 import { Alert } from 'react-native';
-import { useApolloClient, useMutation, useLazyQuery } from '@apollo/client';
+import { useApolloClient, useMutation } from '@apollo/client';
 
-import { signIn, signOut, getToken } from 'library/utils/authUtil'
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import { signIn, signOut, getTokenAndUser } from 'library/utils/authUtil'
 import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
 import CLEAR_NOTIFICATIONS_MUTATION from 'library/mutations/CLEAR_NOTIFICATIONS_MUTATION';
-import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSAGES_MUTATION';
+// import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSAGES_MUTATION';
 
 const UserContext = createContext();
 
 const UserContextProvider = (props) => {
   const [loadingToken, setLoadingToken] = useState(true);
-  const [loadingApp, setLoadingApp] = useState(true);
   const [creatingStory, setCreatingStory] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(null)
-  const [unReadNotifications, setUnReadNotifications] = useState(0)
-  const [unReadMessages, setUnReadMessages] = useState(0)
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [unReadNotifications, setUnReadNotifications] = useState(0);
+  const [unReadMessages, setUnReadMessages] = useState(0);
   const [homePosition, setHomePosition] = useState(0);
 
   const client = useApolloClient();
-
-  // USER QUERY
-  const [getCurrentUser, { loading: loadingUser, error, data: dataUser }] = useLazyQuery(CURRENT_USER_QUERY, {
-    fetchPolicy: 'cache-and-network',
-    // fetchPolicy: 'network-only',
-  });
 
   // FOR CLEARING NOTIFICATIONS
   const [clearMyNotifications] = useMutation(CLEAR_NOTIFICATIONS_MUTATION, {
@@ -51,53 +43,34 @@ const UserContextProvider = (props) => {
   //   },
   // });
 
-  // get user token out of Async Storage
+  // INITIAL RENDER -> get user token out of Async Storage
   useEffect(() => {
-    const fetchToken = async () => {
+    const fetchTokenAndUser = async () => {
       setLoadingToken(true);
-      const token = await getToken();
+      const { token, userID } = await getTokenAndUser();
       setLoadingToken(false);
 
-      if (token) {
-        getCurrentUser();
+      if (token && userID) {
+        // if we got a userID -> save to context (this indicates someone is logged in)
+        setCurrentUserId(userID);
       } else {
         signOut();
         setCurrentUserId(null);
-        setLoadingApp(false);
       }
     };
-    fetchToken();
+    fetchTokenAndUser();
   }, []);
 
-  // fetch userId and save to context (this indicates someone is logged in)
-  useEffect(() => {
-    if (!loadingUser && dataUser) {
-      if (dataUser.userLoggedIn) {
-        setCurrentUserId(dataUser.userLoggedIn.id);
-      }
-    }
-  }, [loadingUser]);
 
-  // determine if the app is loading
-  useEffect(() => {
-    if (loadingUser || loadingToken) {
-      // console.log(loadingUser, loadingToken)
-      setLoadingApp(true);
-    } else {
-      // console.log('settingFalse')
-      setLoadingApp(false);
-    }
-  }, [loadingUser, loadingToken]);
-
-  // LOGIN FUNCTION
+  // LOGIN FUNCTION -> passed to context
   const loginCTX = async (loginData) => {
     try {
-      // 1. attempt to sign in (add JWT token to storage)
-      await signIn(loginData.token);
+      // 1. attempt to sign in (add JWT token & userID to storage)
+      await signIn(loginData);
       console.log('Saved login token in Storage', loginData.token);
       // 2. store the user in context
       setCurrentUserId(loginData.user.id)
-      console.log('Updated Context with new user', loginData.user.id);
+      console.log('Saved userID to Storage & updated Context with userID', loginData.user.id);
     } catch (e) {
       // AsyncStorage errors would lead us here
       console.log('ERROR LOGGING IN:', e.message);
@@ -108,7 +81,7 @@ const UserContextProvider = (props) => {
   // LOGOUT FUNCTION
   const logoutCTX = async () => {
     try {
-      // 1. attempt to sign out (remove JWT token from storage)
+      // 1. attempt to sign out (remove JWT token & userID from storage)
       await signOut();
       console.log('Cleared login token from storage, user logged out!');
 
@@ -135,7 +108,7 @@ const UserContextProvider = (props) => {
 
   return (
     <UserContext.Provider
-      value={{ loadingApp, currentUserId, setCurrentUserId, homePosition, setHomePosition, loginCTX, logoutCTX, unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages, creatingStory, setCreatingStory }}
+      value={{ loadingToken, currentUserId, loginCTX, logoutCTX, homePosition, setHomePosition,  unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages, creatingStory, setCreatingStory }}
     >
       {props.children}
     </UserContext.Provider>

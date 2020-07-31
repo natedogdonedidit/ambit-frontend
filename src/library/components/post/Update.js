@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { format } from 'date-fns';
 import { useMutation, useApolloClient } from '@apollo/client';
@@ -20,7 +20,7 @@ import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 import { UserContext } from 'library/utils/UserContext';
 import { UpdateFragment } from 'library/queries/_fragments';
 
-const Update = ({
+function Update({
   post,
   update,
   updateInd,
@@ -31,44 +31,53 @@ const Update = ({
   disableVideo = false,
   showLine = false,
   hideTopLine = false,
-}) => {
+}) {
   // HOOKS
   const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
 
-  const [isLiked, setIsLiked] = useState(update.likedByMe); // this is the source of truth
-  const [likesCount, setLikesCount] = useState(update.likesCount); // this is the source of truth
+  // const [isLiked, setIsLiked] = useState(update.likedByMe); // this is the source of truth
+  // const [likesCount, setLikesCount] = useState(update.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
-  const [likeUpdate, { loading: loadingLike }] = useMutation(LIKE_UPDATE_MUTATION, {
+  const [likeUpdate] = useMutation(LIKE_UPDATE_MUTATION, {
     variables: {
       updateId: update.id,
     },
-    update: (proxy, { data: dataReturned }) => {
-      client.writeFragment({
-        id: `Update:${update.id}`,
-        fragment: UpdateFragment,
-        fragmentName: 'UpdateFragment',
-        data: {
-          ...dataReturned.likeUpdate,
-        },
-      });
+    optimisticResponse: {
+      __typename: 'Mutation',
+      likeUpdate: {
+        __typename: 'Update',
+        ...update,
+        likedByMe: true,
+        likesCount: update.likesCount + 1,
+      },
     },
+    // update: (proxy, { data: dataReturned }) => {
+    //   client.writeFragment({
+    //     id: `Update:${update.id}`,
+    //     fragment: UpdateFragment,
+    //     fragmentName: 'UpdateFragment',
+    //     data: {
+    //       ...dataReturned.likeUpdate,
+    //     },
+    //   });
+    // },
+    onError: () => null,
   });
 
-  const [unlikeUpdate, { loading: loadingUnlike }] = useMutation(UNLIKE_UPDATE_MUTATION, {
+  const [unlikeUpdate] = useMutation(UNLIKE_UPDATE_MUTATION, {
     variables: {
       updateId: update.id,
     },
-    update: (proxy, { data: dataReturned }) => {
-      client.writeFragment({
-        id: `Update:${update.id}`,
-        fragment: UpdateFragment,
-        fragmentName: 'UpdateFragment',
-        data: {
-          ...dataReturned.unlikeUpdate,
-        },
-      });
+    optimisticResponse: {
+      __typename: 'Mutation',
+      unlikeUpdate: {
+        __typename: 'Update',
+        ...update,
+        likedByMe: false,
+        likesCount: update.likesCount - 1,
+      },
     },
     onError: () => null,
   });
@@ -87,30 +96,46 @@ const Update = ({
   });
 
   // when cache update comes in...update state!
-  useEffect(() => {
-    setIsLiked(update.likedByMe);
-    setLikesCount(update.likesCount);
-  }, [update.likedByMe, update.likesCount]);
+  // useEffect(() => {
+  //   setIsLiked(update.likedByMe);
+  //   setLikesCount(update.likesCount);
+  // }, [update.likedByMe, update.likesCount]);
 
   // VARIABLES
-  const containsMedia = !!update.image;
   // for dates
-  const createdAt = new Date(update.createdAt);
-  const { timeDiff, period } = timeDifference(currentTime, createdAt);
-  const formatedDate = format(createdAt, 'M/d/yy h:mm a');
-  const isMyPost = currentUserId === post.owner.id;
+  // CALCULATE THESE VARIABLES ONCE UPON RENDER - THEY SHOULD NEVER CHANGE
+
+  const { containsMedia, isMyPost, timeDiff, period, formatedDate } = useMemo(() => {
+    const containsMedia1 = !!update.image;
+    const isMyPost1 = currentUserId === post.owner.id;
+
+    // for dates
+    const createdAt1 = new Date(update.createdAt);
+    const { timeDiff: timeDiff1, period: period1 } = timeDifference(currentTime, createdAt1);
+    const formatedDate1 = format(createdAt1, 'M/d/yy h:mm a');
+
+    return {
+      containsMedia: containsMedia1,
+      isMyPost: isMyPost1,
+      timeDiff: timeDiff1,
+      period: period1,
+      formatedDate: formatedDate1,
+    };
+  }, []);
 
   // CUSTOM FUNCTIONS
   const handleLike = async () => {
-    if (isLiked && !loadingUnlike && !loadingLike) {
-      setIsLiked(false);
-      setLikesCount(likesCount - 1);
-      unlikeUpdate();
-    } else if (!isLiked && !loadingLike && !loadingUnlike) {
-      setIsLiked(true);
-      setLikesCount(likesCount + 1);
-      likeUpdate();
-    }
+    requestAnimationFrame(() => {
+      if (update.likedByMe) {
+        // setIsLiked(false);
+        // setLikesCount(likesCount - 1);
+        unlikeUpdate();
+      } else if (!update.likedByMe) {
+        // setIsLiked(true);
+        // setLikesCount(likesCount + 1);
+        likeUpdate();
+      }
+    });
   };
 
   const determineOptions = () => {
@@ -219,7 +244,7 @@ const Update = ({
                     <Comment onPress={() => navigation.navigate('Comment', { post, update, isUpdate: true })} />
                   </View>
                   <View style={{ paddingLeft: 25 }}>
-                    <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={handleLike} />
+                    <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={handleLike} />
                   </View>
                   <View style={{ paddingLeft: 25 }}>
                     <Share onPress={() => null} />
@@ -236,8 +261,10 @@ const Update = ({
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
                   </View>
                   <View style={styles.button}>
-                    <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={handleLike} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount === 0 ? null : likesCount}</Text>
+                    <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={handleLike} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
+                      {update.likesCount === 0 ? null : update.likesCount}
+                    </Text>
                   </View>
                   <View style={styles.button}>
                     <Share onPress={() => null} />
@@ -251,7 +278,7 @@ const Update = ({
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   updateContainer: {
@@ -354,4 +381,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Update;
+function areEqual(prevProps, nextProps) {
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  */
+
+  if (prevProps.post === nextProps.post && prevProps.update === nextProps.update) return true;
+
+  return false;
+}
+
+export default React.memo(Update, areEqual);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -6,9 +6,11 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 // import { moneyGoals, helpGoals, networkGoals, answersGoals, hireGoals } from 'library/utils/lists';
-import { getGoalInfo } from 'library/utils';
+import { getGoalInfo, getTopicFromID } from 'library/utils';
 
 const Goal = ({ navigation, goal, subField, onPress }) => {
+  const { name } = useMemo(() => getTopicFromID(subField.topicID), [subField.topicID]);
+
   return (
     // color background w/ black text
     <TouchableOpacity
@@ -34,7 +36,7 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
             <Text>
               <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
               <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
-              <Text style={{ ...defaultStyles.defaultMedium }}>{subField.name}</Text>
+              <Text style={{ ...defaultStyles.defaultMedium }}>{name}</Text>
             </Text>
           </View>
         </View>

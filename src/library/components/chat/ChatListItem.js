@@ -7,18 +7,18 @@ import { timeDifference } from 'library/utils';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const ChatListItem = ({ navigation, group, userLoggedIn, currentTime }) => {
-  const users = group.users.filter(user => user.id !== userLoggedIn.id);
+const ChatListItem = ({ navigation, group, userMessages, currentTime }) => {
+  const users = group.users.filter((user) => user.id !== userMessages.id);
   const otherUser = users[0];
   // console.log(group);
 
   const updatedAt = new Date(group.latestMessage.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, updatedAt);
 
-  const unReadInThisGroup = userLoggedIn.unReadMessages.filter(message => message.to.id === group.id);
+  const unReadInThisGroup = userMessages.unReadMessages.filter((message) => message.to.id === group.id);
   const hasUnread = unReadInThisGroup.length > 0;
 
-  // const unReadMessageGroupIDs = userLoggedIn.unReadMessages.map(unRead => unRead.to.id);
+  // const unReadMessageGroupIDs = userMessages.unReadMessages.map(unRead => unRead.to.id);
   // const hasUnread = unReadMessageGroupIDs.includes(group.id);
 
   return (

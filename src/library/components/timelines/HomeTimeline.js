@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList, TouchableOpacity } from 'react-native';
 import { useQuery, useMutation } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
@@ -8,60 +8,35 @@ import defaultStyles from 'styles/defaultStyles';
 import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import FORYOU_POSTS_QUERY from 'library/queries/FORYOU_POSTS_QUERY';
 import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import Loader from 'library/components/UI/Loader';
 import Section from 'library/components/UI/Section';
 import HomeTimelineHeader from 'library/components/UI/HomeTimelineHeader';
 import SeeMoreButton from 'library/components/UI/buttons/SeeMoreButton';
 import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
-import { UserContext } from 'library/utils/UserContext';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
-  const currentTime = new Date();
+  // const currentTime = new Date();
   const homeTimelineRef = useRef();
 
   const [showRefreshing, setShowRefreshing] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
   const [activeTimeline, setActiveTimeline] = useState(1);
+  const [currentTime] = useState(new Date()); // did this so it wouldnt make a new date on every render, there is a better way
 
   // QUERIES
+  const { data: dataFollowing } = useQuery(CURRENT_USER_FOLLOWING);
+  const network = useMemo(() => {
+    if (dataFollowing && dataFollowing.iFollow) {
+      return [...dataFollowing.iFollow];
+    }
 
-  // CURRENT USER QUERY (to get network IDs)
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
-  const { userLoggedIn } = dataUser;
-  const getNetworkIDs = (usr) => {
-    if (!usr) {
-      return [];
-    }
-    const followingIDs = usr.following ? usr.following.map((u) => u.id) : [];
-    const connectionIDs = usr.connection ? usr.connections.map((u) => u.id) : [];
-    return [...followingIDs, ...connectionIDs];
-  };
-  const network = getNetworkIDs(userLoggedIn);
-
-  // compile a list of the users favorite topics
-  let favoritesList = [];
-  if (userLoggedIn) {
-    if (userLoggedIn.topicsFocus.length > 0) {
-      favoritesList = [...userLoggedIn.topicsFocus];
-    }
-    if (userLoggedIn.topicsInterest.length > 0) {
-      if (favoritesList === []) {
-        favoritesList = [...userLoggedIn.topicsInterest];
-      } else {
-        // only add topics that dont already exist
-        userLoggedIn.topicsInterest.forEach((topic) => {
-          if (favoritesList.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
-            favoritesList = [...favoritesList, topic];
-          }
-        });
-      }
-    }
-  }
+    return [];
+  }, [dataFollowing]);
 
   // GET POSTS "FOR YOU"
   const {
@@ -73,7 +48,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   } = useQuery(FORYOU_POSTS_QUERY, {
     variables: {
       first: 10,
-      network,
     },
     onError: (e) => console.log('error loading for you posts', e),
     notifyOnNetworkStatusChange: true,
@@ -113,7 +87,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // VIEWED POST MUTATION
   const [viewedPost] = useMutation(VIEWED_POST_MUTATION);
 
-  useQuery(STORIES_HOME_QUERY);
+  // useQuery(STORIES_HOME_QUERY);
 
   // networkStatus states:
   // 1: loading
@@ -237,11 +211,9 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         ListHeaderComponent={
           <StoriesHome
             navigation={navigation}
-            userLoggedIn={userLoggedIn}
             refetching={refetching}
             setLoadingStories={setLoadingStories}
             setRefetchingStories={setRefetchingStories}
-            favoritesList={favoritesList}
           />
         }
         ListEmptyComponent={() => {
@@ -298,7 +270,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
           return <View style={{ height: 15 }} />;
         }}
-        renderItem={({ item, section }) => {
+        renderItem={({ item }) => {
           return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
         }}
         viewabilityConfig={{

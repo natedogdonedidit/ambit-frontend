@@ -20,7 +20,7 @@ import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
 import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 import { CommentFragment } from 'library/queries/_fragments';
 
-const Comment = ({
+function Comment({
   comment,
   currentTime,
   // navigation,
@@ -28,46 +28,64 @@ const Comment = ({
   hideButtons = false,
   lessPadding = false,
   disableVideo = false,
-}) => {
+}) {
   // HOOKS
   const { currentUserId } = useContext(UserContext);
   const navigation = useNavigation();
   const client = useApolloClient();
 
-  const [isLiked, setIsLiked] = useState(comment.likedByMe); // this is the source of truth
-  const [likesCount, setLikesCount] = useState(comment.likesCount); // this is the source of truth
+  // const [isLiked, setIsLiked] = useState(comment.likedByMe); // this is the source of truth
+  // const [likesCount, setLikesCount] = useState(comment.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
-  const [likeComment, { loading: loadingLike }] = useMutation(LIKE_COMMENT_MUTATION, {
+  const [likeComment] = useMutation(LIKE_COMMENT_MUTATION, {
     variables: {
       commentId: comment.id,
     },
-    update: (proxy, { data: dataReturned }) => {
-      client.writeFragment({
-        id: `Comment:${comment.id}`,
-        fragment: CommentFragment,
-        fragmentName: 'CommentFragment',
-        data: {
-          ...dataReturned.likeComment,
-        },
-      });
+    optimisticResponse: {
+      __typename: 'Mutation',
+      likeComment: {
+        __typename: 'Comment',
+        ...comment,
+        likedByMe: true,
+        likesCount: comment.likesCount + 1,
+      },
     },
+    // update: (proxy, { data: dataReturned }) => {
+    //   client.writeFragment({
+    //     id: `Comment:${comment.id}`,
+    //     fragment: CommentFragment,
+    //     fragmentName: 'CommentFragment',
+    //     data: {
+    //       ...dataReturned.likeComment,
+    //     },
+    //   });
+    // },
   });
 
-  const [unlikeComment, { loading: loadingUnlike }] = useMutation(UNLIKE_COMMENT_MUTATION, {
+  const [unlikeComment] = useMutation(UNLIKE_COMMENT_MUTATION, {
     variables: {
       commentId: comment.id,
     },
-    update: (proxy, { data: dataReturned }) => {
-      client.writeFragment({
-        id: `Comment:${comment.id}`,
-        fragment: CommentFragment,
-        fragmentName: 'CommentFragment',
-        data: {
-          ...dataReturned.unlikeComment,
-        },
-      });
+    optimisticResponse: {
+      __typename: 'Mutation',
+      unlikeComment: {
+        __typename: 'Comment',
+        ...comment,
+        likedByMe: false,
+        likesCount: comment.likesCount - 1,
+      },
     },
+    // update: (proxy, { data: dataReturned }) => {
+    //   client.writeFragment({
+    //     id: `Comment:${comment.id}`,
+    //     fragment: CommentFragment,
+    //     fragmentName: 'CommentFragment',
+    //     data: {
+    //       ...dataReturned.unlikeComment,
+    //     },
+    //   });
+    // },
     onError: () => null,
   });
 
@@ -87,10 +105,10 @@ const Comment = ({
   });
 
   // when cache update comes in...update state!
-  useEffect(() => {
-    setIsLiked(comment.likedByMe);
-    setLikesCount(comment.likesCount);
-  }, [comment.likedByMe, comment.likesCount]);
+  // useEffect(() => {
+  //   setIsLiked(comment.likedByMe);
+  //   setLikesCount(comment.likesCount);
+  // }, [comment.likedByMe, comment.likesCount]);
 
   // VARIABLES
   const containsMedia = !!comment.image;
@@ -103,15 +121,17 @@ const Comment = ({
 
   // CUSTOM FUNCTIONS
   const handleLike = async () => {
-    if (isLiked && !loadingUnlike && !loadingLike) {
-      setIsLiked(false);
-      setLikesCount(likesCount - 1);
-      unlikeComment();
-    } else if (!isLiked && !loadingLike && !loadingUnlike) {
-      setIsLiked(true);
-      setLikesCount(likesCount + 1);
-      likeComment();
-    }
+    requestAnimationFrame(() => {
+      if (comment.likedByMe) {
+        // setIsLiked(false);
+        // setLikesCount(likesCount - 1);
+        unlikeComment();
+      } else if (!comment.likedByMe) {
+        // setIsLiked(true);
+        // setLikesCount(likesCount + 1);
+        likeComment();
+      }
+    });
   };
 
   const handleDelete = () => {
@@ -262,8 +282,10 @@ const Comment = ({
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount}</Text>
                 </View>
                 <View style={styles.button}>
-                  <Heart color={isLiked ? colors.peach : colors.iconGray} onPress={handleLike} />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount === 0 ? null : likesCount}</Text>
+                  <Heart color={comment.likedByMe ? colors.peach : colors.iconGray} onPress={handleLike} />
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
+                    {comment.likesCount === 0 ? null : comment.likesCount}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -272,7 +294,7 @@ const Comment = ({
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   commentContainer: {
@@ -361,4 +383,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Comment;
+function areEqual(prevProps, nextProps) {
+  /*
+  return true if passing nextProps to render would return
+  the same result as passing prevProps to render,
+  otherwise return false
+  */
+
+  if (prevProps.comment === nextProps.comment) return true;
+
+  return false;
+}
+
+export default React.memo(Comment, areEqual);

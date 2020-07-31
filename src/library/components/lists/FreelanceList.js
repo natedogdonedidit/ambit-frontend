@@ -24,7 +24,7 @@ const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSel
               </View>
             ) : (
               <View style={styles.addButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.blueGray }}>Add</Text>
+                <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
               </View>
             )}
           </View>
@@ -45,7 +45,7 @@ const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSel
         <TouchableOpacity activeOpacity={0.8} onPress={() => handleCategorySelect(topicID)}>
           <View style={[styles.mainRow, i === freelanceList.length - 1 && styles.addBottomBorder]}>
             <View style={styles.iconView}>
-              <Icon name={icon} solid size={20} color={colors[color] || colors.blueGray} />
+              <Icon name={icon} solid size={20} color={colors[color] || colors.peach} />
             </View>
 
             <Text style={styles.mainRowText}>{name}</Text>
@@ -63,7 +63,7 @@ const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSel
                   </View>
                 ) : (
                   <View style={styles.addButton}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.blueGray }}>Add</Text>
+                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
                   </View>
                 )}
               </View>
@@ -115,22 +115,22 @@ const styles = StyleSheet.create({
   },
   // add button
   addButton: {
-    height: 30,
+    height: 32,
     width: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: colors.blueGray,
+    borderColor: colors.peach,
     opacity: 0.9,
   },
   addedButton: {
-    height: 30,
+    height: 32,
     width: 70,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 15,
-    backgroundColor: colors.blueGray,
+    borderRadius: 16,
+    backgroundColor: colors.peach,
   },
   addBottomBorder: {
     borderBottomWidth: StyleSheet.hairlineWidth,

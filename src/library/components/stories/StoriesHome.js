@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useMemo } from 'react';
 import { StyleSheet, View, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -6,13 +6,26 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import StoryBox from 'library/components/stories/StoryBox';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
 import { UserContext } from 'library/utils/UserContext';
+import { combineFavoriteTopics } from 'library/utils';
 import NewProjectButton from './NewProjectButton';
 
-const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, setRefetchingStories, favoritesList }) => {
+const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingStories }) => {
   const { currentUserId } = useContext(UserContext);
+
+  const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
+
+  const favoriteTopics = useMemo(() => {
+    if (dataTopics && dataTopics.myTopics) {
+      return combineFavoriteTopics(dataTopics.myTopics);
+    }
+
+    return [];
+  }, [dataTopics]);
+
   // GETS STORIES FROM YOUR NETWORK
   const {
     error: errorStories,
@@ -67,7 +80,7 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
     const userStories = dataStories.storiesHome;
 
     // combine user and topic stories
-    const userAndTopicStories = [...userStories, ...favoritesList];
+    const userAndTopicStories = [...userStories, ...favoriteTopics];
 
     // sort them
     const sortStoriesHome = (a, b) => {
@@ -77,11 +90,8 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
       // if user story - check if viewed entire story (used in logic below)
       const newestUnseenA = isTopicStoryA
         ? 0
-        : a.items.findIndex(({ views }) => {
+        : a.items.findIndex(({ viewedByMe }) => {
             // return true if you have NOT viewed the story - this will set newestUnseen to that index
-            if (views.length <= 0) return true;
-
-            const viewedByMe = views.some(({ id }) => id === currentUserId);
             return !viewedByMe;
           });
       const viewedEntireStoryA = newestUnseenA === -1;
@@ -89,11 +99,8 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
       // if user story - check if viewed entire story (used in logic below)
       const newestUnseenB = isTopicStoryB
         ? 0
-        : b.items.findIndex(({ views }) => {
+        : b.items.findIndex(({ viewedByMe }) => {
             // return true if you have NOT viewed the story - this will set newestUnseen to that index
-            if (views.length <= 0) return true;
-
-            const viewedByMe = views.some(({ id }) => id === currentUserId);
             return !viewedByMe;
           });
       const viewedEntireStoryB = newestUnseenB === -1;
@@ -172,11 +179,8 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
 
       // if user story
       if (story.items.length > 0) {
-        const newestUnseen = story.items.findIndex(({ views }) => {
+        const newestUnseen = story.items.findIndex(({ viewedByMe }) => {
           // return true if you have NOT viewed the story - this will set newestUnseen to that index
-          if (views.length <= 0) return true;
-
-          const viewedByMe = views.some(({ id }) => id === currentUserId);
           return !viewedByMe;
         });
 
@@ -203,7 +207,7 @@ const StoriesHome = ({ navigation, userLoggedIn, refetching, setLoadingStories, 
         contentContainerStyle={{ paddingVertical: 10, paddingRight: 15, paddingLeft: 5 }}
         showsHorizontalScrollIndicator={false}
       >
-        <NewProjectButton navigation={navigation} userLoggedIn={userLoggedIn} />
+        <NewProjectButton navigation={navigation} />
         {renderStories()}
       </ScrollView>
       <View style={{ height: 10, backgroundColor: colors.lightGray }} />

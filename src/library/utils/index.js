@@ -500,3 +500,27 @@ export const addMainTopics = (topics) => {
   // return a new array with the main topics on the end
   return [...topics, ...mainTopicsToAdd];
 };
+
+export const combineFavoriteTopics = (myTopics) => {
+  const { topicsFocus = [], topicsInterest = [] } = myTopics;
+
+  let combinedTopics = [];
+
+  if (topicsFocus.length > 0) {
+    combinedTopics = [...topicsFocus];
+  }
+  if (topicsInterest.length > 0) {
+    if (combinedTopics === []) {
+      combinedTopics = [...topicsInterest];
+    } else {
+      // only add topics that dont already exist
+      topicsInterest.forEach((topic) => {
+        if (combinedTopics.findIndex((fav) => fav.topicID === topic.topicID) === -1) {
+          combinedTopics = [...combinedTopics, topic];
+        }
+      });
+    }
+  }
+
+  return combinedTopics;
+};

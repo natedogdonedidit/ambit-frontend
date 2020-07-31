@@ -7,7 +7,7 @@ import { useSafeArea } from 'react-native-safe-area-context';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import { RNCamera } from 'react-native-camera';
-import { useQuery } from '@apollo/client';
+import { useQuery, useApolloClient } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -25,6 +25,7 @@ const flashModeOrder = {
 
 const CameraModal = ({ navigation, route }) => {
   const insets = useSafeArea();
+  const client = useApolloClient();
 
   // params
   const { isIntro } = route.params;

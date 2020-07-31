@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { StoryFragment } from 'library/queries/_fragments';
+import { StoryWithOwner } from 'library/queries/_fragments';
 
 const UPDATE_INTRO_MUTATION = gql`
   mutation UPDATE_INTRO_MUTATION(
@@ -9,10 +9,10 @@ const UPDATE_INTRO_MUTATION = gql`
     $deleteItems: [StoryItemWhereUniqueInput]
   ) {
     updateIntro(id: $id, updateItems: $updateItems, createItems: $createItems, deleteItems: $deleteItems) {
-      ...StoryFragment
+      ...StoryWithOwner
     }
   }
-  ${StoryFragment}
+  ${StoryWithOwner}
 `;
 
 export default UPDATE_INTRO_MUTATION;

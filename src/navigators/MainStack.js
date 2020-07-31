@@ -1,18 +1,22 @@
 import React, { useContext, useEffect } from 'react';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-import { useQuery, useSubscription } from '@apollo/client';
+import { useQuery, useSubscription, useApolloClient } from '@apollo/client';
 import analytics from '@segment/analytics-react-native';
 
 import { UserContext } from 'library/utils/UserContext';
 import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
+import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
+import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+
 import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 import MESSAGES_CONNECTION_ALL from 'library/queries/MESSAGES_CONNECTION_ALL';
 import NEW_NOTIFICATION_SUBSCRIPTION from 'library/subscriptions/NEW_NOTIFICATION_SUBSCRIPTION';
 import MESSAGE_SUBSCRIPTION from 'library/subscriptions/MESSAGE_SUBSCRIPTION';
-
 import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY';
 
+import SplashScreen from 'library/components/UI/SplashScreen';
 import MainDrawer from 'navigators/MainDrawer';
 // modals
 import StoryModal from 'screens/main/modals/stories/StoryModal';
@@ -57,21 +61,38 @@ const Stack = createStackNavigator();
 
 const MainStack = () => {
   const { setUnReadNotifications, currentUserId } = useContext(UserContext);
+  const client = useApolloClient();
 
   // ////////////////////////////////////////
   // LOAD INITIAL QUERIES HERE
   // ////////////////////////////////////////
-  useQuery(ALL_CONNECTIONS_QUERY);
+  useEffect(() => {
+    // pre-fetch my suggested connections (probably a better way)
+    // client.query({
+    //   query: ALL_CONNECTIONS_QUERY,
+    // });
+
+    // pre-fetch stories home
+    client.query({
+      query: STORIES_HOME_QUERY,
+    });
+
+    // pre-fetch my topics
+    client.query({
+      query: CURRENT_USER_TOPICS,
+    });
+
+    // pre-fetch people I follow
+    client.query({
+      query: CURRENT_USER_FOLLOWING,
+    });
+  }, []);
+
+  // pre-fetch my messages (probably a better way)
   const { refetch: refetchMessageConnections } = useQuery(MESSAGES_CONNECTION_ALL);
 
-  // CURRENT USER QUERY (USED TO COUNT UNREAD MESSAGES & REFETCH GROUPS)
-  const { data: userData, networkStatus: networkStatusUser, refetch: refetchUser } = useQuery(CURRENT_USER_QUERY, {
-    notifyOnNetworkStatusChange: true,
-  });
-  const userOk = networkStatusUser === 7;
-  // useEffect(() => {
-  //   console.log('re-rendering main stack', networkStatusUser);
-  // });
+  // CURRENT USER QUERY
+  const { data: userData, loading: loadingUser, refetch: refetchUser } = useQuery(CURRENT_USER_QUERY);
 
   // NOTIFICATIONS QUERY
   const {
@@ -125,7 +146,7 @@ const MainStack = () => {
   // SUBSCRIBE TO NEW MESSAGES IN GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
   useSubscription(MESSAGE_SUBSCRIPTION, {
     variables: { id: currentUserId },
-    onSubscriptionData: async ({ client, subscriptionData }) => {
+    onSubscriptionData: async ({ subscriptionData }) => {
       // console.log('subscriptionData', subscriptionData);
       const { newMessageToMe } = subscriptionData.data;
       try {
@@ -176,6 +197,12 @@ const MainStack = () => {
       },
     }),
   };
+
+  // this might cause the splash screen to render every time current_user_query runs
+  // this should only render upon the first time we are loading the CURRENT_USER_QUERY
+  if (!userData) {
+    return <SplashScreen />;
+  }
 
   return (
     <Stack.Navigator
