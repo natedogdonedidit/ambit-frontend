@@ -10,27 +10,43 @@ import FreelanceList from 'library/components/lists/FreelanceList';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
+const TOPIC_LIMIT = 3;
+
 const SelectSearchTopicsModal = ({ navigation, route }) => {
   // PARAMS
-  const { goal, setTopic } = route.params;
+  const { goal, setTopics, topicsPassedIn = [] } = route.params;
 
   // STATE
   const [selectedCategories, setSelectedCategories] = useState('');
-  const [activeTopic, setActiveTopic] = useState('');
+  const [activeTopics, setActiveTopics] = useState(topicsPassedIn);
+  const [warning, setWarning] = useState('');
+
+  // const [activeTopic, setActiveTopic] = useState('');
+  // const activeTopicsIDonly = activeTopics.map((topic) => topic.topicID);
 
   // CONSTANTS
   const heading = 'Select a topic to search';
 
-  const handleTopicSelect = selectedTopicID => {
-    // if there is a goal - select one topic only
-    setActiveTopic(selectedTopicID);
-    setTopic(selectedTopicID);
+  const handleTopicSelect = (selectedTopicID) => {
+    // build the new array of topics
+    let newArray = [...activeTopics];
+    if (activeTopics.includes(selectedTopicID)) {
+      // remove it
+      newArray = activeTopics.filter((topicID) => topicID !== selectedTopicID);
+      if (warning) setWarning('');
+    } else if (newArray.length < TOPIC_LIMIT) {
+      // add it
+      newArray = [...activeTopics, selectedTopicID];
+    } else {
+      setWarning('3 topics max');
+    }
 
-    // navigate back after a short delay
-    const timeout = setTimeout(() => navigation.goBack(), 300);
+    setActiveTopics(newArray);
+    setTopics(newArray);
+    console.log(newArray);
   };
 
-  const handleCategorySelect = category => {
+  const handleCategorySelect = (category) => {
     if (selectedCategories.includes(category)) {
       const index = selectedCategories.indexOf(category);
       if (index > -1) {
@@ -48,7 +64,7 @@ const SelectSearchTopicsModal = ({ navigation, route }) => {
       if (goal.modalType === 'specialist') {
         return (
           <FreelanceList
-            activeTopicIDs={[activeTopic]}
+            activeTopicIDs={[...activeTopics]}
             selectedCategories={selectedCategories}
             handleTopicSelect={handleTopicSelect}
             handleCategorySelect={handleCategorySelect}
@@ -57,13 +73,13 @@ const SelectSearchTopicsModal = ({ navigation, route }) => {
       }
 
       if (goal.modalType === 'invest') {
-        return <InvestList activeTopicIDs={[activeTopic]} handleTopicSelect={handleTopicSelect} />;
+        return <InvestList activeTopicIDs={[...activeTopics]} handleTopicSelect={handleTopicSelect} />;
       }
     }
 
     return (
       <TopicsList
-        activeTopicIDs={[activeTopic]}
+        activeTopicIDs={[...activeTopics]}
         selectedCategories={selectedCategories}
         handleTopicSelect={handleTopicSelect}
         handleCategorySelect={handleCategorySelect}
@@ -76,7 +92,8 @@ const SelectSearchTopicsModal = ({ navigation, route }) => {
       <View style={styles.container}>
         <HeaderBackBlank
           navigation={navigation}
-          rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
+          title={warning}
+          // rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
         />
 
         <ScrollView style contentContainerStyle={styles.scrollView}>

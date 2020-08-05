@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
-import { useQuery } from '@apollo/client';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useQuery, useApolloClient } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -15,14 +15,18 @@ import { sortChats } from 'library/utils';
 
 const MessagesScreen = ({ navigation }) => {
   // CONSTANTS
-  const TABS = ['Messages', 'Requests'];
+  // const TABS = ['Messages', 'Requests'];
 
   // STATE
-  const [activeTab, setActiveTab] = useState(TABS[0]);
+  // const [activeTab, setActiveTab] = useState(TABS[0]);
+  const insets = useSafeAreaInsets();
+  const [top, setTop] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
 
-  // HOOKS
-  const currentTime = new Date();
-  const insets = useSafeArea();
+  useEffect(() => {
+    if (insets.top > 0) {
+      setTop(insets.top);
+    }
+  }, [insets.top]);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser, refetch, networkStatus } = useQuery(CURRENT_USER_MESSAGES, {
@@ -31,10 +35,13 @@ const MessagesScreen = ({ navigation }) => {
   const refetching = networkStatus === 4;
   const loading = networkStatus === 1;
 
+  // HOOKS
+  const currentTime = new Date();
+
   if (errorUser) return <Error error={errorUser} />;
   if (loading)
     return (
-      <View style={{ ...styles.container, paddingTop: insets.top }}>
+      <View style={{ ...styles.container, paddingTop: top }}>
         <HeaderMessages handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
         {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
         <Loader loading={loading} full={false} size="small" backgroundColor={colors.lightGray} />
@@ -46,7 +53,7 @@ const MessagesScreen = ({ navigation }) => {
   groups.sort(sortChats); // sort groups by date
 
   return (
-    <View style={{ ...styles.container, paddingTop: insets.top }}>
+    <View style={{ ...styles.container, paddingTop: top }}>
       <HeaderMessages handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
       {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
       <FlatList

@@ -10,6 +10,7 @@ import SuggestedConnection from 'library/components/lists/SuggestedConnection';
 import TextButton from 'library/components/UI/buttons/TextButton';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
+import { getTopicFromID } from 'library/utils';
 
 const PostMatches = ({ navigation, post }) => {
   // QUERIES
@@ -43,21 +44,46 @@ const PostMatches = ({ navigation, post }) => {
     );
   }
 
+  const renderReason = () => {
+    // need goal and subfield
+    const { goal, subField } = post;
+    const { name } = getTopicFromID(subField.topicID);
+
+    if (goal === 'Find Investors' && name) {
+      return (
+        <Text style={{ ...defaultStyles.defaultMute, paddingTop: 4, paddingRight: 15 }}>
+          People interested in investing in <Text style={{ ...defaultStyles.defaultSemibold, color: colors.green }}>{name}</Text>
+        </Text>
+      );
+    }
+    if (goal === 'Find Freelancers' && name) {
+      return (
+        <Text style={{ ...defaultStyles.defaultMute, paddingTop: 4, paddingRight: 15 }}>
+          People open to freelance for <Text style={{ ...defaultStyles.defaultSemibold, color: colors.peach }}>{name}</Text>
+        </Text>
+      );
+    }
+    if (goal === 'Find Mentors' && name) {
+      return (
+        <Text style={{ ...defaultStyles.defaultMute, paddingTop: 4, paddingRight: 15 }}>
+          People open to mentor others in <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>{name}</Text>
+        </Text>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <>
       <View style={styles.sectionHeader}>
-        <Text style={defaultStyles.headerSmall}>Matches</Text>
-        {matches.length > 3 && (
-          <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('PostMatches', { matches })}>
-            Show All
-          </TextButton>
-        )}
+        <Text style={defaultStyles.hugeHeavy}>Matches</Text>
+        {renderReason()}
       </View>
-      {matches.map((item, i) => {
-        if (i > 2) return null;
+      {matches.map((user) => {
         return (
-          <View key={item.user.id}>
-            <SuggestedConnection item={item} navigation={navigation} />
+          <View key={user.id}>
+            <SuggestedConnection user={user} navigation={navigation} />
           </View>
         );
       })}
@@ -72,9 +98,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sectionHeader: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 15,
     marginTop: 10,

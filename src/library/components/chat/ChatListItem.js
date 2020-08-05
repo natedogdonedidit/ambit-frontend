@@ -1,13 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { useApolloClient } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
+import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 
 const ChatListItem = ({ navigation, group, userMessages, currentTime }) => {
+  const client = useApolloClient();
+
+  // pre-fetch conversation when messages tab is clicked
+  useEffect(() => {
+    // console.log('fetching messages for this chat', group.id);
+    client.query({
+      query: MESSAGES_CONNECTION,
+      variables: { groupID: group.id, first: 10 },
+    });
+  }, []);
+
   const users = group.users.filter((user) => user.id !== userMessages.id);
   const otherUser = users[0];
   // console.log(group);
@@ -15,7 +28,7 @@ const ChatListItem = ({ navigation, group, userMessages, currentTime }) => {
   const updatedAt = new Date(group.latestMessage.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, updatedAt);
 
-  const unReadInThisGroup = userMessages.unReadMessages.filter((message) => message.to.id === group.id);
+  const unReadInThisGroup = [...userMessages.unReadMessages].filter((message) => message.to.id === group.id);
   const hasUnread = unReadInThisGroup.length > 0;
 
   // const unReadMessageGroupIDs = userMessages.unReadMessages.map(unRead => unRead.to.id);

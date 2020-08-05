@@ -11,7 +11,7 @@ import {
   TextInput,
   Button,
 } from 'react-native';
-import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import Video from 'react-native-video';
 
@@ -35,7 +35,7 @@ const CapturedStoryItem = ({
   setCapturedVideo,
   setCapturedImage,
 }) => {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const videoRef = useRef(null);
   const textInputRef = useRef(null);
   const [uploading, setUploading] = useState(false);

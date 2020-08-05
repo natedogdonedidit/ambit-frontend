@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import { RNCamera } from 'react-native-camera';
 
@@ -24,7 +24,7 @@ const CameraControls = ({
   handleCameraRollButton,
   firstImage,
 }) => {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
 
   // CUSTOM FUNCTIONS
   const takePicture = async () => {

@@ -10,50 +10,51 @@ import Post from 'library/components/post/Post';
 import POST_MATCHES_QUERY from 'library/queries/POST_MATCHES_QUERY';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
+import PostMatches from '../../library/components/post/PostMatches';
 
 const PostMatchesScreen = ({ navigation, route }) => {
   // PARAMS
-  const { post, matches = [] } = route.params;
+  const { post } = route.params;
   // we only show the post if you past a post in
 
   const currentTime = new Date();
 
   // RENDER FUNCTIONS
 
-  const renderMatches = () => {
-    if (!matches) return null;
+  // const renderMatches = () => {
+  //   if (!matches) return null;
 
-    if (matches.length < 1) {
-      return (
-        <>
-          <View style={styles.noMatches}>
-            <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2, textAlign: 'center' }}>
-              No matches yet...check back later!
-            </Text>
-          </View>
-        </>
-      );
-    }
+  //   if (matches.length < 1) {
+  //     return (
+  //       <>
+  //         <View style={styles.noMatches}>
+  //           <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2, textAlign: 'center' }}>
+  //             No matches yet...check back later!
+  //           </Text>
+  //         </View>
+  //       </>
+  //     );
+  //   }
 
-    return (
-      <>
-        {post && (
-          <View style={styles.sectionHeader}>
-            <Text style={defaultStyles.headerSmall}>Matches</Text>
-          </View>
-        )}
+  //   return (
+  //     <>
+  //       {post && (
+  //         <View style={styles.sectionHeader}>
+  //           <Text style={defaultStyles.headerSmall}>Matches</Text>
+  //         </View>
+  //       )}
 
-        {matches.map((item, i) => {
-          // if (i > 2) return null;
-          return (
-            <View key={item.user.id}>
-              <SuggestedConnection item={item} navigation={navigation} />
-            </View>
-          );
-        })}
-      </>
-    );
-  };
+  //       {matches.map((item, i) => {
+  //         // if (i > 2) return null;
+  //         return (
+  //           <View key={item.user.id}>
+  //             <SuggestedConnection item={item} navigation={navigation} />
+  //           </View>
+  //         );
+  //       })}
+  //     </>
+  //   );
+  // };
 
   return (
     <View style={styles.container}>
@@ -63,16 +64,24 @@ const PostMatchesScreen = ({ navigation, route }) => {
         contentContainerStyle={[
           {
             paddingBottom: 20,
-            marginTop: 15,
+            // marginTop: 15,
           },
-          matches.length > 0 && {
-            borderTopWidth: StyleSheet.hairlineWidth,
-            borderTopColor: colors.borderBlack,
-          },
+          // matches.length > 0 && {
+          //   borderTopWidth: StyleSheet.hairlineWidth,
+          //   borderTopColor: colors.borderBlack,
+          // },
         ]}
       >
-        {post && <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons />}
-        {renderMatches()}
+        {post && (
+          <View style={{ height: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
+        )}
+        {post && (
+          <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+            <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons />
+          </TouchableOpacity>
+        )}
+        <PostMatches post={post} navigation={navigation} />
+        {/* {renderMatches()} */}
       </ScrollView>
     </View>
   );

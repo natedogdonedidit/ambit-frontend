@@ -99,7 +99,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* Ambit1Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Ambit1Tests.m; sourceTree = "<group>"; };
 		11E0584E7E6D4FAA87AC050C /* libPods-Ambit1.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Ambit1.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* Ambit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ambit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* Ambit Dev.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Ambit Dev.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Ambit1/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Ambit1/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -316,7 +316,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* Ambit.app */,
+				13B07F961A680F5B00A75B9A /* Ambit Dev.app */,
 				00E356EE1AD99517003FC87E /* Ambit1Tests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* Ambit1-tvOS.app */,
 				2D02E4901E0B4A5D006451C7 /* Ambit1-tvOSTests.xctest */,
@@ -442,7 +442,7 @@
 			);
 			name = Ambit1;
 			productName = Ambit1;
-			productReference = 13B07F961A680F5B00A75B9A /* Ambit.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* Ambit Dev.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* Ambit1-tvOS */ = {
@@ -1075,8 +1075,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Ambit1;
-				PRODUCT_NAME = Ambit;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.AmbitDev;
+				PRODUCT_NAME = "Ambit Dev";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1098,8 +1098,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Ambit1;
-				PRODUCT_NAME = Ambit;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.AmbitDev;
+				PRODUCT_NAME = "Ambit Dev";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

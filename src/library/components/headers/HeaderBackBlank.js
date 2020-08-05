@@ -1,14 +1,14 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { HEADER_HEIGHT } from 'styles/constants';
 
 const HeaderBackBlank = ({ navigation, title, rightComponent, leftText = '' }) => {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   return (
     <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
       <View style={styles.leftSide}>

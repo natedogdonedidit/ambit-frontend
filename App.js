@@ -14,6 +14,7 @@ const Stack = createStackNavigator();
 
 const AppNavigator = () => {
   YellowBox.ignoreWarnings(['Non-serializable values were found in the navigation state']);
+
   const { currentUserId, loadingToken } = useContext(UserContext);
 
   if (loadingToken) {

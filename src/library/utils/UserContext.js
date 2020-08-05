@@ -2,12 +2,10 @@
 
 import React, { useState, useEffect, createContext } from 'react'
 import { Alert } from 'react-native';
-import { useApolloClient, useMutation } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
+import analytics from '@segment/analytics-react-native';
 
 import { signIn, signOut, getTokenAndUser } from 'library/utils/authUtil'
-import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
-import CLEAR_NOTIFICATIONS_MUTATION from 'library/mutations/CLEAR_NOTIFICATIONS_MUTATION';
-// import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSAGES_MUTATION';
 
 const UserContext = createContext();
 
@@ -15,48 +13,25 @@ const UserContextProvider = (props) => {
   const [loadingToken, setLoadingToken] = useState(true);
   const [creatingStory, setCreatingStory] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
-  const [unReadNotifications, setUnReadNotifications] = useState(0);
-  const [unReadMessages, setUnReadMessages] = useState(0);
   const [homePosition, setHomePosition] = useState(0);
 
   const client = useApolloClient();
-
-  // FOR CLEARING NOTIFICATIONS
-  const [clearMyNotifications] = useMutation(CLEAR_NOTIFICATIONS_MUTATION, {
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: NOTIFICATIONS_QUERY,
-        data: {
-          myNotifications: dataReturned.clearMyNotifications,
-        },
-      });
-    },
-    onError: e => {
-      console.log(e);
-    },
-  });
-
-  // FOR CLEARING MESSAGES FOR ONE GROUP
-  // const [clearUnReadMessages] = useMutation(CLEAR_UNREAD_MESSAGES_MUTATION, {
-  //   onError: e => {
-  //     console.log(e);
-  //   },
-  // });
 
   // INITIAL RENDER -> get user token out of Async Storage
   useEffect(() => {
     const fetchTokenAndUser = async () => {
       setLoadingToken(true);
       const { token, userID } = await getTokenAndUser();
-      setLoadingToken(false);
 
       if (token && userID) {
         // if we got a userID -> save to context (this indicates someone is logged in)
-        setCurrentUserId(userID);
+        await setCurrentUserId(userID);
       } else {
         signOut();
-        setCurrentUserId(null);
+        await setCurrentUserId(null);
       }
+
+      setLoadingToken(false);
     };
     fetchTokenAndUser();
   }, []);
@@ -70,6 +45,8 @@ const UserContextProvider = (props) => {
       console.log('Saved login token in Storage', loginData.token);
       // 2. store the user in context
       setCurrentUserId(loginData.user.id)
+      console.log(`sending identify for ${currentUserId}`);
+      analytics.identify(currentUserId);
       console.log('Saved userID to Storage & updated Context with userID', loginData.user.id);
     } catch (e) {
       // AsyncStorage errors would lead us here
@@ -99,16 +76,18 @@ const UserContextProvider = (props) => {
     }
   }
 
-  const clearNotifications = () => {
-    if (unReadNotifications) {
-      setUnReadNotifications(0);
-      clearMyNotifications()
-    }
-  }
-
   return (
     <UserContext.Provider
-      value={{ loadingToken, currentUserId, loginCTX, logoutCTX, homePosition, setHomePosition,  unReadNotifications, setUnReadNotifications, clearNotifications, unReadMessages, setUnReadMessages, creatingStory, setCreatingStory }}
+      value={{ 
+        loadingToken, 
+        currentUserId, 
+        loginCTX, 
+        logoutCTX, 
+        homePosition, 
+        setHomePosition, 
+        creatingStory, 
+        setCreatingStory 
+      }}
     >
       {props.children}
     </UserContext.Provider>

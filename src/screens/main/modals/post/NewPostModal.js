@@ -23,6 +23,7 @@ import FitImage from 'react-native-fit-image';
 import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
+import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
 import { UserContext } from 'library/utils/UserContext';
 import { postPicUpload, getTopicID, addMainTopics, getNetworkIDsFromUser, getTopicFromID } from 'library/utils';
 
@@ -219,6 +220,7 @@ const NewPostModal = ({ navigation, route }) => {
             },
           });
         },
+        refetchQueries: goal && [{ query: MYGOALS_POSTS_QUERY }],
       });
     } catch (e) {
       setUploading(false);

@@ -13,7 +13,7 @@ import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import SINGLE_USER_BASIC from 'library/queries/SINGLE_USER_BASIC';
 import { MinimalUser } from 'library/queries/_fragments';
 
-const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStory = false }) => {
+const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStory = false, onRow = false }) => {
   const client = useApolloClient();
 
   const [isFollowing, setIsFollowing] = useState(false);
@@ -159,18 +159,32 @@ const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStor
   // }
 
   if (small) {
-    if (onStory && isFollowing) {
-      return null;
+    if (onStory) {
+      if (isFollowing) return null;
+
+      return (
+        <TouchableOpacity onPress={() => requestAnimationFrame(onPressFollow)} activeOpacity={0.5}>
+          <View style={isFollowing ? styles.buttonActiveSmall : styles.buttonSmall}>
+            <Text style={{ ...defaultStyles.smallSemibold, color: isFollowing ? colors.white : colors.white }}>
+              {isFollowing ? 'Following' : 'Follow'}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
     }
-    return (
-      <TouchableOpacity onPress={() => requestAnimationFrame(onPressFollow)} activeOpacity={0.5}>
-        <View style={isFollowing ? styles.buttonActiveSmall : styles.buttonSmall}>
-          <Text style={{ ...defaultStyles.smallSemibold, color: isFollowing ? colors.white : colors.white }}>
-            {isFollowing ? 'Following' : 'Follow'}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
+    if (onRow) {
+      if (isFollowing) return null;
+
+      return (
+        <TouchableOpacity onPress={() => requestAnimationFrame(onPressFollow)} activeOpacity={0.5}>
+          <View style={isFollowing ? styles.buttonActiveSmallRow : styles.buttonSmallRow}>
+            <Text style={{ ...defaultStyles.smallSemibold, color: isFollowing ? colors.black : colors.white }}>
+              {isFollowing ? 'Following' : 'Follow'}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
   }
 
   return (
@@ -206,7 +220,7 @@ const styles = StyleSheet.create({
     // ...defaultStyles.shadowButton,
   },
 
-  // small version
+  // small version // story
   buttonSmall: {
     paddingHorizontal: 8,
     height: 28,
@@ -224,6 +238,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     ...defaultStyles.shadowButton,
+  },
+
+  // small version // row
+  buttonSmallRow: {
+    paddingHorizontal: 8,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: colors.purp,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // ...defaultStyles.shadowButton,
+  },
+  buttonActiveSmallRow: {
+    paddingHorizontal: 8,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: colors.grayButton,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // ...defaultStyles.shadowButton,
   },
 });
 

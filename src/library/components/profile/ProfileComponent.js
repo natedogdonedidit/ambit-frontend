@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, Animated, TouchableOpacity, RefreshContr
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { UserContext } from 'library/utils/UserContext';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
@@ -34,7 +34,7 @@ const ProfileComponent = ({
   const [tabState, setTabState] = useState(0);
   const [tabPosition, setTabPosition] = useState(0);
   const { currentUserId } = useContext(UserContext);
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const [top] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
 
   const tabScrollDistance = tabPosition - top - HEADER_HEIGHT;

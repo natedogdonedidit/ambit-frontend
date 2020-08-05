@@ -7,6 +7,7 @@ import ProfileScreen from 'screens/main/ProfileScreen';
 import PostScreen from 'screens/main/PostScreen';
 import PostMatchesScreen from 'screens/main/PostMatchesScreen';
 import UpdateScreen from 'screens/main/UpdateScreen';
+import SearchScreen from 'screens/main/SearchScreen';
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,17 @@ const PeopleStack = ({ navigation, route }) => {
       <Stack.Screen name="PostMatches" component={PostMatchesScreen} />
       <Stack.Screen name="Update" component={UpdateScreen} />
       <Stack.Screen name="Chat" component={ChatScreen} />
+      <Stack.Screen
+        name="Search"
+        component={SearchScreen}
+        initialParams={{
+          goalToSearch: null,
+          topicToSearch: '',
+          locationToSearch: null,
+          locationLatToSearch: null,
+          locationLonToSearch: null,
+        }}
+      />
     </Stack.Navigator>
   );
 };

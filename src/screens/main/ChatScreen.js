@@ -43,7 +43,7 @@ const ChatScreen = ({ navigation, route }) => {
     return otherUser.id === otherUserPassedIn.id;
   });
 
-  const unReadMessageGroupIDs = userMessages.unReadMessages.map((unRead) => unRead.to.id);
+  const unReadMessageGroupIDs = [...userMessages.unReadMessages].map((unRead) => unRead.to.id);
   const hasUnread = group ? unReadMessageGroupIDs.includes(group.id) : false;
 
   return (

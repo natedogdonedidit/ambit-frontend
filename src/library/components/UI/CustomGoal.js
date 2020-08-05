@@ -17,6 +17,7 @@ const CustomGoal = ({ navigation, goal }) => {
       style={{ flexDirection: 'row', flex: 1 }}
       onPress={() => navigation.navigate('Search', { textToSearch: goal })}
       activeOpacity={0.6}
+      disabled
     >
       <View
         style={{

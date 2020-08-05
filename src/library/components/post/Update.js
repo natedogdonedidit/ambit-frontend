@@ -105,23 +105,30 @@ function Update({
   // for dates
   // CALCULATE THESE VARIABLES ONCE UPON RENDER - THEY SHOULD NEVER CHANGE
 
-  const { containsMedia, isMyPost, timeDiff, period, formatedDate } = useMemo(() => {
+  // CALCULATE THESE VARIABLES ONCE UPON RENDER - THEY SHOULD NEVER CHANGE
+  const { containsMedia, isMyPost } = useMemo(() => {
     const containsMedia1 = !!update.image;
     const isMyPost1 = currentUserId === post.owner.id;
 
+    return {
+      containsMedia: containsMedia1,
+      isMyPost: isMyPost1,
+    };
+  }, [post, update]);
+
+  // CALCULATE THESE VARIABLES ONCE UPON RENDER - THEY SHOULD NEVER CHANGE
+  const { timeDiff, period, formatedDate } = useMemo(() => {
     // for dates
     const createdAt1 = new Date(update.createdAt);
     const { timeDiff: timeDiff1, period: period1 } = timeDifference(currentTime, createdAt1);
     const formatedDate1 = format(createdAt1, 'M/d/yy h:mm a');
 
     return {
-      containsMedia: containsMedia1,
-      isMyPost: isMyPost1,
-      timeDiff: timeDiff1,
+      timeDiff: Math.max(timeDiff1, 0),
       period: period1,
       formatedDate: formatedDate1,
     };
-  }, []);
+  }, [update]);
 
   // CUSTOM FUNCTIONS
   const handleLike = async () => {

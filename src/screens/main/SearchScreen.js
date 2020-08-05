@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useMemo } from 'react';
 import { StyleSheet, View, TouchableOpacity, Animated, Text, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';
@@ -20,13 +20,20 @@ const DROPDOWNS_HEIGHT = 40;
 
 const SearchScreen = ({ navigation, route }) => {
   // PARAMS
-  const { textToSearch, goalToSearch, topicToSearch, locationToSearch, locationLatToSearch, locationLonToSearch } = route.params;
+  const {
+    textToSearch,
+    goalToSearch,
+    topicIDsToSearch = [],
+    locationToSearch,
+    locationLatToSearch,
+    locationLonToSearch,
+  } = route.params;
 
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
   const [textInput, setTextInput] = useState(textToSearch || '');
   const [goal, setGoal] = useState(goalToSearch || null);
-  const [topicID, setTopic] = useState(topicToSearch);
+  const [topicIDs, setTopics] = useState([...topicIDsToSearch]);
   const [location, setLocation] = useState(locationToSearch);
   const [locationID, setLocationID] = useState(null);
   const [locationLat, setLocationLat] = useState(locationLatToSearch);
@@ -34,7 +41,7 @@ const SearchScreen = ({ navigation, route }) => {
   const [activeTab, setActiveTab] = useState('Top');
 
   // OTHER HOOKS
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
 
   // ////////////////////////////////////////////////////////////////
   // QUERIES
@@ -44,25 +51,39 @@ const SearchScreen = ({ navigation, route }) => {
 
   // ////////////////////////////////////////////////////////////////
   // CONSTANTS
-  const tabsHeight = 0; // set to 42 to use Tabs
-  const HEADER_HEIGHT_WITH_PADDING = HEADER_HEIGHT + insets.top;
-  const topic = getTopicFromID(topicID);
+  // const tabsHeight = 0; // set to 42 to use Tabs
+  // const HEADER_HEIGHT_WITH_PADDING = HEADER_HEIGHT + insets.top;
+  // const topic = getTopicFromID(topicID);
+  // const topicSelectText = topic ? topic.name : 'Topic';
+
   const goalSelectText = goal ? goal.name : 'Goal';
-  const topicSelectText = topic ? topic.name : 'Topic';
   const locationSelectText = location || 'Location';
 
-  const SLIDE_HEIGHT = DROPDOWNS_HEIGHT;
+  // const SLIDE_HEIGHT = DROPDOWNS_HEIGHT;
+
+  const hasTopics = topicIDs.length > 0;
+
+  const topicSelectText = useMemo(() => {
+    if (hasTopics) {
+      const topicNames = topicIDs.map((topicID) => getTopicFromID(topicID).name);
+
+      // make a string with all topic names, sepearted by comma
+      return topicNames.join(', ');
+    }
+
+    return 'Topics';
+  }, [hasTopics, topicIDs]);
 
   // ////////////////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
 
   const clearGoal = () => {
     setGoal(null);
-    setTopic('');
+    setTopics([]);
   };
 
   const clearTopic = () => {
-    setTopic('');
+    setTopics([]);
   };
 
   const clearLocation = () => {
@@ -85,7 +106,7 @@ const SearchScreen = ({ navigation, route }) => {
   // must pass this to goal modal
   const handleGoalSelect = (goalInput) => {
     setGoal(goalInput);
-    setTopic('');
+    setTopics([]);
   };
 
   return (
@@ -112,6 +133,7 @@ const SearchScreen = ({ navigation, route }) => {
           showsHorizontalScrollIndicator={false}
         >
           <TouchableOpacity
+            activeOpacity={0.7}
             style={goal ? styles.selectorFilled : styles.selector}
             onPress={() => navigation.navigate('SelectGoalModalSearch', { handleGoalSelect })}
           >
@@ -119,6 +141,7 @@ const SearchScreen = ({ navigation, route }) => {
               {goalSelectText}
             </Text>
             <TouchableOpacity
+              activeOpacity={0.7}
               onPress={goal ? () => clearGoal() : () => navigation.navigate('SelectGoalModalSearch', { handleGoalSelect })}
               hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
             >
@@ -130,24 +153,38 @@ const SearchScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </TouchableOpacity>
           <TouchableOpacity
-            style={topicID ? styles.selectorFilled : styles.selector}
-            onPress={() => navigation.navigate('SelectSearchTopicsModal', { goal, setTopic })}
+            activeOpacity={0.7}
+            style={hasTopics ? styles.selectorFilled : styles.selector}
+            onPress={() => navigation.navigate('SelectSearchTopicsModal', { goal, setTopics, topicsPassedIn: [...topicIDs] })}
           >
-            <Text style={{ ...defaultStyles.defaultText, color: topicID ? colors.white : colors.darkGray, paddingRight: 10 }}>
+            <Text
+              activeOpacity={0.7}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={{
+                ...defaultStyles.defaultText,
+                color: hasTopics ? colors.white : colors.darkGray,
+                paddingRight: 10,
+                maxWidth: 240,
+                overflow: 'hidden',
+              }}
+            >
               {topicSelectText}
             </Text>
             <TouchableOpacity
-              onPress={topicID ? () => clearTopic() : () => navigation.navigate('SelectSearchTopicsModal', { goal, setTopic })}
+              activeOpacity={0.7}
+              onPress={hasTopics ? () => clearTopic() : () => navigation.navigate('SelectSearchTopicsModal', { goal, setTopics })}
               hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
             >
               <Ionicons
-                name={topicID ? 'md-close' : 'md-arrow-dropdown'}
-                size={topicID ? 16 : 22}
-                color={topicID ? colors.white : colors.darkGray}
+                name={hasTopics ? 'md-close' : 'md-arrow-dropdown'}
+                size={hasTopics ? 16 : 22}
+                color={hasTopics ? colors.white : colors.darkGray}
               />
             </TouchableOpacity>
           </TouchableOpacity>
           <TouchableOpacity
+            activeOpacity={0.7}
             style={location ? styles.selectorFilled : styles.selector}
             onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
           >
@@ -155,6 +192,7 @@ const SearchScreen = ({ navigation, route }) => {
               {locationSelectText}
             </Text>
             <TouchableOpacity
+              activeOpacity={0.7}
               onPress={
                 location
                   ? () => clearLocation()
@@ -178,7 +216,7 @@ const SearchScreen = ({ navigation, route }) => {
           activeTab={activeTab}
           textInput={textInput}
           goal={goal ? goal.name : ''}
-          topicID={topicID}
+          topicIDs={topicIDs}
           locationLat={locationLat}
           locationLon={locationLon}
           scrollY={scrollY}

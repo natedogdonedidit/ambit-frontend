@@ -6,10 +6,10 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
+import FollowButton from 'library/components/UI/buttons/FollowButton';
+import MessageButton from 'library/components/UI/buttons/MessageButton';
 
-const SuggestedConnection = ({ navigation, item }) => {
-  const { user, reason } = item;
-
+const SuggestedConnection = ({ navigation, user, showMessage, showFollow }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -25,18 +25,14 @@ const SuggestedConnection = ({ navigation, item }) => {
           {user.headline && <Text style={defaultStyles.defaultMute}>{user.headline}</Text>}
           {/* {user.location && <Text style={defaultStyles.defaultMute}>{user.location}</Text>} */}
           {user.bio && <Text style={{ ...defaultStyles.defaultText, paddingTop: 8 }}>{user.bio}</Text>}
-          {reason.text && (
-            <View style={styles.reasonRow}>
-              <Icon
-                name={reason.icon}
-                solid
-                size={12}
-                color={colors.blueGray}
-                style={{ alignSelf: 'flex-start', paddingRight: 8, paddingTop: 2 }}
-              />
-              <Text style={{ ...defaultStyles.defaultMuteItalic }}>{reason.text}</Text>
-            </View>
-          )}
+          <View style={styles.absoluteButtons}>
+            <FollowButton userToFollowID={user.id} small onRow />
+            <MessageButton
+              onPress={() => navigation.navigate('Chat', { otherUserPassedIn: user })}
+              buttonStyle={{ marginLeft: 6 }}
+              small
+            />
+          </View>
         </View>
       </View>
     </TouchableOpacity>
@@ -64,12 +60,19 @@ const styles = StyleSheet.create({
   rightSide: {
     flex: 1,
     paddingRight: 15,
+    position: 'relative',
   },
-  reasonRow: {
+  absoluteButtons: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 100,
+    height: 36,
+    // backgroundColor: 'pink',
     flexDirection: 'row',
-    marginTop: 10,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
     paddingRight: 15,
-    // left: -18,
   },
 });
 

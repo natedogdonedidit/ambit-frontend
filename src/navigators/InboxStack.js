@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import MessagesScreen from 'screens/main/MessagesScreen';
@@ -12,11 +12,13 @@ const Stack = createStackNavigator();
 
 const InboxStack = ({ navigation, route }) => {
   // hides the tabs in Chat screen
-  if (route.state) {
-    navigation.setOptions({
-      tabBarVisible: route.state.routes ? !(route.state.routes[route.state.routes.length - 1].name === 'Chat') : null,
-    });
-  }
+  useEffect(() => {
+    if (route.state) {
+      navigation.setOptions({
+        tabBarVisible: route.state.routes ? !(route.state.routes[route.state.routes.length - 1].name === 'Chat') : null,
+      });
+    }
+  }, [route]);
 
   return (
     <Stack.Navigator initialRouteName="Messages" headerMode="none">

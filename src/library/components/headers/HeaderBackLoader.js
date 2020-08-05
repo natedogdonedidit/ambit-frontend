@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -11,9 +11,17 @@ import Loader from 'library/components/UI/Loader';
 import TextButton from 'library/components/UI/buttons/TextButton';
 
 const HeaderBackLoader = ({ navigation, handleRight, textRight, title, loading }) => {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
+  const [top, setTop] = useState(insets.top); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+
+  useEffect(() => {
+    if (insets.top > 0) {
+      setTop(insets.top);
+    }
+  }, [insets.top]);
+
   return (
-    <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
+    <View style={{ ...styles.container, paddingTop: top, height: HEADER_HEIGHT + top }}>
       <View style={styles.leftSide}>
         <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>
           <Ionicons name="ios-arrow-back" size={28} color={colors.purp} style={{}} />

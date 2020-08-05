@@ -68,7 +68,7 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/', // simulator
-    // ios: 'http://192.168.123.149:4000', // work
+    // ios: 'http://192.168.123.154:4000', // work
     // ios: 'http://192.168.1.214:4000', // home
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
@@ -82,7 +82,7 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/', // simulator
-    // ios: 'ws://192.168.123.149:4000', // work
+    // ios: 'ws://192.168.123.154:4000', // work
     // ios: 'ws://192.168.1.214:4000', // home
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats
@@ -121,12 +121,15 @@ const client = new ApolloClient({
           singlePost(existingData, { args, toReference }) {
             return existingData || toReference({ __typename: 'Post', id: args.id });
           },
-          group(existingData, { args, toReference }) {
-            return existingData || toReference({ __typename: 'Group', id: args.id });
-          },
-          messages(existingData, { args, toReference }) {
-            return existingData || toReference({ __typename: 'MessageConnection', id: `${args.groupID}` });
-          },
+          // group(existingData, { args, toReference }) {
+          //   return existingData || toReference({ __typename: 'Group', id: args.id });
+          // },
+          // messages(existingData, { args, toReference }) {
+          //   console.log('groupID', args.groupID);
+          //   console.log('existing', existingData);
+          //   console.log(toReference({ __typename: 'MessageConnection', id: `${args.groupID}` }));
+          //   return existingData || toReference({ __typename: 'MessageConnection', id: `${args.groupID}` });
+          // },
         },
       },
     },
@@ -174,7 +177,7 @@ enableScreens();
 const App = () => {
   return (
     <ApolloProvider client={client}>
-      <SafeAreaProvider initialMetrics={initialWindowMetrics} initialSafeAreaInsets={initialWindowSafeAreaInsets}>
+      <SafeAreaProvider initialMetrics={initialWindowMetrics}>
         <UserContextProvider>
           <AppNavigator />
         </UserContextProvider>

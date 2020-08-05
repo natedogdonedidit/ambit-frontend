@@ -1,15 +1,17 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect, useMemo, useContext } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import { UserContext } from 'library/utils/UserContext';
-import { useQuery } from '@apollo/client';
-import analytics from '@segment/analytics-react-native';
+import { useLazyQuery, useSubscription, useApolloClient } from '@apollo/client';
 
 import HomeStack from 'navigators/HomeStack';
 import PeopleStack from 'navigators/PeopleStack';
 import NotificationsStack from 'navigators/NotificationsStack';
 import InboxStack from 'navigators/InboxStack';
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+
+import { UserContext } from 'library/utils/UserContext';
+import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
+import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
+import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
+import MESSAGE_SUBSCRIPTION from 'library/subscriptions/MESSAGE_SUBSCRIPTION';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import BellDot from 'library/components/UI/icons/BellDot';
@@ -18,35 +20,92 @@ import colors from 'styles/colors';
 
 const Tabs = createBottomTabNavigator();
 
-const TabsNavigator = ({ navigation }) => {
-  const { unReadNotifications, currentUserId } = useContext(UserContext);
+const TabsNavigator = () => {
+  const client = useApolloClient();
+  const { currentUserId } = useContext(UserContext);
 
-  const { data } = useQuery(CURRENT_USER_QUERY);
+  // MESSAGES QUERY
+  const [getMessages, { data: messagesData, refetch: refetchMessages }] = useLazyQuery(CURRENT_USER_MESSAGES);
 
-  const { userLoggedIn } = data;
+  // NOTIFICATIONS QUERY
+  const [getNotifications, { data: notificationsData }] = useLazyQuery(NOTIFICATIONS_QUERY, {
+    pollInterval: 60000, // 60 seconds
+  });
 
-  // any time this page loads or a new user id logs in...send the identify event
+  // on first render - set a timer for 10s, then get initial batch of notifications & messages
   useEffect(() => {
-    if (currentUserId && userLoggedIn) {
-      const { name, email } = userLoggedIn;
+    const timer = setTimeout(() => {
+      getMessages(); // this just gets the information for the Group & latest message & unread
+      getNotifications();
+    }, 10000);
+    return () => clearTimeout(timer);
+  }, []);
 
-      console.log(`sending identify for ${currentUserId}, ${name}, ${email}`);
-
-      analytics.identify(currentUserId, {
-        name,
-        email,
-      });
+  // UPDATE # OF UNSEEN MESSAGES EVERYTIME NEW NOTIFICATIONS DATA COMES IN
+  const unReadMessagesCount = useMemo(() => {
+    if (messagesData && messagesData.userMessages && messagesData.userMessages.unReadMessagesCount) {
+      return messagesData.userMessages.unReadMessagesCount;
     }
-  }, [currentUserId]);
 
-  // let unReadMessagesCount = 0;
-  // if (data) {
-  //   if (data.userLoggedIn) {
-  //     if (data.userLoggedIn.unReadMessagesCount) {
-  //       unReadMessagesCount = data.userLoggedIn.unReadMessagesCount;
-  //     }
-  //   }
-  // }
+    return 0;
+  }, [messagesData]);
+
+  // UPDATE # OF UNSEEN NOTIFICATIONS EVERYTIME NEW NOTIFICATIONS DATA COMES IN
+  const unReadNotificationsCount = useMemo(() => {
+    if (notificationsData && notificationsData.myNotifications) {
+      const unRead = [...notificationsData.myNotifications].reduce((num, notification) => {
+        if (!notification.seen) return num + 1;
+        return num;
+      }, 0);
+
+      return unRead;
+    }
+
+    return 0;
+  }, [notificationsData]);
+
+  // SUBSCRIBE TO NEW MESSAGES IN GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
+  useSubscription(MESSAGE_SUBSCRIPTION, {
+    variables: { id: currentUserId },
+    onSubscriptionData: async ({ subscriptionData }) => {
+      // console.log('subscriptionData', subscriptionData);
+      const { newMessageToMe } = subscriptionData.data;
+      try {
+        const previousData = await client.readQuery({
+          query: MESSAGES_CONNECTION,
+          variables: { groupID: newMessageToMe.to.id },
+        });
+
+        // IF MESSAGE CONNECTION DOES NOT EXIST YET WE WILL ENTER CATCH STATEMENT
+        if (previousData && newMessageToMe) {
+          console.log('newMessage', newMessageToMe);
+          console.log('previousData', previousData.messages);
+          client.writeQuery({
+            query: MESSAGES_CONNECTION,
+            variables: { groupID: newMessageToMe.to.id },
+            data: {
+              messages: {
+                ...previousData.messages,
+                edges: [
+                  { node: newMessageToMe, __typename: 'MessageEdge' }, // new message
+                  ...previousData.messages.edges, // previous messages
+                ],
+              },
+            },
+          });
+        }
+      } catch (e) {
+        console.log('new message from a chat that was not fetched yet - fetching chat now');
+        client.query({
+          query: MESSAGES_CONNECTION,
+          variables: { groupID: newMessageToMe.to.id },
+        });
+      }
+
+      // ADD THE MESSAGE TO UNREAD MESSAGES
+      refetchMessages();
+    },
+  });
 
   return (
     <Tabs.Navigator
@@ -67,14 +126,14 @@ const TabsNavigator = ({ navigation }) => {
         name="NotificationsStack"
         component={NotificationsStack}
         options={{
-          tabBarIcon: ({ focused, color, size }) => <BellDot color={color} unReadNotifications={unReadNotifications} />,
+          tabBarIcon: ({ focused, color, size }) => <BellDot color={color} unReadNotifications={unReadNotificationsCount || 0} />,
         }}
       />
       <Tabs.Screen
         name="InboxStack"
         component={InboxStack}
         options={{
-          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={0} />,
+          tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessagesCount || 0} />,
         }}
       />
     </Tabs.Navigator>

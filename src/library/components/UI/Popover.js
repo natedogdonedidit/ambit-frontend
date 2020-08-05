@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, Dimensions, TouchableOpacity } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const Popover = ({ messageComponent, onPress }) => {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const { width } = Dimensions.get('window');
 
   return (

@@ -417,6 +417,7 @@ export const getGoalInfo = (goal, field) => {
       topicID: 'goals_customgoal',
       primaryColor: colors.green,
       secondaryColor: colors.goalGreen,
+      icon: 'rocket',
     };
     if (!field) {
       return customGoalInfo;

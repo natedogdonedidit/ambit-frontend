@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TextInput } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -12,7 +12,7 @@ import { HEADER_HEIGHT } from 'styles/constants';
 // insets.top is used as padding under the StatusBar
 
 const HeaderSearch = ({ user, handleLeft, handleRight, textInput, setTextInput }) => {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   return (
     <View style={{ ...styles.container, paddingTop: insets.top }}>
       <View style={styles.header}>

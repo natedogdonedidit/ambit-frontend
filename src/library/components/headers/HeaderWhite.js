@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -11,7 +11,7 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const HeaderWhite = ({ handleLeft, handleRight, textLeft, textRight, solidRight = false, title }) => {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   return (
     <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
       <View style={styles.leftSide}>

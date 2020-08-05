@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, Alert, Text } from 'react-native';
 import { useQuery, useMutation } from '@apollo/client';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 import colors from 'styles/colors';
@@ -146,7 +147,7 @@ const PostScreen = ({ navigation, route }) => {
         navigation={navigation}
         title={post.goal ? 'Goal' : 'Post'}
         loading={showMatchesLoader}
-        handleRight={loadingMatches || !isMyPost || !post.goal ? null : () => navigation.navigate('PostMatches', { matches })}
+        handleRight={loadingMatches || !isMyPost || !post.goal ? null : () => navigation.navigate('PostMatches', { post })}
         textRight={loadingMatches || !isMyPost || !post.goal ? '' : `${matches.length || ''} Matches`}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>

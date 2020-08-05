@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList, TouchableOpacity } from 'react-native';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, NetworkStatus } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
 
 import colors from 'styles/colors';
@@ -51,6 +51,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     },
     onError: (e) => console.log('error loading for you posts', e),
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI
   });
 
   // GET POSTS FROM "FOLLOWING"
@@ -67,6 +68,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     },
     onError: (e) => console.log('error loading newtork posts', e),
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI
   });
 
   // GET "MY GOALS"
@@ -82,6 +84,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     },
     onError: (e) => console.log('error loading my goals posts', e),
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI
   });
 
   // VIEWED POST MUTATION
@@ -97,31 +100,35 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   // LOADING STATES
   // network
-  const refetchingPostsNetwork = networkStatusPostsNetwork === 4;
+  // console.log(networkStatusPostsNetwork, networkStatusPostsForYou, networkStatusPostsMyGoals);
+  // console.log('idk', NetworkStatus, NetworkStatus.refetch);
   const fetchingMorePostsNetwork = networkStatusPostsNetwork === 3;
   const loadingPostsNetwork = networkStatusPostsNetwork === 1;
+  // const refetchingPostsNetwork = loadingPostsNetwork && dataPostsNetwork; // if loading, but already have data
 
   // for you
-  const refetchingPostsForYou = networkStatusPostsForYou === 4;
   const fetchingMorePostsForYou = networkStatusPostsForYou === 3;
   const loadingPostsForYou = networkStatusPostsForYou === 1;
+  // const refetchingPostsForYou = loadingPostsForYou && dataPostsForYou; // if loading, but already have data
 
   // my goals
-  const refetchingPostsMyGoals = networkStatusPostsMyGoals === 4;
   const fetchingMorePostsMyGoals = networkStatusPostsMyGoals === 3;
   const loadingPostsMyGoals = networkStatusPostsMyGoals === 1;
+  // const refetchingPostsMyGoals = loadingPostsMyGoals && dataPostsMyGoals; // if loading, but already have data
 
-  const refetching = refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals;
+  // const refetching = refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals;
   const loading = loadingPostsNetwork || loadingPostsForYou || loadingPostsMyGoals;
 
   // UPDATE showRefreshing BASED ON QUERY LOADING STATES
-  useEffect(() => {
-    if (refetching) {
-      setShowRefreshing(true);
-    } else if (showRefreshing) {
-      setShowRefreshing(false);
-    }
-  }, [refetching]);
+  // useEffect(() => {
+  //   if (refetching) {
+  //     console.log('setting true');
+  //     setShowRefreshing(true);
+  //   } else if (!refetching) {
+  //     console.log('setting false');
+  //     setShowRefreshing(false);
+  //   }
+  // }, [refetching]);
 
   if (errorPostsNetwork) {
     console.log('ERROR LOADING POSTS:', errorPostsNetwork.message);
@@ -152,10 +159,16 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   if (activeTimeline === 0) postsToShow = [...postsForYou];
   if (activeTimeline === 1) postsToShow = [...postsNetwork];
   if (activeTimeline === 2) postsToShow = [...postsMyGoals];
+  // console.log('mygoals', postsMyGoals);
+  // console.log('poststoshow', postsToShow);
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
+    console.log('refetching');
     setShowRefreshing(true);
+    setTimeout(() => {
+      setShowRefreshing(false);
+    }, 4000);
     refetchPostsNetwork();
     refetchPostsForYou();
     refetchPostsMyGoals();
@@ -211,7 +224,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         ListHeaderComponent={
           <StoriesHome
             navigation={navigation}
-            refetching={refetching}
+            refetching={showRefreshing}
             setLoadingStories={setLoadingStories}
             setRefetchingStories={setRefetchingStories}
           />

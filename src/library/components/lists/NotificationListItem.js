@@ -5,7 +5,7 @@ import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { timeDifference, getGoalInfo } from 'library/utils';
+import { timeDifference, getGoalInfo, getTopicFromID } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { DAYS_TILL_INACTIVE } from 'styles/constants';
 
@@ -66,6 +66,8 @@ const NotificationListItem = ({ navigation, notification }) => {
       );
     }
     if (style === 'LIKE_GOAL') {
+      const name = post.subField ? getTopicFromID(post.subField.topicID).name : '';
+
       return (
         <Text>
           <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
@@ -78,9 +80,7 @@ const NotificationListItem = ({ navigation, notification }) => {
             {post.subField && (
               <>
                 <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
-                <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>
-                  {post.subField.name}
-                </Text>
+                <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>{name}</Text>
               </>
             )}
           </Text>

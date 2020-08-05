@@ -1,32 +1,49 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, Text, ActivityIndicator, RefreshControl, Animated, StatusBar } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
-import { useQuery } from '@apollo/client';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useQuery, useMutation } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderNotifications from 'library/components/headers/HeaderNotifications';
 import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
+import CLEAR_NOTIFICATIONS_MUTATION from 'library/mutations/CLEAR_NOTIFICATIONS_MUTATION';
 
 import Loader from 'library/components/UI/Loader';
-import Error from 'library/components/UI/Error';
 import NotificationListItem from 'library/components/lists/NotificationListItem';
-import { UserContext } from 'library/utils/UserContext';
-import { useEffect } from 'react';
 
 const NotificationsScreen = ({ navigation }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
-  const { clearNotifications } = useContext(UserContext);
+  const insets = useSafeAreaInsets();
+  const [top, setTop] = useState(insets.top); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+
+  useEffect(() => {
+    if (insets.top > 0) {
+      setTop(insets.top);
+    }
+  }, [insets.top]);
+
+  const [clearMyNotifications] = useMutation(CLEAR_NOTIFICATIONS_MUTATION, {
+    // update: (proxy, { data: dataReturned }) => {
+    //   proxy.writeQuery({
+    //     query: NOTIFICATIONS_QUERY,
+    //     data: {
+    //       myNotifications: dataReturned.clearMyNotifications,
+    //     },
+    //   });
+    // },
+    onError: (e) => {
+      console.log(e);
+    },
+  });
 
   useEffect(() => {
     navigation.addListener('focus', () => {
-      clearNotifications();
+      clearMyNotifications();
     });
   }, []);
-
-  const insets = useSafeArea();
 
   // QUERIES
   const { error, data, refetch, networkStatus } = useQuery(NOTIFICATIONS_QUERY, {
@@ -49,7 +66,7 @@ const NotificationsScreen = ({ navigation }) => {
 
   if (loading || error) {
     return (
-      <View style={{ ...styles.container, paddingTop: insets.top }}>
+      <View style={{ ...styles.container, paddingTop: top }}>
         <HeaderNotifications
           handleMiddle={() => null}
           handleRight={() => navigation.navigate('Search')}
@@ -64,7 +81,7 @@ const NotificationsScreen = ({ navigation }) => {
   const { myNotifications } = data;
 
   return (
-    <View style={{ ...styles.container, paddingTop: insets.top }}>
+    <View style={{ ...styles.container, paddingTop: top }}>
       <StatusBar barStyle="dark-content" />
       <HeaderNotifications handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
 
@@ -149,7 +166,7 @@ const NotificationsScreen = ({ navigation }) => {
       <View
         style={{
           ...styles.statusBar,
-          height: insets.top,
+          height: top,
         }}
       />
     </View>
@@ -159,12 +176,12 @@ const NotificationsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.lightGray,
+    backgroundColor: colors.white,
     overflow: 'hidden',
     position: 'relative',
   },
   flatList: {
-    // backgroundColor: colors.lightGray,
+    backgroundColor: colors.lightGray,
     flex: 1,
     width: '100%',
   },

@@ -9,7 +9,7 @@ import Loader from 'library/components/UI/Loader';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
-const SearchTimeline = ({ navigation, scrollY, activeTab, textInput, goal, topicID, locationLat, locationLon }) => {
+const SearchTimeline = ({ navigation, scrollY, activeTab, textInput, goal, topicIDs, locationLat, locationLon }) => {
   // STATE
 
   // QUERIES
@@ -17,11 +17,11 @@ const SearchTimeline = ({ navigation, scrollY, activeTab, textInput, goal, topic
     // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
     variables: {
-      text: textInput,
+      text: textInput || null,
       goal,
-      topicID,
-      lat: locationLat,
-      lon: locationLon,
+      topicIDs,
+      lat: locationLat || null,
+      lon: locationLon || null,
     },
   });
 

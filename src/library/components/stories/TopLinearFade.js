@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 
 function TopLinearFade({ disable = false }) {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
 
   if (disable) return null;
 

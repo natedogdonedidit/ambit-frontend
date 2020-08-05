@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, StatusBar, Animated, ActivityIndicator } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
@@ -11,14 +11,25 @@ import ConnectionsList from 'library/components/lists/ConnectionsList';
 
 const ConnectionsScreen = ({ navigation }) => {
   // OTHER HOOKS
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
+
+  const [top, setTop] = useState(insets.top); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
   const [scrollY] = useState(new Animated.Value(0));
   const [showRefreshing, setShowRefreshing] = useState(false);
 
+  useEffect(() => {
+    if (insets.top > 0) {
+      setTop(insets.top);
+    }
+  }, [insets.top]);
+
   return (
-    <View style={{ ...styles.container, paddingTop: insets.top }}>
+    <View style={{ ...styles.container, paddingTop: top }}>
       <StatusBar barStyle="dark-content" />
-      <HeaderMatches handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
+      <HeaderMatches
+        handleMiddle={() => null}
+        // handleRight={() => navigation.navigate('Search')} navigation={navigation}
+      />
       {/* This is the loading animation */}
       <Animated.View
         style={{
@@ -69,7 +80,7 @@ const ConnectionsScreen = ({ navigation }) => {
       <View
         style={{
           ...styles.statusBar,
-          height: insets.top,
+          height: top,
         }}
       />
     </View>

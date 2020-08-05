@@ -17,6 +17,7 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
       style={{ flexDirection: 'row', flex: 1 }}
       onPress={() => navigation.navigate('Search', { goalToSearch: getGoalInfo(goal), topicToSearch: subField.topicID || null })}
       activeOpacity={0.6}
+      disabled
     >
       <View
         style={{

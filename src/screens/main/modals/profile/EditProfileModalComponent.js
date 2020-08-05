@@ -27,7 +27,7 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const bannerExample =
   'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
@@ -55,7 +55,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
 
   // for setting banner width and height
   const { width } = Dimensions.get('window');
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const [top] = useState(insets.top || 20);
 
   const [editBio, { loading: loadingEdit, error, data }] = useMutation(EDIT_BIO_MUTATION, {

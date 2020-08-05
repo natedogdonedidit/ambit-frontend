@@ -130,23 +130,29 @@ function Post({
   // }, [post.likedByMe, post.likesCount]);
 
   // CALCULATE THESE VARIABLES ONCE UPON RENDER - THEY SHOULD NEVER CHANGE
-  const { containsMedia, isMyPost, timeDiff, period, formatedDate } = useMemo(() => {
+  const { containsMedia, isMyPost } = useMemo(() => {
     const containsMedia1 = post.video || post.images.length > 0;
     const isMyPost1 = currentUserId === post.owner.id;
 
+    return {
+      containsMedia: containsMedia1,
+      isMyPost: isMyPost1,
+    };
+  }, [post]);
+
+  // CALCULATE THESE VARIABLES ONCE UPON RENDER - THEY SHOULD NEVER CHANGE
+  const { timeDiff, period, formatedDate } = useMemo(() => {
     // for dates
     const createdAt1 = new Date(post.createdAt);
     const { timeDiff: timeDiff1, period: period1 } = timeDifference(currentTime, createdAt1);
     const formatedDate1 = format(createdAt1, 'M/d/yy h:mm a');
 
     return {
-      containsMedia: containsMedia1,
-      isMyPost: isMyPost1,
       timeDiff: Math.max(timeDiff1, 0),
       period: period1,
       formatedDate: formatedDate1,
     };
-  }, []);
+  }, [post]);
 
   // CUSTOM FUNCTIONS
   const handleLike = async () => {
@@ -205,6 +211,7 @@ function Post({
   };
 
   const determineOptions = () => {
+    // console.log(isMyPost, post.goal, post.goalStatus);
     if (isMyPost && post.goal && post.goalStatus === 'Active') {
       return [
         {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, RefreshControl, Animated, Dimensions } from 'react-native';
-import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/client';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -29,7 +29,7 @@ const TopicScreen = ({ navigation, route }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
   // REFS & CONTEXT
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const [top] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
 
   // const { height, width } = Dimensions.get('window');

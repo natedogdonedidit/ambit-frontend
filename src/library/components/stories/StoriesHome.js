@@ -13,8 +13,8 @@ import { UserContext } from 'library/utils/UserContext';
 import { combineFavoriteTopics } from 'library/utils';
 import NewProjectButton from './NewProjectButton';
 
-const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingStories }) => {
-  const { currentUserId } = useContext(UserContext);
+function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingStories }) {
+  // const { currentUserId } = useContext(UserContext);
 
   const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
 
@@ -213,7 +213,7 @@ const StoriesHome = ({ navigation, refetching, setLoadingStories, setRefetchingS
       <View style={{ height: 10, backgroundColor: colors.lightGray }} />
     </>
   );
-};
+}
 
 const styles = StyleSheet.create({
   stories: {
@@ -226,4 +226,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StoriesHome;
+export default React.memo(StoriesHome);

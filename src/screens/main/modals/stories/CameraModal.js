@@ -3,7 +3,7 @@ import { StyleSheet, Alert, Image, View, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import CameraRoll from '@react-native-community/cameraroll';
 import LinearGradient from 'react-native-linear-gradient';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import { RNCamera } from 'react-native-camera';
@@ -24,7 +24,7 @@ const flashModeOrder = {
 };
 
 const CameraModal = ({ navigation, route }) => {
-  const insets = useSafeArea();
+  const insets = useSafeAreaInsets();
   const client = useApolloClient();
 
   // params

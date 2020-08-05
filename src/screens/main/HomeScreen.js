@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
-import { useSafeArea } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useApolloClient } from '@apollo/client';
 
 // import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -32,8 +32,14 @@ const HomeScreen = ({ navigation }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
   // OTHER HOOKS
-  const insets = useSafeArea();
-  const [top] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+  const insets = useSafeAreaInsets();
+  const [top, setTop] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+
+  useEffect(() => {
+    if (insets.top > 0) {
+      setTop(insets.top);
+    }
+  }, [insets.top]);
 
   const { width } = Dimensions.get('window');
   const horizontalScrollRef = useRef();
@@ -52,9 +58,9 @@ const HomeScreen = ({ navigation }) => {
       variables: { id: currentUserId },
     });
 
-    client.query({
-      query: ALL_CONNECTIONS_QUERY,
-    });
+    // client.query({
+    //   query: ALL_CONNECTIONS_QUERY,
+    // });
   }, []);
 
   // QUERIES
