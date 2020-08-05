@@ -108,7 +108,7 @@ const TopicScreen = ({ navigation, route }) => {
           <HeaderTopic
             user={userLoggedIn}
             handleMiddle={() => null}
-            handleRight={() => navigation.navigate('Search', { topicToSearch: activeSubTopic || activeTopic.topicID })}
+            handleRight={() => navigation.navigate('Search', { topicIDsToSearch: [activeSubTopic || activeTopic.topicID] })}
             navigation={navigation}
             height={HEADER_HEIGHT}
             topicName={activeTopic.name}

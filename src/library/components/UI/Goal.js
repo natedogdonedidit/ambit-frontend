@@ -15,7 +15,9 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
     // color background w/ black text
     <TouchableOpacity
       style={{ flexDirection: 'row', flex: 1 }}
-      onPress={() => navigation.navigate('Search', { goalToSearch: getGoalInfo(goal), topicToSearch: subField.topicID || null })}
+      onPress={() =>
+        navigation.navigate('Search', { goalToSearch: getGoalInfo(goal), topicIDsToSearch: [subField.topicID] || null })
+      }
       activeOpacity={0.6}
       disabled
     >
