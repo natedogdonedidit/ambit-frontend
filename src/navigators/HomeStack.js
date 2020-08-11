@@ -48,8 +48,8 @@ const HomeStack = ({ navigation, route }) => {
         component={HomeScreen}
         listeners={{
           focus: () => {
-            console.log('User opened Home Screen');
-            analytics.screen('Home Screen');
+            // console.log('User opened Home Screen');
+            // analytics.screen('Home Screen');
           },
         }}
       />
@@ -58,8 +58,8 @@ const HomeStack = ({ navigation, route }) => {
         component={ProfileScreen}
         listeners={{
           focus: () => {
-            console.log('User opened Profile Screen');
-            analytics.screen('Profile Screen');
+            // console.log('User opened Profile Screen');
+            // analytics.screen('Profile Screen');
           },
         }}
       />
@@ -68,8 +68,8 @@ const HomeStack = ({ navigation, route }) => {
         component={PostScreen}
         listeners={{
           focus: () => {
-            console.log('User opened Post Screen');
-            analytics.screen('Post Screen');
+            // console.log('User opened Post Screen');
+            // analytics.screen('Post Screen');
           },
         }}
       />

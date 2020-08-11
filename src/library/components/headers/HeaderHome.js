@@ -20,7 +20,7 @@ const HeaderHome = ({ navigation, handleMiddle, handleTopicsButton, homePosition
         <ProfilePic user={userLoggedIn} size="small" enableIntro={false} enableStory={false} enableClick={false} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
-        <Text style={{ ...defaultStyles.ambitLogo }}>ambit.</Text>
+        <Text style={{ ...defaultStyles.ambitLogo }}>ambit</Text>
       </TouchableOpacity>
       <View style={styles.rightSide}>
         <TouchableOpacity onPress={() => handleTopicsButton()} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>

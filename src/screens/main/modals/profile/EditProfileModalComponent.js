@@ -35,16 +35,16 @@ const bannerExample =
 const EditProfileModalComponent = ({ navigation, user }) => {
   // headline
   const experienceSorted = user.experience.sort(sortExperiences);
-  let headlineDefault;
-  if (experienceSorted.length > 0 && experienceSorted[0].subText && experienceSorted[0].name) {
-    headlineDefault = `${experienceSorted[0].subText} at ${experienceSorted[0].name}`;
-  }
+  // let headlineDefault;
+  // if (experienceSorted.length > 0 && experienceSorted[0].subText && experienceSorted[0].name) {
+  //   headlineDefault = `${experienceSorted[0].subText} at ${experienceSorted[0].name}`;
+  // }
 
   const [profilePic, setProfilePic] = useState(user.profilePic);
   const [bannerPic, setBannerPic] = useState(user.bannerPic);
-  const [firstName, setFirstName] = useState(user.firstName);
-  const [lastName, setLastName] = useState(user.lastName);
-  const [headline, setHeadline] = useState(user.headline || headlineDefault);
+  const [name, setName] = useState(user.name);
+  // const [lastName, setLastName] = useState(user.lastName);
+  // const [headline, setHeadline] = useState(user.headline || headlineDefault);
   const [location, setLocation] = useState(user.location);
   const [locationID, setLocationID] = useState(user.locationID);
   const [locationLat, setLocationLat] = useState(user.locationLat);
@@ -62,12 +62,10 @@ const EditProfileModalComponent = ({ navigation, user }) => {
     variables: {
       id: user.id,
       data: {
-        firstName,
-        lastName,
-        name: `${firstName} ${lastName}`,
+        name,
         bio,
         website,
-        headline,
+        // headline,
         location,
         locationID,
         locationLat,
@@ -211,18 +209,18 @@ const EditProfileModalComponent = ({ navigation, user }) => {
           <View style={styles.section}>
             <View style={styles.row}>
               <View style={styles.rowTitle}>
-                <Text style={{ ...defaultStyles.defaultBold }}>First Name</Text>
+                <Text style={{ ...defaultStyles.defaultBold }}>Name</Text>
               </View>
               <TextInput
                 style={{ ...styles.rowInput, ...defaultStyles.defaultText }}
-                onChangeText={(val) => setFirstName(val)}
-                value={firstName}
+                onChangeText={(val) => setName(val)}
+                value={name}
                 placeholder="John"
                 autoCorrect={false}
                 autoCompleteType="off"
               />
             </View>
-            <View style={styles.row}>
+            {/* <View style={styles.row}>
               <View style={styles.rowTitle}>
                 <Text style={{ ...defaultStyles.defaultBold }}>Last Name</Text>
               </View>
@@ -234,8 +232,8 @@ const EditProfileModalComponent = ({ navigation, user }) => {
                 autoCorrect={false}
                 autoCompleteType="off"
               />
-            </View>
-            <View style={styles.row}>
+            </View> */}
+            {/* <View style={styles.row}>
               <View style={styles.rowTitle}>
                 <Text style={{ ...defaultStyles.defaultBold }}>Headline</Text>
               </View>
@@ -248,7 +246,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
                 autoCompleteType="off"
                 required
               />
-            </View>
+            </View> */}
             <View style={styles.row}>
               <View style={styles.rowTitle}>
                 <Text style={{ ...defaultStyles.defaultBold }}>Location</Text>
@@ -372,7 +370,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   rowTitle: {
-    width: 100,
+    width: 85,
   },
   hatRowTop: {
     flexDirection: 'row',

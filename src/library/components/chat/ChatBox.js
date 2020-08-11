@@ -161,8 +161,6 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
             __typename: 'User',
             id: newMessage.user._id,
             name: newMessage.user.name,
-            firstName: '',
-            lastName: '',
             profilePic: newMessage.user.avatar,
           },
           to: {

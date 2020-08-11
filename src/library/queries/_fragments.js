@@ -94,7 +94,7 @@ export const StoryWithOwner = gql`
     owner {
       id
       name
-      firstName
+      username
       headline
       location
       profilePic
@@ -123,8 +123,8 @@ export const StoryWithOwner = gql`
 export const MinimalUser = gql`
   fragment MinimalUser on User {
     id
+    username
     name
-    firstName
     profilePic
     bannerPic
     headline
@@ -180,8 +180,6 @@ export const MessageFragment = gql`
     }
     from {
       id
-      firstName
-      lastName
       name
       profilePic
     }
@@ -306,9 +304,7 @@ export const DetailPost = gql`
 export const UserProfileFragment = gql`
   fragment UserProfileFragment on User {
     ...MinimalUser
-    firstName
-    lastName
-    email
+    username
     about
     followingCount
     followersCount

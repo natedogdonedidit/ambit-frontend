@@ -58,7 +58,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   return (
     <View style={{ ...styles.profileBox }}>
       <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
-      {user.headline && <Text style={{ ...defaultStyles.defaultMute, ...styles.headline }}>{user.headline}</Text>}
+      {user.username && <Text style={{ ...defaultStyles.defaultMute, ...styles.headline }}>@{user.username}</Text>}
       {renderStats()}
       {user.bio && <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>}
       {!!user.website && <View style={styles.detailsBox}>{renderWebsite()}</View>}
@@ -91,7 +91,7 @@ export default NameBox;
 const styles = StyleSheet.create({
   profileBox: {
     width: '100%',
-    paddingTop: 50, // to make white space for Profile Pic & Buttons
+    paddingTop: 56, // to make white space for Profile Pic & Buttons
     paddingHorizontal: 20,
     backgroundColor: 'white',
     // borderTopLeftRadius: 10,
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   bio: {
-    marginBottom: 15,
+    marginBottom: 20,
   },
   detailsBox: {
     marginBottom: 15,
@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     // marginTop: 2,
     marginBottom: 15,
+    paddingTop: 2,
   },
   editProfileButton: {
     position: 'absolute',

@@ -9,7 +9,7 @@ import LOGIN_QUERY from 'library/queries/LOGIN_QUERY';
 
 const LoginScreen = (props) => {
   // state declaration
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const { loginCTX } = useContext(UserContext);
@@ -19,7 +19,7 @@ const LoginScreen = (props) => {
   // MUTATIONS
   const [login, { loading, data, error }] = useLazyQuery(LOGIN_QUERY, {
     variables: {
-      email,
+      username,
       password,
     },
     // wait for the response from the mutation, write User data (returned from mutation)
@@ -65,9 +65,9 @@ const LoginScreen = (props) => {
       <View style={styles.container}>
         <TextInput
           style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={(val) => setEmail(val)}
+          placeholder="Username"
+          value={username}
+          onChangeText={(val) => setUsername(val)}
           editable={!loading}
         />
         <TextInput

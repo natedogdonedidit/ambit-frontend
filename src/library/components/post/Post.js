@@ -446,11 +446,22 @@ function Post({
               activeOpacity={0.8}
               onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
               hitSlop={{ top: 5, left: 0, bottom: 20, right: 20 }}
+              style={{ flexDirection: 'row', alignItems: 'center' }}
             >
               <View style={styles.name}>
-                <Text style={{ ...defaultStyles.largeSemibold }} numberOfLines={1}>
-                  {post.owner.name}
-                </Text>
+                <View style={{ flexShrink: 1 }}>
+                  <Text style={{ ...defaultStyles.largeSemibold, paddingRight: 3 }} numberOfLines={1}>
+                    {post.owner.name}
+                    <Text style={{ ...defaultStyles.largeMute }}> @{post.owner.username} </Text>
+                  </Text>
+                </View>
+                <View style={{ flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
+                  <Icon name="circle" solid size={2} color={colors.blueGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
+                  <Text style={{ ...defaultStyles.largeMute }} numberOfLines={1}>
+                    {timeDiff}
+                    {period}
+                  </Text>
+                </View>
               </View>
             </TouchableOpacity>
 
@@ -460,11 +471,14 @@ function Post({
               </View>
             )}
           </View>
+          {/* <View style={styles.headlineRow}>
+            {!!post.goal && <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>has a goal:</Text>}
+          </View> */}
 
-          <View style={styles.headlineRow}>
+          {/* <View style={styles.headlineRow}>
             {post.owner.headline && (
               <>
-                <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{post.owner.headline}</Text>
+                <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>has a goal:</Text>
                 <Icon name="circle" solid size={2} color={colors.blueGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
               </>
             )}
@@ -472,7 +486,7 @@ function Post({
               {timeDiff}
               {period} ago
             </Text>
-          </View>
+          </View> */}
 
           {post.isGoal &&
             (isCustomGoalTest(post.goal) ? (
@@ -609,11 +623,13 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingBottom: 4,
   },
   name: {
+    // flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingRight: 30,
+    paddingRight: 24,
     paddingBottom: 1,
   },
   headlineRow: {
@@ -623,11 +639,12 @@ const styles = StyleSheet.create({
   },
   goalView: {
     flexDirection: 'row',
+    paddingTop: 2,
     paddingBottom: 6,
     // backgroundColor: 'pink',
   },
   content: {
-    paddingBottom: 8,
+    paddingBottom: 10,
   },
   topics: {
     flexDirection: 'row',
@@ -639,7 +656,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
-    marginBottom: 8,
+    marginBottom: 10,
     overflow: 'hidden',
     flexDirection: 'row',
     flexWrap: 'wrap',

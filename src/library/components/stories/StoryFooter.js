@@ -275,7 +275,7 @@ function StoryFooter({
                     paddingTop: 5,
                   }}
                 >
-                  {`${owner.firstName}'s Intro`}
+                  {`${owner.username}'s Intro`}
                 </Text>
               </View>
             )}
@@ -390,9 +390,7 @@ function StoryFooter({
 
     return (
       <View style={{ justifyContent: 'center' }}>
-        <Text
-          style={{ ...defaultStyles.defaultMedium, color: 'rgba(255,255,255,0.6)' }}
-        >{`Send ${owner.firstName} a message..`}</Text>
+        <Text style={{ ...defaultStyles.defaultMedium, color: 'rgba(255,255,255,0.6)' }}>{`Send ${owner.name} a message..`}</Text>
       </View>
     );
   };

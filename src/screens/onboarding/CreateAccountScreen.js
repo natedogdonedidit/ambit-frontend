@@ -7,9 +7,8 @@ import SIGNUP_MUTATION from 'library/mutations/SIGNUP_MUTATION';
 
 const CreateAccountScreen = (props) => {
   // state declaration
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const { loginCTX } = useContext(UserContext);
@@ -20,9 +19,8 @@ const CreateAccountScreen = (props) => {
   // MUTATIONS
   const [signup, { loading, error }] = useMutation(SIGNUP_MUTATION, {
     variables: {
-      firstName,
-      lastName,
-      email,
+      name,
+      username,
       password,
     },
     // wait for the response from the mutation, write User data (returned from mutation)
@@ -46,9 +44,8 @@ const CreateAccountScreen = (props) => {
       await loginCTX(res.data.signup);
 
       // 3. clear state
-      setFirstName('');
-      setLastName('');
-      setEmail('');
+      setName('');
+      setUsername('');
       setPassword('');
 
       // 4. navigate to Onboarding (changing to Main for now)
@@ -66,25 +63,12 @@ const CreateAccountScreen = (props) => {
 
   return (
     <View style={styles.container}>
+      <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={(val) => setName(val)} editable={!loading} />
       <TextInput
         style={styles.input}
-        placeholder="First Name"
-        value={firstName}
-        onChangeText={(val) => setFirstName(val)}
-        editable={!loading}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={lastName}
-        onChangeText={(val) => setLastName(val)}
-        editable={!loading}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={(val) => setEmail(val)}
+        placeholder="Username"
+        value={username}
+        onChangeText={(val) => setUsername(val)}
         autoCapitalize="none"
         editable={!loading}
       />
@@ -103,21 +87,6 @@ const CreateAccountScreen = (props) => {
       </TouchableOpacity>
 
       {renderErrors(error)}
-
-      {/* <NavigationEvents
-        onDidFocus={() => {
-          setFirstName('');
-          setLastName('');
-          setEmail('');
-          setPassword('');
-        }}
-        onDidBlur={() => {
-          setFirstName('');
-          setLastName('');
-          setEmail('');
-          setPassword('');
-        }}
-      /> */}
     </View>
   );
 };

@@ -44,16 +44,9 @@ function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
         >
           <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
-              <Text style={{ ...defaultStyles.defaultBold, color: 'white', paddingRight: 10 }}>{owner.name}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 8 }}>
-              {owner.headline && (
-                <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>{owner.headline}</Text>
-              )}
-              {owner.headline && (
-                <Icon name="circle" solid size={2} color={colors.white} style={{ alignSelf: 'center', paddingHorizontal: 5 }} />
-              )}
-              <Text style={{ ...defaultStyles.smallRegular, fontSize: 13, color: 'white' }}>
+              <Text style={{ ...defaultStyles.defaultBold, color: 'white' }}>{owner.username}</Text>
+              <Icon name="circle" solid size={2} color={colors.white} style={{ alignSelf: 'center', paddingHorizontal: 5 }} />
+              <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
                 {timeDiff} {period}
               </Text>
             </View>

@@ -41,7 +41,7 @@ const CustomDrawer = ({ navigation }) => {
       <View>
         <TouchableOpacity style={styles.header} onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
           <ProfilePic user={userLoggedIn} size="small" navigation={navigation} enableIntro={false} enableStory={false} />
-          <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.firstName}!</Text>
+          <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.username}!</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
           <View style={styles.button}>

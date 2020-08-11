@@ -45,8 +45,8 @@ const UserContextProvider = (props) => {
       console.log('Saved login token in Storage', loginData.token);
       // 2. store the user in context
       setCurrentUserId(loginData.user.id)
-      console.log(`sending identify for ${currentUserId}`);
-      analytics.identify(currentUserId);
+      // console.log(`sending identify for ${currentUserId}`);
+      // analytics.identify(currentUserId);
       console.log('Saved userID to Storage & updated Context with userID', loginData.user.id);
     } catch (e) {
       // AsyncStorage errors would lead us here

@@ -31,22 +31,22 @@ const ProfileGrid = ({ navigation, isMyProfile, profileId }) => {
   const storiesFromDB = user.stories || [];
 
   // only display projects and saved solo stories
-  const stories = storiesFromDB.filter(story => story.type === 'PROJECT' || (story.type === 'SOLO' && story.save));
-  const storiesWithItems = stories.filter(story => story.items.length > 0);
+  const stories = storiesFromDB.filter((story) => story.type === 'PROJECT' || (story.type === 'SOLO' && story.save));
+  const storiesWithItems = stories.filter((story) => story.items.length > 0);
   const storiesSorted = storiesWithItems.sort(sortStoriesNewestFirst);
 
   const renderGrid = () => {
     if (stories.length < 1) {
       return (
         <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingTop: 30 }}>
-          {user.firstName && `${user.firstName}'s `}stories & projects will appear here
+          {user.username && `${user.username}'s `}stories & projects will appear here
         </Text>
       );
     }
 
     return (
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingTop: 1, backgroundColor: colors.lightGray }}>
-        {storiesSorted.map(story => {
+        {storiesSorted.map((story) => {
           if (story.items.length > 0) {
             return (
               <View key={story.id} style={{ width: width / 3, height: width / 2 }}>

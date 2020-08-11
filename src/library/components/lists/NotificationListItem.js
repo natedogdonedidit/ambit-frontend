@@ -50,7 +50,7 @@ const NotificationListItem = ({ navigation, notification }) => {
       return navigation.navigate('Post', { post: comment.parentPost });
     }
     if (style === 'NEW_FOLLOWER') {
-      return navigation.navigate('Profile', { profileId: userID });
+      return navigation.navigate('Profile', { profileId: user.id });
     }
 
     return null;
