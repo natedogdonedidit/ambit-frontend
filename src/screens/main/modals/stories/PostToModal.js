@@ -33,14 +33,6 @@ const PostToModal = ({ navigation, route }) => {
   const [newProject, setNewProject] = useState({});
 
   // MUTATIONS
-  // const [createStoryItem] = useMutation(CREATE_STORY_ITEM_MUTATION, {
-  //   refetchQueries: [{ query: CURRENT_USER_QUERY }, { query: STORIES_HOME_QUERY }],
-  //   onError: () =>
-  //     Alert.alert('Oh no!', 'An error occured when trying to update your story. Try again later!', [
-  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
-  //     ]),
-  // });
-
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
     refetchQueries: [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }, { query: STORIES_HOME_QUERY }],
     // onCompleted: () => {},

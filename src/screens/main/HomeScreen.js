@@ -13,7 +13,6 @@ import HeaderHome from 'library/components/headers/HeaderHome';
 
 import HomeTimeline from 'library/components/timelines/HomeTimeline';
 import TopicsList from 'library/components/timelines/TopicsList';
-import ALL_CONNECTIONS_QUERY from 'library/queries/ALL_CONNECTIONS_QUERY';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 import { HEADER_HEIGHT } from 'styles/constants';
@@ -58,10 +57,6 @@ const HomeScreen = ({ navigation }) => {
       query: SINGLE_USER_BIO,
       variables: { id: currentUserId },
     });
-
-    // client.query({
-    //   query: ALL_CONNECTIONS_QUERY,
-    // });
   }, []);
 
   // QUERIES
