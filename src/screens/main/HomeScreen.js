@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
+import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useApolloClient } from '@apollo/client';
 
@@ -19,6 +19,7 @@ import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import { HEADER_HEIGHT } from 'styles/constants';
 import { UserContext } from 'library/utils/UserContext';
 // import analytics from '@segment/analytics-react-native';
+import CoolText from 'library/components/UI/CoolText';
 
 const SLIDE_HEIGHT = HEADER_HEIGHT - StyleSheet.hairlineWidth;
 
@@ -91,7 +92,8 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={{ ...styles.container, paddingTop: top }}>
       <StatusBar barStyle="dark-content" networkActivityIndicatorVisible={creatingStory} />
-
+      {/* <View style={{ height: 150, width: '100%' }} />
+      <CoolText>Hey</CoolText> */}
       {/* horizontal scrollView */}
       <ScrollView
         ref={horizontalScrollRef}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Animated } from 'react-native';
+import { StyleSheet, View, Animated, Alert } from 'react-native';
 import { useQuery } from '@apollo/client';
 
 import SINGLE_USER_BASIC from 'library/queries/SINGLE_USER_BASIC';
@@ -16,30 +16,44 @@ const ProfileScreen = ({ navigation, route }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
   // PARAMS
-  const { profileId } = route.params;
+  const { profileId, username } = route.params;
+
+  // console.log('profile screen', username);
 
   // QUERIES
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BASIC, {
-    variables: { id: profileId },
+    variables: { id: profileId, username },
+    onError: () =>
+      Alert.alert('Oh no!', 'That username does not exist', [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+            navigation.goBack();
+          },
+        },
+      ]),
   });
 
   // useEffect(() => {
   //   analytics.screen('Home Screen')
   // }, [profileId])
 
-  if (loading) return <Loader loading={loading} />;
+  if (loading) return <Loader loading={loading} size="small" />;
+
+  if (error || !data) {
+    return null;
+  }
 
   const { user } = data;
 
-  // console.log(user);
-
   // CUSTOM FUNCTIONS
-
   return (
     <View style={styles.container}>
       <ProfileComponent
         navigation={navigation}
         profileId={profileId}
+        username={username}
         scrollY={scrollY}
         OUTSIDE_HEADER_HEIGHT={OUTSIDE_HEADER_HEIGHT}
         OUTSIDE_HEADER_SCROLL={OUTSIDE_HEADER_SCROLL}

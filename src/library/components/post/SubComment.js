@@ -17,6 +17,7 @@ import Heart from 'library/components/UI/icons/Heart';
 import CommentIcon from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
 import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
+import CoolText from 'library/components/UI/CoolText';
 
 const SubComment = ({
   comment,
@@ -253,7 +254,7 @@ const SubComment = ({
 
           {!!comment.content && (
             <View style={styles.content}>
-              <Text style={defaultStyles.defaultText}>{comment.content}</Text>
+              <CoolText>{comment.content}</CoolText>
             </View>
           )}
 

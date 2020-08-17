@@ -24,6 +24,7 @@ const TABS_HEIGHT = 42;
 const ProfileComponent = ({
   navigation,
   profileId,
+  username,
   scrollY,
   loading,
   user,
@@ -122,12 +123,15 @@ const ProfileComponent = ({
             navigation={navigation}
             isMyProfile={isMyProfile}
             profileId={profileId}
+            username={username}
             handleSelectExperience={nullFunction}
             handleSelectEducation={nullFunction}
             setModalVisibleSkills={nullFunction}
           />
         )}
-        {tabState === 1 && <ProfileGrid navigation={navigation} isMyProfile={isMyProfile} profileId={profileId} />}
+        {tabState === 1 && (
+          <ProfileGrid navigation={navigation} isMyProfile={isMyProfile} profileId={profileId} username={username} />
+        )}
         {tabState === 2 && (
           <ProfilePosts
             setModalVisibleEditPost={nullFunction}
@@ -135,6 +139,7 @@ const ProfileComponent = ({
             navigation={navigation}
             isMyProfile={isMyProfile}
             profileId={profileId}
+            username={username}
           />
         )}
       </Animated.ScrollView>
@@ -181,7 +186,7 @@ const ProfileComponent = ({
         }}
       >
         <Text style={{ ...defaultStyles.largeHeavy, color: 'white' }}>{user.name}</Text>
-        {user.headline && <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>{user.headline}</Text>}
+        {user.headline && <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>@{user.username}</Text>}
       </Animated.View>
 
       {/* Back Button */}

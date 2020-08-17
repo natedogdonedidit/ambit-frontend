@@ -3,6 +3,7 @@ import 'react-native-gesture-handler'; // required by React Navigation docs
 import React from 'react';
 import { AppRegistry, Platform } from 'react-native';
 import { enableScreens } from 'react-native-screens';
+import { relayStylePagination, getMainDefinition } from '@apollo/client/utilities';
 
 // APOLLO SETUP AFTER SUBSCRIPTIONS
 import {
@@ -18,7 +19,6 @@ import {
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import { WebSocketLink } from '@apollo/client/link/ws';
-import { getMainDefinition } from '@apollo/client/utilities';
 
 // for analytics
 import analytics from '@segment/analytics-react-native';
@@ -68,7 +68,7 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/', // simulator
-    ios: 'http://192.168.123.214:4000', // work
+    ios: 'http://192.168.123.131:4000', // work
     // ios: 'http://192.168.1.214:4000', // home
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
@@ -82,7 +82,7 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/', // simulator
-    ios: 'ws://192.168.123.214:4000', // work
+    ios: 'ws://192.168.123.131:4000', // work
     // ios: 'ws://192.168.1.214:4000', // home
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats
@@ -116,11 +116,14 @@ const client = new ApolloClient({
       Query: {
         fields: {
           user(existingData, { args, toReference }) {
-            return existingData || toReference({ __typename: 'User', id: args.id });
+            return existingData || toReference({ __typename: 'User', username: args.username });
           },
           singlePost(existingData, { args, toReference }) {
             return existingData || toReference({ __typename: 'Post', id: args.id });
           },
+          postsNetwork: relayStylePagination(),
+          postsForYou: relayStylePagination(),
+          postsMyGoals: relayStylePagination(),
           // group(existingData, { args, toReference }) {
           //   return existingData || toReference({ __typename: 'Group', id: args.id });
           // },
@@ -131,6 +134,9 @@ const client = new ApolloClient({
           //   return existingData || toReference({ __typename: 'MessageConnection', id: `${args.groupID}` });
           // },
         },
+      },
+      User: {
+        keyFields: ['username'],
       },
     },
     // dataIdFromObject: o => o.id,

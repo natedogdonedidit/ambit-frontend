@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.purp,
-    borderRadius: 15,
+    borderRadius: 17,
     height: 34,
     paddingHorizontal: 15,
     // ...defaultStyles.shadowButton,
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.grayButton,
-    borderRadius: 15,
+    borderRadius: 17,
     height: 34,
     paddingHorizontal: 14,
     // ...defaultStyles.shadowButton,
@@ -242,9 +242,9 @@ const styles = StyleSheet.create({
 
   // small version // row
   buttonSmallRow: {
-    paddingHorizontal: 8,
-    height: 28,
-    borderRadius: 8,
+    paddingHorizontal: 10,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: colors.purp,
     justifyContent: 'center',
     alignItems: 'center',

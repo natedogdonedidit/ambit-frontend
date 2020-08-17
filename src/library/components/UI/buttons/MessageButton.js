@@ -13,7 +13,7 @@ const MessageButton = ({ onPress, buttonStyle, small }) => {
     return (
       <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
         <View style={{ ...styles.buttonSmall, ...buttonStyle }}>
-          <Feather name="mail" size={15} color={colors.black} style={{ paddingLeft: 1 }} />
+          <Feather name="mail" size={15} color={colors.black} style={{ paddingLeft: 1, paddingTop: 1 }} />
         </View>
       </TouchableOpacity>
     );
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grayButton,
     height: 34,
     width: 34,
-    borderRadius: 15,
+    borderRadius: 17,
     // ...defaultStyles.shadowButton,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,
@@ -44,9 +44,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.grayButton,
-    height: 28,
-    width: 28,
-    borderRadius: 8,
+    height: 30,
+    width: 30,
+    borderRadius: 15,
     // ...defaultStyles.shadowButton,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,

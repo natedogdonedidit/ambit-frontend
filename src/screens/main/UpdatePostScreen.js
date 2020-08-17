@@ -23,10 +23,10 @@ const UpdatePostScreen = ({ navigation, route }) => {
   // MUTATIONS
   const [createUpdate] = useMutation(CREATE_UPDATE_MUTATION, {
     onError: (error) => {
-      console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to update this post. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+      console.log('something went wrong either creating post or notifications', error);
+      // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
+      //   { text: 'OK', onPress: () => console.log('OK Pressed') },
+      // ]);
     },
   });
 

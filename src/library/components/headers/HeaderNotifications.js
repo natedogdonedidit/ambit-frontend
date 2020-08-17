@@ -11,7 +11,11 @@ import { HEADER_HEIGHT } from 'styles/constants';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const HeaderNotifications = ({ navigation, handleMiddle, handleRight }) => {
+  // console.disableYellowBox = true;
+
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+  if (loading) return null;
+
   const { userLoggedIn } = data;
 
   return (
@@ -22,11 +26,12 @@ const HeaderNotifications = ({ navigation, handleMiddle, handleRight }) => {
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.headerSmall, color: colors.black }}>Notifications</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-        {/* <View style={styles.iconCircle}> */}
-        {/* <Icon name="cog" size={20} color={colors.iconDark} /> */}
-        {/* </View> */}
-      </TouchableOpacity>
+      <View style={styles.rightSide} />
+      {/* <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}> */}
+      {/* <View style={styles.iconCircle}> */}
+      {/* <Icon name="cog" size={20} color={colors.iconDark} /> */}
+      {/* </View> */}
+      {/* </TouchableOpacity> */}
     </View>
   );
 };

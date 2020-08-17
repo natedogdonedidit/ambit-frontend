@@ -57,11 +57,13 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
 
   return (
     <View style={{ ...styles.profileBox }}>
-      <Text style={{ ...defaultStyles.hugeMedium, ...styles.name }}>{user.name}</Text>
-      {user.username && <Text style={{ ...defaultStyles.defaultMute, ...styles.headline }}>@{user.username}</Text>}
-      {renderStats()}
+      <Text style={{ fontFamily: 'SFProDisplay-Bold', fontSize: 20, fontWeight: '600', ...styles.name }}>{user.name}</Text>
+      {user.username && (
+        <Text style={{ ...defaultStyles.defaultMute, fontWeight: '500', ...styles.headline }}>@{user.username}</Text>
+      )}
       {user.bio && <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>}
       {!!user.website && <View style={styles.detailsBox}>{renderWebsite()}</View>}
+      {renderStats()}
 
       {/* absolute */}
       <View style={styles.topRowButtons}>
@@ -113,10 +115,10 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   headline: {
-    marginBottom: 1,
+    marginBottom: 15,
   },
   bio: {
-    marginBottom: 20,
+    marginBottom: 15,
   },
   detailsBox: {
     marginBottom: 15,

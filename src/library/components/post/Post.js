@@ -25,6 +25,7 @@ import GoalStatus from 'library/components/post/GoalStatus';
 import { UserContext } from 'library/utils/UserContext';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import EDIT_GOALSTATUS_MUTATION from 'library/mutations/EDIT_GOALSTATUS_MUTATION';
+import CoolText from 'library/components/UI/CoolText';
 
 function Post({
   post,
@@ -40,7 +41,7 @@ function Post({
   const { currentUserId } = useContext(UserContext);
 
   useEffect(() => {
-    // console.log('post rendered...', post.id);
+    // console.log('post data', post);
   }, [post]);
 
   // STATE
@@ -500,7 +501,7 @@ function Post({
             ))}
 
           <View style={styles.content}>
-            <Text style={defaultStyles.defaultText}>{post.content}</Text>
+            <CoolText>{post.content}</CoolText>
           </View>
 
           {showDetails && (

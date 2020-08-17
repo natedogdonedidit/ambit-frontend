@@ -22,7 +22,7 @@ const SuggestedConnection = ({ navigation, user, showMessage, showFollow }) => {
         </View>
         <View style={styles.rightSide}>
           <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          {user.headline && <Text style={defaultStyles.defaultMute}>{user.headline}</Text>}
+          {user.username && <Text style={defaultStyles.defaultMute}>@{user.username}</Text>}
           {/* {user.location && <Text style={defaultStyles.defaultMute}>{user.location}</Text>} */}
           {user.bio && <Text style={{ ...defaultStyles.defaultText, paddingTop: 8 }}>{user.bio}</Text>}
           <View style={styles.absoluteButtons}>

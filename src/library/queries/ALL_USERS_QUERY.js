@@ -4,7 +4,10 @@ import { MinimalUser } from 'library/queries/_fragments';
 const ALL_USERS_QUERY = gql`
   query ALL_USERS_QUERY {
     users {
-      ...MinimalUser
+      id
+      username
+      name
+      profilePic
     }
   }
   ${MinimalUser}

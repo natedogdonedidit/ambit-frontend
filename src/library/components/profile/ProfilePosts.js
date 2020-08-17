@@ -10,10 +10,10 @@ import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import BigButton from 'library/components/UI/buttons/BigButton';
 
-const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId }) => {
+const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId, username }) => {
   // QUERIES
   const { loading, error, data } = useQuery(USER_POSTS_QUERY, {
-    variables: { id: profileId },
+    variables: { id: profileId, username },
     fetchPolicy: 'cache-and-network', // doing it this way because cannot pull to refresh at the moment
   });
 

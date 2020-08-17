@@ -24,6 +24,7 @@ import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
+
 import { UserContext } from 'library/utils/UserContext';
 import { postPicUpload, getTopicID, addMainTopics, getNetworkIDsFromUser, getTopicFromID } from 'library/utils';
 
@@ -32,6 +33,7 @@ import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
+import CoolText from 'library/components/UI/CoolText';
 
 const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
@@ -50,6 +52,8 @@ const NewPostModal = ({ navigation, route }) => {
   const [locationID, setLocationID] = useState('');
   const [locationLat, setLocationLat] = useState('');
   const [locationLon, setLocationLon] = useState('');
+  const [cursorLocation, setCursorLocation] = useState(0);
+  const [showMentions, setShowMentions] = useState(false);
 
   const [uploading, setUploading] = useState(false);
 
@@ -90,12 +94,12 @@ const NewPostModal = ({ navigation, route }) => {
         },
       },
     },
-    // onError: error => {
-    //   console.log(error);
-    //   Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
-    //     { text: 'OK', onPress: () => console.log('OK Pressed') },
-    //   ]);
-    // },
+    onError: (error) => {
+      console.log('something went wrong either creating post or notifications', error);
+      // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
+      //   { text: 'OK', onPress: () => console.log('OK Pressed') },
+      // ]);
+    },
   });
 
   const loading = loadingCreate || uploading;
@@ -326,8 +330,27 @@ const NewPostModal = ({ navigation, route }) => {
     }
   };
 
+  const onPressHashtag = () => {
+    setContent((prevState) => {
+      const beg = prevState.substring(0, cursorLocation);
+      const end = prevState.substring(cursorLocation);
+
+      return `${beg}#${end}`;
+    });
+  };
+
+  const onPressMention = () => {
+    // setShowMentions((prev) => !prev);
+    setContent((prevState) => {
+      const beg = prevState.substring(0, cursorLocation);
+      const end = prevState.substring(cursorLocation);
+
+      return `${beg}@${end}`;
+    });
+  };
+
   const renderImages = () => {
-    if (images.length < 1) return null;
+    if (images.length < 1 || showMentions) return null;
     if (images.length === 1) {
       return (
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 15, paddingLeft: 48 }}>
@@ -541,7 +564,7 @@ const NewPostModal = ({ navigation, route }) => {
       />
       <KeyboardAvoidingView behavior="padding" enabled>
         <View style={styles.container}>
-          <ScrollView contentContainerStyle={styles.scrollView} keyboardShouldPersistTaps="always">
+          <ScrollView contentContainerStyle={[styles.scrollView, showMentions && { flex: 1 }]} keyboardShouldPersistTaps="always">
             <TouchableOpacity onPress={handleGoalRowSelect} activeOpacity={0.7}>
               <View style={styles.selectGoalView}>{renderGoalText()}</View>
             </TouchableOpacity>
@@ -553,11 +576,30 @@ const NewPostModal = ({ navigation, route }) => {
               <View style={styles.leftSide}>
                 <ProfilePicBasic pic={data.userLoggedIn.profilePic} size={34} />
               </View>
-              <View style={styles.rightSide}>
+              <View
+                style={[
+                  styles.rightSide,
+                  showMentions && {
+                    height: 64,
+                  },
+                ]}
+              >
                 <TextInput
-                  style={{ flex: 1, paddingTop: 6, paddingRight: 15, ...defaultStyles.largeRegular }}
+                  style={[
+                    {
+                      flex: 1,
+                      paddingTop: 6,
+                      paddingRight: 15,
+                      ...defaultStyles.largeRegular,
+                      paddingBottom: 10,
+                      // backgroundColor: 'pink',
+                    },
+                    showMentions && {
+                      height: 64,
+                    },
+                  ]}
                   onChangeText={(val) => setContent(val)}
-                  value={content}
+                  // value={content}
                   autoFocus
                   autoCompleteType="off"
                   // autoCorrect={false}
@@ -566,68 +608,101 @@ const NewPostModal = ({ navigation, route }) => {
                   textAlignVertical="top"
                   placeholder={goal ? 'Tell us about your goal' : "What's going on?"}
                   inputAccessoryViewID="1"
-                />
+                  onSelectionChange={({ nativeEvent }) => setCursorLocation(nativeEvent.selection.end)}
+                >
+                  <CoolText>{content}</CoolText>
+                </TextInput>
               </View>
             </View>
+            {showMentions && (
+              <ScrollView style={styles.aboveKeyboardMentions}>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+                <Text>chad</Text>
+              </ScrollView>
+            )}
             {renderImages()}
           </ScrollView>
         </View>
         <InputAccessoryView nativeID="1">
-          <View style={styles.aboveKeyboard}>
-            <View style={{ ...styles.aboveKeyboardLeft }}>
+          {true && (
+            <View style={styles.aboveKeyboard}>
+              <View style={{ ...styles.aboveKeyboardLeft }}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
+                  hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+                >
+                  <View style={{ flexDirection: 'row', alignItems: 'center', width: (width - 30) / 2 - 38 }}>
+                    <Icon
+                      name="map-marker-alt"
+                      size={15}
+                      color={colors.purp}
+                      style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.7 }}
+                    />
+                    <Text
+                      numberOfLines={1}
+                      // ellipsizeMode="head"
+                      style={{ ...defaultStyles.defaultRegular, color: colors.blueGray, flex: 1 }}
+                    >
+                      {location}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
               <TouchableOpacity
-                onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
-                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+                onPress={handleCameraIconPress}
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: 64,
+                  height: 64,
+                  borderRadius: 32,
+                  backgroundColor: colors.purp,
+                  position: 'absolute',
+                  top: -32,
+                  right: width / 2 - 32,
+                  ...defaultStyles.shadowButton,
+                  borderWidth: StyleSheet.hairlineWidth,
+                  borderColor: colors.borderBlack,
+                }}
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center', width: (width - 30) / 2 - 38 }}>
-                  <Icon
-                    name="map-marker-alt"
-                    size={15}
-                    color={colors.purp}
-                    style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.7 }}
-                  />
-                  <Text
-                    numberOfLines={1}
-                    // ellipsizeMode="head"
-                    style={{ ...defaultStyles.defaultRegular, color: colors.blueGray, flex: 1 }}
-                  >
-                    {location}
-                  </Text>
-                </View>
+                <Icon name="camera" size={32} color={colors.white} style={{}} onPress={handleCameraIconPress} />
               </TouchableOpacity>
+              <View style={styles.aboveKeyboardRight}>
+                <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                  <IconM name="poll" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                  <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                  <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
+                </TouchableOpacity>
+              </View>
             </View>
-            <TouchableOpacity
-              onPress={handleCameraIconPress}
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: 64,
-                height: 64,
-                borderRadius: 32,
-                backgroundColor: colors.purp,
-                position: 'absolute',
-                top: -32,
-                right: width / 2 - 32,
-                ...defaultStyles.shadowButton,
-                borderWidth: StyleSheet.hairlineWidth,
-                borderColor: colors.borderBlack,
-              }}
-            >
-              <Icon name="camera" size={32} color={colors.white} style={{}} onPress={handleCameraIconPress} />
-            </TouchableOpacity>
-            <View style={styles.aboveKeyboardRight}>
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <IconM name="poll" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
-              </TouchableOpacity>
-            </View>
-          </View>
+          )}
         </InputAccessoryView>
+        <InputAccessoryView nativeID={2} />
       </KeyboardAvoidingView>
       {loading && <Loader active={loading} size="small" />}
     </View>
@@ -640,14 +715,16 @@ const styles = StyleSheet.create({
   container: {
     // justifyContent: 'space-between',
     height: '100%',
+    // backgroundColor: 'purple',
   },
   scrollView: {
     backgroundColor: 'white',
     paddingHorizontal: 10,
-    paddingBottom: 15,
+    // paddingBottom: 15,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
+    // flex: 1,
   },
   selectGoalView: {
     flexDirection: 'row',
@@ -672,6 +749,7 @@ const styles = StyleSheet.create({
     width: '100%',
     // height: 120,
     marginTop: 10,
+    // backgroundColor: 'blue',
   },
   leftSide: {
     width: 50,
@@ -681,6 +759,7 @@ const styles = StyleSheet.create({
   rightSide: {
     flex: 1,
     alignItems: 'stretch',
+    // minHeight: 70,
   },
 
   images: {
@@ -722,5 +801,17 @@ const styles = StyleSheet.create({
   aboveKeyboardRight: {
     flexDirection: 'row',
   },
-  cameraButton: {},
+  aboveKeyboardMentions: {
+    width: '100%',
+    backgroundColor: 'tomato',
+    // height: 100,
+    flex: 1,
+    // flexDirection: 'row',
+    // justifyContent: 'space-between',
+    // alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(0, 0, 0, 0.2)',
+  },
 });

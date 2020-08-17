@@ -25,7 +25,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const [showRefreshing, setShowRefreshing] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
-  const [activeTimeline, setActiveTimeline] = useState(1);
+  const [activeTimeline, setActiveTimeline] = useState(0);
   const [currentTime] = useState(new Date()); // did this so it wouldnt make a new date on every render, there is a better way
 
   // QUERIES
@@ -51,7 +51,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     },
     onError: (e) => console.log('error loading for you posts', e),
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI
+    // fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI (but it ruins opt response of Likes)
   });
 
   // GET POSTS FROM "FOLLOWING"
@@ -66,9 +66,9 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
       first: 10,
       network,
     },
-    onError: (e) => console.log('error loading newtork posts', e),
+    onError: (e) => console.log('error loading network posts', e),
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI
+    // fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI (but it ruins opt response of Likes)
   });
 
   // GET "MY GOALS"
@@ -84,7 +84,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     },
     onError: (e) => console.log('error loading my goals posts', e),
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI
+    // fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI (but it ruins opt response of Likes)
   });
 
   // VIEWED POST MUTATION
@@ -100,7 +100,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   // LOADING STATES
   // network
-  // console.log(networkStatusPostsNetwork, networkStatusPostsForYou, networkStatusPostsMyGoals);
+  // console.log(networkStatusPostsForYou, networkStatusPostsNetwork, networkStatusPostsMyGoals);
   // console.log('idk', NetworkStatus, NetworkStatus.refetch);
   const fetchingMorePostsNetwork = networkStatusPostsNetwork === 3;
   const loadingPostsNetwork = networkStatusPostsNetwork === 1;
@@ -314,26 +314,27 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
               networkStatusPostsForYou === 7 &&
               info.distanceFromEnd > -300
             ) {
+              console.log('fetching more For You');
               fetchMorePostsForYou({
-                query: FORYOU_POSTS_QUERY,
+                // query: FORYOU_POSTS_QUERY,
                 variables: {
                   cursor: dataPostsForYou.postsForYou.pageInfo.endCursor,
                   first: 10,
                 },
-                updateQuery: (previousResult, { fetchMoreResult }) => {
-                  const newEdges = fetchMoreResult.postsForYou.edges;
-                  const { pageInfo } = fetchMoreResult.postsForYou;
+                // updateQuery: (previousResult, { fetchMoreResult }) => {
+                //   const newEdges = fetchMoreResult.postsForYou.edges;
+                //   const { pageInfo } = fetchMoreResult.postsForYou;
 
-                  return newEdges.length
-                    ? {
-                        postsForYou: {
-                          __typename: previousResult.postsForYou.__typename,
-                          edges: [...previousResult.postsForYou.edges, ...newEdges],
-                          pageInfo,
-                        },
-                      }
-                    : previousResult;
-                },
+                //   return newEdges.length
+                //     ? {
+                //         postsForYou: {
+                //           __typename: previousResult.postsForYou.__typename,
+                //           edges: [...previousResult.postsForYou.edges, ...newEdges],
+                //           pageInfo,
+                //         },
+                //       }
+                //     : previousResult;
+                // },
               });
             }
           } else if (activeTimeline === 1 && dataPostsNetwork) {
@@ -342,26 +343,27 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
               networkStatusPostsNetwork === 7 &&
               info.distanceFromEnd > -300
             ) {
+              console.log('fetching more Network posts');
               fetchMorePostsNetwork({
-                query: NETWORK_POSTS_QUERY,
+                // query: NETWORK_POSTS_QUERY,
                 variables: {
                   cursor: dataPostsNetwork.postsNetwork.pageInfo.endCursor,
                   first: 10,
                 },
-                updateQuery: (previousResult, { fetchMoreResult }) => {
-                  const newEdges = fetchMoreResult.postsNetwork.edges;
-                  const { pageInfo } = fetchMoreResult.postsNetwork;
+                // updateQuery: (previousResult, { fetchMoreResult }) => {
+                //   const newEdges = fetchMoreResult.postsNetwork.edges;
+                //   const { pageInfo } = fetchMoreResult.postsNetwork;
 
-                  return newEdges.length
-                    ? {
-                        postsNetwork: {
-                          __typename: previousResult.postsNetwork.__typename,
-                          edges: [...previousResult.postsNetwork.edges, ...newEdges],
-                          pageInfo,
-                        },
-                      }
-                    : previousResult;
-                },
+                //   return newEdges.length
+                //     ? {
+                //         postsNetwork: {
+                //           __typename: previousResult.postsNetwork.__typename,
+                //           edges: [...previousResult.postsNetwork.edges, ...newEdges],
+                //           pageInfo,
+                //         },
+                //       }
+                //     : previousResult;
+                // },
               });
             }
           } else if (activeTimeline === 2 && dataPostsMyGoals) {
@@ -370,26 +372,27 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
               networkStatusPostsMyGoals === 7 &&
               info.distanceFromEnd > -300
             ) {
+              console.log('fetching more My Goals');
               fetchMorePostsMyGoals({
-                query: MYGOALS_POSTS_QUERY,
+                // query: MYGOALS_POSTS_QUERY,
                 variables: {
                   cursor: dataPostsMyGoals.postsMyGoals.pageInfo.endCursor,
                   first: 10,
                 },
-                updateQuery: (previousResult, { fetchMoreResult }) => {
-                  const newEdges = fetchMoreResult.postsMyGoals.edges;
-                  const { pageInfo } = fetchMoreResult.postsMyGoals;
+                // updateQuery: (previousResult, { fetchMoreResult }) => {
+                //   const newEdges = fetchMoreResult.postsMyGoals.edges;
+                //   const { pageInfo } = fetchMoreResult.postsMyGoals;
 
-                  return newEdges.length
-                    ? {
-                        postsMyGoals: {
-                          __typename: previousResult.postsMyGoals.__typename,
-                          edges: [...previousResult.postsMyGoals.edges, ...newEdges],
-                          pageInfo,
-                        },
-                      }
-                    : previousResult;
-                },
+                //   return newEdges.length
+                //     ? {
+                //         postsMyGoals: {
+                //           __typename: previousResult.postsMyGoals.__typename,
+                //           edges: [...previousResult.postsMyGoals.edges, ...newEdges],
+                //           pageInfo,
+                //         },
+                //       }
+                //     : previousResult;
+                // },
               });
             }
           }

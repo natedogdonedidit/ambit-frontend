@@ -3,6 +3,8 @@ import { gql } from '@apollo/client';
 // NON-DEPENDENT FRAGMENTS
 export const AllTopicsFragment = gql`
   fragment AllTopicsFragment on User {
+    id
+    username
     topicsFocus {
       id
       topicID
@@ -45,6 +47,7 @@ export const UpdateFragment = gql`
       id
       owner {
         id
+        username
       }
     }
     _deleted
@@ -93,8 +96,8 @@ export const StoryWithOwner = gql`
     title
     owner {
       id
-      name
       username
+      name
       headline
       location
       profilePic
@@ -180,6 +183,7 @@ export const MessageFragment = gql`
     }
     from {
       id
+      username
       name
       profilePic
     }
@@ -304,7 +308,6 @@ export const DetailPost = gql`
 export const UserProfileFragment = gql`
   fragment UserProfileFragment on User {
     ...MinimalUser
-    username
     about
     followingCount
     followersCount

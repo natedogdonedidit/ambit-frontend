@@ -19,6 +19,7 @@ import DELETE_UPDATE_MUTATION from 'library/mutations/DELETE_UPDATE_MUTATION';
 import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 import { UserContext } from 'library/utils/UserContext';
 import { UpdateFragment } from 'library/queries/_fragments';
+import CoolText from 'library/components/UI/CoolText';
 
 function Update({
   post,
@@ -223,7 +224,7 @@ function Update({
           </View>
 
           <View style={styles.content}>
-            <Text style={defaultStyles.defaultText}>{update.content}</Text>
+            <CoolText>{update.content}</CoolText>
           </View>
 
           {containsMedia && <View style={styles.media}>{renderMedia()}</View>}

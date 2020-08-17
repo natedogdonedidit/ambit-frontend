@@ -14,10 +14,10 @@ import Loader from 'library/components/UI/Loader';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
-const ProfileBio = ({ navigation, isMyProfile, profileId }) => {
+const ProfileBio = ({ navigation, isMyProfile, profileId, username }) => {
   // QUERIES
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
-    variables: { id: profileId },
+    variables: { id: profileId, username },
   });
 
   if (loading) {

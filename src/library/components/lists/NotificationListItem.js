@@ -8,6 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import { timeDifference, getGoalInfo, getTopicFromID } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { DAYS_TILL_INACTIVE } from 'styles/constants';
+import CoolText from 'library/components/UI/CoolText';
 
 const NotificationListItem = ({ navigation, notification }) => {
   const { style, createdAt, user, users, post, update, comment } = notification;
@@ -51,6 +52,15 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'NEW_FOLLOWER') {
       return navigation.navigate('Profile', { profileId: user.id });
+    }
+    if (style === 'MENTIONED_IN_POST') {
+      return navigation.navigate('Post', { post });
+    }
+    if (style === 'MENTIONED_IN_COMMENT') {
+      return navigation.navigate('Post', { post: comment.parentPost });
+    }
+    if (style === 'MENTIONED_IN_UPDATE') {
+      return navigation.navigate('Post', { post });
     }
 
     return null;
@@ -145,6 +155,33 @@ const NotificationListItem = ({ navigation, notification }) => {
       );
     }
 
+    if (style === 'MENTIONED_IN_POST') {
+      return (
+        <Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> mentioned you in a {post.goal ? 'goal' : 'post'}</Text>
+        </Text>
+      );
+    }
+
+    if (style === 'MENTIONED_IN_COMMENT') {
+      return (
+        <Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> mentioned you in a comment</Text>
+        </Text>
+      );
+    }
+
+    if (style === 'MENTIONED_IN_UPDATE') {
+      return (
+        <Text>
+          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultLight}> mentioned you in an update</Text>
+        </Text>
+      );
+    }
+
     return '';
   };
 
@@ -173,6 +210,15 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'COMMENT_COMMENT') {
       return comment.content;
     }
+    if (style === 'MENTIONED_IN_POST') {
+      return post.content;
+    }
+    if (style === 'MENTIONED_IN_COMMENT') {
+      return comment.content;
+    }
+    // if (style === 'MENTIONED_IN_UPDATE') {
+    //   return post.content;
+    // }
 
     return '';
   };
@@ -194,7 +240,7 @@ const NotificationListItem = ({ navigation, notification }) => {
               </Text>
             </View>
           </View>
-          {!!getNotificationContent() && <Text style={defaultStyles.defaultMute}>{getNotificationContent()}</Text>}
+          {!!getNotificationContent() && <CoolText>{getNotificationContent()}</CoolText>}
         </View>
       </View>
     </TouchableOpacity>

@@ -19,6 +19,7 @@ import Chevron from 'library/components/UI/icons/Chevron';
 import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
 import POST_COMMENTS_QUERY from 'library/queries/POST_COMMENTS_QUERY';
 import { CommentFragment } from 'library/queries/_fragments';
+import CoolText from 'library/components/UI/CoolText';
 
 function Comment({
   comment,
@@ -257,7 +258,7 @@ function Comment({
 
           {!!comment.content && (
             <View style={styles.content}>
-              <Text style={defaultStyles.defaultText}>{comment.content}</Text>
+              <CoolText>{comment.content}</CoolText>
             </View>
           )}
 
