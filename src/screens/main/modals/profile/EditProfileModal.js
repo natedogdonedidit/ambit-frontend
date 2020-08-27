@@ -1,16 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useQuery } from '@apollo/client';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 import Loader from 'library/components/UI/Loader';
-import { UserContext } from 'library/utils/UserContext';
 import EditProfileModalComponent from './EditProfileModalComponent';
 
-const EditProfileModal = ({ navigation }) => {
-  const { currentUserId } = useContext(UserContext);
+const EditProfileModal = ({ navigation, route }) => {
+  const { username } = route.params; // all the data from parent post down to updates
 
-  const { loading, data } = useQuery(SINGLE_USER_BIO, { variables: { id: currentUserId } });
+  const { loading, data } = useQuery(SINGLE_USER_BIO, { variables: { where: { username } } });
 
   if (loading) {
     return <Loader active={loading} />;

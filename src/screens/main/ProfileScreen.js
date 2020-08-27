@@ -18,11 +18,9 @@ const ProfileScreen = ({ navigation, route }) => {
   // PARAMS
   const { profileId, username } = route.params;
 
-  // console.log('profile screen', username);
-
   // QUERIES
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BASIC, {
-    variables: { id: profileId, username },
+    variables: { where: { username } },
     onError: () =>
       Alert.alert('Oh no!', 'That username does not exist', [
         {
@@ -34,10 +32,6 @@ const ProfileScreen = ({ navigation, route }) => {
         },
       ]),
   });
-
-  // useEffect(() => {
-  //   analytics.screen('Home Screen')
-  // }, [profileId])
 
   if (loading) return <Loader loading={loading} size="small" />;
 

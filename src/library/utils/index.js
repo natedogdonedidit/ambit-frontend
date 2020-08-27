@@ -6,6 +6,77 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../styles/colors';
 import { goalsList, allTopics, topicsList, mainTopicsList } from './lists';
 
+export const buildSearchWhere = ({ text, goal, topicIDs, lat, lon }) => {
+  const hasTopics = topicIDs.length > 0;
+  const haveInputs = !!text || !!goal || hasTopics || (!!lat && !!lon);
+  const blankSearch = { id: { equals: '99' } }; // PostWhereInput
+  const allSearch = { id: { not: { equals: '99' } } }; // PostWhereInput
+
+  // text stuff - must return a PostWhereInput
+  const getTextQuery = () => {
+    if (!haveInputs) return blankSearch;
+    if (!text) return allSearch;
+
+    return { OR: [{ content: { contains: text } }, { goal: { contains: text } }, { owner: { username: { contains: text } } }] };
+  };
+
+  // goal stuff - must return a PostWhereInput
+  const getGoalQuery = () => {
+    if (!haveInputs) return blankSearch;
+    if (!goal) return allSearch;
+
+    return { goal: { contains: goal } };
+  };
+
+  // topic stuff - must return a PostWhereInput
+  const getTopicQuery = () => {
+    if (!haveInputs) return blankSearch;
+    if (!hasTopics) return allSearch;
+
+    // if there's a goal involved then the topic refers to subField
+    if (goal) {
+      return { subField: { in: topicIDs } };
+    }
+
+    // otherwise query the topics array
+    return { topic: { in: topicIDs } };
+  };
+
+  // location stuff - must return a PostWhereInput
+  const getLocationQuery = () => {
+    if (!haveInputs) return blankSearch;
+    if (!lat || !lon) return allSearch;
+
+    const EARTH_RADIUS_MI = 3959;
+    const distance = 50; // default to 50 miles radius
+    const maxLat = lat + rad2Deg(distance / EARTH_RADIUS_MI);
+    const minLat = lat - rad2Deg(distance / EARTH_RADIUS_MI);
+    const maxLon = lon + rad2Deg(distance / EARTH_RADIUS_MI / Math.cos(deg2Rad(lat)));
+    const minLon = lon - rad2Deg(distance / EARTH_RADIUS_MI / Math.cos(deg2Rad(lat)));
+
+    return {
+      AND: [
+        { locationLat: { gte: minLat } },
+        { locationLat: { lte: maxLat } },
+        { locationLon: { gte: minLon } },
+        { locationLon: { lte: maxLon } },
+      ],
+    };
+  };
+
+  return {
+    AND: [getTextQuery(), getGoalQuery(), getTopicQuery(), getLocationQuery()],
+  };
+};
+
+export function rad2Deg(radians) {
+  return radians * 57.2958;
+}
+
+export function deg2Rad(degrees) {
+  return degrees / 57.2958;
+}
+
 export const monthToFloat = (month) => {
   if (month === 'Jan') return 0.01;
   if (month === 'Feb') return 0.02;

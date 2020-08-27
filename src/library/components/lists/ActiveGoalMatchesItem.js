@@ -18,7 +18,7 @@ const ActiveGoalMatchesItem = ({ navigation, post, loadingPost }) => {
 
   useEffect(() => {
     if (!loadingPost && !!post && post.id) {
-      getMatches({ variables: { id: post.id } });
+      getMatches({ variables: { postId: post.id } });
     }
   }, [post, loadingPost]);
 
@@ -54,7 +54,7 @@ const ActiveGoalMatchesItem = ({ navigation, post, loadingPost }) => {
       );
     }
 
-    const { name } = post.subField ? getTopicFromID(post.subField.topicID) : '';
+    const { name } = post.subField ? getTopicFromID(post.subField) : '';
 
     if (loadingMatches) {
       return (

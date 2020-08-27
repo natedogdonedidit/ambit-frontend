@@ -11,7 +11,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const SelectGoalFieldModal = ({ navigation, route }) => {
-  const { goal, setGoal, setTopics, setSubField } = route.params;
+  const { goal, setGoal, setTopic, setSubField } = route.params;
 
   // STATE
   const [selectedCategories, setSelectedCategories] = useState('');
@@ -33,10 +33,10 @@ const SelectGoalFieldModal = ({ navigation, route }) => {
     // if its a topic type goal - then set topic also
     if (goal.modalType === 'topic') {
       // if its a topic type goal - then set topic also
-      setTopics([{ topicID: selectedTopicID }]);
+      setTopic(selectedTopicID);
     } else {
       // if its NOT topic type goal - clear out previous selected topics
-      setTopics([]);
+      setTopic(null);
     }
 
     // navigate back after a short delay

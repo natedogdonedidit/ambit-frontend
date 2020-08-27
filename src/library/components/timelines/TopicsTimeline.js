@@ -4,21 +4,28 @@ import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import topicQueries from 'library/queries/TOPIC_POSTS_QUERY'; // comes in as an object
 import Loader from 'library/components/UI/Loader';
 import StoriesTopic from 'library/components/stories/StoriesTopic';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
+import POSTS_QUERY from 'library/queries/POSTS_QUERY';
 
 const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
 
-  // turn the topicID into a query (ALL_CAPS)
-  const activeQuery = activeSubTopic.toUpperCase();
-
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(topicQueries[activeQuery], {
-    // fetchPolicy: 'cache-and-network',
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
+    variables: {
+      // first: 10,
+      orderBy: [
+        {
+          lastUpdated: 'desc',
+        },
+      ],
+      where: {
+        topic: { contains: activeSubTopic },
+      },
+    },
     notifyOnNetworkStatusChange: true,
   });
 
@@ -41,7 +48,7 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
     return <Loader backgroundColor={colors.lightGray} size="small" />;
   }
 
-  const posts = data.postsTopic.edges || [];
+  const posts = data.posts || [];
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
@@ -57,7 +64,7 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         refreshing={refetching}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
-        ListHeaderComponent={<StoriesTopic topicID={activeSubTopic} navigation={navigation} refetching={refetching} />}
+        // ListHeaderComponent={<StoriesTopic topicID={activeSubTopic} navigation={navigation} refetching={refetching} />}
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no posts yet for this topic
@@ -78,35 +85,35 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         data={posts}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
-          return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
+          return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
         }}
-        onEndReachedThreshold={1.2}
-        onEndReached={(info) => {
-          // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
-          if (data.postsTopic.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
-            fetchMore({
-              query: activeQuery,
-              variables: {
-                cursor: data.postsTopic.pageInfo.endCursor,
-                topic: activeTopic,
-              },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                const newEdges = fetchMoreResult.postsTopic.edges;
-                const { pageInfo } = fetchMoreResult.postsTopic;
+        // onEndReachedThreshold={1.2}
+        // onEndReached={(info) => {
+        //   // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
+        //   if (data.postsTopic.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
+        //     fetchMore({
+        //       query: activeQuery,
+        //       variables: {
+        //         cursor: data.postsTopic.pageInfo.endCursor,
+        //         topic: activeTopic,
+        //       },
+        //       updateQuery: (previousResult, { fetchMoreResult }) => {
+        //         const newEdges = fetchMoreResult.postsTopic.edges;
+        //         const { pageInfo } = fetchMoreResult.postsTopic;
 
-                return newEdges.length
-                  ? {
-                      postsTopic: {
-                        __typename: previousResult.postsTopic.__typename,
-                        edges: [...previousResult.postsTopic.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
-                  : previousResult;
-              },
-            });
-          }
-        }}
+        //         return newEdges.length
+        //           ? {
+        //               postsTopic: {
+        //                 __typename: previousResult.postsTopic.__typename,
+        //                 edges: [...previousResult.postsTopic.edges, ...newEdges],
+        //                 pageInfo,
+        //               },
+        //             }
+        //           : previousResult;
+        //       },
+        //     });
+        //   }
+        // }}
       />
       {/* This is the loading animation */}
       <Animated.View

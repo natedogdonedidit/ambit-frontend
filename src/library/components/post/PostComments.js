@@ -16,7 +16,7 @@ import Section from 'library/components/UI/Section';
 const PostComments = ({ navigation, post, updateInd = null }) => {
   // QUERIES
   const { error, data, refetch, networkStatus } = useQuery(POST_COMMENTS_QUERY, {
-    variables: { id: post.id },
+    variables: { where: { id: post.id } },
     notifyOnNetworkStatusChange: true,
   });
 
@@ -45,11 +45,11 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
   let comments = [];
   if (updateInd >= 0 && updateInd !== null) {
     // if comments on an update
-    comments = data.singlePost.updates[updateInd].comments;
+    comments = data.post.updates[updateInd].comments;
     comments = comments.filter((comment) => !comment.parentComment);
   } else {
     // if comments on a post
-    comments = data.singlePost.comments;
+    comments = data.post.comments;
     // filter out sub-comments
     comments = comments.filter((comment) => !comment.parentUpdate && !comment.parentComment);
   }

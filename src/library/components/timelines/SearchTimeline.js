@@ -4,38 +4,29 @@ import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import SEARCH_POSTS_QUERY from 'library/queries/SEARCH_POSTS_QUERY';
+import POSTS_QUERY from 'library/queries/POSTS_QUERY';
 import Loader from 'library/components/UI/Loader';
-
+import { rad2Deg, deg2Rad, buildSearchWhere } from 'library/utils';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
 const SearchTimeline = ({ navigation, scrollY, activeTab, textInput, goal, topicIDs, locationLat, locationLon }) => {
   // STATE
 
+  const where = buildSearchWhere({ text: textInput, goal, topicIDs, lat: locationLat, lon: locationLon });
+
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(SEARCH_POSTS_QUERY, {
-    // fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true,
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
     variables: {
-      text: textInput || null,
-      goal,
-      topicIDs,
-      lat: locationLat || null,
-      lon: locationLon || null,
+      // first: 10,
+      orderBy: [
+        {
+          lastUpdated: 'desc',
+        },
+      ],
+      where,
     },
+    notifyOnNetworkStatusChange: true,
   });
-
-  // networkStatus states:
-  // 1: loading
-  // 2: variables have changed
-  // 3: fetchMore
-  // 4: refetch
-  // 7: no loading, no refetch, everything OK!
-
-  // console.log('loading', loadingQuery);
-  // console.log('error', error);
-  // console.log('data', data);
-  // console.log('networkStatus', networkStatus);
 
   // ///////////////////
   // LOADING STATES
@@ -60,7 +51,7 @@ const SearchTimeline = ({ navigation, scrollY, activeTab, textInput, goal, topic
     return <Loader backgroundColor={colors.lightGray} size="small" />;
   }
 
-  const posts = data.postsSearch.edges || [];
+  const posts = data.posts || [];
   // const noPosts = posts.length < 1 && ok;
   // console.log('posts', posts);
 
@@ -115,39 +106,39 @@ const SearchTimeline = ({ navigation, scrollY, activeTab, textInput, goal, topic
         data={posts}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
-          return <PostGroupTL post={item.node} currentTime={currentTime} navigation={navigation} />;
+          return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
         }}
-        onEndReachedThreshold={1.2}
-        onEndReached={(info) => {
-          // console.log('onEndReached triggered', info);
-          // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
-          if (data.postsSearch.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
-            // console.log('fetching more');
-            fetchMore({
-              query: activeQuery,
-              variables: {
-                cursor: data.postsSearch.pageInfo.endCursor,
-              },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                // console.log('prev', previousResult);
-                // console.log('fetched', fetchMoreResult);
+        // onEndReachedThreshold={1.2}
+        // onEndReached={(info) => {
+        //   // console.log('onEndReached triggered', info);
+        //   // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
+        //   if (data.postsSearch.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
+        //     // console.log('fetching more');
+        //     fetchMore({
+        //       query: activeQuery,
+        //       variables: {
+        //         cursor: data.postsSearch.pageInfo.endCursor,
+        //       },
+        //       updateQuery: (previousResult, { fetchMoreResult }) => {
+        //         // console.log('prev', previousResult);
+        //         // console.log('fetched', fetchMoreResult);
 
-                const newEdges = fetchMoreResult.postsSearch.edges;
-                const { pageInfo } = fetchMoreResult.postsSearch;
+        //         const newEdges = fetchMoreResult.postsSearch.edges;
+        //         const { pageInfo } = fetchMoreResult.postsSearch;
 
-                return newEdges.length
-                  ? {
-                      postsSearch: {
-                        __typename: previousResult.postsSearch.__typename,
-                        edges: [...previousResult.postsSearch.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
-                  : previousResult;
-              },
-            });
-          }
-        }}
+        //         return newEdges.length
+        //           ? {
+        //             postsSearch: {
+        //               __typename: previousResult.postsSearch.__typename,
+        //               edges: [...previousResult.postsSearch.edges, ...newEdges],
+        //               pageInfo,
+        //             },
+        //           }
+        //           : previousResult;
+        //       },
+        //     });
+        //   }
+        // }}
       />
       {/* This is the loading animation */}
       {/* <Animated.View

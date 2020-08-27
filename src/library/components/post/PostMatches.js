@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
@@ -12,13 +12,7 @@ import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import { getTopicFromID } from 'library/utils';
 
-const PostMatches = ({ navigation, post }) => {
-  // QUERIES
-  const { loading, error, data } = useQuery(POST_MATCHES_QUERY, {
-    variables: { id: post.id },
-  });
-
-  if (error) return <Error error={error} />;
+const PostMatches = ({ navigation, post, matches, loading }) => {
   if (loading) {
     return (
       <View style={styles.container}>
@@ -31,8 +25,6 @@ const PostMatches = ({ navigation, post }) => {
       </View>
     );
   }
-
-  const matches = data.singlePostMatches || null;
 
   if (!matches) return null;
 
@@ -47,7 +39,7 @@ const PostMatches = ({ navigation, post }) => {
   const renderReason = () => {
     // need goal and subfield
     const { goal, subField } = post;
-    const { name } = getTopicFromID(subField.topicID);
+    const { name } = getTopicFromID(subField);
 
     if (goal === 'Find Investors' && name) {
       return (
@@ -76,17 +68,19 @@ const PostMatches = ({ navigation, post }) => {
 
   return (
     <>
-      <View style={styles.sectionHeader}>
-        <Text style={defaultStyles.hugeHeavy}>Matches</Text>
-        {renderReason()}
-      </View>
-      {matches.map((user) => {
-        return (
-          <View key={user.id}>
-            <SuggestedConnection user={user} navigation={navigation} />
-          </View>
-        );
-      })}
+      <ScrollView>
+        <View style={styles.sectionHeader}>
+          <Text style={defaultStyles.hugeHeavy}>Matches</Text>
+          {renderReason()}
+        </View>
+        {matches.map((user) => {
+          return (
+            <View key={user.id}>
+              <SuggestedConnection user={user} navigation={navigation} />
+            </View>
+          );
+        })}
+      </ScrollView>
     </>
   );
 };

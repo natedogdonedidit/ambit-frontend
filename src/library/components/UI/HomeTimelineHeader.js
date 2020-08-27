@@ -17,15 +17,16 @@ const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, s
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => setActiveTimeline(0)}
-            hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}
+            style={{ paddingRight: 10 }}
+            hitSlop={{ top: 12, left: 20, bottom: 12 }}
           >
             <Text style={activeTimeline === 0 ? styles.selectedButton : styles.nonSelectedButton}>For you</Text>
           </TouchableOpacity>
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => setActiveTimeline(1)}
-            style={{ paddingLeft: 20 }}
-            hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}
+            style={{ paddingHorizontal: 10 }}
+            hitSlop={{ top: 12, bottom: 12, right: 20 }}
           >
             <Text style={activeTimeline === 1 ? styles.selectedButton : styles.nonSelectedButton}>Following</Text>
           </TouchableOpacity>

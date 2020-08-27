@@ -9,15 +9,13 @@ import defaultStyles from 'styles/defaultStyles';
 import { getGoalInfo, getTopicFromID } from 'library/utils';
 
 const Goal = ({ navigation, goal, subField, onPress }) => {
-  const { name } = useMemo(() => getTopicFromID(subField.topicID), [subField.topicID]);
+  const { name } = useMemo(() => getTopicFromID(subField), [subField]);
 
   return (
     // color background w/ black text
     <TouchableOpacity
       style={{ flexDirection: 'row', flex: 1 }}
-      onPress={() =>
-        navigation.navigate('Search', { goalToSearch: getGoalInfo(goal), topicIDsToSearch: [subField.topicID] || null })
-      }
+      onPress={() => navigation.navigate('Search', { goalToSearch: getGoalInfo(goal), topicIDsToSearch: [subField] || null })}
       activeOpacity={0.6}
       disabled
     >

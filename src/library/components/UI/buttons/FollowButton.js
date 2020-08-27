@@ -22,19 +22,18 @@ const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStor
   // MUTATIONS - follow, connect
   const [followUser, { loading: loadingFollow }] = useMutation(FOLLOW_MUTATION, {
     // refetchQueries: () => [{ query: CURRENT_USER_QUERY }, { query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
-    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { id: userToFollowID } }],
+    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { where: { id: userToFollowID } } }],
     onError: () => null,
   });
 
   const [unfollowUser, { loading: loadingUnfollow }] = useMutation(UNFOLLOW_MUTATION, {
     // refetchQueries: () => [{ query: CURRENT_USER_QUERY }, { query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
-    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { id: userToFollowID } }],
+    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { where: { id: userToFollowID } } }],
     onError: () => null,
   });
 
   // QUERY - need this to know if we're following this user or not
   const { data, loadingUser, errorUser } = useQuery(CURRENT_USER_FOLLOWING);
-  // console.log(data);
 
   // syncs isFollowing with cache (should only update once because cache-only)
   useEffect(() => {

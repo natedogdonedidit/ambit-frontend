@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import InvestList from 'library/components/lists/InvestList';
 
-import EDIT_TOPICS_INVEST_MUTATION from 'library/mutations/EDIT_TOPICS_INVEST_MUTATION';
+import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsInvestModal = ({ navigation }) => {
@@ -16,7 +16,7 @@ const SelectTopicsInvestModal = ({ navigation }) => {
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsInvest] = useMutation(EDIT_TOPICS_INVEST_MUTATION, {
+  const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION, {
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -28,60 +28,65 @@ const SelectTopicsInvestModal = ({ navigation }) => {
   const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
   if (loading) return null;
   if (error) return <Text>{`Error! ${error}`}</Text>;
-  const { myTopics } = data;
+  const { userLoggedIn: myTopics } = data;
   // this is the single source of truth
   const { topicsInvest: topics } = myTopics;
-  const topicsIDonly = topics.map((topic) => topic.topicID);
+  const topicsIDonly = useMemo(() => {
+    return topics.map((topic) => topic.id);
+  }, [topics]);
 
   // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
+  const handleTopicSelect = (selectedTopicID) => {
     requestAnimationFrame(() => {
+      // for mutation
+      const dataObject = {};
+
       // build the new array of topics
       let newArray = [];
       if (topicsIDonly.includes(selectedTopicID)) {
         // remove it
-        newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
+        newArray = topics.filter((topic) => topic.id !== selectedTopicID);
+        dataObject.disconnect = [{ id: selectedTopicID }];
       } else {
         // add it
-        newArray = [...topics, { id: selectedTopicID, topicID: selectedTopicID, name: selectedTopicName }];
+        newArray = [...topicsIDonly, selectedTopicID];
+        dataObject.connect = [{ id: selectedTopicID }];
       }
-
-      // for mutation
-      const newArrayTopicIDonly = newArray.map((topic) => {
-        return { topicID: topic.topicID };
-      });
 
       // for optimistic response
       const newArrayTopicIDandType = newArray.map((topic) => {
-        return { id: topic.id, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+        return { id: topic, __typename: 'Topic' };
       });
 
       // run the mutation
-      editTopicsInvest({
+      updateOneUser({
         variables: {
-          topics: newArrayTopicIDonly,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          editTopicsInvest: {
-            __typename: 'User',
-            topicsInvest: [...newArrayTopicIDandType],
+          where: { id: myTopics.id }, // userLoggedIn
+          data: {
+            topicsInvest: dataObject,
           },
         },
-        update: (proxy, { data: dataReturned }) => {
-          const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
+        // optimisticResponse: {
+        //   __typename: 'Mutation',
+        //   editTopicsFocus: {
+        //     __typename: 'User',
+        //     topicsFocus: [...newArrayTopicIDandType],
+        //   },
+        // },
+        // update: (proxy, { data: dataReturned }) => {
+        //   const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
 
-          client.writeQuery({
-            query: CURRENT_USER_TOPICS,
-            data: {
-              myTopics: {
-                ...dataCache.myTopics,
-                topicsInvest: [...dataReturned.editTopicsInvest.topicsInvest],
-              },
-            },
-          });
-        },
+        //   client.writeQuery({
+        //     query: CURRENT_USER_TOPICS,
+        //     data: {
+        //       myTopics: {
+        //         ...dataCache.myTopics,
+        //         topicsFocus: [...dataReturned.editTopicsFocus.topicsFocus],
+        //       },
+        //     },
+        //   });
+        // },
       });
     });
   };

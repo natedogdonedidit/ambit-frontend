@@ -8,8 +8,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
-import { getGoalInfo, getTopicFromID } from 'library/utils';
-import SEARCH_POSTS_QUERY from 'library/queries/SEARCH_POSTS_QUERY';
+import { getGoalInfo, buildSearchWhere } from 'library/utils';
+import POSTS_QUERY from 'library/queries/POSTS_QUERY';
 
 const HatMatchesRow = ({ navigation, hats, type }) => {
   const [matchingPosts, setMatchingPosts] = useState([]);
@@ -25,11 +25,19 @@ const HatMatchesRow = ({ navigation, hats, type }) => {
     return hats.map((topic) => topic.topicID);
   }, [hats]);
 
-  const { loading: loadingMatches, error, data, refetch } = useQuery(SEARCH_POSTS_QUERY, {
+  const where = buildSearchWhere({ goal, topicIDs });
+
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
     variables: {
-      goal,
-      topicIDs,
+      // first: 10,
+      orderBy: [
+        {
+          lastUpdated: 'desc',
+        },
+      ],
+      where,
     },
+    notifyOnNetworkStatusChange: true,
   });
 
   // useEffect(() => {
@@ -43,8 +51,8 @@ const HatMatchesRow = ({ navigation, hats, type }) => {
   // }, [hats]);
 
   useEffect(() => {
-    if (data && data.postsSearch && data.postsSearch.edges.length > 0) {
-      setMatchingPosts(data.postsSearch.edges);
+    if (data && data.posts && data.posts.length > 0) {
+      setMatchingPosts(data.posts);
     }
   }, [data]);
 

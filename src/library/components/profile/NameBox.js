@@ -68,7 +68,9 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       {/* absolute */}
       <View style={styles.topRowButtons}>
         {isMyProfile ? (
-          <SmallGrayButton onPress={() => navigation.navigate('EditProfileModal', { user })}>Edit Profile</SmallGrayButton>
+          <SmallGrayButton onPress={() => navigation.navigate('EditProfileModal', { username: user.username })}>
+            Edit Profile
+          </SmallGrayButton>
         ) : (
           <>
             <MessageButton

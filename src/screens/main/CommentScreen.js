@@ -83,7 +83,7 @@ const CommentScreen = ({ navigation, route }) => {
   const { userLoggedIn } = dataUser;
 
   const { loading: loadingPost, error: errorPost, data: dataPost } = useQuery(SINGLE_POST_QUERY, {
-    variables: { id: parentPost.id },
+    variables: { where: { id: parentPost.id } },
   });
 
   const { loading: loadingPostComments, error: errorPostComments, data: dataPostComments } = useQuery(POST_COMMENTS_QUERY, {

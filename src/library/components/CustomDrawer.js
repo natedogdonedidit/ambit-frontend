@@ -14,15 +14,12 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 
 const CustomDrawer = ({ navigation }) => {
   const { logoutCTX } = useContext(UserContext);
-  const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
+  const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
+    onError: () => handleLogout(),
+  });
 
   if (loading) return null;
   if (error) return <Text>{`Error! ${error}`}</Text>;
-
-  const { userLoggedIn } = data;
-  if (!userLoggedIn) return null;
-
-  // console.log(userLoggedIn);
 
   const handleLogout = async () => {
     try {
@@ -36,14 +33,23 @@ const CustomDrawer = ({ navigation }) => {
     }
   };
 
+  const { userLoggedIn } = data;
+  if (!userLoggedIn) {
+    handleLogout();
+    return null;
+  }
+
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
       <View>
-        <TouchableOpacity style={styles.header} onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
+        <TouchableOpacity
+          style={styles.header}
+          onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}
+        >
           <ProfilePic user={userLoggedIn} size="small" navigation={navigation} enableIntro={false} enableStory={false} />
           <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.username}!</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile', { profileId: userLoggedIn.id })}>
+        <TouchableOpacity onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>My Profile</Text>
           </View>

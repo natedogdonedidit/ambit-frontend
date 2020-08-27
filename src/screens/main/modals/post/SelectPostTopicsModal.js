@@ -22,7 +22,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
       modalType: 'none',
     },
   } = route.params;
-  const { setTopics, setSubField, topicsPassedIn = [] } = route.params;
+  const { setTopic, setSubField, topicsPassedIn = [] } = route.params;
 
   // STATE
   const [selectedCategories, setSelectedCategories] = useState('');
@@ -38,45 +38,20 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
     heading = 'Select a topic';
   }
 
-  // if no goal was passed in
-  const multiple = goal.modalType === 'none';
-  if (multiple) {
-    heading = 'Select some topics';
-  }
-
   const handleTopicSelect = (selectedTopicID) => {
     // build an array of active topics with topicID only - for comparision reasons
 
     // if there is NOT a goal passed in, then multiple selections are allowed
-    if (multiple) {
-      // build the new array of topics
-      let newArray = [...activeTopics];
-      if (activeTopicsIDonly.includes(selectedTopicID)) {
-        // remove it
-        newArray = activeTopics.filter((topic) => topic.topicID !== selectedTopicID);
-        if (warning) setWarning('');
-      } else if (newArray.length < TOPIC_LIMIT) {
-        // add it
-        newArray = [...activeTopics, { topicID: selectedTopicID }];
-      } else {
-        setWarning('3 topics max');
-      }
+    // if there is a goal - select one topic only
+    setActiveTopics([{ topicID: selectedTopicID }]);
+    setTopic(selectedTopicID);
 
-      setActiveTopics(newArray);
-      setTopics(newArray);
-      console.log(newArray);
-    } else {
-      // if there is a goal - select one topic only
-      setActiveTopics([{ topicID: selectedTopicID }]);
-      setTopics([{ topicID: selectedTopicID }]);
-
-      if (goal.modalType === 'topic') {
-        setSubField(selectedTopicID);
-      }
-
-      // navigate back after a short delay
-      const timeout = setTimeout(() => navigation.navigate('NewPostModal'), 300);
+    if (goal.modalType === 'topic') {
+      setSubField(selectedTopicID);
     }
+
+    // navigate back after a short delay
+    const timeout = setTimeout(() => navigation.navigate('NewPostModal'), 300);
   };
 
   const handleCategorySelect = (category) => {
@@ -98,7 +73,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
         <HeaderBackBlank
           navigation={navigation}
           title={warning}
-          rightComponent={<ButtonHeader onPress={() => navigation.navigate('NewPostModal')}>Done</ButtonHeader>}
+          // rightComponent={<ButtonHeader onPress={() => navigation.navigate('NewPostModal')}>Done</ButtonHeader>}
           // leftText="Done"
         />
 
@@ -108,11 +83,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
               <Text style={defaultStyles.headerMedium}>{heading}</Text>
             </View>
             <View style={styles.subTitle}>
-              <Text style={defaultStyles.defaultMute}>
-                {multiple
-                  ? `Your post will appear on these\ntopic timelines (3 max)`
-                  : `Your post will also appear on this\ntopic timeline`}
-              </Text>
+              <Text style={defaultStyles.defaultMute}>Your post will also appear on this\ntopic timeline</Text>
             </View>
           </View>
           <TopicsList

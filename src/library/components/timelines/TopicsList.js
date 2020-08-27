@@ -22,19 +22,19 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
   const favoriteTopics = useMemo(() => {
     let newFavoriteTopics = [];
     if (data) {
-      const { myTopics } = data;
+      const { userLoggedIn: myTopics } = data;
       if (myTopics) {
         if (myTopics.topicsFocus.length > 0) {
-          newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.topicID)];
+          newFavoriteTopics = [...newFavoriteTopics, ...myTopics.topicsFocus.map((top) => top.id)];
         }
         if (myTopics.topicsInterest.length > 0) {
           if (newFavoriteTopics === []) {
-            newFavoriteTopics = [...myTopics.topicsInterest.map((top) => top.topicID)];
+            newFavoriteTopics = [...myTopics.topicsInterest.map((top) => top.id)];
           } else {
             // only add topics that dont already exist
             myTopics.topicsInterest.forEach((topic) => {
-              if (newFavoriteTopics.findIndex((favTopicID) => favTopicID === topic.topicID) === -1) {
-                newFavoriteTopics = [...newFavoriteTopics, topic.topicID];
+              if (newFavoriteTopics.findIndex((favTopicID) => favTopicID === topic.id) === -1) {
+                newFavoriteTopics = [...newFavoriteTopics, topic.id];
               }
             });
           }

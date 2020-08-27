@@ -27,6 +27,7 @@ const ConnectionsScreen = ({ navigation }) => {
     <View style={{ ...styles.container, paddingTop: top }}>
       <StatusBar barStyle="dark-content" />
       <HeaderMatches
+        navigation={navigation}
         handleMiddle={() => null}
         // handleRight={() => navigation.navigate('Search')} navigation={navigation}
       />

@@ -12,10 +12,10 @@ import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 const { width } = Dimensions.get('window');
 
-const ProfileGrid = ({ navigation, isMyProfile, profileId, username }) => {
+const ProfileGrid = ({ navigation, username }) => {
   // QUERIES
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
-    variables: { id: profileId, username },
+    variables: { where: { username } },
   });
 
   if (loading) {

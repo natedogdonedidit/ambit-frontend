@@ -56,22 +56,22 @@ const MainStack = () => {
   // ////////////////////////////////////////
   // LOAD INITIAL QUERIES HERE
   // ////////////////////////////////////////
-  useEffect(() => {
-    // pre-fetch stories home
-    client.query({
-      query: STORIES_HOME_QUERY,
-    });
+  // useEffect(() => {
+  //   // pre-fetch stories home
+  //   client.query({
+  //     query: STORIES_HOME_QUERY,
+  //   });
 
-    // pre-fetch my topics
-    client.query({
-      query: CURRENT_USER_TOPICS,
-    });
+  //   // pre-fetch my topics
+  //   client.query({
+  //     query: CURRENT_USER_TOPICS,
+  //   });
 
-    // pre-fetch people I follow
-    client.query({
-      query: CURRENT_USER_FOLLOWING,
-    });
-  }, []);
+  //   // pre-fetch people I follow
+  //   client.query({
+  //     query: CURRENT_USER_FOLLOWING,
+  //   });
+  // }, []);
 
   // CURRENT USER QUERY
   const { data: userData } = useQuery(CURRENT_USER_QUERY);

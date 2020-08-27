@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { BasicPost } from 'library/queries/_fragments';
 
 const CREATE_POST_MUTATION = gql`
-  mutation CREATE_POST_MUTATION($owner: ID!, $post: PostCreateInput!) {
-    createPost(owner: $owner, post: $post) {
+  mutation CREATE_POST_MUTATION($data: PostCreateInput!) {
+    createOnePost(data: $data) {
       ...BasicPost
     }
   }

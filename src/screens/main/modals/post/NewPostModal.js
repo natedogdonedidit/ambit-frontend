@@ -44,7 +44,7 @@ const NewPostModal = ({ navigation, route }) => {
   // STATE
   const [goal, setGoal] = useState('');
   const [subField, setSubField] = useState('');
-  const [topics, setTopics] = useState(topicsPassedIn);
+  const [topic, setTopic] = useState(null);
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState('');
@@ -72,28 +72,27 @@ const NewPostModal = ({ navigation, route }) => {
   }, [data]);
 
   // MUTATIONS
-  const [createPost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
-    variables: {
-      owner: currentUserId,
-      post: {
-        isGoal: !!goal,
-        goal: goal ? goal.name : null,
-        subField: subField ? { connect: { topicID: subField } } : null,
-        goalStatus: goal ? 'Active' : null,
-        topics: topics.length > 0 ? { connect: topics } : null,
-        location,
-        locationID,
-        locationLat,
-        locationLon,
-        content,
-        video,
-        images: { set: images },
-        lastUpdated: new Date(),
-        owner: {
-          connect: { id: currentUserId },
-        },
-      },
-    },
+  const [createOnePost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
+    // variables: {
+    //   data: {
+    //     isGoal: !!goal,
+    //     goal: goal ? goal.name : null,
+    //     subField,
+    //     goalStatus: goal ? 'Active' : null,
+    //     topic,
+    //     location,
+    //     locationID,
+    //     locationLat,
+    //     locationLon,
+    //     content,
+    //     video,
+    //     images: { set: images },
+    //     lastUpdated: new Date(),
+    //     owner: {
+    //       connect: { id: currentUserId },
+    //     },
+    //   },
+    // },
     onError: (error) => {
       console.log('something went wrong either creating post or notifications', error);
       // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
@@ -121,67 +120,19 @@ const NewPostModal = ({ navigation, route }) => {
       return;
     }
 
-    // make sure all main topics are added
-    const finalTopicsArray = addMainTopics([...topics]);
-
-    // dont think this is working
-    await setTopics(finalTopicsArray);
-
     try {
       const uploadedImages = await uploadImages();
       navigation.goBack();
       // console.log('saving', uploadedImages);
 
-      const topicsArrayForOptResp =
-        topics.length > 0
-          ? topics.map(({ topicID }, i) => {
-              const { name } = getTopicFromID(topicID);
-
-              return {
-                __typename: 'Topic',
-                id: i,
-                name,
-                topicID,
-                parentTopic: { __typename: 'Topic', id: i, name, topicID },
-              };
-            })
-          : null;
-
-      const newPostOptimisticObject = {
-        __typename: 'Post',
-        id: 'newPost12345',
-        isGoal: !!goal,
-        goal: goal ? goal.name : null,
-        subField: subField ? { __typename: 'Topic', id: subField, name: getTopicFromID(subField).name, topicID: subField } : null,
-        goalStatus: goal ? 'Active' : null,
-        topics: topicsArrayForOptResp,
-        location,
-        locationID,
-        locationLat,
-        locationLon,
-        content,
-        video,
-        images: uploadedImages,
-        createdAt: new Date(),
-        lastUpdated: new Date(),
-        owner: { ...data.userLoggedIn },
-        likesCount: null,
-        likedByMe: false,
-        commentsCount: null,
-        sharesCount: null,
-        updates: [],
-        _deleted: false,
-      };
-
-      createPost({
+      createOnePost({
         variables: {
-          owner: currentUserId,
-          post: {
+          data: {
             isGoal: !!goal,
             goal: goal ? goal.name : null,
-            subField: subField ? { connect: { topicID: subField } } : null,
+            subField,
             goalStatus: goal ? 'Active' : null,
-            topics: topics.length > 0 ? { connect: topics } : null,
+            topic,
             location,
             locationID,
             locationLat,
@@ -195,37 +146,102 @@ const NewPostModal = ({ navigation, route }) => {
             },
           },
         },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          createPost: {
-            ...newPostOptimisticObject,
-          },
-        },
-        update: (proxy, { data: dataReturned }) => {
-          const networkPostsCache = proxy.readQuery({
-            query: NETWORK_POSTS_QUERY,
-          });
-          // console.log(networkPostsCache);
-          // console.log(dataReturned);
-
-          proxy.writeQuery({
-            query: NETWORK_POSTS_QUERY,
-            data: {
-              postsNetwork: {
-                __typename: 'PostConnection',
-                pageInfo: {
-                  ...networkPostsCache.postsNetwork.pageInfo,
-                },
-                edges: [
-                  { __typename: 'PostEdge', node: { ...dataReturned.createPost } },
-                  ...networkPostsCache.postsNetwork.edges,
-                ],
-              },
-            },
-          });
-        },
-        refetchQueries: goal && [{ query: MYGOALS_POSTS_QUERY }],
       });
+
+      // const topicsArrayForOptResp =
+      //   topics.length > 0
+      //     ? topics.map(({ topicID }, i) => {
+      //         const { name } = getTopicFromID(topicID);
+
+      //         return {
+      //           __typename: 'Topic',
+      //           id: i,
+      //           name,
+      //           topicID,
+      //           parentTopic: { __typename: 'Topic', id: i, name, topicID },
+      //         };
+      //       })
+      //     : null;
+
+      // const newPostOptimisticObject = {
+      //   __typename: 'Post',
+      //   id: 'newPost12345',
+      //   isGoal: !!goal,
+      //   goal: goal ? goal.name : null,
+      //   subField: subField ? { __typename: 'Topic', id: subField, name: getTopicFromID(subField).name, topicID: subField } : null,
+      //   goalStatus: goal ? 'Active' : null,
+      //   topics: topicsArrayForOptResp,
+      //   location,
+      //   locationID,
+      //   locationLat,
+      //   locationLon,
+      //   content,
+      //   video,
+      //   images: uploadedImages,
+      //   createdAt: new Date(),
+      //   lastUpdated: new Date(),
+      //   owner: { ...data.userLoggedIn },
+      //   likesCount: null,
+      //   likedByMe: false,
+      //   commentsCount: null,
+      //   sharesCount: null,
+      //   updates: [],
+      //   _deleted: false,
+      // };
+
+      // createPost({
+      //   variables: {
+      //     owner: currentUserId,
+      //     post: {
+      //       isGoal: !!goal,
+      //       goal: goal ? goal.name : null,
+      //       subField: subField ? { connect: { topicID: subField } } : null,
+      //       goalStatus: goal ? 'Active' : null,
+      //       topics: topics.length > 0 ? { connect: topics } : null,
+      //       location,
+      //       locationID,
+      //       locationLat,
+      //       locationLon,
+      //       content,
+      //       video,
+      //       images: { set: uploadedImages },
+      //       lastUpdated: new Date(),
+      //       owner: {
+      //         connect: { id: currentUserId },
+      //       },
+      //     },
+      //   },
+      //   optimisticResponse: {
+      //     __typename: 'Mutation',
+      //     createPost: {
+      //       ...newPostOptimisticObject,
+      //     },
+      //   },
+      //   update: (proxy, { data: dataReturned }) => {
+      //     const networkPostsCache = proxy.readQuery({
+      //       query: NETWORK_POSTS_QUERY,
+      //     });
+      //     // console.log(networkPostsCache);
+      //     // console.log(dataReturned);
+
+      //     proxy.writeQuery({
+      //       query: NETWORK_POSTS_QUERY,
+      //       data: {
+      //         postsNetwork: {
+      //           __typename: 'PostConnection',
+      //           pageInfo: {
+      //             ...networkPostsCache.postsNetwork.pageInfo,
+      //           },
+      //           edges: [
+      //             { __typename: 'PostEdge', node: { ...dataReturned.createPost } },
+      //             ...networkPostsCache.postsNetwork.edges,
+      //           ],
+      //         },
+      //       },
+      //     });
+      //   },
+      //   refetchQueries: goal && [{ query: MYGOALS_POSTS_QUERY }],
+      // });
     } catch (e) {
       setUploading(false);
       console.log(e);
@@ -242,14 +258,14 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const handleGoalRowSelect = () => {
-    navigation.navigate('SelectGoalModal', { setGoal, setTopics, setSubField });
+    navigation.navigate('SelectGoalModal', { setGoal, setTopic, setSubField });
   };
 
   const handleTopicRowSelect = () => {
     if (goal) {
-      navigation.navigate('SelectPostTopicsModal', { goal, setTopics, setSubField, topics });
+      navigation.navigate('SelectPostTopicsModal', { goal, setTopic, setSubField });
     } else {
-      navigation.navigate('SelectPostTopicsModal', { setTopics, setSubField, topics });
+      navigation.navigate('SelectPostTopicsModal', { setTopic, setSubField });
     }
   };
 
@@ -259,7 +275,7 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const clearTopic = () => {
-    setTopics([]);
+    setTopic(null);
   };
 
   const attemptUploads = () => {
@@ -505,14 +521,14 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const renderTopicText = () => {
-    if (topics.length < 1) {
+    if (!topic) {
       return (
         <>
           <View style={styles.leftSide}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.iconGray} />
           </View>
 
-          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>{goal ? 'Add a topic' : 'Add topics'}</Text>
+          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>Add a topic</Text>
           <TouchableOpacity
             style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={handleTopicRowSelect}
@@ -524,22 +540,15 @@ const NewPostModal = ({ navigation, route }) => {
       );
     }
 
+    const { name } = getTopicFromID(topic);
+
     return (
       <>
         <View style={styles.leftSide}>
           <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
         </View>
 
-        <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>
-          {topics.map((topic, i) => {
-            const { name } = getTopicFromID(topic.topicID);
-
-            if (i < topics.length - 1) {
-              return `${name}, `;
-            }
-            return name;
-          })}
-        </Text>
+        <Text style={{ ...defaultStyles.largeMedium, flex: 1 }}>{name}</Text>
         <TouchableOpacity
           style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignItems: 'center' }}
           onPress={clearTopic}

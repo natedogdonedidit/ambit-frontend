@@ -7,28 +7,18 @@ export const AllTopicsFragment = gql`
     username
     topicsFocus {
       id
-      topicID
-      name
     }
     topicsInterest {
       id
-      topicID
-      name
     }
     topicsFreelance {
       id
-      topicID
-      name
     }
     topicsInvest {
       id
-      topicID
-      name
     }
     topicsMentor {
       id
-      topicID
-      name
     }
   }
 `;
@@ -50,7 +40,6 @@ export const UpdateFragment = gql`
         username
       }
     }
-    _deleted
   }
 `;
 
@@ -78,10 +67,7 @@ export const StoryNoOwner = gql`
     title
     type
     showcase
-    topics {
-      id
-      topicID
-    }
+    topic
     items {
       ...StoryItemFragment
     }
@@ -98,7 +84,6 @@ export const StoryWithOwner = gql`
       id
       username
       name
-      headline
       location
       profilePic
       intro {
@@ -112,10 +97,7 @@ export const StoryWithOwner = gql`
     }
     type
     showcase
-    topics {
-      id
-      topicID
-    }
+    topic
     items {
       ...StoryItemFragment
     }
@@ -130,27 +112,26 @@ export const MinimalUser = gql`
     name
     profilePic
     bannerPic
-    headline
     bio
     website
     location
     locationID
     locationLat
     locationLon
-    intro {
-      ...StoryNoOwner
-    }
-    myStory {
-      ...StoryNoOwner
-    }
-    latestProject {
-      ...StoryNoOwner
-    }
-    followingCount
-    followersCount
+    # intro {
+    #   ...StoryNoOwner
+    # }
+    # myStory {
+    #   ...StoryNoOwner
+    # }
+    # latestProject {
+    #   ...StoryNoOwner
+    # }
+    # followingCount
+    # followersCount
   }
-  ${StoryNoOwner}
 `;
+// ${StoryNoOwner}
 
 export const GroupFragment = gql`
   fragment GroupFragment on Group {
@@ -207,18 +188,8 @@ export const BasicPost = gql`
     isGoal
     goal
     goalStatus
-    subField {
-      id
-      topicID
-    }
-    topics {
-      id
-      topicID
-      parentTopic {
-        id
-        topicID
-      }
-    }
+    subField
+    topic
     location
     locationID
     locationLat
@@ -233,7 +204,6 @@ export const BasicPost = gql`
     updates {
       ...UpdateFragment
     }
-    _deleted
   }
   ${MinimalUser}
   ${UpdateFragment}
@@ -282,9 +252,7 @@ export const CommentFragment = gql`
       image
       likesCount
       likedByMe
-      _deleted
     }
-    _deleted
   }
   ${MinimalUser}
 `;

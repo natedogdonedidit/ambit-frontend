@@ -14,8 +14,7 @@ import {
 import { useMutation } from '@apollo/client';
 import { UserContext } from 'library/utils/UserContext';
 
-import CREATE_EXPERIENCE_MUTATION from 'library/mutations/CREATE_EXPERIENCE_MUTATION';
-import EDIT_EXPERIENCE_MUTATION from 'library/mutations/EDIT_EXPERIENCE_MUTATION';
+import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
 import DELETE_EXPERIENCE_MUTATION from 'library/mutations/DELETE_EXPERIENCE_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
@@ -39,7 +38,9 @@ const BLANK_EXPERIENCE = {
 
 const EditExperienceModal = ({ navigation, route }) => {
   // params passed in
-  const { isNew = false, experience = BLANK_EXPERIENCE } = route.params;
+  const { experience = BLANK_EXPERIENCE, username } = route.params;
+
+  const isNew = !experience.id;
 
   // context
   const { currentUserId } = useContext(UserContext);
@@ -55,95 +56,89 @@ const EditExperienceModal = ({ navigation, route }) => {
   const [currentRole, setCurrentRole] = useState(experience.currentRole);
 
   // MUTATIONS
-  const [createExperience, payloadCreate] = useMutation(CREATE_EXPERIENCE_MUTATION, {
+  const [updateOneUser, { loading: loadingCreate }] = useMutation(UPDATE_USER_MUTATION, {
     variables: {
-      owner: currentUserId,
-      experience: {
-        name,
-        subText,
-        location,
-        startDateMonth,
-        startDateYear,
-        endDateMonth,
-        endDateYear,
-        currentRole,
+      where: { username },
+      data: {
+        experience: {
+          upsert: [
+            {
+              where: { id: experience.id || '' },
+              update: {
+                name,
+                subText,
+                location,
+                startDateMonth,
+                startDateYear,
+                endDateMonth,
+                endDateYear,
+                currentRole,
+              },
+              create: {
+                name,
+                subText,
+                location,
+                startDateMonth,
+                startDateYear,
+                endDateMonth,
+                endDateYear,
+                currentRole,
+              },
+            },
+          ],
+        },
       },
     },
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: SINGLE_USER_BIO,
-        data: {
-          user: dataReturned.createExperience,
-        },
-      });
-    },
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { where: { username } } }],
+    // update: (proxy, { data: dataReturned }) => {
+    //   proxy.writeQuery({
+    //     query: CURRENT_USER_QUERY,
+    //     data: {
+    //       userLoggedIn: dataReturned.updateOneUser,
+    //     },
+    //   });
+    // },
     onCompleted: () => {
       navigation.goBack();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to create this experience. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to edit your profile. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
-  const loadingCreate = payloadCreate.loading;
 
-  const [editExperience, payloadEdit] = useMutation(EDIT_EXPERIENCE_MUTATION, {
+  const [deleteExperience, { loading: loadingDelete }] = useMutation(UPDATE_USER_MUTATION, {
     variables: {
-      owner: currentUserId,
-      id: experience.id,
-      experience: {
-        name,
-        subText,
-        location,
-        startDateMonth,
-        startDateYear,
-        endDateMonth,
-        endDateYear,
-        currentRole,
+      where: { username },
+      data: {
+        experience: {
+          delete: [
+            {
+              id: experience.id || '',
+            },
+          ],
+        },
       },
     },
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: SINGLE_USER_BIO,
-        data: {
-          user: dataReturned.editExperience,
-        },
-      });
-    },
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { where: { username } } }],
+    // update: (proxy, { data: dataReturned }) => {
+    //   proxy.writeQuery({
+    //     query: CURRENT_USER_QUERY,
+    //     data: {
+    //       userLoggedIn: dataReturned.updateOneUser,
+    //     },
+    //   });
+    // },
     onCompleted: () => {
       navigation.goBack();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to edit this experience. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to edit your profile. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
-  const loadingEdit = payloadEdit.loading;
 
-  const [deleteExperience, payloadDelete] = useMutation(DELETE_EXPERIENCE_MUTATION, {
-    variables: {
-      owner: currentUserId,
-      id: experience.id,
-    },
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: SINGLE_USER_BIO,
-        data: {
-          user: dataReturned.deleteExperience,
-        },
-      });
-    },
-    onCompleted: () => {
-      navigation.goBack();
-    },
-    onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this experience. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
-  });
-  const loadingDelete = payloadDelete.loading;
-
-  const loading = loadingCreate || loadingEdit || loadingDelete;
+  const loading = loadingCreate || loadingDelete;
 
   const handleDelete = () => {
     deleteExperience();
@@ -169,14 +164,10 @@ const EditExperienceModal = ({ navigation, route }) => {
     }
 
     // if validation passed, create experience mutation
-    if (isNew) {
-      createExperience();
-    } else {
-      editExperience();
-    }
+    updateOneUser();
   };
 
-  const handleLocationSelect = locObject => {
+  const handleLocationSelect = (locObject) => {
     if (locObject) {
       setLocation(locObject.location);
     }
@@ -198,7 +189,7 @@ const EditExperienceModal = ({ navigation, route }) => {
           </View>
           <TextInput
             style={{ ...styles.input, ...defaultStyles.defaultText }}
-            onChangeText={val => setName(val)}
+            onChangeText={(val) => setName(val)}
             value={name}
             placeholder="Add company name"
           />
@@ -207,7 +198,7 @@ const EditExperienceModal = ({ navigation, route }) => {
           </View>
           <TextInput
             style={{ ...styles.input, ...defaultStyles.defaultText }}
-            onChangeText={val => setSubText(val)}
+            onChangeText={(val) => setSubText(val)}
             value={subText}
             placeholder="Add job title"
           />
@@ -288,7 +279,7 @@ const EditExperienceModal = ({ navigation, route }) => {
           <View style={styles.switchRow}>
             <Text style={{ ...defaultStyles.defaultText }}>This is my current role</Text>
             <View style={styles.switch}>
-              <Switch value={currentRole} onValueChange={val => setCurrentRole(val)} />
+              <Switch value={currentRole} onValueChange={(val) => setCurrentRole(val)} />
             </View>
           </View>
 

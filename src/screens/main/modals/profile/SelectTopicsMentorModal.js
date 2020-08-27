@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import TopicsList from 'library/components/lists/TopicsList';
 
-import EDIT_TOPICS_MENTOR_MUTATION from 'library/mutations/EDIT_TOPICS_MENTOR_MUTATION';
+import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsMentorModal = ({ navigation }) => {
@@ -18,72 +18,76 @@ const SelectTopicsMentorModal = ({ navigation }) => {
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsMentor] = useMutation(EDIT_TOPICS_MENTOR_MUTATION, {
+  const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION, {
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
-
   // ////////////////////////////////////////
   // QUERIES
   const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
   if (loading) return null;
   if (error) return <Text>{`Error! ${error}`}</Text>;
-  const { myTopics } = data;
+  const { userLoggedIn: myTopics } = data;
   // this is the single source of truth
   const { topicsMentor: topics } = myTopics;
-  const topicsIDonly = topics.map((topic) => topic.topicID);
+  const topicsIDonly = useMemo(() => {
+    return topics.map((topic) => topic.id);
+  }, [topics]);
 
   // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
+  const handleTopicSelect = (selectedTopicID) => {
     requestAnimationFrame(() => {
+      // for mutation
+      const dataObject = {};
+
       // build the new array of topics
       let newArray = [];
       if (topicsIDonly.includes(selectedTopicID)) {
         // remove it
-        newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
+        newArray = topics.filter((topic) => topic.id !== selectedTopicID);
+        dataObject.disconnect = [{ id: selectedTopicID }];
       } else {
         // add it
-        newArray = [...topics, { id: selectedTopicID, topicID: selectedTopicID, name: selectedTopicName }];
+        newArray = [...topicsIDonly, selectedTopicID];
+        dataObject.connect = [{ id: selectedTopicID }];
       }
-
-      // for mutation
-      const newArrayTopicIDonly = newArray.map((topic) => {
-        return { topicID: topic.topicID };
-      });
 
       // for optimistic response
       const newArrayTopicIDandType = newArray.map((topic) => {
-        return { id: topic.id, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+        return { id: topic, __typename: 'Topic' };
       });
 
       // run the mutation
-      editTopicsMentor({
+      updateOneUser({
         variables: {
-          topics: newArrayTopicIDonly,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          editTopicsMentor: {
-            __typename: 'User',
-            topicsMentor: [...newArrayTopicIDandType],
+          where: { id: myTopics.id }, // userLoggedIn
+          data: {
+            topicsMentor: dataObject,
           },
         },
-        update: (proxy, { data: dataReturned }) => {
-          const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
+        // optimisticResponse: {
+        //   __typename: 'Mutation',
+        //   editTopicsFocus: {
+        //     __typename: 'User',
+        //     topicsFocus: [...newArrayTopicIDandType],
+        //   },
+        // },
+        // update: (proxy, { data: dataReturned }) => {
+        //   const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
 
-          client.writeQuery({
-            query: CURRENT_USER_TOPICS,
-            data: {
-              myTopics: {
-                ...dataCache.myTopics,
-                topicsMentor: [...dataReturned.editTopicsMentor.topicsMentor],
-              },
-            },
-          });
-        },
+        //   client.writeQuery({
+        //     query: CURRENT_USER_TOPICS,
+        //     data: {
+        //       myTopics: {
+        //         ...dataCache.myTopics,
+        //         topicsFocus: [...dataReturned.editTopicsFocus.topicsFocus],
+        //       },
+        //     },
+        //   });
+        // },
       });
     });
   };

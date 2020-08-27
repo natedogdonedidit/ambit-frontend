@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
@@ -18,7 +18,7 @@ const SelectTopicsInterestModal = ({ navigation }) => {
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsInterest] = useMutation(EDIT_TOPICS_INTEREST_MUTATION, {
+  const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION, {
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -30,60 +30,65 @@ const SelectTopicsInterestModal = ({ navigation }) => {
   const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
   if (loading) return null;
   if (error) return <Text>{`Error! ${error}`}</Text>;
-  const { myTopics } = data;
+  const { userLoggedIn: myTopics } = data;
   // this is the single source of truth
   const { topicsInterest: topics } = myTopics;
-  const topicsIDonly = topics.map((topic) => topic.topicID);
+  const topicsIDonly = useMemo(() => {
+    return topics.map((topic) => topic.id);
+  }, [topics]);
 
   // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
+  const handleTopicSelect = (selectedTopicID) => {
     requestAnimationFrame(() => {
+      // for mutation
+      const dataObject = {};
+
       // build the new array of topics
       let newArray = [];
       if (topicsIDonly.includes(selectedTopicID)) {
         // remove it
-        newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
+        newArray = topics.filter((topic) => topic.id !== selectedTopicID);
+        dataObject.disconnect = [{ id: selectedTopicID }];
       } else {
         // add it
-        newArray = [...topics, { id: selectedTopicID, topicID: selectedTopicID, name: selectedTopicName }];
+        newArray = [...topicsIDonly, selectedTopicID];
+        dataObject.connect = [{ id: selectedTopicID }];
       }
-
-      // for mutation
-      const newArrayTopicIDonly = newArray.map((topic) => {
-        return { topicID: topic.topicID };
-      });
 
       // for optimistic response
       const newArrayTopicIDandType = newArray.map((topic) => {
-        return { id: topic.id, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+        return { id: topic, __typename: 'Topic' };
       });
 
       // run the mutation
-      editTopicsInterest({
+      updateOneUser({
         variables: {
-          topics: newArrayTopicIDonly,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          editTopicsInterest: {
-            __typename: 'User',
-            topicsInterest: [...newArrayTopicIDandType],
+          where: { id: myTopics.id }, // userLoggedIn
+          data: {
+            topicsInterest: dataObject,
           },
         },
-        update: (proxy, { data: dataReturned }) => {
-          const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
+        // optimisticResponse: {
+        //   __typename: 'Mutation',
+        //   editTopicsFocus: {
+        //     __typename: 'User',
+        //     topicsFocus: [...newArrayTopicIDandType],
+        //   },
+        // },
+        // update: (proxy, { data: dataReturned }) => {
+        //   const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
 
-          client.writeQuery({
-            query: CURRENT_USER_TOPICS,
-            data: {
-              myTopics: {
-                ...dataCache.myTopics,
-                topicsInterest: [...dataReturned.editTopicsInterest.topicsInterest],
-              },
-            },
-          });
-        },
+        //   client.writeQuery({
+        //     query: CURRENT_USER_TOPICS,
+        //     data: {
+        //       myTopics: {
+        //         ...dataCache.myTopics,
+        //         topicsFocus: [...dataReturned.editTopicsFocus.topicsFocus],
+        //       },
+        //     },
+        //   });
+        // },
       });
     });
   };

@@ -86,7 +86,7 @@ const ConnectionsList = ({ navigation, scrollY, showRefreshing, setShowRefreshin
           const { name, title } = item;
 
           if (name === 'goals') return <MatchesGoals navigation={navigation} title={title} />;
-          if (name === 'hats') return <MatchesHats navigation={navigation} title={title} />;
+          // if (name === 'hats') return <MatchesHats navigation={navigation} title={title} />;
           if (name === 'more') return <MatchesForYou navigation={navigation} title={title} />;
 
           return null;

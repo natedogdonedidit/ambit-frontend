@@ -19,42 +19,17 @@ const PostMatchesScreen = ({ navigation, route }) => {
 
   const currentTime = new Date();
 
-  // RENDER FUNCTIONS
+  // QUERIES
+  const { loading, error, data, refetch, networkStatus } = useQuery(POST_MATCHES_QUERY, {
+    variables: { postId: post.id },
+    notifyOnNetworkStatusChange: true,
+  });
 
-  // const renderMatches = () => {
-  //   if (!matches) return null;
+  const matches = data.singlePostMatches || null;
 
-  //   if (matches.length < 1) {
-  //     return (
-  //       <>
-  //         <View style={styles.noMatches}>
-  //           <Text style={{ ...defaultStyles.defaultMuteItalic, paddingTop: 15, paddingLeft: 2, textAlign: 'center' }}>
-  //             No matches yet...check back later!
-  //           </Text>
-  //         </View>
-  //       </>
-  //     );
-  //   }
-
-  //   return (
-  //     <>
-  //       {post && (
-  //         <View style={styles.sectionHeader}>
-  //           <Text style={defaultStyles.headerSmall}>Matches</Text>
-  //         </View>
-  //       )}
-
-  //       {matches.map((item, i) => {
-  //         // if (i > 2) return null;
-  //         return (
-  //           <View key={item.user.id}>
-  //             <SuggestedConnection item={item} navigation={navigation} />
-  //           </View>
-  //         );
-  //       })}
-  //     </>
-  //   );
-  // };
+  const onRefresh = () => {
+    refetch();
+  };
 
   return (
     <View style={styles.container}>
@@ -64,13 +39,10 @@ const PostMatchesScreen = ({ navigation, route }) => {
         contentContainerStyle={[
           {
             paddingBottom: 20,
-            // marginTop: 15,
           },
-          // matches.length > 0 && {
-          //   borderTopWidth: StyleSheet.hairlineWidth,
-          //   borderTopColor: colors.borderBlack,
-          // },
         ]}
+        // onRefresh={onRefresh}
+        // refreshing={networkStatus === 4}
       >
         {post && (
           <View style={{ height: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
@@ -80,7 +52,7 @@ const PostMatchesScreen = ({ navigation, route }) => {
             <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons />
           </TouchableOpacity>
         )}
-        <PostMatches post={post} navigation={navigation} />
+        <PostMatches post={post} navigation={navigation} loading={loading} matches={matches} />
         {/* {renderMatches()} */}
       </ScrollView>
     </View>

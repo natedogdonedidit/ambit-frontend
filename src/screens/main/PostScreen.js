@@ -40,12 +40,12 @@ const PostScreen = ({ navigation, route }) => {
   });
 
   const { loading: loadingMatches, data: dataMatches } = useQuery(POST_MATCHES_QUERY, {
-    variables: { id: postToQuery.id },
+    variables: { postId: postToQuery.id },
   });
   const matches = dataMatches ? dataMatches.singlePostMatches : [];
 
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
-    variables: { id: postToQuery.id },
+    variables: { where: { id: postToQuery.id } },
   });
 
   if (error) return <Error error={error} />;
@@ -58,7 +58,7 @@ const PostScreen = ({ navigation, route }) => {
     );
   }
 
-  const post = data.singlePost || null;
+  const post = data.post || null;
 
   if (!post) {
     navigation.goBack();

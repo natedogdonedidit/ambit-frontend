@@ -52,11 +52,11 @@ const HomeScreen = ({ navigation }) => {
   }, [homePosition]);
 
   useEffect(() => {
-    // pre-fetch my suggested connections (probably a better way)
-    client.query({
-      query: SINGLE_USER_BIO,
-      variables: { id: currentUserId },
-    });
+    // pre-fetch user logged in profile
+    // client.query({
+    //   query: SINGLE_USER_BIO,
+    //   variables: { id: currentUserId },
+    // });
   }, []);
 
   // QUERIES
@@ -101,6 +101,9 @@ const HomeScreen = ({ navigation }) => {
         scrollEventThrottle={100}
         onScroll={handleOnScroll}
       >
+        {/* <View style={{ paddingTop: 100, paddingLeft: 20 }}>
+          <Text>hi</Text>
+        </View> */}
         <View style={{ width }}>
           <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
         </View>

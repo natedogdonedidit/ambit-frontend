@@ -25,7 +25,7 @@ const MyHatsScreen = ({ navigation }) => {
       </View>
     );
   if (error) return <Text>{`Error! ${error}`}</Text>;
-  const { myTopics } = data;
+  const { userLoggedIn: myTopics } = data;
 
   return (
     <View style={styles.container}>

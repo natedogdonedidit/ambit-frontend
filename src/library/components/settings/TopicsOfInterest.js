@@ -7,8 +7,9 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
-import EDIT_TOPICS_INTEREST_MUTATION from 'library/mutations/EDIT_TOPICS_INTEREST_MUTATION';
+import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
+import { getTopicFromID } from 'library/utils';
 
 function TopicsOfInterest({ navigation, myTopics }) {
   const client = useApolloClient();
@@ -16,12 +17,12 @@ function TopicsOfInterest({ navigation, myTopics }) {
   const { topicsInterest: topics } = myTopics;
 
   const topicsIDonly = useMemo(() => {
-    return topics.map((topic) => topic.topicID);
+    return topics.map((topic) => topic.id);
   }, [topics]);
 
   // ////////////////////////////////////////
   // MUTATIONS
-  const [editTopicsInterest] = useMutation(EDIT_TOPICS_INTEREST_MUTATION, {
+  const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION, {
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -30,53 +31,56 @@ function TopicsOfInterest({ navigation, myTopics }) {
 
   // //////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleTopicSelect = (selectedTopicID, selectedTopicName) => {
+  const handleTopicSelect = (selectedTopicID) => {
     requestAnimationFrame(() => {
+      // for mutation
+      const dataObject = {};
+
       // build the new array of topics
       let newArray = [];
       if (topicsIDonly.includes(selectedTopicID)) {
         // remove it
-        newArray = topics.filter((topic) => topic.topicID !== selectedTopicID);
+        newArray = topics.filter((topic) => topic.id !== selectedTopicID);
+        dataObject.disconnect = [{ id: selectedTopicID }];
       } else {
         // add it
-        newArray = [...topics, { id: selectedTopicID, topicID: selectedTopicID, name: selectedTopicName }];
+        newArray = [...topicsIDonly, selectedTopicID];
+        dataObject.connect = [{ id: selectedTopicID }];
       }
-
-      // for mutation
-      const newArrayTopicIDonly = newArray.map((topic) => {
-        return { topicID: topic.topicID };
-      });
 
       // for optimistic response
       const newArrayTopicIDandType = newArray.map((topic) => {
-        return { id: topic.id, topicID: topic.topicID, name: topic.name, __typename: 'Topic' };
+        return { id: topic, __typename: 'Topic' };
       });
 
       // run the mutation
-      editTopicsInterest({
+      updateOneUser({
         variables: {
-          topics: newArrayTopicIDonly,
-        },
-        optimisticResponse: {
-          __typename: 'Mutation',
-          editTopicsInterest: {
-            __typename: 'User',
-            topicsInterest: [...newArrayTopicIDandType],
+          where: { id: myTopics.id }, // userLoggedIn
+          data: {
+            topicsInterest: dataObject,
           },
         },
-        update: (proxy, { data: dataReturned }) => {
-          const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
+        // optimisticResponse: {
+        //   __typename: 'Mutation',
+        //   editTopicsFocus: {
+        //     __typename: 'User',
+        //     topicsFocus: [...newArrayTopicIDandType],
+        //   },
+        // },
+        // update: (proxy, { data: dataReturned }) => {
+        //   const dataCache = client.readQuery({ query: CURRENT_USER_TOPICS });
 
-          client.writeQuery({
-            query: CURRENT_USER_TOPICS,
-            data: {
-              myTopics: {
-                ...dataCache.myTopics,
-                topicsInterest: [...dataReturned.editTopicsInterest.topicsInterest],
-              },
-            },
-          });
-        },
+        //   client.writeQuery({
+        //     query: CURRENT_USER_TOPICS,
+        //     data: {
+        //       myTopics: {
+        //         ...dataCache.myTopics,
+        //         topicsFocus: [...dataReturned.editTopicsFocus.topicsFocus],
+        //       },
+        //     },
+        //   });
+        // },
       });
     });
   };
@@ -84,11 +88,12 @@ function TopicsOfInterest({ navigation, myTopics }) {
   // //////////////////////////////////////////////////////
   // RENDER FUNCTIONS
   const renderTopics = () => {
-    return topics.map(({ topicID, name }) => {
-      const isSelected = topicsIDonly.includes(topicID);
+    return topics.map(({ id }) => {
+      const isSelected = topicsIDonly.includes(id);
+      const { name } = getTopicFromID(id);
 
       return (
-        <TouchableOpacity key={topicID} activeOpacity={1} onPress={() => handleTopicSelect(topicID, name)}>
+        <TouchableOpacity key={id} activeOpacity={1} onPress={() => handleTopicSelect(id)}>
           <View style={{ ...styles.topicRow }}>
             <Ionicons name="ios-chatbubbles" size={22} color={colors.blueGray} />
 
@@ -96,13 +101,13 @@ function TopicsOfInterest({ navigation, myTopics }) {
               {name}
             </Text>
             {isSelected ? (
-              <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+              <TouchableOpacity key={id} activeOpacity={0.7} onPress={() => handleTopicSelect(id)}>
                 <View style={styles.addedButton}>
                   <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
                 </View>
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+              <TouchableOpacity key={id} activeOpacity={0.7} onPress={() => handleTopicSelect(id)}>
                 <View style={styles.addButton}>
                   <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
                 </View>

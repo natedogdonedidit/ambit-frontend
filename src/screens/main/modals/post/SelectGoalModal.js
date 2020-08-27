@@ -9,14 +9,14 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
 const SelectGoalModal = ({ navigation, route }) => {
-  const { setGoal, setTopics, setSubField } = route.params;
+  const { setGoal, setTopic, setSubField } = route.params;
 
   const handleGoalSelect = (goal) => {
-    navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopics, setSubField });
+    navigation.navigate('SelectGoalFieldModal', { goal, setGoal, setTopic, setSubField });
   };
 
   const handleCustomGoalSelect = () => {
-    navigation.navigate('CustomGoalModal', { setGoal, setTopics });
+    navigation.navigate('CustomGoalModal', { setGoal, setTopic });
   };
 
   return (

@@ -283,7 +283,7 @@ const ProfilePic = ({
         style={border ? styles.whiteBorder : styles.noBorder}
         disabled={!enableClick}
         activeOpacity={0.9}
-        onPress={() => navigation.navigate('Profile', { profileId: user.id })}
+        onPress={() => navigation.navigate('Profile', { profileId: user.id, username: user.username })}
       >
         <Image
           style={{ ...styles.profilePic }}

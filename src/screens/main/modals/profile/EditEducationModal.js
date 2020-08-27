@@ -14,8 +14,7 @@ import {
 import { useMutation } from '@apollo/client';
 import { UserContext } from 'library/utils/UserContext';
 
-import CREATE_EDUCATION_MUTATION from 'library/mutations/CREATE_EDUCATION_MUTATION';
-import EDIT_EDUCATION_MUTATION from 'library/mutations/EDIT_EDUCATION_MUTATION';
+import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
 import DELETE_EDUCATION_MUTATION from 'library/mutations/DELETE_EDUCATION_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
@@ -39,7 +38,9 @@ const BLANK_EXPERIENCE = {
 
 const EditEducationModal = ({ navigation, route }) => {
   // params passed in
-  const { isNew = false, education = BLANK_EXPERIENCE } = route.params;
+  const { education = BLANK_EXPERIENCE, username } = route.params;
+
+  const isNew = !education.id;
 
   // context
   const { currentUserId } = useContext(UserContext);
@@ -55,95 +56,89 @@ const EditEducationModal = ({ navigation, route }) => {
   const [currentRole, setCurrentRole] = useState(education.currentRole);
 
   // MUTATIONS
-  const [createEducation, payloadCreate] = useMutation(CREATE_EDUCATION_MUTATION, {
+  const [updateOneUser, { loading: loadingCreate, error, data }] = useMutation(UPDATE_USER_MUTATION, {
     variables: {
-      owner: currentUserId,
-      education: {
-        name,
-        subText,
-        location,
-        startDateMonth,
-        startDateYear,
-        endDateMonth,
-        endDateYear,
-        currentRole,
+      where: { username },
+      data: {
+        education: {
+          upsert: [
+            {
+              where: { id: education.id || '' },
+              update: {
+                name,
+                subText,
+                location,
+                startDateMonth,
+                startDateYear,
+                endDateMonth,
+                endDateYear,
+                currentRole,
+              },
+              create: {
+                name,
+                subText,
+                location,
+                startDateMonth,
+                startDateYear,
+                endDateMonth,
+                endDateYear,
+                currentRole,
+              },
+            },
+          ],
+        },
       },
     },
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: SINGLE_USER_BIO,
-        data: {
-          user: dataReturned.createEducation,
-        },
-      });
-    },
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { where: { username } } }],
+    // update: (proxy, { data: dataReturned }) => {
+    //   proxy.writeQuery({
+    //     query: CURRENT_USER_QUERY,
+    //     data: {
+    //       userLoggedIn: dataReturned.updateOneUser,
+    //     },
+    //   });
+    // },
     onCompleted: () => {
       navigation.goBack();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to create this education. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to edit your profile. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
-  const loadingCreate = payloadCreate.loading;
 
-  const [editEducation, payloadEdit] = useMutation(EDIT_EDUCATION_MUTATION, {
+  const [deleteEducation, { loading: loadingDelete }] = useMutation(UPDATE_USER_MUTATION, {
     variables: {
-      owner: currentUserId,
-      id: education.id,
-      education: {
-        name,
-        subText,
-        location,
-        startDateMonth,
-        startDateYear,
-        endDateMonth,
-        endDateYear,
-        currentRole,
+      where: { username },
+      data: {
+        education: {
+          delete: [
+            {
+              id: education.id || '',
+            },
+          ],
+        },
       },
     },
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: SINGLE_USER_BIO,
-        data: {
-          user: dataReturned.editEducation,
-        },
-      });
-    },
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { where: { username } } }],
+    // update: (proxy, { data: dataReturned }) => {
+    //   proxy.writeQuery({
+    //     query: CURRENT_USER_QUERY,
+    //     data: {
+    //       userLoggedIn: dataReturned.updateOneUser,
+    //     },
+    //   });
+    // },
     onCompleted: () => {
       navigation.goBack();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to edit this education. Try again later!', [
+      Alert.alert('Oh no!', 'An error occured when trying to edit your profile. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]),
   });
-  const loadingEdit = payloadEdit.loading;
 
-  const [deleteEducation, payloadDelete] = useMutation(DELETE_EDUCATION_MUTATION, {
-    variables: {
-      owner: currentUserId,
-      id: education.id,
-    },
-    update: (proxy, { data: dataReturned }) => {
-      proxy.writeQuery({
-        query: SINGLE_USER_BIO,
-        data: {
-          user: dataReturned.deleteEducation,
-        },
-      });
-    },
-    onCompleted: () => {
-      navigation.goBack();
-    },
-    onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this education. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
-  });
-  const loadingDelete = payloadDelete.loading;
-
-  const loading = loadingCreate || loadingEdit || loadingDelete;
+  const loading = loadingCreate || loadingDelete;
 
   // CUSTOM FUNCTIONS
   const handleDelete = () => {
@@ -170,14 +165,10 @@ const EditEducationModal = ({ navigation, route }) => {
     }
 
     // if validation passed, create experience mutation
-    if (isNew) {
-      createEducation();
-    } else {
-      editEducation();
-    }
+    updateOneUser();
   };
 
-  const handleLocationSelect = locObject => {
+  const handleLocationSelect = (locObject) => {
     if (locObject) {
       setLocation(locObject.location);
     }
@@ -199,7 +190,7 @@ const EditEducationModal = ({ navigation, route }) => {
           </View>
           <TextInput
             style={{ ...styles.input, ...defaultStyles.defaultText }}
-            onChangeText={val => setName(val)}
+            onChangeText={(val) => setName(val)}
             value={name}
             placeholder="Add school name"
           />
@@ -208,7 +199,7 @@ const EditEducationModal = ({ navigation, route }) => {
           </View>
           <TextInput
             style={{ ...styles.input, ...defaultStyles.defaultText }}
-            onChangeText={val => setSubText(val)}
+            onChangeText={(val) => setSubText(val)}
             value={subText}
             placeholder="Add degree"
           />
@@ -290,7 +281,7 @@ const EditEducationModal = ({ navigation, route }) => {
           <View style={styles.switchRow}>
             <Text style={{ ...defaultStyles.defaultText }}>I am currently enrolled</Text>
             <View style={styles.switch}>
-              <Switch value={currentRole} onValueChange={val => setCurrentRole(val)} />
+              <Switch value={currentRole} onValueChange={(val) => setCurrentRole(val)} />
             </View>
           </View>
 

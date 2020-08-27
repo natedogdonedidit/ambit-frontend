@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -9,6 +9,7 @@ import Section from 'library/components/UI/Section';
 import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
 import { isCustomGoalTest } from 'library/utils';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
+import { UserContext } from 'library/utils/UserContext';
 import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 
 // MATCHES - BASED ON GOALS
@@ -17,6 +18,8 @@ import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 // 3. INSIDE THE COMPONENT - QUERY MATCHES (WHILE LOADING - SHOW SKELETON PROFILE PICS)
 
 const MatchesGoals = ({ navigation, title }) => {
+  const { currentUserId } = useContext(UserContext);
+
   // GET "MY GOALS" (THIS SHOULD HAVE ALREADY BEEN CALLED ON HOMESCREEN - SO JUST PIGGY BACKING OFF THE INITIAL QUERY)
   const {
     error: errorPostsMyGoals,
@@ -27,6 +30,23 @@ const MatchesGoals = ({ navigation, title }) => {
   } = useQuery(MYGOALS_POSTS_QUERY, {
     variables: {
       first: 10,
+      orderBy: [
+        {
+          lastUpdated: 'desc',
+        },
+      ],
+      where: {
+        AND: [
+          {
+            owner: {
+              id: { equals: currentUserId },
+            },
+          },
+          {
+            isGoal: { equals: true },
+          },
+        ],
+      },
     },
     onError: (e) => console.log('error loading my goals posts', e),
     notifyOnNetworkStatusChange: true,
@@ -52,17 +72,16 @@ const MatchesGoals = ({ navigation, title }) => {
       );
     }
 
-    const { postsMyGoals } = dataPostsMyGoals;
-    // const postsMyGoals = { edges: [] };
+    const { posts } = dataPostsMyGoals;
 
     // if we have data
-    if (postsMyGoals.edges.length > 0) {
+    if (posts.length > 0) {
       return (
         <>
-          {postsMyGoals.edges.map((post, i) => {
-            const isCustomGoal = isCustomGoalTest(post.node.goal);
+          {posts.map((post, i) => {
+            const isCustomGoal = isCustomGoalTest(post.goal);
             if (!isCustomGoal) {
-              return <ActiveGoalMatchesItem key={i} navigation={navigation} post={post.node} />;
+              return <ActiveGoalMatchesItem key={i} navigation={navigation} post={post} loadingPost={false} />;
             }
             return null;
           })}

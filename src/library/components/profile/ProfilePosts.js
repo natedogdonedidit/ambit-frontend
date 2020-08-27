@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import USER_POSTS_QUERY from 'library/queries/USER_POSTS_QUERY';
+import POSTS_QUERY from 'library/queries/POSTS_QUERY';
 
 import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
@@ -12,11 +12,20 @@ import BigButton from 'library/components/UI/buttons/BigButton';
 
 const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId, username }) => {
   // QUERIES
-  const { loading, error, data } = useQuery(USER_POSTS_QUERY, {
-    variables: { id: profileId, username },
-    fetchPolicy: 'cache-and-network', // doing it this way because cannot pull to refresh at the moment
+  const { loading, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
+    variables: {
+      // first: 10,
+      orderBy: [
+        {
+          lastUpdated: 'desc',
+        },
+      ],
+      where: {
+        owner: { username: { equals: username } },
+      },
+    },
+    notifyOnNetworkStatusChange: true,
   });
-
   const currentTime = new Date();
 
   // if (loading) {
@@ -36,7 +45,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
     );
   }
 
-  const posts = data ? data.postsUser || [] : [];
+  const posts = data ? data.posts || [] : [];
 
   if (posts.length < 1 && !loading && isMyProfile) {
     if (isMyProfile) {

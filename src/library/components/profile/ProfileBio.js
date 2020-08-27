@@ -17,7 +17,7 @@ import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 const ProfileBio = ({ navigation, isMyProfile, profileId, username }) => {
   // QUERIES
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
-    variables: { id: profileId, username },
+    variables: { where: { username } },
   });
 
   if (loading) {
@@ -114,15 +114,12 @@ const ProfileBio = ({ navigation, isMyProfile, profileId, username }) => {
           <View style={{ ...styles.contentHeader }}>
             <Text style={{ ...defaultStyles.hugeMedium }}>Experience</Text>
             {isMyProfile && (
-              <TextButton
-                textStyle={styles.editButton}
-                onPress={() => navigation.navigate('EditExperienceModal', { isNew: true })}
-              >
+              <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditExperienceModal', { username })}>
                 New
               </TextButton>
             )}
           </View>
-          <Experience navigation={navigation} isMyProfile={isMyProfile} experience={user.experience} />
+          <Experience navigation={navigation} isMyProfile={isMyProfile} experience={user.experience} username={username} />
         </View>
       )}
       {showEducation && (
@@ -130,18 +127,15 @@ const ProfileBio = ({ navigation, isMyProfile, profileId, username }) => {
           <View style={{ ...styles.contentHeader }}>
             <Text style={{ ...defaultStyles.hugeMedium }}>Education</Text>
             {isMyProfile && (
-              <TextButton
-                textStyle={styles.editButton}
-                onPress={() => navigation.navigate('EditEducationModal', { isNew: true })}
-              >
+              <TextButton textStyle={styles.editButton} onPress={() => navigation.navigate('EditEducationModal', { username })}>
                 New
               </TextButton>
             )}
           </View>
-          <Education navigation={navigation} isMyProfile={isMyProfile} education={user.education} />
+          <Education navigation={navigation} isMyProfile={isMyProfile} education={user.education} username={username} />
         </View>
       )}
-      {showSkills && (
+      {/* {showSkills && (
         <View style={styles.contentSection}>
           <View style={[{ ...styles.contentHeader, paddingBottom: 15 }]}>
             <Text style={{ ...defaultStyles.hugeMedium }}>Skills</Text>
@@ -153,7 +147,7 @@ const ProfileBio = ({ navigation, isMyProfile, profileId, username }) => {
           </View>
           {user.skills.length > 0 && <Skills skills={user.skills} height={32} />}
         </View>
-      )}
+      )} */}
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/client';
@@ -9,9 +9,18 @@ import CURRENT_USER_MATCHES from 'library/queries/CURRENT_USER_MATCHES';
 import SuggestedConnection from 'library/components/lists/SuggestedConnection';
 import Section from 'library/components/UI/Section';
 import Loader from 'library/components/UI/Loader';
+import { UserContext } from 'library/utils/UserContext';
 
 const MatchesForYou = ({ navigation, title }) => {
-  const { loading, error, data } = useQuery(CURRENT_USER_MATCHES);
+  const { currentUserId } = useContext(UserContext);
+
+  const { loading, error, data } = useQuery(CURRENT_USER_MATCHES, {
+    variables: {
+      where: {
+        id: { notIn: [''] },
+      },
+    },
+  });
 
   const renderRows = () => {
     if (error) return null;
@@ -26,8 +35,8 @@ const MatchesForYou = ({ navigation, title }) => {
       );
     }
 
-    if (data && data.myMatches) {
-      return data.myMatches.map((match) => <SuggestedConnection key={match.id} navigation={navigation} user={match} />);
+    if (data && data.users) {
+      return data.users.map((match) => <SuggestedConnection key={match.id} navigation={navigation} user={match} />);
     }
   };
 

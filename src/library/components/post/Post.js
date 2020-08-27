@@ -8,8 +8,7 @@ import { format } from 'date-fns';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference, isCustomGoalTest } from 'library/utils';
-import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
-import UNLIKE_POST_MUTATION from 'library/mutations/UNLIKE_POST_MUTATION';
+import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
 import { BasicPost } from 'library/queries/_fragments';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -41,7 +40,7 @@ function Post({
   const { currentUserId } = useContext(UserContext);
 
   useEffect(() => {
-    // console.log('post data', post);
+    console.log('post data', post);
   }, [post]);
 
   // STATE
@@ -49,9 +48,16 @@ function Post({
   // const [likesCount, setLikesCount] = useState(post.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
-  const [likePost] = useMutation(LIKE_POST_MUTATION, {
+  const [likePost] = useMutation(UPDATE_POST_MUTATION, {
     variables: {
-      postId: post.id,
+      where: {
+        id: post.id,
+      },
+      data: {
+        likes: {
+          connect: [{ id: currentUserId }],
+        },
+      },
     },
     optimisticResponse: {
       __typename: 'Mutation',
@@ -64,9 +70,16 @@ function Post({
     },
   });
 
-  const [unlikePost] = useMutation(UNLIKE_POST_MUTATION, {
+  const [unlikePost] = useMutation(UPDATE_POST_MUTATION, {
     variables: {
-      postId: post.id,
+      where: {
+        id: post.id,
+      },
+      data: {
+        likes: {
+          disconnect: [{ id: currentUserId }],
+        },
+      },
     },
     optimisticResponse: {
       __typename: 'Mutation',
@@ -506,8 +519,7 @@ function Post({
 
           {showDetails && (
             <View style={styles.topics}>
-              {!!post.topics > 0 &&
-                post.topics.map((topic) => <Topic key={topic.id} navigation={navigation} topicToShow={topic} />)}
+              {!!post.topic && <Topic navigation={navigation} topicToShow={post.topic} />}
               {!!post.location && (
                 <Location
                   navigation={navigation}

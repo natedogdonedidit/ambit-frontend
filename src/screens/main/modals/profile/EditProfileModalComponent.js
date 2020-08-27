@@ -15,10 +15,10 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation } from '@apollo/client';
 import ImagePicker from 'react-native-image-crop-picker';
 
-import EDIT_BIO_MUTATION from 'library/mutations/EDIT_BIO_MUTATION';
+import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 // import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import { profilePicUpload, bannerPicUpload, sortExperiences } from 'library/utils';
+import { profilePicUpload, bannerPicUpload } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -33,13 +33,6 @@ const bannerExample =
   'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
 
 const EditProfileModalComponent = ({ navigation, user }) => {
-  // headline
-  const experienceSorted = user.experience.sort(sortExperiences);
-  // let headlineDefault;
-  // if (experienceSorted.length > 0 && experienceSorted[0].subText && experienceSorted[0].name) {
-  //   headlineDefault = `${experienceSorted[0].subText} at ${experienceSorted[0].name}`;
-  // }
-
   const [profilePic, setProfilePic] = useState(user.profilePic);
   const [bannerPic, setBannerPic] = useState(user.bannerPic);
   const [name, setName] = useState(user.name);
@@ -58,9 +51,9 @@ const EditProfileModalComponent = ({ navigation, user }) => {
   const insets = useSafeAreaInsets();
   const [top] = useState(insets.top || 20);
 
-  const [editBio, { loading: loadingEdit, error, data }] = useMutation(EDIT_BIO_MUTATION, {
+  const [updateOneUser, { loading: loadingEdit, error, data }] = useMutation(UPDATE_USER_MUTATION, {
     variables: {
-      id: user.id,
+      where: { username: user.username },
       data: {
         name,
         bio,
@@ -74,12 +67,12 @@ const EditProfileModalComponent = ({ navigation, user }) => {
         bannerPic,
       },
     },
-    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: user.id } }],
+    refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { where: { username: user.username } } }],
     // update: (proxy, { data: dataReturned }) => {
     //   proxy.writeQuery({
     //     query: CURRENT_USER_QUERY,
     //     data: {
-    //       userLoggedIn: dataReturned.editBio,
+    //       userLoggedIn: dataReturned.updateOneUser,
     //     },
     //   });
     // },
@@ -102,7 +95,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
       await uploadBannerPic();
     }
 
-    editBio();
+    updateOneUser();
   };
 
   const handleEditPicButton = () => {
@@ -262,7 +255,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
                   {location ? (
                     <Text style={{ ...defaultStyles.defaultText }}>{location}</Text>
                   ) : (
-                    <Text style={{ ...defaultStyles.defaultMute }}>Select your location</Text>
+                    <Text style={{ ...defaultStyles.defaultPlaceholder }}>Select your location</Text>
                   )}
                   {/* <Icon name="angle-right" size={15} color={colors.iconGray} style={{}} /> */}
                 </TouchableOpacity>

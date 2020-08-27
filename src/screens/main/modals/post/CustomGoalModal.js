@@ -19,7 +19,7 @@ import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const CustomGoalModal = ({ navigation, route }) => {
-  const { goal, setGoal, setTopics } = route.params;
+  const { goal, setGoal, setTopic } = route.params;
   const [customGoalText, setCustomGoalText] = useState('');
 
   const handleDone = () => {
@@ -37,7 +37,7 @@ const CustomGoalModal = ({ navigation, route }) => {
 
     setGoal(customGoal);
 
-    navigation.navigate('SelectPostTopicsModal', { goal: customGoal, setGoal, setTopics });
+    navigation.navigate('SelectPostTopicsModal', { goal: customGoal, setGoal, setTopic });
   };
 
   // ROUTE PARAMS

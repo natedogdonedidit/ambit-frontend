@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import { sortExperiences } from 'library/utils';
 import Location from 'library/components/UI/icons/Location';
 
-const Experience = ({ isMyProfile, experience, navigation }) => {
+const Experience = ({ isMyProfile, experience, navigation, username }) => {
   const renderExperiences = () => {
     if (!experience)
       return (
@@ -17,7 +17,7 @@ const Experience = ({ isMyProfile, experience, navigation }) => {
         </View>
       );
 
-    const experienceSorted = experience.sort(sortExperiences);
+    const experienceSorted = [...experience].sort(sortExperiences);
 
     return experienceSorted.map((exp, i) => (
       <View key={i} style={i === experience.length - 1 ? { ...styles.experienceNoBorder } : { ...styles.experience }}>
@@ -41,7 +41,7 @@ const Experience = ({ isMyProfile, experience, navigation }) => {
           <View style={{ flexDirection: 'row', alignSelf: 'stretch' }}>
             <TouchableOpacity
               style={{ flexDirection: 'row' }}
-              onPress={() => navigation.navigate('EditExperienceModal', { experience: exp })}
+              onPress={() => navigation.navigate('EditExperienceModal', { experience: exp, username })}
             >
               <View style={styles.editButton}>
                 <Icon name="dots-horizontal" size={25} color={colors.iconGray} />
