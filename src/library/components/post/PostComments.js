@@ -68,6 +68,7 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
   return (
     <Section text="Comments" loading={refetching}>
       {comments.map((comment) => {
+        if (!comment) return null;
         return (
           <View key={comment.id}>
             <Comment comment={comment} navigation={navigation} currentTime={currentTime} />

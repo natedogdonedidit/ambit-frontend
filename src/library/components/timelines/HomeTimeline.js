@@ -205,7 +205,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     setShowRefreshing(true);
     setTimeout(() => {
       setShowRefreshing(false);
-    }, 4000);
+    }, 2000);
     refetchPostsNetwork();
     refetchPostsForYou();
     refetchPostsMyGoals();

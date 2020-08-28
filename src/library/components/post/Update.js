@@ -7,8 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
-import LIKE_UPDATE_MUTATION from 'library/mutations/LIKE_UPDATE_MUTATION';
-import UNLIKE_UPDATE_MUTATION from 'library/mutations/UNLIKE_UPDATE_MUTATION';
+import UPDATE_UPDATE_MUTATION from 'library/mutations/UPDATE_UPDATE_MUTATION';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Heart from 'library/components/UI/icons/Heart';
@@ -41,9 +40,14 @@ function Update({
   // const [likesCount, setLikesCount] = useState(update.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
-  const [likeUpdate] = useMutation(LIKE_UPDATE_MUTATION, {
+  const [likeUpdate] = useMutation(UPDATE_UPDATE_MUTATION, {
     variables: {
-      updateId: update.id,
+      where: { id: update.id },
+      data: {
+        likes: {
+          connect: [{ id: currentUserId }],
+        },
+      },
     },
     optimisticResponse: {
       __typename: 'Mutation',
@@ -54,22 +58,17 @@ function Update({
         likesCount: update.likesCount + 1,
       },
     },
-    // update: (proxy, { data: dataReturned }) => {
-    //   client.writeFragment({
-    //     id: `Update:${update.id}`,
-    //     fragment: UpdateFragment,
-    //     fragmentName: 'UpdateFragment',
-    //     data: {
-    //       ...dataReturned.likeUpdate,
-    //     },
-    //   });
-    // },
     onError: () => null,
   });
 
-  const [unlikeUpdate] = useMutation(UNLIKE_UPDATE_MUTATION, {
+  const [unlikeUpdate] = useMutation(UPDATE_UPDATE_MUTATION, {
     variables: {
-      updateId: update.id,
+      where: { id: update.id },
+      data: {
+        likes: {
+          disconnect: [{ id: currentUserId }],
+        },
+      },
     },
     optimisticResponse: {
       __typename: 'Mutation',
@@ -84,12 +83,22 @@ function Update({
   });
 
   // DELETE MUTATION
-  const [deleteUpdate] = useMutation(DELETE_UPDATE_MUTATION, {
+  const [deleteOneUpdate] = useMutation(DELETE_UPDATE_MUTATION, {
     variables: {
-      id: update.id,
-      ownerID: update.parentPost.owner.id,
+      where: {
+        id: update.id,
+      },
     },
-    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: update.parentPost.id } }],
+    optimisticResponse: {
+      __typename: 'Mutation',
+      deleteOneComment: { __typename: 'Update', id: update.id },
+    },
+    update(cache, { data: deleteOneUpdate }) {
+      // remove from cache
+      cache.evict({ id: cache.identify({ __typename: 'Update', id: update.id }) });
+      cache.gc();
+    },
+    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { where: { id: update.parentPost.id } } }],
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to delete this update. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -152,7 +161,7 @@ function Update({
         {
           text: 'Delete update',
           color: colors.peach,
-          onPress: deleteUpdate,
+          onPress: deleteOneUpdate,
         },
       ];
     }

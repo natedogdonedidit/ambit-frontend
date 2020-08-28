@@ -22,7 +22,7 @@ const UpdateScreen = ({ navigation, route }) => {
 
   // QUERIES - this gets the comments for a POST
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
-    variables: { id: updatePassedIn.parentPost.id },
+    variables: { where: { id: updatePassedIn.parentPost.id } },
   });
 
   if (error) return <Error error={error} />;
@@ -35,7 +35,7 @@ const UpdateScreen = ({ navigation, route }) => {
     );
   }
   const currentTime = new Date();
-  const post = data.singlePost || null;
+  const post = data.post || null;
 
   if (!post) {
     navigation.goBack();

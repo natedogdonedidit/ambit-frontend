@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const DELETE_COMMENT_MUTATION = gql`
-  mutation DELETE_COMMENT_MUTATION($id: ID!, $ownerID: ID!) {
-    deleteComment(id: $id, ownerID: $ownerID) {
+  mutation DELETE_COMMENT_MUTATION($where: CommentWhereUniqueInput!) {
+    deleteOneComment(where: $where) {
       id
     }
   }

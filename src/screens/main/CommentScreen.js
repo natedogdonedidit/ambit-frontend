@@ -60,7 +60,7 @@ const CommentScreen = ({ navigation, route }) => {
   const [commentImage, setCommentImage] = useState('');
   const [uploading, setUploading] = useState(false);
   // const [mentions, setMentions] = useState([]);
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
+  // const [selection, setSelection] = useState({ start: 0, end: 0 });
   // const [showMentionList, setShowMentionList] = useState(false);
 
   // constants
@@ -87,7 +87,7 @@ const CommentScreen = ({ navigation, route }) => {
   });
 
   const { loading: loadingPostComments, error: errorPostComments, data: dataPostComments } = useQuery(POST_COMMENTS_QUERY, {
-    variables: { id: parentPost.id },
+    variables: { where: { id: parentPost.id } },
   });
 
   const loading = loadingUser || loadingPost;
@@ -97,7 +97,7 @@ const CommentScreen = ({ navigation, route }) => {
   const parentCommentObject = parentCommentForDB ? { connect: { id: parentCommentForDB.id } } : null;
 
   // MUTATIONS
-  const [createComment] = useMutation(CREATE_COMMENT_MUTATION, {
+  const [createOneComment] = useMutation(CREATE_COMMENT_MUTATION, {
     onError: (error) => {
       console.log('something went wrong either creating post or notifications', error);
       // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
@@ -118,10 +118,10 @@ const CommentScreen = ({ navigation, route }) => {
     );
   }
 
-  const post = dataPost.singlePost;
+  const post = dataPost.post;
 
   // optimistic response will throw an error if the comments query hasn't been called yet
-  const useOptimisticResponse = dataPostComments ? !!dataPostComments.singlePost.comments : false;
+  const useOptimisticResponse = dataPostComments ? !!dataPostComments.post.comments : false;
 
   // CUSTOM FUNCTIONS
   const handleSubmit = async () => {
@@ -134,11 +134,11 @@ const CommentScreen = ({ navigation, route }) => {
 
     try {
       const uploadedImage = await uploadImage();
-      navigation.goBack();
+      navigation.navigate('Post', { post: parentPost });
 
-      createComment({
+      createOneComment({
         variables: {
-          comment: {
+          data: {
             content,
             image: uploadedImage,
             owner: {
@@ -149,82 +149,82 @@ const CommentScreen = ({ navigation, route }) => {
             parentComment: parentCommentObject,
           },
         },
-        update: (proxy, { data: dataReturned }) => {
-          if (useOptimisticResponse) {
-            const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
+        // update: (proxy, { data: dataReturned }) => {
+        //   if (useOptimisticResponse) {
+        //     const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
 
-            if (isComment || isSubComment) {
-              if (isUpdate) {
-                // if subComment on comment on update
-                const indexOfUpdate = previousData.singlePost.updates.findIndex((item) => item.id === parentUpdate.id);
-                const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
-                  (item) => item.id === parentComment.id
-                );
-                const newUpdatesArray = [...previousData.singlePost.updates];
-                // add the new comment to the correct comment of the correct update
-                newUpdatesArray[indexOfUpdate].comments[indexOfParentComment].comments.push(dataReturned.createComment);
-                proxy.writeQuery({
-                  query: POST_COMMENTS_QUERY,
-                  data: {
-                    singlePost: {
-                      ...previousData.singlePost,
-                      updates: newUpdatesArray,
-                    },
-                  },
-                });
-              } else {
-                // if subComment on comment on post
-                const indexOfParentComment = previousData.singlePost.comments.findIndex((item) => item.id === parentComment.id);
-                const newCommentsArray = [...previousData.singlePost.comments];
+        //     if (isComment || isSubComment) {
+        //       if (isUpdate) {
+        //         // if subComment on comment on update
+        //         const indexOfUpdate = previousData.singlePost.updates.findIndex((item) => item.id === parentUpdate.id);
+        //         const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
+        //           (item) => item.id === parentComment.id
+        //         );
+        //         const newUpdatesArray = [...previousData.singlePost.updates];
+        //         // add the new comment to the correct comment of the correct update
+        //         newUpdatesArray[indexOfUpdate].comments[indexOfParentComment].comments.push(dataReturned.createOneComment);
+        //         proxy.writeQuery({
+        //           query: POST_COMMENTS_QUERY,
+        //           data: {
+        //             singlePost: {
+        //               ...previousData.singlePost,
+        //               updates: newUpdatesArray,
+        //             },
+        //           },
+        //         });
+        //       } else {
+        //         // if subComment on comment on post
+        //         const indexOfParentComment = previousData.singlePost.comments.findIndex((item) => item.id === parentComment.id);
+        //         const newCommentsArray = [...previousData.singlePost.comments];
 
-                // add the new subcomment to the comment array of the parentComment
-                newCommentsArray[indexOfParentComment].comments.push(dataReturned.createComment);
+        //         // add the new subcomment to the comment array of the parentComment
+        //         newCommentsArray[indexOfParentComment].comments.push(dataReturned.createOneComment);
 
-                proxy.writeQuery({
-                  query: POST_COMMENTS_QUERY,
-                  data: {
-                    singlePost: {
-                      ...previousData.singlePost,
-                      comments: newCommentsArray,
-                    },
-                  },
-                });
-              }
-            } else if (isUpdate) {
-              // if comment on update
-              const indexOfUpdate = previousData.singlePost.updates.findIndex((item) => item.id === parentUpdate.id);
-              const newUpdatesArray = [...previousData.singlePost.updates];
-              // add the new comment to the correct update comments array
+        //         proxy.writeQuery({
+        //           query: POST_COMMENTS_QUERY,
+        //           data: {
+        //             singlePost: {
+        //               ...previousData.singlePost,
+        //               comments: newCommentsArray,
+        //             },
+        //           },
+        //         });
+        //       }
+        //     } else if (isUpdate) {
+        //       // if comment on update
+        //       const indexOfUpdate = previousData.singlePost.updates.findIndex((item) => item.id === parentUpdate.id);
+        //       const newUpdatesArray = [...previousData.singlePost.updates];
+        //       // add the new comment to the correct update comments array
 
-              newUpdatesArray[indexOfUpdate].comments.push(dataReturned.createComment);
+        //       newUpdatesArray[indexOfUpdate].comments.push(dataReturned.createOneComment);
 
-              proxy.writeQuery({
-                query: POST_COMMENTS_QUERY,
-                data: {
-                  singlePost: {
-                    ...previousData.singlePost,
-                    updates: newUpdatesArray,
-                  },
-                },
-              });
-            } else {
-              // if comment on post
-              proxy.writeQuery({
-                query: POST_COMMENTS_QUERY,
-                data: {
-                  singlePost: {
-                    ...previousData.singlePost,
-                    comments: [...previousData.singlePost.comments, dataReturned.createComment],
-                  },
-                },
-              });
-            }
-          }
-        },
+        //       proxy.writeQuery({
+        //         query: POST_COMMENTS_QUERY,
+        //         data: {
+        //           singlePost: {
+        //             ...previousData.singlePost,
+        //             updates: newUpdatesArray,
+        //           },
+        //         },
+        //       });
+        //     } else {
+        //       // if comment on post
+        //       proxy.writeQuery({
+        //         query: POST_COMMENTS_QUERY,
+        //         data: {
+        //           singlePost: {
+        //             ...previousData.singlePost,
+        //             comments: [...previousData.singlePost.comments, dataReturned.createOneComment],
+        //           },
+        //         },
+        //       });
+        //     }
+        //   }
+        // },
         optimisticResponse: useOptimisticResponse
           ? {
               __typename: 'Mutation',
-              createComment: {
+              createOneComment: {
                 __typename: 'Comment',
                 createdAt: new Date(),
                 owner: userLoggedIn,
@@ -239,11 +239,10 @@ const CommentScreen = ({ navigation, route }) => {
                 likesCount: null,
                 likedByMe: false,
                 commentsCount: null,
-                _deleted: false,
               },
             }
           : null,
-        refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } }],
+        refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { where: { id: parentPost.id } } }],
       });
     } catch (e) {
       setUploading(false);
@@ -396,7 +395,7 @@ const CommentScreen = ({ navigation, route }) => {
                     scrollEnabled={false}
                     textAlignVertical="top"
                     placeholder="Start your comment"
-                    onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
+                    // onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
                     inputAccessoryViewID="1"
                     // onBlur={() => setShowMentionList(false)}
                   />

@@ -23,7 +23,6 @@ import Location from 'library/components/post/Location';
 import GoalStatus from 'library/components/post/GoalStatus';
 import { UserContext } from 'library/utils/UserContext';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
-import EDIT_GOALSTATUS_MUTATION from 'library/mutations/EDIT_GOALSTATUS_MUTATION';
 import CoolText from 'library/components/UI/CoolText';
 
 function Post({
@@ -39,9 +38,9 @@ function Post({
   const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
 
-  useEffect(() => {
-    console.log('post data', post);
-  }, [post]);
+  // useEffect(() => {
+  //   console.log('post data', post);
+  // }, [post]);
 
   // STATE
   // const [isLiked, setIsLiked] = useState(post.likedByMe); // this is the source of truth
@@ -61,7 +60,7 @@ function Post({
     },
     optimisticResponse: {
       __typename: 'Mutation',
-      likePost: {
+      updateOnePost: {
         __typename: 'Post',
         ...post,
         likedByMe: true,
@@ -83,7 +82,7 @@ function Post({
     },
     optimisticResponse: {
       __typename: 'Mutation',
-      unlikePost: {
+      updateOnePost: {
         __typename: 'Post',
         ...post,
         likedByMe: false,
@@ -94,34 +93,16 @@ function Post({
   });
 
   // DELETE POST MUTATION
-  const [deletePost] = useMutation(DELETE_POST_MUTATION, {
-    variables: {
-      id: post.id,
-      ownerID: post.owner.id,
-    },
+  const [deleteOnePost] = useMutation(DELETE_POST_MUTATION, {
+    variables: { where: { id: post.id } },
     optimisticResponse: {
       __typename: 'Mutation',
-      deletePost: { __typename: 'Post', id: post.id },
+      deleteOnePost: { __typename: 'Post', id: post.id },
     },
-    update(cache, { data }) {
-      // We get a single item from cache.
-      const postInCache = client.readFragment({
-        id: `Post:${post.id}`,
-        fragment: BasicPost,
-        fragmentName: 'BasicPost',
-      });
-      // Then, we update it.
-      if (postInCache) {
-        client.writeFragment({
-          id: `Post:${post.id}`,
-          fragment: BasicPost,
-          fragmentName: 'BasicPost',
-          data: {
-            ...post,
-            _deleted: true,
-          },
-        });
-      }
+    update(cache, { data: deleteOnePost }) {
+      // remove from cache
+      cache.evict({ id: cache.identify({ __typename: 'Post', id: post.id }) });
+      cache.gc();
     },
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
@@ -130,7 +111,7 @@ function Post({
   });
 
   // DELETE POST MUTATION
-  const [editGoalStatus] = useMutation(EDIT_GOALSTATUS_MUTATION, {
+  const [editGoalStatus] = useMutation(UPDATE_POST_MUTATION, {
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to update this post. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -152,7 +133,7 @@ function Post({
       containsMedia: containsMedia1,
       isMyPost: isMyPost1,
     };
-  }, [post]);
+  }, [post, currentUserId]);
 
   // CALCULATE THESE VARIABLES ONCE UPON RENDER - THEY SHOULD NEVER CHANGE
   const { timeDiff, period, formatedDate } = useMemo(() => {
@@ -184,48 +165,31 @@ function Post({
   };
 
   const handleDelete = () => {
-    deletePost();
+    deleteOnePost();
   };
 
   const updateGoalStatus = (newStatus) => {
     editGoalStatus({
       variables: {
-        id: post.id,
-        ownerID: post.owner.id,
-        goalStatus: newStatus,
+        where: {
+          id: post.id,
+        },
+        data: {
+          goalStatus: newStatus,
+        },
       },
       optimisticResponse: {
         __typename: 'Mutation',
-        editGoalStatus: {
+        updateOnePost: {
           __typename: 'Post',
           ...post,
           goalStatus: newStatus,
         },
       },
-      update(cache, { data: dataReturned }) {
-        // We get a single item from cache.
-        const postInCache = cache.readFragment({
-          id: `Post:${post.id}`,
-          fragment: BasicPost,
-          fragmentName: 'BasicPost',
-        });
-        // Then, we update it.
-        if (postInCache) {
-          cache.writeFragment({
-            id: `Post:${post.id}`,
-            fragment: BasicPost,
-            fragmentName: 'BasicPost',
-            data: {
-              ...dataReturned.editGoalStatus,
-            },
-          });
-        }
-      },
     });
   };
 
   const determineOptions = () => {
-    // console.log(isMyPost, post.goal, post.goalStatus);
     if (isMyPost && post.goal && post.goalStatus === 'Active') {
       return [
         {
@@ -617,6 +581,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 1.5,
     backgroundColor: colors.iconGray,
     opacity: 0.6,
+    minHeight: 30,
   },
   leftColumn: {
     alignItems: 'center',

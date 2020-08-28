@@ -17,7 +17,9 @@ const PostUpdates = ({ navigation, post, currentTime }) => {
           <TouchableOpacity
             key={update.id}
             activeOpacity={1}
-            onPress={() => navigation.navigate('Update', { updatePassedIn: update })}
+            onPress={() => {
+              navigation.navigate('Update', { updatePassedIn: update });
+            }}
           >
             <Update post={post} update={update} updateInd={i} currentTime={currentTime} navigation={navigation} />
           </TouchableOpacity>

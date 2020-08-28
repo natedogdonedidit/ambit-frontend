@@ -73,26 +73,6 @@ const NewPostModal = ({ navigation, route }) => {
 
   // MUTATIONS
   const [createOnePost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
-    // variables: {
-    //   data: {
-    //     isGoal: !!goal,
-    //     goal: goal ? goal.name : null,
-    //     subField,
-    //     goalStatus: goal ? 'Active' : null,
-    //     topic,
-    //     location,
-    //     locationID,
-    //     locationLat,
-    //     locationLon,
-    //     content,
-    //     video,
-    //     images: { set: images },
-    //     lastUpdated: new Date(),
-    //     owner: {
-    //       connect: { id: currentUserId },
-    //     },
-    //   },
-    // },
     onError: (error) => {
       console.log('something went wrong either creating post or notifications', error);
       // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [

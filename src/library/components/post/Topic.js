@@ -8,7 +8,6 @@ import { getTopicFromID } from 'library/utils';
 const Topic = ({ navigation, topicToShow }) => {
   // get the full topic
   const { name, parentTopic, topicID } = useMemo(() => getTopicFromID(topicToShow), [topicToShow]);
-  console.log(name, parentTopic, topicID);
 
   const isSubTopic = !!parentTopic;
 

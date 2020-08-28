@@ -68,7 +68,7 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/', // simulator
-    ios: 'http://192.168.123.75:4000/graphql', // work
+    ios: 'http://192.168.123.217:4000/graphql', // work
     // ios: 'http://192.168.1.214:4000/graphql', // home
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
@@ -82,7 +82,7 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/', // simulator
-    ios: 'ws://192.168.123.75:4000/graphql', // work
+    ios: 'ws://192.168.123.217:4000/graphql', // work
     // ios: 'ws://192.168.1.214:4000', // home
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats

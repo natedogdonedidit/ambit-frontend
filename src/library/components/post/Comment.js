@@ -9,8 +9,8 @@ import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
-import LIKE_COMMENT_MUTATION from 'library/mutations/LIKE_COMMENT_MUTATION';
-import UNLIKE_COMMENT_MUTATION from 'library/mutations/UNLIKE_COMMENT_MUTATION';
+import UPDATE_COMMENT_MUTATION from 'library/mutations/UPDATE_COMMENT_MUTATION';
+// import UNLIKE_COMMENT_MUTATION from 'library/mutations/UNLIKE_COMMENT_MUTATION';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Heart from 'library/components/UI/icons/Heart';
@@ -39,9 +39,14 @@ function Comment({
   // const [likesCount, setLikesCount] = useState(comment.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
-  const [likeComment] = useMutation(LIKE_COMMENT_MUTATION, {
+  const [likeComment] = useMutation(UPDATE_COMMENT_MUTATION, {
     variables: {
-      commentId: comment.id,
+      where: { id: comment.id },
+      data: {
+        likes: {
+          connect: [{ id: currentUserId }],
+        },
+      },
     },
     optimisticResponse: {
       __typename: 'Mutation',
@@ -52,21 +57,16 @@ function Comment({
         likesCount: comment.likesCount + 1,
       },
     },
-    // update: (proxy, { data: dataReturned }) => {
-    //   client.writeFragment({
-    //     id: `Comment:${comment.id}`,
-    //     fragment: CommentFragment,
-    //     fragmentName: 'CommentFragment',
-    //     data: {
-    //       ...dataReturned.likeComment,
-    //     },
-    //   });
-    // },
   });
 
-  const [unlikeComment] = useMutation(UNLIKE_COMMENT_MUTATION, {
+  const [unlikeComment] = useMutation(UPDATE_COMMENT_MUTATION, {
     variables: {
-      commentId: comment.id,
+      where: { id: comment.id },
+      data: {
+        likes: {
+          disconnect: [{ id: currentUserId }],
+        },
+      },
     },
     optimisticResponse: {
       __typename: 'Mutation',
@@ -77,28 +77,28 @@ function Comment({
         likesCount: comment.likesCount - 1,
       },
     },
-    // update: (proxy, { data: dataReturned }) => {
-    //   client.writeFragment({
-    //     id: `Comment:${comment.id}`,
-    //     fragment: CommentFragment,
-    //     fragmentName: 'CommentFragment',
-    //     data: {
-    //       ...dataReturned.unlikeComment,
-    //     },
-    //   });
-    // },
     onError: () => null,
   });
 
   // DELETE MUTATIONS
-  const [deleteComment] = useMutation(DELETE_COMMENT_MUTATION, {
+  const [deleteOneComment] = useMutation(DELETE_COMMENT_MUTATION, {
     variables: {
-      id: comment.id,
-      ownerID: comment.owner.id,
+      where: {
+        id: comment.id,
+      },
     },
-    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { id: comment.parentPost.id } }],
-    onCompleted: () =>
-      Alert.alert('Done!', "You're comment was successfully deleted", [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
+    optimisticResponse: {
+      __typename: 'Mutation',
+      deleteOneComment: { __typename: 'Comment', id: comment.id },
+    },
+    update(cache, { data: deleteOneComment }) {
+      // remove from cache
+      cache.evict({ id: cache.identify({ __typename: 'Comment', id: comment.id }) });
+      cache.gc();
+    },
+    refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { where: { id: comment.parentPost.id } } }],
+    // onCompleted: () =>
+    //   Alert.alert('Done!', "You're comment was successfully deleted", [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to delete this comment. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -136,32 +136,33 @@ function Comment({
   };
 
   const handleDelete = () => {
-    deleteComment({
-      optimisticResponse: {
-        __typename: 'Mutation',
-        deleteComment: { __typename: 'Comment', id: comment.id },
-      },
-      update(cache, { data }) {
-        // We get a single item from cache.
-        const commentInCache = cache.readFragment({
-          id: `Comment:${comment.id}`,
-          fragment: CommentFragment,
-          fragmentName: 'CommentFragment',
-        });
-        // Then, we update it.
-        if (commentInCache) {
-          cache.writeFragment({
-            id: `Comment:${comment.id}`,
-            fragment: CommentFragment,
-            fragmentName: 'CommentFragment',
-            data: {
-              ...comment,
-              _deleted: true,
-            },
-          });
-        }
-      },
-    });
+    deleteOneComment();
+    // deleteOneComment({
+    //   optimisticResponse: {
+    //     __typename: 'Mutation',
+    //     deleteOneComment: { __typename: 'Comment', id: comment.id },
+    //   },
+    //   update(cache, { data }) {
+    //     // We get a single item from cache.
+    //     const commentInCache = cache.readFragment({
+    //       id: `Comment:${comment.id}`,
+    //       fragment: CommentFragment,
+    //       fragmentName: 'CommentFragment',
+    //     });
+    //     // Then, we update it.
+    //     if (commentInCache) {
+    //       cache.writeFragment({
+    //         id: `Comment:${comment.id}`,
+    //         fragment: CommentFragment,
+    //         fragmentName: 'CommentFragment',
+    //         data: {
+    //           ...comment,
+    //           _deleted: true,
+    //         },
+    //       });
+    //     }
+    //   },
+    // });
   };
 
   const determineOptions = () => {
@@ -280,7 +281,7 @@ function Comment({
                       })
                     }
                   />
-                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount}</Text>
+                  <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount || ''}</Text>
                 </View>
                 <View style={styles.button}>
                   <Heart color={comment.likedByMe ? colors.peach : colors.iconGray} onPress={handleLike} />

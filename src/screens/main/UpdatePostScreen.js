@@ -7,7 +7,7 @@ import defaultStyles from 'styles/defaultStyles';
 import HeaderBack from 'library/components/headers/HeaderBack';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import ProfilePic from 'library/components/UI/ProfilePic';
-import CREATE_UPDATE_MUTATION from 'library/mutations/CREATE_UPDATE_MUTATION';
+import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 
 const UpdatePostScreen = ({ navigation, route }) => {
@@ -21,7 +21,7 @@ const UpdatePostScreen = ({ navigation, route }) => {
   const currentTime = new Date();
 
   // MUTATIONS
-  const [createUpdate] = useMutation(CREATE_UPDATE_MUTATION, {
+  const [updateOnePost] = useMutation(UPDATE_POST_MUTATION, {
     onError: (error) => {
       console.log('something went wrong either creating post or notifications', error);
       // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
@@ -39,43 +39,49 @@ const UpdatePostScreen = ({ navigation, route }) => {
       content: updateText,
       image: updateImage,
       likes: [],
-      likesCount: null,
+      likesCount: 0,
       likedByMe: false,
-      commentsCount: null,
-      sharesCount: null,
-      _deleted: false,
+      comments: [],
+      commentsCount: 0,
+      sharesCount: 0,
     };
 
-    createUpdate({
+    updateOnePost({
       variables: {
-        postId: post.id,
-        update: {
-          content: updateText,
-          image: updateImage,
-        },
-      },
-      update: (proxy, { data: dataReturned }) => {
-        if (dataReturned.createUpdate.id === post.id) {
-          proxy.writeQuery({
-            query: SINGLE_POST_QUERY,
-            data: {
-              singlePost: {
-                ...dataReturned.createUpdate,
+        where: { id: post.id },
+        data: {
+          updates: {
+            create: [
+              {
+                content: updateText,
+                image: updateImage,
               },
-            },
-          });
-        }
-      },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        createUpdate: {
-          __typename: 'Post',
-          ...post,
-          updates: [...post.updates, newUpdate],
+            ],
+          },
         },
       },
+      // update: (proxy, { data: dataReturned }) => {
+      //   if (dataReturned.createUpdate.id === post.id) {
+      //     proxy.writeQuery({
+      //       query: SINGLE_POST_QUERY,
+      //       data: {
+      //         singlePost: {
+      //           ...dataReturned.createUpdate,
+      //         },
+      //       },
+      //     });
+      //   }
+      // },
+      // optimisticResponse: {
+      //   __typename: 'Mutation',
+      //   updateOnePost: {
+      //     __typename: 'Post',
+      //     ...post,
+      //     updates: [...post.updates, newUpdate],
+      //   },
+      // },
     });
-    navigation.goBack();
+    navigation.navigate('Post', { post });
   };
 
   return (
