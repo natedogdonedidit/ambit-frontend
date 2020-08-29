@@ -18,7 +18,7 @@ const NewProjectTitleModal = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBackBlank navigation={navigation} rightComponent={<ButtonHeader onPress={handleDone}>Topics</ButtonHeader>} />
+      <HeaderBackBlank navigation={navigation} rightComponent={<ButtonHeader onPress={handleDone}>Topic</ButtonHeader>} />
       <View style={{ flex: 1, paddingHorizontal: 15 }}>
         <Text style={{ ...defaultStyles.headerMedium, paddingTop: 20 }}>Story Title:</Text>
         <TextInput

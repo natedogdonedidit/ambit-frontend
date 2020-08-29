@@ -13,6 +13,7 @@ const UserContextProvider = (props) => {
   const [loadingToken, setLoadingToken] = useState(true);
   const [creatingStory, setCreatingStory] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
+  const [currentUsername, setCurrentUsername] = useState(null);
   const [homePosition, setHomePosition] = useState(0);
 
   const client = useApolloClient();
@@ -21,14 +22,16 @@ const UserContextProvider = (props) => {
   useEffect(() => {
     const fetchTokenAndUser = async () => {
       setLoadingToken(true);
-      const { token, userID } = await getTokenAndUser();
+      const { token, userID, username } = await getTokenAndUser();
 
-      if (token && userID) {
+      if (token && userID && username) {
         // if we got a userID -> save to context (this indicates someone is logged in)
         await setCurrentUserId(userID);
+        await setCurrentUsername(username);
       } else {
         signOut();
         await setCurrentUserId(null);
+        await setCurrentUsername(null);
       }
 
       setLoadingToken(false);
@@ -45,9 +48,10 @@ const UserContextProvider = (props) => {
       console.log('Saved login token in Storage', loginData.token);
       // 2. store the user in context
       setCurrentUserId(loginData.user.id)
+      setCurrentUsername(loginData.user.username)
       // console.log(`sending identify for ${currentUserId}`);
       // analytics.identify(currentUserId);
-      console.log('Saved userID to Storage & updated Context with userID', loginData.user.id);
+      console.log('Saved userID/name to Storage & updated Context with userID/name', loginData.user.id, loginData.user.username);
     } catch (e) {
       // AsyncStorage errors would lead us here
       console.log('ERROR LOGGING IN:', e.message);
@@ -68,6 +72,7 @@ const UserContextProvider = (props) => {
 
       // 3. clear user in context
       setCurrentUserId(null)
+      setCurrentUsername(null)
       console.log('Cleared user from context')
     } catch (e) {
       // AsyncStorage errors would lead us here
@@ -80,7 +85,8 @@ const UserContextProvider = (props) => {
     <UserContext.Provider
       value={{ 
         loadingToken, 
-        currentUserId, 
+        currentUserId,
+        currentUsername,
         loginCTX, 
         logoutCTX, 
         homePosition, 

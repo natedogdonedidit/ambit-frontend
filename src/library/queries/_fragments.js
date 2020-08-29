@@ -118,20 +118,22 @@ export const MinimalUser = gql`
     locationID
     locationLat
     locationLon
-    # intro {
-    #   ...StoryNoOwner
-    # }
-    # myStory {
-    #   ...StoryNoOwner
-    # }
+    intro {
+      ...StoryWithOwner
+      # ...StoryNoOwner
+    }
+    myStory {
+      ...StoryWithOwner
+      # ...StoryNoOwner
+    }
     # latestProject {
     #   ...StoryNoOwner
     # }
     # followingCount
     # followersCount
   }
+  ${StoryWithOwner}
 `;
-// ${StoryNoOwner}
 
 export const GroupFragment = gql`
   fragment GroupFragment on Group {

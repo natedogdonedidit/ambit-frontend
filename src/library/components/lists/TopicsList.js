@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect, handleCategorySelect }) => {
+  console.log(activeTopicIDs);
   const renderSubtopics = (subTopics) => {
     return subTopics.map((subTopic) => {
       const { name, topicID } = subTopic;

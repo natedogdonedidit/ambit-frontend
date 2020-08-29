@@ -29,7 +29,16 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
     networkStatus: networkStatusStories,
   } = useQuery(STORIES_TOPIC_QUERY, {
     variables: {
-      topicID,
+      where: {
+        AND: [
+          {
+            topic: { startsWith: topicIDtoSearch },
+          },
+          {
+            items: { some: { id: { gt: 'a' } } },
+          },
+        ],
+      },
     },
     notifyOnNetworkStatusChange: true,
   });

@@ -13,8 +13,8 @@ import { UserContext } from 'library/utils/UserContext';
 import { combineFavoriteTopics } from 'library/utils';
 import NewProjectButton from './NewProjectButton';
 
-function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingStories }) {
-  // const { currentUserId } = useContext(UserContext);
+function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingStories, network }) {
+  const { currentUserId } = useContext(UserContext);
 
   const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
 
@@ -34,6 +34,14 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
     fetchMore: fetchMoreStories,
     networkStatus: networkStatusStories,
   } = useQuery(STORIES_HOME_QUERY, {
+    // variables: {
+    //   // first: 10,
+    //   where: {
+    //     owner: {
+    //       id: { in: [...network, currentUserId] },
+    //     },
+    //   },
+    // },
     onError: (e) => console.log('error loading home stories', e),
     notifyOnNetworkStatusChange: true,
   });
@@ -78,14 +86,15 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
     }
 
     const userStories = dataStories.storiesHome;
+    const userStoriesNoIntro = userStories.filter((st) => st.type !== 'INTRO');
 
     // combine user and topic stories
-    const userAndTopicStories = [...userStories, ...favoriteTopics];
+    const userAndTopicStories = [...userStoriesNoIntro, ...favoriteTopics];
 
     // sort them
     const sortStoriesHome = (a, b) => {
-      const isTopicStoryA = !!a.topicID && !a.type;
-      const isTopicStoryB = !!b.topicID && !b.type;
+      const isTopicStoryA = !a.type;
+      const isTopicStoryB = !b.type;
 
       // if user story - check if viewed entire story (used in logic below)
       const newestUnseenA = isTopicStoryA

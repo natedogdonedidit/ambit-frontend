@@ -17,7 +17,7 @@ const MatchesForYou = ({ navigation, title }) => {
   const { loading, error, data } = useQuery(CURRENT_USER_MATCHES, {
     variables: {
       where: {
-        id: { notIn: [''] },
+        id: { notIn: [currentUserId] },
       },
     },
   });

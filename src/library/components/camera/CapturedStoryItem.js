@@ -122,8 +122,8 @@ const CapturedStoryItem = ({
         try {
           await updateStory({
             variables: {
-              id: intro.id,
-              story: {
+              where: { id: intro.id },
+              data: {
                 lastUpdated: new Date(),
                 items: {
                   delete: deleteArray, // delete the previous intro

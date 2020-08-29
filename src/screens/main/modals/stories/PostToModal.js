@@ -18,10 +18,11 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
+import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const PostToModal = ({ navigation, route }) => {
-  const { currentUserId, setCreatingStory } = useContext(UserContext);
+  const { currentUserId, currentUsername, setCreatingStory } = useContext(UserContext);
   const { capturedImage, capturedVideo, textInput } = route.params; // from camera modal
 
   // const [uploading, setUploading] = useState(false);
@@ -33,8 +34,11 @@ const PostToModal = ({ navigation, route }) => {
   const [newProject, setNewProject] = useState({});
 
   // MUTATIONS
-  const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
-    refetchQueries: [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }, { query: STORIES_HOME_QUERY }],
+  const [updateOneStory] = useMutation(UPDATE_STORY_MUTATION, {
+    refetchQueries: [
+      { query: SINGLE_USER_BIO, variables: { where: { username: currentUsername } } },
+      { query: STORIES_HOME_QUERY },
+    ],
     // onCompleted: () => {},
     onError: (error) => {
       console.log(error);
@@ -44,7 +48,7 @@ const PostToModal = ({ navigation, route }) => {
     },
   });
 
-  const [createStory, { loading: loadingCreateStory }] = useMutation(CREATE_STORY_MUTATION, {
+  const [createOneStory, { loading: loadingCreateStory }] = useMutation(CREATE_STORY_MUTATION, {
     onError: () => {
       Alert.alert('Oh no!', 'An error occured when trying to create your project. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -54,13 +58,18 @@ const PostToModal = ({ navigation, route }) => {
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(SINGLE_USER_BIO, {
-    variables: { id: currentUserId },
+    variables: { where: { id: currentUserId } },
   });
+
+  if (loadingUser || errorUser) {
+    return null;
+  }
   const { user } = dataUser;
 
   const stories = user ? user.stories : [];
   const projects = user ? [...stories].filter((story) => story.type === 'PROJECT') : [];
-  const myStoryID = user ? user.myStory.id : '';
+  const myStoryID = user && user.myStory ? user.myStory.id : '123ihavenostory';
+
   // get topicIDs from user
   // const topicIDs = getTopicIDsFromUser(user);
   // get the full topic info from each ID (including story.id)
@@ -73,29 +82,25 @@ const PostToModal = ({ navigation, route }) => {
   // }, [loadingCreateStoryItem]);
 
   // project methods
-  const handleProjectCreate = async (projectTitle, projectTopics) => {
-    const topicsForDB = projectTopics.map((topicID) => {
-      return { topicID };
-    });
-
+  const handleProjectCreate = async (projectTitle, projectTopic) => {
     try {
-      const createdProject = await createStory({
+      const createdProject = await createOneStory({
         variables: {
-          story: {
+          data: {
             type: 'PROJECT',
             lastUpdated: new Date(),
             title: projectTitle,
-            topics: { connect: topicsForDB },
+            topic: projectTopic || null,
             owner: { connect: { id: currentUserId } },
           },
         },
       });
 
       // save new project to state
-      setNewProject(createdProject.data.createStory);
+      setNewProject(createdProject.data.createOneStory);
 
       // add id to selected projects
-      setSelectedProject(createdProject.data.createStory.id);
+      setSelectedProject(createdProject.data.createOneStory.id);
       setIsStory(false);
     } catch (e) {
       console.log(e);
@@ -105,11 +110,11 @@ const PostToModal = ({ navigation, route }) => {
     }
   };
 
-  const handleGoToTopicSelection = () => {
-    navigation.navigate('SelectStoryTopicsModal', { handleSend });
-  };
+  // const handleGoToTopicSelection = () => {
+  //   navigation.navigate('SelectStoryTopicsModal', { handleSend });
+  // };
 
-  const handleSend = async (selectedTopics) => {
+  const handleSend = async () => {
     setCreatingStory(true);
     // if image, upload image, then save item to state
     if (capturedImage) {
@@ -118,16 +123,6 @@ const PostToModal = ({ navigation, route }) => {
         const uploadedImage = await storyPicUpload(currentUserId, capturedImage.uri);
 
         if (selectedProject) {
-          // if here, connect PROJECT
-
-          // add the project story id
-          // const storiesConnect = [{ id: selectedProject }];
-
-          // if mystory is selected, add mystory id
-          // if (isStory) {
-          //   storiesConnect.push({ id: myStoryID });
-          // }
-
           const newStoryItem = {
             type: 'IMAGE',
             url: uploadedImage,
@@ -136,10 +131,10 @@ const PostToModal = ({ navigation, route }) => {
             link: '',
           };
 
-          updateStory({
+          updateOneStory({
             variables: {
-              id: selectedProject,
-              story: {
+              where: { id: selectedProject },
+              data: {
                 lastUpdated: new Date(),
                 items: {
                   create: [newStoryItem],
@@ -148,14 +143,7 @@ const PostToModal = ({ navigation, route }) => {
             },
           });
         } else if (isStory) {
-          // if here, connect MYSTORY
-
-          // const selectedTopicsForDB =
-          //   selectedTopics.length > 0
-          //     ? selectedTopics.map((topicID) => {
-          //         return { topicID };
-          //       })
-          //     : [];
+          //
 
           const newStoryItem = {
             type: 'IMAGE',
@@ -163,22 +151,12 @@ const PostToModal = ({ navigation, route }) => {
             preview: uploadedImage,
             text: textInput,
             link: '',
-            // stories: {
-            //   connect: isStory ? [{ id: myStoryID }] : null,
-            // create: [
-            //   {
-            //     type: 'SOLO',
-            //     owner: { connect: { id: currentUserId } },
-            //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
-            //   },
-            // ],
-            // },
           };
 
-          updateStory({
+          updateOneStory({
             variables: {
-              id: myStoryID,
-              story: {
+              where: { id: myStoryID },
+              data: {
                 lastUpdated: new Date(),
                 items: {
                   create: [newStoryItem],
@@ -203,16 +181,6 @@ const PostToModal = ({ navigation, route }) => {
         const uploadedVideo = await storyVideoUpload(currentUserId, capturedVideo.uri);
 
         if (selectedProject) {
-          // if here, connect MYSTORY? and PROJECT
-
-          // add the project story id
-          // const storiesConnect = [{ id: selectedProject }];
-
-          // if mystory is selected, add mystory id
-          // if (isStory) {
-          //   storiesConnect.push({ id: myStoryID });
-          // }
-
           // create preview URL for video thumbnail by inserting "so_0.0"
           const preview = createThumbnail(uploadedVideo.url);
 
@@ -226,10 +194,10 @@ const PostToModal = ({ navigation, route }) => {
             // stories: { connect: storiesConnect },
           };
 
-          updateStory({
+          updateOneStory({
             variables: {
-              id: selectedProject,
-              story: {
+              where: { id: selectedProject },
+              data: {
                 lastUpdated: new Date(),
                 items: {
                   create: [newStoryItem],
@@ -238,15 +206,6 @@ const PostToModal = ({ navigation, route }) => {
             },
           });
         } else if (isStory) {
-          // if here, connect MYSTORY? and also create a SOLO story with Topics
-
-          // const selectedTopicsForDB =
-          //   selectedTopics.length > 0
-          //     ? selectedTopics.map((topicID) => {
-          //         return { topicID };
-          //       })
-          //     : [];
-
           // create preview URL for video thumbnail by inserting "so_0.0"
           const preview = createThumbnail(uploadedVideo.url);
 
@@ -257,22 +216,12 @@ const PostToModal = ({ navigation, route }) => {
             text: textInput,
             link: '',
             duration: uploadedVideo.duration,
-            // stories: {
-            //   connect: isStory ? [{ id: myStoryID }] : null,
-            // create: [
-            //   {
-            //     type: 'SOLO',
-            //     owner: { connect: { id: currentUserId } },
-            //     topics: selectedTopicsForDB.length > 0 ? { connect: selectedTopicsForDB } : null,
-            //   },
-            // ],
-            // },
           };
 
-          updateStory({
+          updateOneStory({
             variables: {
-              id: myStoryID,
-              story: {
+              where: { id: myStoryID },
+              data: {
                 lastUpdated: new Date(),
                 items: {
                   create: [newStoryItem],
@@ -411,13 +360,11 @@ const PostToModal = ({ navigation, route }) => {
   };
 
   const renderTopics = (proj) => {
-    if (proj.topics.length > 0) {
+    if (proj.topic) {
+      const { name } = getTopicFromID(proj.topic);
       return (
         <Text numberOfLines={1} style={{ ...defaultStyles.smallBoldMute, paddingLeft: 10, paddingTop: 4 }}>
-          {proj.topics.map((top, i) => {
-            const { name } = getTopicFromID(top.topicID);
-            return `${name}${i < proj.topics.length - 1 ? `, ` : ''}`;
-          })}
+          {name}
         </Text>
       );
     }

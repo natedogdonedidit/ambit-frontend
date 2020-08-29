@@ -87,7 +87,7 @@ function Story({
     return { ...items[activeItemIndex] };
   }, [activeItemIndex]);
 
-  const isMyPost = useMemo(() => owner.id === currentUserId, [currentUserId, owner.id]);
+  const isMyPost = owner.id === currentUserId;
 
   // MUTATIONS
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {

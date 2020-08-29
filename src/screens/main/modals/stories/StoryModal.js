@@ -45,18 +45,19 @@ const StoryModal = ({ navigation, route }) => {
   // QUERY TO GET USERS TOPICS
   const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
 
-  const favoriteTopics = useMemo(() => {
-    const initialFavs = topicIDtoSearch ? [topicIDtoSearch] : [];
+  // const favoriteTopics = useMemo(() => {
+  //   const initialFavs = topicIDtoSearch ? [topicIDtoSearch] : [];
 
-    if (dataTopics && dataTopics.myTopics) {
-      const myFavs = combineFavoriteTopics(dataTopics.myTopics);
-      const myFavIDs = myFavs.map((fav) => fav.id);
+  //   if (dataTopics && dataTopics.myTopics) {
+  //     const myFavs = combineFavoriteTopics(dataTopics.myTopics);
+  //     const myFavIDs = myFavs.map((fav) => fav.id);
 
-      return [...initialFavs, ...myFavIDs];
-    }
+  //     return [...initialFavs, ...myFavIDs];
+  //   }
 
-    return initialFavs;
-  }, [dataTopics, topicIDtoSearch]);
+  //   return initialFavs;
+  // }, [dataTopics, topicIDtoSearch]);
+  const favoriteTopics = [];
 
   // QUERIES - to get next stories
   const [
@@ -70,7 +71,16 @@ const StoryModal = ({ navigation, route }) => {
     },
   ] = useLazyQuery(STORIES_TOPIC_QUERY, {
     variables: {
-      topicID: topicIDtoSearch,
+      where: {
+        AND: [
+          {
+            topic: { startsWith: topicIDtoSearch },
+          },
+          {
+            items: { some: { id: { gt: 'a' } } },
+          },
+        ],
+      },
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -129,9 +139,9 @@ const StoryModal = ({ navigation, route }) => {
   useEffect(() => {
     // used to add home stories to Q
     if (moreType === 'Topic' && !loadingStoriesTopic && dataStoriesTopic) {
-      if (dataStoriesTopic.storiesTopic) {
+      if (dataStoriesTopic.stories) {
         // remove the story passed in from the query results
-        const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.id !== story.id && s.items.length > 0);
+        const storiesToAdd = dataStoriesTopic.stories.filter((s) => s.id !== story.id && s.items.length > 0);
         setStoryQ([story, ...storiesToAdd]);
       }
     }

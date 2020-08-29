@@ -258,14 +258,15 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         progressViewOffset={100}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
-        // ListHeaderComponent={
-        //   <StoriesHome
-        //     navigation={navigation}
-        //     refetching={showRefreshing}
-        //     setLoadingStories={setLoadingStories}
-        //     setRefetchingStories={setRefetchingStories}
-        //   />
-        // }
+        ListHeaderComponent={
+          <StoriesHome
+            navigation={navigation}
+            refetching={showRefreshing}
+            setLoadingStories={setLoadingStories}
+            setRefetchingStories={setRefetchingStories}
+            network={network}
+          />
+        }
         ListEmptyComponent={() => {
           return (
             <>

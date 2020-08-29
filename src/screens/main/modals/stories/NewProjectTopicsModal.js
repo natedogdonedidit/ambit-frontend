@@ -13,25 +13,22 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
   const { handleProjectCreate, projectTitle } = route.params;
 
   const [selectedCategories, setSelectedCategories] = useState('');
-  const [selectedTopics, setSelectedTopics] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState('');
+  console.log(selectedTopic);
 
   const handleDone = () => {
-    handleProjectCreate(projectTitle, selectedTopics);
+    handleProjectCreate(projectTitle, selectedTopic);
     navigation.navigate('PostToModal');
   };
 
-  const handleTopicSelect = (selectedTopicID) => {
-    // build the new array of topics
-    let newArray = [...selectedTopics];
-    if (newArray.includes(selectedTopicID)) {
+  const handleTopicSelect = (selectedTopicID, _) => {
+    if (selectedTopicID === selectedTopic) {
       // remove it
-      newArray = newArray.filter((topicID) => topicID !== selectedTopicID);
+      setSelectedTopic('');
     } else {
       // add it
-      newArray = [...selectedTopics, selectedTopicID];
+      setSelectedTopic(selectedTopicID);
     }
-
-    setSelectedTopics(newArray);
   };
 
   const handleCategorySelect = (category) => {
@@ -52,7 +49,7 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
       <HeaderBackBlank
         navigation={navigation}
         rightComponent={
-          selectedTopics.length < 1 ? (
+          !selectedTopic ? (
             <TextButton textStyle={styles.rightText} onPress={handleDone}>
               Skip
             </TextButton>
@@ -65,14 +62,14 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
       <ScrollView style contentContainerStyle={styles.scrollView}>
         <View style={{ width: '100%', paddingHorizontal: 5 }}>
           <View style={styles.mainTitle}>
-            <Text style={defaultStyles.headerMedium}>Tag some topics</Text>
+            <Text style={defaultStyles.headerMedium}>Tag a topic</Text>
           </View>
           <View style={styles.subTitle}>
-            <Text style={defaultStyles.defaultMute}>Your story will get more views if you tag some relevant topics</Text>
+            <Text style={defaultStyles.defaultMute}>Your story will get more views if you tag a relevant topic</Text>
           </View>
         </View>
         <TopicsList
-          activeTopicIDs={selectedTopics}
+          activeTopicIDs={[selectedTopic]}
           selectedCategories={selectedCategories}
           handleTopicSelect={handleTopicSelect}
           handleCategorySelect={handleCategorySelect}

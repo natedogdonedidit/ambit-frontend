@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, InteractionManager } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
@@ -7,9 +7,10 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { getTopicFromID } from 'library/utils';
 import { useMutation } from '@apollo/client';
-import LIKE_STORYITEM_MUTATION from 'library/mutations/LIKE_STORYITEM_MUTATION';
-import UNLIKE_STORYITEM_MUTATION from 'library/mutations/UNLIKE_STORYITEM_MUTATION';
+import UPDATE_STORY_ITEM_MUTATION from 'library/mutations/UPDATE_STORY_ITEM_MUTATION';
+// import UNLIKE_STORYITEM_MUTATION from 'library/mutations/UNLIKE_STORYITEM_MUTATION';
 import { StoryItemFragment } from 'library/queries/_fragments';
+import { UserContext } from 'library/utils/UserContext';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
 function areEqual(prevProps, nextProps) {
@@ -36,6 +37,7 @@ function StoryFooter({
   favoriteTopics,
   setDisableOutterScroll,
 }) {
+  const { currentUserId } = useContext(UserContext);
   // console.log(item.likedByMe, item.text);
 
   const [topicsSorted, setTopicsSorted] = useState([]);
@@ -52,9 +54,9 @@ function StoryFooter({
   const { id, plays, text, link } = item;
 
   // MUTATIONS
-  const [likeStoryItem, { loading: loadingLike }] = useMutation(LIKE_STORYITEM_MUTATION);
+  const [likeStoryItem, { loading: loadingLike }] = useMutation(UPDATE_STORY_ITEM_MUTATION);
 
-  const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UNLIKE_STORYITEM_MUTATION, {
+  const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UPDATE_STORY_ITEM_MUTATION, {
     onError: () => null,
   });
 
@@ -103,7 +105,14 @@ function StoryFooter({
       InteractionManager.runAfterInteractions(() => {
         console.log('unlike story', id);
         unlikeStoryItem({
-          variables: { storyItemId: id },
+          variables: {
+            where: { id },
+            data: {
+              likes: {
+                disconnect: [{ id: currentUserId }],
+              },
+            },
+          },
           optimisticResponse: {
             __typename: 'Mutation',
             unlikeStoryItem: {
@@ -122,7 +131,14 @@ function StoryFooter({
       InteractionManager.runAfterInteractions(() => {
         console.log('like story', id);
         likeStoryItem({
-          variables: { storyItemId: id },
+          variables: {
+            where: { id },
+            data: {
+              likes: {
+                connect: [{ id: currentUserId }],
+              },
+            },
+          },
           optimisticResponse: {
             __typename: 'Mutation',
             likeStoryItem: {
@@ -250,7 +266,7 @@ function StoryFooter({
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={() => navigation.navigate('Profile', { profileId: owner.id })}
+            onPress={() => navigation.navigate('Profile', { username: owner.username })}
             style={styles.sideButtonCircle}
             hitSlop={{ top: 15, left: 15, bottom: 15, right: 15 }}
           >
