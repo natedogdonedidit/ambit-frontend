@@ -25,7 +25,7 @@ const TabsNavigator = () => {
   const { currentUserId } = useContext(UserContext);
 
   // MESSAGES QUERY
-  // const [getMessages, { data: messagesData, refetch: refetchMessages }] = useLazyQuery(CURRENT_USER_MESSAGES);
+  const [getMessages, { data: userData, refetch: refetchMessages }] = useLazyQuery(CURRENT_USER_MESSAGES);
 
   // NOTIFICATIONS QUERY
   // const [getNotifications, { data: notificationsData }] = useLazyQuery(NOTIFICATIONS_QUERY, {
@@ -33,22 +33,22 @@ const TabsNavigator = () => {
   // });
 
   // on first render - set a timer for 10s, then get initial batch of notifications & messages
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     getMessages(); // this just gets the information for the Group & latest message & unread
-  //     getNotifications();
-  //   }, 10000);
-  //   return () => clearTimeout(timer);
-  // }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getMessages(); // this just gets the information for the Group & latest message & unread
+      // getNotifications();
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // UPDATE # OF UNSEEN MESSAGES EVERYTIME NEW NOTIFICATIONS DATA COMES IN
-  // const unReadMessagesCount = useMemo(() => {
-  //   if (messagesData && messagesData.userMessages && messagesData.userMessages.unReadMessagesCount) {
-  //     return messagesData.userMessages.unReadMessagesCount;
-  //   }
+  const unReadMessagesCount = useMemo(() => {
+    if (userData && userData.userLoggedIn && userData.userLoggedIn.unReadMessagesCount) {
+      return userData.userLoggedIn.unReadMessagesCount;
+    }
 
-  //   return 0;
-  // }, [messagesData]);
+    return 0;
+  }, [userData]);
 
   // UPDATE # OF UNSEEN NOTIFICATIONS EVERYTIME NEW NOTIFICATIONS DATA COMES IN
   // const unReadNotificationsCount = useMemo(() => {
@@ -65,47 +65,50 @@ const TabsNavigator = () => {
   // }, [notificationsData]);
 
   // SUBSCRIBE TO NEW MESSAGES IN GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
-  // useSubscription(MESSAGE_SUBSCRIPTION, {
-  //   variables: { id: currentUserId },
-  //   onSubscriptionData: async ({ subscriptionData }) => {
-  //     // console.log('subscriptionData', subscriptionData);
-  //     const { newMessageToMe } = subscriptionData.data;
-  //     try {
-  //       const previousData = await client.readQuery({
-  //         query: MESSAGES_CONNECTION,
-  //         variables: { groupID: newMessageToMe.to.id },
-  //       });
+  useSubscription(MESSAGE_SUBSCRIPTION, {
+    variables: { userId: currentUserId },
+    onSubscriptionData: async ({ subscriptionData }) => {
+      // console.log('subscriptionData', subscriptionData);
+      const { newMessageSub } = subscriptionData.data;
+      try {
+        // GET THE CONVERSATION FROM CACHE
+        const previousData = await client.readQuery({
+          query: MESSAGES_CONNECTION,
+          variables: {
+            where: { to: { id: { equals: newMessageSub.to.id } } },
+          },
+        });
 
-  //       // IF MESSAGE CONNECTION DOES NOT EXIST YET WE WILL ENTER CATCH STATEMENT
-  //       if (previousData && newMessageToMe) {
-  //         console.log('newMessage', newMessageToMe);
-  //         console.log('previousData', previousData.messages);
-  //         client.writeQuery({
-  //           query: MESSAGES_CONNECTION,
-  //           variables: { groupID: newMessageToMe.to.id },
-  //           data: {
-  //             messages: {
-  //               ...previousData.messages,
-  //               edges: [
-  //                 { node: newMessageToMe, __typename: 'MessageEdge' }, // new message
-  //                 ...previousData.messages.edges, // previous messages
-  //               ],
-  //             },
-  //           },
-  //         });
-  //       }
-  //     } catch (e) {
-  //       console.log('new message from a chat that was not fetched yet - fetching chat now');
-  //       client.query({
-  //         query: MESSAGES_CONNECTION,
-  //         variables: { groupID: newMessageToMe.to.id },
-  //       });
-  //     }
+        // IF MESSAGE CONNECTION DOES NOT EXIST YET WE WILL ENTER CATCH STATEMENT
+        if (previousData && newMessageSub) {
+          // console.log('newMessage', newMessageSub);
+          // console.log('previousData', previousData.messages);
+          client.writeQuery({
+            query: MESSAGES_CONNECTION,
+            variables: {
+              where: { to: { id: { equals: newMessageSub.to.id } } },
+            },
+            data: {
+              messages: [{ ...newMessageSub, __typename: 'Message' }],
+            },
+          });
+        }
+      } catch (e) {
+        console.log('new message from a chat that was not fetched yet - fetching chat now');
+        client.query({
+          query: MESSAGES_CONNECTION,
+          variables: {
+            where: { to: { id: { equals: newMessageSub.to.id } } },
+            first: 10,
+            orderBy: [{ createdAt: 'desc' }],
+          },
+        });
+      }
 
-  //     // ADD THE MESSAGE TO UNREAD MESSAGES
-  //     refetchMessages();
-  //   },
-  // });
+      // ADD THE MESSAGE TO UNREAD MESSAGES
+      refetchMessages();
+    },
+  });
 
   return (
     <Tabs.Navigator
@@ -128,14 +131,14 @@ const TabsNavigator = () => {
         options={{
           tabBarIcon: ({ focused, color, size }) => <BellDot color={color} unReadNotifications={unReadNotificationsCount || 0} />,
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="InboxStack"
         component={InboxStack}
         options={{
           tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessagesCount || 0} />,
         }}
-      /> */}
+      />
     </Tabs.Navigator>
   );
 };

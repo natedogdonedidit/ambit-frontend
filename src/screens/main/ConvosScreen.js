@@ -13,7 +13,7 @@ import FullWidthTabs from 'library/components/UI/FullWidthTabs';
 import ChatListItem from 'library/components/chat/ChatListItem';
 import { sortChats } from 'library/utils';
 
-const MessagesScreen = ({ navigation }) => {
+const ConvosScreen = ({ navigation }) => {
   // CONSTANTS
   // const TABS = ['Messages', 'Requests'];
 
@@ -47,10 +47,10 @@ const MessagesScreen = ({ navigation }) => {
         <Loader loading={loading} full={false} size="small" backgroundColor={colors.lightGray} />
       </View>
     );
-  const { userMessages } = dataUser;
+  const { userLoggedIn } = dataUser;
 
-  const groups = [...userMessages.groups] || [];
-  groups.sort(sortChats); // sort groups by date
+  const convos = [...userLoggedIn.convos] || [];
+  convos.sort(sortChats); // sort convos by date
 
   return (
     <View style={{ ...styles.container, paddingTop: top }}>
@@ -67,7 +67,7 @@ const MessagesScreen = ({ navigation }) => {
           <View
             style={[
               { height: 15 },
-              groups.length > 0 && {
+              convos.length > 0 && {
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 borderBottomColor: colors.borderBlack,
               },
@@ -79,11 +79,11 @@ const MessagesScreen = ({ navigation }) => {
             Your messages will appear here
           </Text>
         }
-        data={groups}
+        data={convos}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
           // console.log(item);
-          return <ChatListItem navigation={navigation} userMessages={userMessages} group={item} currentTime={currentTime} />;
+          return <ChatListItem navigation={navigation} userLoggedIn={userLoggedIn} convo={item} currentTime={currentTime} />;
         }}
       />
     </View>
@@ -106,4 +106,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MessagesScreen;
+export default ConvosScreen;

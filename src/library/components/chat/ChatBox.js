@@ -12,9 +12,9 @@ import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSA
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 
-const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, otherUserPassedIn }) => {
+const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
   // MUTATIONS
-  const [createMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
+  const [createOneMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
     refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
     onCompleted: () => {},
     onError: (error) => {
@@ -26,9 +26,14 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
   });
 
   const { error: errorMessages, data, fetchMore, networkStatus } = useQuery(MESSAGES_CONNECTION, {
+    variables: {
+      where: { to: { id: { equals: convo.id } } },
+      first: 10,
+      orderBy: [{ createdAt: 'desc' }],
+    },
     notifyOnNetworkStatusChange: true,
-    variables: { groupID: groupPassedIn.id },
   });
+
   // console.log(networkStatus);
   const loadingMessages = networkStatus === 1 || networkStatus === 2;
   const fetchingMore = networkStatus === 3;
@@ -41,15 +46,15 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
   });
 
   // THIS EFFECT CLEARS THE UNREAD MESSAGES AFTER MESSAGES CONNECTION IS LOADED
-  useEffect(() => {
-    if (groupPassedIn.id) {
-      const unReadInThisGroup = [...userMessages.unReadMessages].filter((message) => message.to.id === groupPassedIn.id);
-      const numToRemove = unReadInThisGroup.length;
-      if (numToRemove > 0 && !clearingUnreadMessages) {
-        clearUnReadMessages({ variables: { groupID: groupPassedIn.id } });
-      }
-    }
-  }, [groupPassedIn.id, userMessages.unReadMessages]);
+  // useEffect(() => {
+  //   if (convo.id) {
+  //     const unReadInThisConvo = [...userLoggedIn.unReadMessages].filter((message) => message.to.id === convo.id);
+  //     const numToRemove = unReadInThisConvo.length;
+  //     if (numToRemove > 0 && !clearingUnreadMessages) {
+  //       // clearUnReadMessages({ variables: { groupID: convo.id } });
+  //     }
+  //   }
+  // }, [convo.id, userLoggedIn.unReadMessages]);
 
   // console.log(networkStatus);
   // networkStatus states:
@@ -62,11 +67,11 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
   if (errorMessages) return <Error error={errorMessages} />;
 
   // PREPARE DATE FOR GIFTED CHAT
-  const groupExists = groupPassedIn.id !== null;
+  const convoExists = convo.id !== null;
   const currentUserFormated = {
-    _id: userMessages.id,
-    name: userMessages.name,
-    avatar: userMessages.profilePic,
+    _id: userLoggedIn.id,
+    name: userLoggedIn.name,
+    avatar: userLoggedIn.profilePic,
   };
 
   const renderBubble = (props) => {
@@ -86,18 +91,26 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
   const onSendCreate = async (payload) => {
     const newMessage = payload[0];
 
-    await createMessage({
+    // await createOneMessage({
+    //   variables: {
+    //     data: {
+    //       content: newMessage.text,
+    //       to: { create: { users: { connect: [{ id: userLoggedIn.id }, { id: otherUserPassedIn.id }] } } },
+    //       from: { connect: { id: newMessage.user._id } },
+    //     },
+    //   },
+    // });
+    await createOneMessage({
       variables: {
-        message: {
-          content: newMessage.text,
-          to: { create: { users: { connect: [{ id: userMessages.id }, { id: otherUserPassedIn.id }] } } },
-          from: { connect: { id: newMessage.user._id } },
-        },
+        content: newMessage.text,
+        to: otherUserPassedIn.id,
+        from: userLoggedIn.id,
+        isNew: true,
       },
     });
   };
 
-  // console.log(!groupExists, );
+  // console.log(!convoExists, );
   if (loadingMessages && !data) {
     return (
       <View style={styles.container}>
@@ -106,7 +119,7 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
     );
   }
 
-  if (!groupExists || !data) {
+  if (!convoExists || !data) {
     return (
       <GiftedChat
         messages={[]}
@@ -117,13 +130,12 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
     );
   }
 
-  // IF GROUP WAS LOADED SUCCESSFULLY
+  // IF CONVO WAS LOADED SUCCESSFULLY
   const { messages } = data; // will return null if no chat exists
   // console.log('messages', messages);
 
-  const messageEdges = groupExists ? messages.edges : [];
-  const messageNodes = messageEdges.map((edge) => edge.node);
-  const messagesFormated = groupExists
+  const messageNodes = convoExists ? messages : [];
+  const messagesFormated = convoExists
     ? messageNodes.map((message) => {
         return {
           _id: message.id,
@@ -143,52 +155,59 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
   const onSend = async (payload) => {
     const newMessage = payload[0];
 
-    await createMessage({
+    // await createOneMessage({
+    //   variables: {
+    //     data: {
+    //       content: newMessage.text,
+    //       to: { connect: { id: convo.id } },
+    //       from: { connect: { id: newMessage.user._id } },
+    //     },
+    //   },
+    await createOneMessage({
       variables: {
-        message: {
-          content: newMessage.text,
-          to: { connect: { id: groupPassedIn.id } },
-          from: { connect: { id: newMessage.user._id } },
-        },
+        content: newMessage.text,
+        to: convo.id,
+        from: userLoggedIn.id,
+        isNew: false,
       },
-      optimisticResponse: {
-        __typename: 'Mutation',
-        createMessage: {
-          __typename: 'Message',
-          id: newMessage._id,
-          createdAt: new Date(),
-          from: {
-            __typename: 'User',
-            id: newMessage.user._id,
-            name: newMessage.user.name,
-            profilePic: newMessage.user.avatar,
-          },
-          to: {
-            ...groupPassedIn,
-          },
-          hidden: [],
-          seen: [],
-          content: newMessage.text,
-        },
-      },
-      update: (proxy, { data: dataReturned }) => {
-        const newMsg = dataReturned.createMessage;
+      // optimisticResponse: {
+      //   __typename: 'Mutation',
+      //   createOneMessage: {
+      //     __typename: 'Message',
+      //     id: newMessage._id,
+      //     createdAt: new Date(),
+      //     from: {
+      //       __typename: 'User',
+      //       id: newMessage.user._id,
+      //       name: newMessage.user.name,
+      //       profilePic: newMessage.user.avatar,
+      //     },
+      //     to: {
+      //       ...convo,
+      //     },
+      //     hidden: [],
+      //     seen: [],
+      //     content: newMessage.text,
+      //   },
+      // },
+      // update: (proxy, { data: dataReturned }) => {
+      //   const newMsg = dataReturned.createOneMessage;
 
-        const previousData = proxy.readQuery({
-          query: MESSAGES_CONNECTION,
-          variables: { groupID: newMsg.to.id },
-        });
+      //   const previousData = proxy.readQuery({
+      //     query: MESSAGES_CONNECTION,
+      //     variables: { groupID: newMsg.to.id },
+      //   });
 
-        const newEdges = [{ node: newMsg, __typename: 'MessageEdge' }, ...previousData.messages.edges];
+      //   const newEdges = [{ node: newMsg, __typename: 'MessageEdge' }, ...previousData.messages.edges];
 
-        proxy.writeQuery({
-          query: MESSAGES_CONNECTION,
-          variables: { groupID: newMsg.to.id },
-          data: {
-            messages: { ...previousData.messages, edges: newEdges },
-          },
-        });
-      },
+      //   proxy.writeQuery({
+      //     query: MESSAGES_CONNECTION,
+      //     variables: { groupID: newMsg.to.id },
+      //     data: {
+      //       messages: { ...previousData.messages, edges: newEdges },
+      //     },
+      //   });
+      // },
     });
   };
 
@@ -199,30 +218,19 @@ const ChatBox = ({ navigation, userMessages, groupPassedIn = { id: null }, other
         onSend={(payload) => onSend(payload)}
         user={currentUserFormated}
         renderBubble={renderBubble}
-        loadEarlier={messages.pageInfo.hasNextPage}
+        loadEarlier
         isLoadingEarlier={fetchingMore}
         onLoadEarlier={() => {
-          if (messages.pageInfo.hasNextPage && ok) {
+          console.log('load more messages now');
+          if (ok) {
+            const lastMessage = messageNodes[messageNodes.length - 1];
             fetchMore({
               query: MESSAGES_CONNECTION,
               variables: {
-                groupID: groupPassedIn ? groupPassedIn.id : null,
-                cursor: messages.pageInfo.endCursor,
-                first: 30,
-              },
-              updateQuery: (previousResult, { fetchMoreResult }) => {
-                const newEdges = fetchMoreResult.messages.edges;
-                const { pageInfo } = fetchMoreResult.messages;
-
-                return newEdges.length
-                  ? {
-                      messages: {
-                        __typename: previousResult.messages.__typename,
-                        edges: [...previousResult.messages.edges, ...newEdges],
-                        pageInfo,
-                      },
-                    }
-                  : previousResult;
+                where: { to: { id: { equals: convo.id } } },
+                first: 10,
+                after: { id: lastMessage.id },
+                orderBy: [{ createdAt: 'desc' }],
               },
             });
           }

@@ -68,8 +68,8 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/', // simulator
-    // ios: 'http://192.168.123.217:4000/graphql', // work
-    ios: 'http://192.168.1.214:4000/graphql', // home
+    ios: 'http://192.168.123.35:4000/graphql', // work
+    // ios: 'http://192.168.1.214:4000/graphql', // home
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
@@ -82,8 +82,8 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/', // simulator
-    // ios: 'ws://192.168.123.217:4000/graphql', // work
-    ios: 'ws://192.168.1.214:4000/graphql', // home
+    ios: 'ws://192.168.123.35:4000/graphql', // work
+    // ios: 'ws://192.168.1.214:4000/graphql', // home
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
@@ -110,7 +110,7 @@ const link = split(
 // create apollo client
 const client = new ApolloClient({
   connectToDevTools: true,
-  link: ApolloLink.from([errorLink, authLink, httpLink]),
+  link: ApolloLink.from([errorLink, authLink, link]),
   cache: new InMemoryCache({
     typePolicies: {
       Query: {
@@ -133,6 +133,19 @@ const client = new ApolloClient({
           //   console.log(toReference({ __typename: 'MessageConnection', id: `${args.groupID}` }));
           //   return existingData || toReference({ __typename: 'MessageConnection', id: `${args.groupID}` });
           // },
+          messages: {
+            merge(existing = [], incoming = [], options) {
+              // console.log(existing, incoming, options);
+
+              // if it is a subscription - put message first
+              if (!options.args.orderBy && !options.args.first && !options.args.after) {
+                return [...incoming, ...existing];
+              }
+
+              // if it is a fetch more - put the messages last
+              return [...existing, ...incoming];
+            },
+          },
         },
       },
       User: {

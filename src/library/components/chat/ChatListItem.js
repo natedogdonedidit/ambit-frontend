@@ -9,30 +9,35 @@ import { timeDifference } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 
-const ChatListItem = ({ navigation, group, userMessages, currentTime }) => {
+const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
   const client = useApolloClient();
 
   // pre-fetch conversation when messages tab is clicked
   useEffect(() => {
-    // console.log('fetching messages for this chat', group.id);
+    console.log('fetching messages for this chat', convo.id);
     client.query({
       query: MESSAGES_CONNECTION,
-      variables: { groupID: group.id, first: 10 },
+      variables: {
+        where: { to: { id: { equals: convo.id } } },
+        first: 10,
+        orderBy: [{ createdAt: 'desc' }],
+      },
     });
   }, []);
 
-  const users = group.users.filter((user) => user.id !== userMessages.id);
+  const users = convo.users.filter((user) => user.id !== userLoggedIn.id);
   const otherUser = users[0];
-  // console.log(group);
+  // console.log(convo);
 
-  const updatedAt = new Date(group.latestMessage.createdAt);
+  const latestMessage = convo.messages[0] || {};
+
+  const updatedAt = new Date(latestMessage.createdAt);
   const { timeDiff, period } = timeDifference(currentTime, updatedAt);
 
-  const unReadInThisGroup = [...userMessages.unReadMessages].filter((message) => message.to.id === group.id);
-  const hasUnread = unReadInThisGroup.length > 0;
+  const hasUnread = latestMessage ? latestMessage.unread : false;
 
-  // const unReadMessageGroupIDs = userMessages.unReadMessages.map(unRead => unRead.to.id);
-  // const hasUnread = unReadMessageGroupIDs.includes(group.id);
+  // const unReadMessageGroupIDs = userLoggedIn.unReadMessages.map(unRead => unRead.to.id);
+  // const hasUnread = unReadMessageGroupIDs.includes(convo.id);
 
   return (
     <TouchableOpacity
@@ -40,7 +45,7 @@ const ChatListItem = ({ navigation, group, userMessages, currentTime }) => {
       style={styles.container}
       onPress={() => navigation.navigate('Chat', { otherUserPassedIn: otherUser })}
     >
-      <View style={styles.group}>
+      <View style={styles.convo}>
         <View style={styles.leftSide}>
           <ProfilePic size="medium" navigation={navigation} user={otherUser} />
         </View>
@@ -53,7 +58,7 @@ const ChatListItem = ({ navigation, group, userMessages, currentTime }) => {
           </View>
           <View style={styles.bottomRow}>
             <View style={{ flex: 1 }}>
-              <Text style={{ ...defaultStyles.largeMute }}>{group.latestMessage.content}</Text>
+              <Text style={{ ...defaultStyles.largeMute }}>{latestMessage.content}</Text>
             </View>
             <View style={{ width: 20, justifyContent: 'center' }}>{hasUnread && <View style={styles.redDot} />}</View>
           </View>
@@ -67,7 +72,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
   },
-  group: {
+  convo: {
     flexDirection: 'row',
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,

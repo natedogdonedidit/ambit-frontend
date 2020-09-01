@@ -135,34 +135,12 @@ export const MinimalUser = gql`
   ${StoryWithOwner}
 `;
 
-export const GroupFragment = gql`
-  fragment GroupFragment on Group {
-    id
-    updatedAt
-    users {
-      ...MinimalUser
-    }
-    latestMessage {
-      id
-      createdAt
-      content
-      hidden {
-        id
-      }
-    }
-    hidden {
-      id
-    }
-  }
-  ${MinimalUser}
-`;
-
 export const MessageFragment = gql`
   fragment MessageFragment on Message {
     id
     createdAt
     to {
-      ...GroupFragment
+      id
     }
     from {
       id
@@ -175,7 +153,23 @@ export const MessageFragment = gql`
       id
     }
   }
-  ${GroupFragment}
+`;
+
+export const ConvoFragment = gql`
+  fragment ConvoFragment on Convo {
+    id
+    users {
+      ...MinimalUser
+    }
+    messages(first: 5, orderBy: [{ createdAt: desc }]) {
+      ...MessageFragment
+    }
+    hidden {
+      id
+    }
+  }
+  ${MinimalUser}
+  ${MessageFragment}
 `;
 
 // POSTS FRAGMENTS
@@ -327,16 +321,13 @@ export const UserProfileFragment = gql`
 export const UserWithMessages = gql`
   fragment UserWithMessages on User {
     ...MinimalUser
-    groups {
-      ...GroupFragment
-    }
-    unReadMessages {
-      ...MessageFragment
+    convos {
+      ...ConvoFragment
     }
     unReadMessagesCount
   }
   ${MinimalUser}
-  ${GroupFragment}
+  ${ConvoFragment}
   ${MessageFragment}
 `;
 

@@ -117,7 +117,7 @@ export const sortExperiences = (a, b) => {
 };
 
 export const sortChats = (a, b) => {
-  if (a.latestMessage.createdAt > b.latestMessage.createdAt) {
+  if (a.messages[0].createdAt > b.messages.createdAt) {
     return -1;
   }
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import MessagesScreen from 'screens/main/MessagesScreen';
+import ConvosScreen from 'screens/main/ConvosScreen';
 import ChatScreen from 'screens/main/ChatScreen';
 import ProfileScreen from 'screens/main/ProfileScreen';
 import PostScreen from 'screens/main/PostScreen';
@@ -21,8 +21,8 @@ const InboxStack = ({ navigation, route }) => {
   }, [route]);
 
   return (
-    <Stack.Navigator initialRouteName="Messages" headerMode="none">
-      <Stack.Screen name="Messages" component={MessagesScreen} />
+    <Stack.Navigator initialRouteName="Convos" headerMode="none">
+      <Stack.Screen name="Convos" component={ConvosScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Post" component={PostScreen} />
       <Stack.Screen name="PostMatches" component={PostMatchesScreen} />

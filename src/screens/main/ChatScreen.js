@@ -19,7 +19,7 @@ const ChatScreen = ({ navigation, route }) => {
   // HOOKS
   const { currentUserId } = useContext(UserContext);
 
-  // get the list of groups of the logged in user
+  // get the list of convos of the logged in user
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_MESSAGES);
 
   if (errorUser) return <Error error={errorUser} />;
@@ -31,11 +31,11 @@ const ChatScreen = ({ navigation, route }) => {
       </View>
     );
   }
-  const { userMessages } = dataUser;
-  const { groups } = userMessages;
+  const { userLoggedIn } = dataUser;
+  const { convos } = userLoggedIn;
 
   // get Group based on otherUserPassedIn
-  const group = groups.find((c) => {
+  const convo = convos.find((c) => {
     // get the other user in the chat
     const otherUser = c.users.find((user) => user.id !== currentUserId);
 
@@ -43,18 +43,20 @@ const ChatScreen = ({ navigation, route }) => {
     return otherUser.id === otherUserPassedIn.id;
   });
 
-  const unReadMessageGroupIDs = [...userMessages.unReadMessages].map((unRead) => unRead.to.id);
-  const hasUnread = group ? unReadMessageGroupIDs.includes(group.id) : false;
+  // const unReadMessageGroupIDs = [...userLoggedIn.unReadMessages].map((unRead) => unRead.to.id);
+  // const hasUnread = convo ? unReadMessageGroupIDs.includes(convo.id) : false;
+
+  // clear unread messages here?
 
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title={otherUserPassedIn.name} />
       <ChatBox
         navigation={navigation}
-        groupPassedIn={group}
-        userMessages={userMessages}
+        convo={convo}
+        userLoggedIn={userLoggedIn}
         otherUserPassedIn={otherUserPassedIn}
-        hasUnread={hasUnread}
+        // hasUnread={hasUnread}
       />
     </View>
   );
