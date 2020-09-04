@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext } from 'react';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import { useQuery, useApolloClient } from '@apollo/client';
 // import analytics from '@segment/analytics-react-native';
@@ -47,11 +47,14 @@ import MonthModal from 'screens/main/modals/general/MonthModal';
 import ForYouSettingsPopup from 'screens/main/modals/general/ForYouSettingsPopup';
 import EditStoryItemPopup from 'screens/main/modals/stories/EditStoryItemPopup';
 import IntroInfoPopup from 'screens/main/modals/stories/IntroInfoPopup';
+import { UserContext } from 'library/utils/UserContext';
 
 const Stack = createStackNavigator();
 
-const MainStack = () => {
+const MainStack = ({ navigation }) => {
   const client = useApolloClient();
+
+  const { logoutCTX } = useContext(UserContext);
 
   // ////////////////////////////////////////
   // LOAD INITIAL QUERIES HERE
@@ -99,6 +102,7 @@ const MainStack = () => {
   // this might cause the splash screen to render every time current_user_query runs
   // this should only render upon the first time we are loading the CURRENT_USER_QUERY
   if (!userData) {
+    // logoutCTX(); // cant do this!!
     return <SplashScreen />;
   }
 
