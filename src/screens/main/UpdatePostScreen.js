@@ -123,6 +123,7 @@ const UpdatePostScreen = ({ navigation, route }) => {
                   scrollEnabled={false}
                   textAlignVertical="top"
                   placeholder="What's your update?"
+                  keyboardType="twitter"
                 />
               </View>
             </View>

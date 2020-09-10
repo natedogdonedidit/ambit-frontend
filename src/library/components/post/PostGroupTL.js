@@ -10,7 +10,6 @@ import Update from 'library/components/post/Update';
 
 function PostGroupTL({
   navigation,
-  currentTime,
   post,
   showLastLine = false,
   hideButtons = false,
@@ -33,7 +32,6 @@ function PostGroupTL({
             post={post}
             update={update}
             updateInd={i}
-            currentTime={currentTime}
             navigation={navigation}
             hideButtons={hideButtons}
             showLine={showLine}
@@ -52,7 +50,6 @@ function PostGroupTL({
         <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
           <Post
             post={post}
-            currentTime={currentTime}
             navigation={navigation}
             showLine
             hideButtons={hideButtons}
@@ -72,7 +69,6 @@ function PostGroupTL({
         <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
           <Post
             post={post}
-            currentTime={currentTime}
             navigation={navigation}
             showLine
             hideButtons={hideButtons}
@@ -85,7 +81,6 @@ function PostGroupTL({
             post={post}
             update={post.updates[updateInd]}
             updateInd={updateInd}
-            currentTime={currentTime}
             navigation={navigation}
             hideButtons={hideButtons}
             hideTopLine={hideTopLine}
@@ -103,7 +98,6 @@ function PostGroupTL({
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
         <Post
           post={post}
-          currentTime={currentTime}
           navigation={navigation}
           showLine={showLastLine}
           hideButtons={hideButtons}
@@ -147,7 +141,6 @@ function PostGroupTL({
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
         <Post
           post={post}
-          currentTime={currentTime}
           navigation={navigation}
           showLine
           hideButtons={hideButtons}

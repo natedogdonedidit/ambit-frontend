@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, Alert } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 // import Ionicons from 'react-native-vector-icons/Ionicons';
 
@@ -10,10 +10,13 @@ import defaultStyles from 'styles/defaultStyles';
 import FOLLOW_MUTATION from 'library/mutations/FOLLOW_MUTATION';
 import UNFOLLOW_MUTATION from 'library/mutations/UNFOLLOW_MUTATION';
 import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
-import SINGLE_USER_BASIC from 'library/queries/SINGLE_USER_BASIC';
-import { MinimalUser } from 'library/queries/_fragments';
+import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+// import { MinimalUser } from 'library/queries/_fragments';
+import { UserContext } from 'library/utils/UserContext';
 
-const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStory = false, onRow = false }) => {
+const FollowButton = ({ userToFollowID, username, setFollowersCount, small = false, onStory = false, onRow = false }) => {
+  const { currentUserId } = useContext(UserContext);
+
   const client = useApolloClient();
 
   const [isFollowing, setIsFollowing] = useState(false);
@@ -22,13 +25,19 @@ const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStor
   // MUTATIONS - follow, connect
   const [followUser, { loading: loadingFollow }] = useMutation(FOLLOW_MUTATION, {
     // refetchQueries: () => [{ query: CURRENT_USER_QUERY }, { query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
-    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { where: { id: userToFollowID } } }],
+    refetchQueries: () => [
+      { query: SINGLE_USER_BIO, variables: { where: { id: userToFollowID } } },
+      { query: SINGLE_USER_BIO, variables: { where: { id: currentUserId } } },
+    ],
     onError: () => null,
   });
 
   const [unfollowUser, { loading: loadingUnfollow }] = useMutation(UNFOLLOW_MUTATION, {
     // refetchQueries: () => [{ query: CURRENT_USER_QUERY }, { query: SINGLE_USER_BASIC, variables: { id: userToFollow.id } }],
-    refetchQueries: () => [{ query: SINGLE_USER_BASIC, variables: { where: { id: userToFollowID } } }],
+    refetchQueries: () => [
+      { query: SINGLE_USER_BIO, variables: { where: { id: userToFollowID } } },
+      { query: SINGLE_USER_BIO, variables: { where: { id: currentUserId } } },
+    ],
     onError: () => null,
   });
 
@@ -71,8 +80,19 @@ const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStor
         followUser: [...data.iFollow, userToFollowID],
       },
       update: (proxy, { data: dataReturned }) => {
+        // update the followers count directly
+        proxy.modify({
+          id: proxy.identify({ __typename: 'User', username }),
+          fields: {
+            followersCount(cachedCount) {
+              return cachedCount + 1;
+            },
+          },
+          /* broadcast: false // Include this to prevent automatic query refresh */
+        });
+
         // console.log(data.userLoggedIn === dataReturned.unfollowUser);
-        client.writeQuery({
+        proxy.writeQuery({
           query: CURRENT_USER_FOLLOWING,
           data: {
             iFollow: [...dataReturned.followUser],
@@ -101,8 +121,19 @@ const FollowButton = ({ userToFollowID, setFollowersCount, small = false, onStor
         unfollowUser: newFollowing,
       },
       update: (proxy, { data: dataReturned }) => {
+        // update the followers count directly
+        proxy.modify({
+          id: proxy.identify({ __typename: 'User', username }),
+          fields: {
+            followersCount(cachedCount) {
+              return cachedCount - 1;
+            },
+          },
+          /* broadcast: false // Include this to prevent automatic query refresh */
+        });
+
         // console.log('yo', dataReturned.unfollowUser);
-        client.writeQuery({
+        proxy.writeQuery({
           query: CURRENT_USER_FOLLOWING,
           data: {
             iFollow: [...dataReturned.unfollowUser],

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -22,6 +22,7 @@ import FitImage from 'react-native-fit-image';
 
 import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
 
@@ -62,6 +63,16 @@ const NewPostModal = ({ navigation, route }) => {
 
   const { loading: loadingUser, error, data } = useQuery(CURRENT_USER_QUERY);
 
+  // only used to refetch NETWORK_POSTS upon creation
+  const { data: dataFollowing } = useQuery(CURRENT_USER_FOLLOWING);
+  const network = useMemo(() => {
+    if (dataFollowing && dataFollowing.iFollow) {
+      return [...dataFollowing.iFollow];
+    }
+
+    return [];
+  }, [dataFollowing]);
+
   useEffect(() => {
     if (data && data.userLoggedIn) {
       setLocation(data.userLoggedIn.location || null);
@@ -73,8 +84,25 @@ const NewPostModal = ({ navigation, route }) => {
 
   // MUTATIONS
   const [createOnePost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
-    onError: (error) => {
-      console.log('something went wrong either creating post or notifications', error);
+    refetchQueries: () => [
+      {
+        query: NETWORK_POSTS_QUERY,
+        variables: {
+          orderBy: [
+            {
+              lastUpdated: 'desc',
+            },
+          ],
+          where: {
+            owner: {
+              id: { in: [...network, currentUserId] },
+            },
+          },
+        },
+      },
+    ],
+    onError: (e) => {
+      console.log('something went wrong either creating post or notifications', e);
       // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
       //   { text: 'OK', onPress: () => console.log('OK Pressed') },
       // ]);
@@ -598,6 +626,7 @@ const NewPostModal = ({ navigation, route }) => {
                   placeholder={goal ? 'Tell us about your goal' : "What's going on?"}
                   inputAccessoryViewID="1"
                   onSelectionChange={({ nativeEvent }) => setCursorLocation(nativeEvent.selection.end)}
+                  keyboardType="twitter"
                 >
                   <CoolText>{content}</CoolText>
                 </TextInput>

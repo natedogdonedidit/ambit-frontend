@@ -8,51 +8,14 @@ import MessageButton from 'library/components/UI/buttons/MessageButton';
 import SmallGrayButton from 'library/components/UI/buttons/SmallGrayButton';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import FollowStats from './FollowStats';
 
 // user is from SINGLE_USER_BASIC
 const NameBox = ({ user, navigation, isMyProfile }) => {
-  const [followingCount, setFollowingCount] = useState(user.followingCount);
-  const [followersCount, setFollowersCount] = useState(user.followersCount);
-
-  // sync state with SINGLE_USER_QUERY
-  useEffect(() => {
-    setFollowingCount(user.followingCount);
-  }, [user.followingCount]);
-
-  // sync state with SINGLE_USER_QUERY
-  useEffect(() => {
-    setFollowersCount(user.followersCount);
-  }, [user.followersCount]);
-
   // custom functions
   const renderWebsite = () => {
     if (!user.website) return null;
     return <Text style={{ ...defaultStyles.defaultRegular, color: colors.iosBlue }}>🌎{`  ${user.website}`}</Text>;
-  };
-
-  const renderStats = () => {
-    return (
-      <View style={styles.stats}>
-        <TouchableOpacity
-          style={{ flexDirection: 'row' }}
-          onPress={() => navigation.navigate('Followers', { userID: user.id, followersCount })}
-        >
-          <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
-            {followersCount || 0}
-          </Text>
-          <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Followers</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ flexDirection: 'row' }}
-          onPress={() => navigation.navigate('Following', { userID: user.id, followingCount })}
-        >
-          <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
-            {followingCount || 0}
-          </Text>
-          <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Following</Text>
-        </TouchableOpacity>
-      </View>
-    );
   };
 
   return (
@@ -63,7 +26,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
       )}
       {user.bio && <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>}
       {!!user.website && <View style={styles.detailsBox}>{renderWebsite()}</View>}
-      {renderStats()}
+      <FollowStats username={user.username} navigation={navigation} />
 
       {/* absolute */}
       <View style={styles.topRowButtons}>
@@ -79,7 +42,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
             />
             {/* <ConnectButton onPress={() => null} buttonStyle={{ marginRight: 10 }} /> */}
 
-            <FollowButton userToFollowID={user.id} setFollowersCount={setFollowersCount} />
+            <FollowButton userToFollowID={user.id} username={user.username} />
           </>
         )}
       </View>
@@ -129,13 +92,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 5,
     marginBottom: 20,
-  },
-  stats: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    // marginTop: 2,
-    marginBottom: 15,
-    paddingTop: 2,
   },
   editProfileButton: {
     position: 'absolute',

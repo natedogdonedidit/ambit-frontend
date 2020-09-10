@@ -318,6 +318,20 @@ export const UserProfileFragment = gql`
   ${StoryWithOwner}
 `;
 
+export const UserFollowing = gql`
+  fragment UserFollowing on User {
+    id
+    username
+    following {
+      ...MinimalUser
+    }
+    followers {
+      ...MinimalUser
+    }
+  }
+  ${MinimalUser}
+`;
+
 export const UserWithMessages = gql`
   fragment UserWithMessages on User {
     ...MinimalUser

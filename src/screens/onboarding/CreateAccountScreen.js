@@ -68,9 +68,13 @@ const CreateAccountScreen = (props) => {
         style={styles.input}
         placeholder="Username"
         value={username}
-        onChangeText={(val) => setUsername(val)}
+        onChangeText={(val) => {
+          const noSymbol = val.replace(/[^a-zA-Z0-9_]/g, '');
+          setUsername(noSymbol);
+        }}
         autoCapitalize="none"
         editable={!loading}
+        keyboardType="name-phone-pad" // no underscore, should fix eventually
       />
       <TextInput
         style={styles.input}

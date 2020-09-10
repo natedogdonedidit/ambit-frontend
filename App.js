@@ -13,7 +13,10 @@ import MainStack from 'navigators/MainStack';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  YellowBox.ignoreWarnings(['Non-serializable values were found in the navigation state']);
+  YellowBox.ignoreWarnings([
+    'Non-serializable values were found in the navigation state',
+    'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.',
+  ]);
 
   const { currentUserId, loadingToken } = useContext(UserContext);
 

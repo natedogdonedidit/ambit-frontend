@@ -37,6 +37,7 @@ import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
 import Post from 'library/components/post/Post';
 import Comment from 'library/components/post/Comment';
 import SubComment from 'library/components/post/SubComment';
+import CoolText from 'library/components/UI/CoolText';
 
 const CommentScreen = ({ navigation, route }) => {
   const scrollViewRef = useRef(null);
@@ -77,6 +78,14 @@ const CommentScreen = ({ navigation, route }) => {
       parentCommentForDB = comment;
     }
   }
+
+  // initialize content with the mention if it's a subcomment
+  useEffect(() => {
+    console.log(parentCommentForDB);
+    if (comment && comment.owner && comment.owner.username && content === '') {
+      setContent(`@${comment.owner.username} `);
+    }
+  }, [comment]);
 
   // QUERIES
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -398,7 +407,10 @@ const CommentScreen = ({ navigation, route }) => {
                     // onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
                     inputAccessoryViewID="1"
                     // onBlur={() => setShowMentionList(false)}
-                  />
+                    keyboardType="twitter"
+                  >
+                    <CoolText>{content}</CoolText>
+                  </TextInput>
                 </View>
                 {!!commentImage && (
                   <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingRight: 10 }}>

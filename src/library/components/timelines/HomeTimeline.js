@@ -28,7 +28,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
   const [activeTimeline, setActiveTimeline] = useState(0);
-  const [currentTime] = useState(new Date()); // did this so it wouldnt make a new date on every render, there is a better way
 
   // QUERIES
   const { data: dataFollowing } = useQuery(CURRENT_USER_FOLLOWING);
@@ -57,6 +56,11 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
           lastUpdated: 'desc',
         },
       ],
+      where: {
+        owner: {
+          id: { notIn: [...network, currentUserId] },
+        },
+      },
     },
     onError: (e) => console.log('error loading for you posts', e),
     notifyOnNetworkStatusChange: true,
@@ -82,7 +86,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
       ],
       where: {
         owner: {
-          id: { in: network },
+          id: { in: [...network, currentUserId] },
         },
       },
     },
@@ -322,7 +326,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         //   return <View style={{ height: 15 }} />;
         // }}
         renderItem={({ item }) => {
-          return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
+          return <PostGroupTL post={item} navigation={navigation} />;
         }}
         // viewabilityConfig={{
         //   minimumViewTime: 100,

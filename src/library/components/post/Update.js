@@ -24,7 +24,6 @@ function Update({
   post,
   update,
   updateInd,
-  currentTime,
   navigation,
   showDetails = false,
   hideButtons = false,
@@ -35,6 +34,7 @@ function Update({
   // HOOKS
   const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
+  const currentTime = new Date();
 
   // const [isLiked, setIsLiked] = useState(update.likedByMe); // this is the source of truth
   // const [likesCount, setLikesCount] = useState(update.likesCount); // this is the source of truth

@@ -218,12 +218,23 @@ const SubComment = ({
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => navigation.navigate('Profile', { profileId: comment.owner.id })}
-              hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
+              hitSlop={{ top: 5, left: 0, bottom: 20, right: 20 }}
+              style={{ flexDirection: 'row', alignItems: 'center' }}
             >
               <View style={styles.name}>
-                <Text style={{ ...defaultStyles.largeSemibold }} numberOfLines={1}>
-                  {comment.owner.name}
-                </Text>
+                <View style={{ flexShrink: 1 }}>
+                  <Text style={{ ...defaultStyles.largeSemibold, paddingRight: 3 }} numberOfLines={1}>
+                    {comment.owner.name}
+                    <Text style={{ ...defaultStyles.largeMute }}> @{comment.owner.username} </Text>
+                  </Text>
+                </View>
+                <View style={{ flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
+                  <Icon name="circle" solid size={2} color={colors.blueGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
+                  <Text style={{ ...defaultStyles.largeMute }} numberOfLines={1}>
+                    {timeDiff}
+                    {period}
+                  </Text>
+                </View>
               </View>
             </TouchableOpacity>
 
@@ -232,24 +243,6 @@ const SubComment = ({
                 <Chevron onPress={handleMoreButton} />
               </View>
             )}
-          </View>
-
-          <View style={styles.headlineRow}>
-            {comment.owner.headline && (
-              <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>{comment.owner.headline}</Text>
-            )}
-            {comment.owner.headline && (
-              <Icon
-                name="circle"
-                solid
-                size={3}
-                color={colors.blueGray}
-                style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
-              />
-            )}
-            <Text style={{ ...defaultStyles.smallMute }}>
-              {timeDiff} {period}
-            </Text>
           </View>
 
           {!!comment.content && (
@@ -344,6 +337,7 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingBottom: 4,
   },
   name: {
     flexDirection: 'row',
@@ -355,7 +349,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   content: {
-    paddingBottom: 6,
+    paddingBottom: 8,
   },
   media: {
     width: '100%',

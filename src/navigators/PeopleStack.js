@@ -8,6 +8,11 @@ import PostScreen from 'screens/main/PostScreen';
 import PostMatchesScreen from 'screens/main/PostMatchesScreen';
 import UpdateScreen from 'screens/main/UpdateScreen';
 import SearchScreen from 'screens/main/SearchScreen';
+import CommentScreen from 'screens/main/CommentScreen';
+import UpdatePostScreen from 'screens/main/UpdatePostScreen';
+import TopicScreen from 'screens/main/TopicScreen';
+import FollowersScreen from 'screens/main/FollowersScreen';
+import FollowingScreen from 'screens/main/FollowingScreen';
 
 const Stack = createStackNavigator();
 
@@ -26,7 +31,12 @@ const PeopleStack = ({ navigation, route }) => {
       <Stack.Screen name="Post" component={PostScreen} />
       <Stack.Screen name="PostMatches" component={PostMatchesScreen} />
       <Stack.Screen name="Update" component={UpdateScreen} />
+      <Stack.Screen name="UpdatePost" component={UpdatePostScreen} />
       <Stack.Screen name="Chat" component={ChatScreen} />
+      <Stack.Screen name="Comment" component={CommentScreen} />
+      <Stack.Screen name="Topic" component={TopicScreen} />
+      <Stack.Screen name="Followers" component={FollowersScreen} />
+      <Stack.Screen name="Following" component={FollowingScreen} />
       <Stack.Screen
         name="Search"
         component={SearchScreen}

@@ -25,18 +25,11 @@ import { UserContext } from 'library/utils/UserContext';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import CoolText from 'library/components/UI/CoolText';
 
-function Post({
-  post,
-  currentTime,
-  navigation,
-  showDetails = false,
-  showLine = false,
-  hideButtons = false,
-  disableVideo = false,
-}) {
+function Post({ post, navigation, showDetails = false, showLine = false, hideButtons = false, disableVideo = false }) {
   // HOOKS
   const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
+  const currentTime = new Date();
 
   // useEffect(() => {
   //   console.log('post data', post);

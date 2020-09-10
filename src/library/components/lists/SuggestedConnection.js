@@ -26,7 +26,7 @@ const SuggestedConnection = ({ navigation, user, showMessage, showFollow }) => {
           {/* {user.location && <Text style={defaultStyles.defaultMute}>{user.location}</Text>} */}
           {user.bio && <Text style={{ ...defaultStyles.defaultText, paddingTop: 8 }}>{user.bio}</Text>}
           <View style={styles.absoluteButtons}>
-            <FollowButton userToFollowID={user.id} small onRow />
+            <FollowButton userToFollowID={user.id} username={user.username} small onRow />
             <MessageButton
               onPress={() => navigation.navigate('Chat', { otherUserPassedIn: user })}
               buttonStyle={{ marginLeft: 6 }}
