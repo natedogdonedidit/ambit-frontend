@@ -9,6 +9,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference, isCustomGoalTest } from 'library/utils';
 import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
+import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
+import UNLIKE_POST_MUTATION from 'library/mutations/UNLIKE_POST_MUTATION';
 import { BasicPost } from 'library/queries/_fragments';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -40,7 +42,7 @@ function Post({ post, navigation, showDetails = false, showLine = false, hideBut
   // const [likesCount, setLikesCount] = useState(post.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
-  const [likePost] = useMutation(UPDATE_POST_MUTATION, {
+  const [likePost] = useMutation(LIKE_POST_MUTATION, {
     variables: {
       where: {
         id: post.id,
@@ -53,7 +55,7 @@ function Post({ post, navigation, showDetails = false, showLine = false, hideBut
     },
     optimisticResponse: {
       __typename: 'Mutation',
-      updateOnePost: {
+      likePost: {
         __typename: 'Post',
         ...post,
         likedByMe: true,
@@ -62,7 +64,7 @@ function Post({ post, navigation, showDetails = false, showLine = false, hideBut
     },
   });
 
-  const [unlikePost] = useMutation(UPDATE_POST_MUTATION, {
+  const [unlikePost] = useMutation(UNLIKE_POST_MUTATION, {
     variables: {
       where: {
         id: post.id,
@@ -75,7 +77,7 @@ function Post({ post, navigation, showDetails = false, showLine = false, hideBut
     },
     optimisticResponse: {
       __typename: 'Mutation',
-      updateOnePost: {
+      unlikePost: {
         __typename: 'Post',
         ...post,
         likedByMe: false,
@@ -411,7 +413,7 @@ function Post({ post, navigation, showDetails = false, showLine = false, hideBut
           />
           {showLine && <View style={styles.threadLine} />}
         </View>
-        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 0 }]}>
+        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}

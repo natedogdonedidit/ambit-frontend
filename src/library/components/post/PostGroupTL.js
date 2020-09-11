@@ -109,35 +109,8 @@ function PostGroupTL({
   }
 
   // if there are updates, show latest one
-  // return (
-  //   <View style={{ borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }}>
-  //     <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
-  //       <Post
-  //         post={post}
-  //         currentTime={currentTime}
-  //         navigation={navigation}
-  //         showLine
-  //         hideButtons={hideButtons}
-  //         showDetails={showDetails}
-  //         disableVideo={disableVideo}
-  //       />
-  //     </TouchableOpacity>
-  //     <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
-  //       <Update
-  //         post={post}
-  //         update={post.updates[post.updates.length - 1]}
-  //         updateInd={post.updates.length - 1}
-  //         currentTime={currentTime}
-  //         navigation={navigation}
-  //         hideButtons={hideButtons}
-  //         hideTopLine
-  //         disableVideo
-  //       />
-  //     </TouchableOpacity>
-  //   </View>
-  // );
   return (
-    <>
+    <View style={{ borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }}>
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
         <Post
           post={post}
@@ -147,19 +120,45 @@ function PostGroupTL({
           showDetails={showDetails}
           disableVideo={disableVideo}
         />
-        <View style={styles.showLatestButton}>
-          <View style={styles.leftColumn}>
-            <ProfilePic size="small" user={post.owner} navigation={navigation} enableIntro={false} enableStory={false} />
-          </View>
-          <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Post', { post })} style={styles.rightColumn}>
-            <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>
-              Show {post.updates.length > 1 ? `${post.updates.length} ` : ''}update{post.updates.length > 1 ? 's' : ''}
-            </Text>
-          </TouchableOpacity>
-        </View>
       </TouchableOpacity>
-    </>
+      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <Update
+          post={post}
+          update={post.updates[post.updates.length - 1]}
+          updateInd={post.updates.length - 1}
+          navigation={navigation}
+          hideButtons={hideButtons}
+          hideTopLine
+          disableVideo
+        />
+      </TouchableOpacity>
+    </View>
   );
+
+  // return (
+  //   <>
+  //     <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+  //       <Post
+  //         post={post}
+  //         navigation={navigation}
+  //         showLine
+  //         hideButtons={hideButtons}
+  //         showDetails={showDetails}
+  //         disableVideo={disableVideo}
+  //       />
+  //       <View style={styles.showLatestButton}>
+  //         <View style={styles.leftColumn}>
+  //           <ProfilePic size="small" user={post.owner} navigation={navigation} enableIntro={false} enableStory={false} />
+  //         </View>
+  //         <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Post', { post })} style={styles.rightColumn}>
+  //           <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>
+  //             Show {post.updates.length > 1 ? `${post.updates.length} ` : ''}update{post.updates.length > 1 ? 's' : ''}
+  //           </Text>
+  //         </TouchableOpacity>
+  //       </View>
+  //     </TouchableOpacity>
+  //   </>
+  // );
 }
 
 const styles = StyleSheet.create({

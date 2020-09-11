@@ -69,22 +69,16 @@ const ActiveGoalMatchesItem = ({ navigation, post, loadingPost }) => {
       );
     }
 
-    if (matches.length > 0) {
-      return (
-        <Text style={{ paddingRight: 15 }}>
-          <Text style={defaultStyles.defaultText}>
-            Found {matches.length} potential match{matches.length > 1 && 'es'} for your goal to{' '}
-          </Text>
-          <Text
-            style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}
-          >{`${post.goal}`}</Text>
-          <Text style={{ ...defaultStyles.defaultText }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
-          <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>{name}</Text>
+    return (
+      <Text style={{ paddingRight: 15 }}>
+        <Text style={defaultStyles.defaultText}>
+          Found {matches.length} potential match{matches.length > 1 && 'es'} for your goal to{' '}
         </Text>
-      );
-    }
-
-    return null;
+        <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>{`${post.goal}`}</Text>
+        <Text style={{ ...defaultStyles.defaultText }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>{name}</Text>
+      </Text>
+    );
   };
 
   const renderProfilePics = () => {
@@ -100,6 +94,14 @@ const ActiveGoalMatchesItem = ({ navigation, post, loadingPost }) => {
           </View>
         );
       });
+    }
+
+    if (matches.length <= 0) {
+      return (
+        <View style={styles.emptyComponent}>
+          <Text style={{ ...defaultStyles.defaultMuteItalic }}>No matches yet...check back later!</Text>
+        </View>
+      );
     }
 
     return matches.map((user, i) => {
@@ -121,8 +123,13 @@ const ActiveGoalMatchesItem = ({ navigation, post, loadingPost }) => {
     });
   };
 
-  if ((data && data.singlePostMatches && data.singlePostMatches.length <= 0) || error) {
+  if (error) {
     return null;
+    // return (
+    //   <View style={styles.emptyComponent}>
+    //     <Text style={{ ...defaultStyles.defaultMuteItalic, textAlign: 'center' }}>No matches yet...check back later!</Text>
+    //   </View>
+    // );
   }
 
   return (
@@ -196,6 +203,10 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: colors.lightGray,
     marginBottom: 4,
+  },
+  emptyComponent: {
+    backgroundColor: colors.white,
+    paddingTop: 16,
   },
 });
 

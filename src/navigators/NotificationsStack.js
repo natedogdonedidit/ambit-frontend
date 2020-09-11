@@ -9,10 +9,6 @@ import PostScreen from 'screens/main/PostScreen';
 import PostMatchesScreen from 'screens/main/PostMatchesScreen';
 import UpdateScreen from 'screens/main/UpdateScreen';
 
-// import { UserContext } from 'library/utils/UserContext';
-// import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
-// import NEW_NOTIFICATION_SUBSCRIPTION from 'library/subscriptions/NEW_NOTIFICATION_SUBSCRIPTION';
-
 const Stack = createStackNavigator();
 
 const NotificationsStack = ({ navigation, route }) => {
@@ -28,7 +24,6 @@ const NotificationsStack = ({ navigation, route }) => {
   return (
     <Stack.Navigator initialRouteName="Notifications" headerMode="none">
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
-      {/* <Stack.Screen name="Notifications" component={BlankScreen} /> */}
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Post" component={PostScreen} />
       <Stack.Screen name="PostMatches" component={PostMatchesScreen} />

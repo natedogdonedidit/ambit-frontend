@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   dot: {
     position: 'absolute',
     top: -7,
-    right: -8,
+    right: -7,
     justifyContent: 'center',
     alignItems: 'center',
     height: 18,
@@ -30,6 +30,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     borderRadius: 9,
     backgroundColor: colors.peach,
+    // borderColor: 'white',
+    // borderWidth: 1,
+    ...defaultStyles.shadow3,
   },
 });
 

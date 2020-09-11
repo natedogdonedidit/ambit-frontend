@@ -7,7 +7,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
-import UPDATE_UPDATE_MUTATION from 'library/mutations/UPDATE_UPDATE_MUTATION';
+import LIKE_UPDATE_MUTATION from 'library/mutations/LIKE_UPDATE_MUTATION';
+import UNLIKE_UPDATE_MUTATION from 'library/mutations/UNLIKE_UPDATE_MUTATION';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Heart from 'library/components/UI/icons/Heart';
@@ -40,7 +41,7 @@ function Update({
   // const [likesCount, setLikesCount] = useState(update.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
-  const [likeUpdate] = useMutation(UPDATE_UPDATE_MUTATION, {
+  const [likeUpdate] = useMutation(LIKE_UPDATE_MUTATION, {
     variables: {
       where: { id: update.id },
       data: {
@@ -61,7 +62,7 @@ function Update({
     onError: () => null,
   });
 
-  const [unlikeUpdate] = useMutation(UPDATE_UPDATE_MUTATION, {
+  const [unlikeUpdate] = useMutation(UNLIKE_UPDATE_MUTATION, {
     variables: {
       where: { id: update.id },
       data: {
@@ -203,11 +204,22 @@ function Update({
               activeOpacity={0.8}
               onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
               hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
+              style={{ flexDirection: 'row', alignItems: 'center' }}
             >
               <View style={styles.name}>
-                <Text style={{ ...defaultStyles.largeSemibold }} numberOfLines={1}>
-                  {post.owner.name}
-                </Text>
+                <View style={{ flexShrink: 1 }}>
+                  <Text style={{ ...defaultStyles.largeSemibold, paddingRight: 3 }} numberOfLines={1}>
+                    {post.owner.name}
+                    <Text style={{ ...defaultStyles.largeMute }}> @{post.owner.username} </Text>
+                  </Text>
+                </View>
+                <View style={{ flexGrow: 1, flexDirection: 'row', alignItems: 'center' }}>
+                  <Icon name="circle" solid size={2} color={colors.blueGray} style={{ alignSelf: 'center', paddingRight: 5 }} />
+                  <Text style={{ ...defaultStyles.largeMute }} numberOfLines={1}>
+                    {timeDiff}
+                    {period}
+                  </Text>
+                </View>
               </View>
             </TouchableOpacity>
 
@@ -216,20 +228,6 @@ function Update({
                 <Chevron onPress={() => handleMoreButton()} />
               </View>
             )}
-          </View>
-
-          <View style={styles.headlineRow}>
-            <Text style={{ ...defaultStyles.smallMute, paddingRight: 5 }}>Update #{updateInd + 1}</Text>
-            <Icon
-              name="circle"
-              solid
-              size={3}
-              color={colors.blueGray}
-              style={{ opacity: 0.6, alignSelf: 'center', paddingRight: 5 }}
-            />
-            <Text style={{ ...defaultStyles.smallMute }}>
-              {timeDiff} {period}
-            </Text>
           </View>
 
           <View style={styles.content}>
@@ -275,7 +273,7 @@ function Update({
                 <View style={styles.buttonGroup}>
                   <View style={styles.button}>
                     <Comment onPress={() => navigation.navigate('Comment', { post, update, isUpdate: true })} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount}</Text>
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount || ''}</Text>
                   </View>
                   <View style={styles.button}>
                     <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={handleLike} />
@@ -285,7 +283,7 @@ function Update({
                   </View>
                   <View style={styles.button}>
                     <Share onPress={() => null} />
-                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.sharesCount}</Text>
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.sharesCount || ''}</Text>
                   </View>
                 </View>
               </View>
@@ -352,6 +350,7 @@ const styles = StyleSheet.create({
   topRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingBottom: 4,
   },
   headlineRow: {
     flexDirection: 'row',

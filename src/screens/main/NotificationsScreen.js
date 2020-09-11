@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, FlatList, Text, ActivityIndicator, RefreshControl, Animated, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery, useMutation } from '@apollo/client';
@@ -12,9 +12,11 @@ import CLEAR_NOTIFICATIONS_MUTATION from 'library/mutations/CLEAR_NOTIFICATIONS_
 
 import Loader from 'library/components/UI/Loader';
 import NotificationListItem from 'library/components/lists/NotificationListItem';
+import { UserContext } from 'library/utils/UserContext';
 
 const NotificationsScreen = ({ navigation }) => {
   const [scrollY] = useState(new Animated.Value(0));
+  const { currentUserId } = useContext(UserContext);
 
   const insets = useSafeAreaInsets();
   const [top, setTop] = useState(insets.top); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
@@ -30,13 +32,14 @@ const NotificationsScreen = ({ navigation }) => {
     //   proxy.writeQuery({
     //     query: NOTIFICATIONS_QUERY,
     //     data: {
-    //       myNotifications: dataReturned.clearMyNotifications,
+    //       notifications: dataReturned.clearMyNotifications,
     //     },
     //   });
     // },
     onError: (e) => {
       console.log(e);
     },
+    onCompleted: () => refetch(),
   });
 
   useEffect(() => {
@@ -47,6 +50,11 @@ const NotificationsScreen = ({ navigation }) => {
 
   // QUERIES
   const { error, data, refetch, networkStatus } = useQuery(NOTIFICATIONS_QUERY, {
+    variables: {
+      where: { targetId: { equals: currentUserId } },
+      first: 20,
+      orderBy: [{ createdAt: 'desc' }],
+    },
     notifyOnNetworkStatusChange: true,
   });
 
@@ -64,7 +72,7 @@ const NotificationsScreen = ({ navigation }) => {
     console.log(error);
   }
 
-  if (loading || error) {
+  if (loading || error || !data) {
     return (
       <View style={{ ...styles.container, paddingTop: top }}>
         <HeaderNotifications
@@ -78,7 +86,20 @@ const NotificationsScreen = ({ navigation }) => {
   }
 
   // PREPARE DATE FOR GIFTED CHAT
-  const { myNotifications } = data;
+  const { notifications } = data;
+  // console.log(notifications);
+  if (!data || !notifications) {
+    return (
+      <View style={{ ...styles.container, paddingTop: top }}>
+        <HeaderNotifications
+          handleMiddle={() => null}
+          handleRight={() => navigation.navigate('Search')}
+          navigation={navigation}
+        />
+        <Loader loading={loading} size="small" full={false} backgroundColor={colors.lightGray} />
+      </View>
+    );
+  }
 
   return (
     <View style={{ ...styles.container, paddingTop: top }}>
@@ -86,7 +107,7 @@ const NotificationsScreen = ({ navigation }) => {
       <HeaderNotifications handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
 
       {/* This is the loading animation */}
-      <Animated.View
+      {/* <Animated.View
         style={{
           position: 'absolute',
           top: 15,
@@ -121,9 +142,9 @@ const NotificationsScreen = ({ navigation }) => {
             hidesWhenStopped={false}
           />
         </View>
-      </Animated.View>
+      </Animated.View> */}
       <FlatList
-        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
+        // refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={refetch}
         refreshing={refetching}
         initialNumToRender={20} // speeds up load time
@@ -145,7 +166,7 @@ const NotificationsScreen = ({ navigation }) => {
           <View
             style={[
               { height: 15 },
-              myNotifications.length > 0 && {
+              notifications.length > 0 && {
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 borderBottomColor: colors.borderBlack,
               },
@@ -155,7 +176,7 @@ const NotificationsScreen = ({ navigation }) => {
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>No notifications</Text>
         }
-        data={myNotifications}
+        data={notifications}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
           // console.log(item);

@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { UpdateFragment } from 'library/queries/_fragments';
 
 const LIKE_UPDATE_MUTATION = gql`
-  mutation LIKE_UPDATE_MUTATION($updateId: ID!) {
-    likeUpdate(updateId: $updateId) {
+  mutation LIKE_UPDATE_MUTATION($where: UpdateWhereUniqueInput!, $data: UpdateUpdateInput!) {
+    likeUpdate(where: $where, data: $data) {
       ...UpdateFragment
     }
   }

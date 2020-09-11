@@ -28,15 +28,20 @@ const TabsNavigator = () => {
   const [getMessages, { data: userData, refetch: refetchMessages }] = useLazyQuery(CURRENT_USER_MESSAGES);
 
   // NOTIFICATIONS QUERY
-  // const [getNotifications, { data: notificationsData }] = useLazyQuery(NOTIFICATIONS_QUERY, {
-  //   pollInterval: 60000, // 60 seconds
-  // });
+  const [getNotifications, { data: notificationsData }] = useLazyQuery(NOTIFICATIONS_QUERY, {
+    variables: {
+      where: { targetId: { equals: currentUserId } },
+      first: 20,
+      orderBy: [{ createdAt: 'desc' }],
+    },
+    pollInterval: 60000, // 60 seconds
+  });
 
   // on first render - set a timer for 10s, then get initial batch of notifications & messages
   useEffect(() => {
     const timer = setTimeout(() => {
       getMessages(); // this just gets the information for the Group & latest message & unread
-      // getNotifications();
+      getNotifications();
     }, 5000);
     return () => clearTimeout(timer);
   }, []);
@@ -51,18 +56,18 @@ const TabsNavigator = () => {
   }, [userData]);
 
   // UPDATE # OF UNSEEN NOTIFICATIONS EVERYTIME NEW NOTIFICATIONS DATA COMES IN
-  // const unReadNotificationsCount = useMemo(() => {
-  //   if (notificationsData && notificationsData.myNotifications) {
-  //     const unRead = [...notificationsData.myNotifications].reduce((num, notification) => {
-  //       if (!notification.seen) return num + 1;
-  //       return num;
-  //     }, 0);
+  const unReadNotificationsCount = useMemo(() => {
+    if (notificationsData && notificationsData.notifications) {
+      const unRead = [...notificationsData.notifications].reduce((num, notification) => {
+        if (!notification.seen) return num + 1;
+        return num;
+      }, 0);
 
-  //     return unRead;
-  //   }
+      return unRead;
+    }
 
-  //   return 0;
-  // }, [notificationsData]);
+    return 0;
+  }, [notificationsData]);
 
   // SUBSCRIBE TO NEW MESSAGES IN GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
   useSubscription(MESSAGE_SUBSCRIPTION, {
@@ -125,13 +130,13 @@ const TabsNavigator = () => {
         component={PeopleStack}
         options={{ tabBarIcon: ({ focused, color, size }) => <Icon name="user-friends" size={22} color={color} solid /> }}
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="NotificationsStack"
         component={NotificationsStack}
         options={{
           tabBarIcon: ({ focused, color, size }) => <BellDot color={color} unReadNotifications={unReadNotificationsCount || 0} />,
         }}
-      /> */}
+      />
       <Tabs.Screen
         name="InboxStack"
         component={InboxStack}

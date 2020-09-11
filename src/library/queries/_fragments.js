@@ -349,14 +349,11 @@ export const NotificationFragment = gql`
   fragment NotificationFragment on Notification {
     id
     createdAt
+    style
     target {
       ...MinimalUser
     }
-    style
-    user {
-      ...MinimalUser
-    }
-    users {
+    from {
       ...MinimalUser
     }
     post {

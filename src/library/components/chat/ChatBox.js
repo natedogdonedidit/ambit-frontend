@@ -28,7 +28,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
   const { error: errorMessages, data, fetchMore, networkStatus } = useQuery(MESSAGES_CONNECTION, {
     variables: {
       where: { to: { id: { equals: convo.id } } },
-      first: 10,
+      // first: 10,
       orderBy: [{ createdAt: 'desc' }],
     },
     notifyOnNetworkStatusChange: true,
@@ -218,23 +218,23 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
         onSend={(payload) => onSend(payload)}
         user={currentUserFormated}
         renderBubble={renderBubble}
-        loadEarlier
-        isLoadingEarlier={fetchingMore}
-        onLoadEarlier={() => {
-          console.log('load more messages now');
-          if (ok) {
-            const lastMessage = messageNodes[messageNodes.length - 1];
-            fetchMore({
-              query: MESSAGES_CONNECTION,
-              variables: {
-                where: { to: { id: { equals: convo.id } } },
-                first: 10,
-                after: { id: lastMessage.id },
-                orderBy: [{ createdAt: 'desc' }],
-              },
-            });
-          }
-        }}
+        // loadEarlier
+        // isLoadingEarlier={fetchingMore}
+        // onLoadEarlier={() => {
+        //   console.log('load more messages now');
+        //   if (ok) {
+        //     const lastMessage = messageNodes[messageNodes.length - 1];
+        //     fetchMore({
+        //       query: MESSAGES_CONNECTION,
+        //       variables: {
+        //         where: { to: { id: { equals: convo.id } } },
+        //         first: 10,
+        //         after: { id: lastMessage.id },
+        //         orderBy: [{ createdAt: 'desc' }],
+        //       },
+        //     });
+        //   }
+        // }}
       />
     </View>
   );

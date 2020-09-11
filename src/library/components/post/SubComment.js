@@ -8,7 +8,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import DELETE_COMMENT_MUTATION from 'library/mutations/DELETE_COMMENT_MUTATION';
-import UPDATE_COMMENT_MUTATION from 'library/mutations/UPDATE_COMMENT_MUTATION';
+import LIKE_COMMENT_MUTATION from 'library/mutations/LIKE_COMMENT_MUTATION';
+import UNLIKE_COMMENT_MUTATION from 'library/mutations/UNLIKE_COMMENT_MUTATION';
 import { CommentFragment } from 'library/queries/_fragments';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -35,7 +36,7 @@ const SubComment = ({
   // const [likesCount, setLikesCount] = useState(comment.likesCount); // this is the source of truth
   // ////////////////////////////////////////////////////////////////
   // MUTATIONS - like, share, delete
-  const [likeComment] = useMutation(UPDATE_COMMENT_MUTATION, {
+  const [likeComment] = useMutation(LIKE_COMMENT_MUTATION, {
     variables: {
       where: { id: comment.id },
       data: {
@@ -55,7 +56,7 @@ const SubComment = ({
     },
   });
 
-  const [unlikeComment] = useMutation(UPDATE_COMMENT_MUTATION, {
+  const [unlikeComment] = useMutation(UNLIKE_COMMENT_MUTATION, {
     variables: {
       where: { id: comment.id },
       data: {

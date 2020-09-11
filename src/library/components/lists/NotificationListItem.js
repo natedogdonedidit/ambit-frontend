@@ -11,7 +11,19 @@ import { DAYS_TILL_INACTIVE } from 'styles/constants';
 import CoolText from 'library/components/UI/CoolText';
 
 const NotificationListItem = ({ navigation, notification }) => {
-  const { style, createdAt, user, users, post, update, comment } = notification;
+  const { style, createdAt, from, post, update, comment } = notification;
+
+  // incase the post/comment/update has been deleted
+  if (style === 'LIKE_POST' && !post) return null;
+  if (style === 'LIKE_UPDATE' && !update) return null;
+  if (style === 'LIKE_COMMENT' && !comment) return null;
+  if (style === 'COMMENT_POST' && !comment) return null;
+  if (style === 'COMMENT_UPDATE' && !comment) return null;
+  if (style === 'COMMENT_COMMENT' && !comment) return null;
+  if (style === 'NEW_FOLLOWER' && !from) return null;
+  if (style === 'MENTIONED_IN_POST' && !post) return null;
+  if (style === 'MENTIONED_IN_COMMENT' && !comment) return null;
+  if (style === 'MENTIONED_IN_UPDATE' && !post) return null;
 
   // CONSTANTS for dates
   const currentTime = new Date();
@@ -21,9 +33,6 @@ const NotificationListItem = ({ navigation, notification }) => {
   // CUSTOM FUNCTIONS
   const getNotificationOnPress = () => {
     if (style === 'LIKE_POST') {
-      return navigation.navigate('Post', { post });
-    }
-    if (style === 'LIKE_GOAL') {
       return navigation.navigate('Post', { post });
     }
     if (style === 'LIKE_UPDATE') {
@@ -38,9 +47,6 @@ const NotificationListItem = ({ navigation, notification }) => {
 
       return null;
     }
-    if (style === 'COMMENT_GOAL') {
-      return navigation.navigate('Post', { post: comment.parentPost });
-    }
     if (style === 'COMMENT_POST') {
       return navigation.navigate('Post', { post: comment.parentPost });
     }
@@ -51,7 +57,7 @@ const NotificationListItem = ({ navigation, notification }) => {
       return navigation.navigate('Post', { post: comment.parentPost });
     }
     if (style === 'NEW_FOLLOWER') {
-      return navigation.navigate('Profile', { profileId: user.id });
+      return navigation.navigate('Profile', { profileId: from.id });
     }
     if (style === 'MENTIONED_IN_POST') {
       return navigation.navigate('Post', { post });
@@ -70,61 +76,31 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'LIKE_POST') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> liked your post</Text>
-        </Text>
-      );
-    }
-    if (style === 'LIKE_GOAL') {
-      const name = post.subField ? getTopicFromID(post.subField.topicID).name : '';
-
-      return (
-        <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.defaultLight}> liked your goal</Text>
-          <Text>
-            <Text style={{ ...defaultStyles.defaultLight }}> to</Text>
-            <Text
-              style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}
-            >{` ${post.goal}`}</Text>
-            {post.subField && (
-              <>
-                <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(post.goal, 'adverb')} `}</Text>
-                <Text style={{ ...defaultStyles.defaultSemibold, color: getGoalInfo(post.goal, 'primaryColor') }}>{name}</Text>
-              </>
-            )}
-          </Text>
         </Text>
       );
     }
     if (style === 'LIKE_UPDATE') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.defaultText}> liked your update</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
+          <Text style={defaultStyles.defaultLight}> liked your update</Text>
         </Text>
       );
     }
     if (style === 'LIKE_COMMENT') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> liked your comment</Text>
-        </Text>
-      );
-    }
-    if (style === 'COMMENT_GOAL') {
-      return (
-        <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
-          <Text style={defaultStyles.defaultLight}> commented on your goal</Text>
         </Text>
       );
     }
     if (style === 'COMMENT_POST') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> commented on your post</Text>
         </Text>
       );
@@ -132,7 +108,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'COMMENT_UPDATE') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> commented on your update</Text>
         </Text>
       );
@@ -140,7 +116,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'COMMENT_COMMENT') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> replied to your comment</Text>
         </Text>
       );
@@ -149,7 +125,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'NEW_FOLLOWER') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> followed you</Text>
         </Text>
       );
@@ -158,7 +134,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'MENTIONED_IN_POST') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> mentioned you in a {post.goal ? 'goal' : 'post'}</Text>
         </Text>
       );
@@ -167,7 +143,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'MENTIONED_IN_COMMENT') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> mentioned you in a comment</Text>
         </Text>
       );
@@ -176,7 +152,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'MENTIONED_IN_UPDATE') {
       return (
         <Text>
-          <Text style={defaultStyles.defaultSemibold}>{user.name}</Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> mentioned you in an update</Text>
         </Text>
       );
@@ -186,21 +162,6 @@ const NotificationListItem = ({ navigation, notification }) => {
   };
 
   const getNotificationContent = () => {
-    if (style === 'LIKE_POST') {
-      return post.content;
-    }
-    if (style === 'LIKE_GOAL') {
-      return '';
-    }
-    if (style === 'LIKE_UPDATE') {
-      return update.content;
-    }
-    if (style === 'LIKE_COMMENT') {
-      return comment.content;
-    }
-    if (style === 'COMMENT_GOAL') {
-      return comment.content;
-    }
     if (style === 'COMMENT_POST') {
       return comment.content;
     }
@@ -216,9 +177,6 @@ const NotificationListItem = ({ navigation, notification }) => {
     if (style === 'MENTIONED_IN_COMMENT') {
       return comment.content;
     }
-    // if (style === 'MENTIONED_IN_UPDATE') {
-    //   return post.content;
-    // }
 
     return '';
   };
@@ -228,7 +186,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={getNotificationOnPress}>
       <View style={styles.connection}>
         <View style={styles.profilePicView}>
-          <ProfilePic size="medium" navigation={navigation} user={user} />
+          <ProfilePic size="medium" navigation={navigation} user={from} />
         </View>
         <View style={styles.rightSide}>
           <View style={styles.headlineRow}>

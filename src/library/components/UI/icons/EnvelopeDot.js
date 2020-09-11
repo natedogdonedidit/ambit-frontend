@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
     borderRadius: 9,
     backgroundColor: colors.peach,
+    ...defaultStyles.shadow3,
   },
 });
 

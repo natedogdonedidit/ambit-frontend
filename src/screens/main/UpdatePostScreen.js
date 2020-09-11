@@ -9,6 +9,7 @@ import PostGroupTL from 'library/components/post/PostGroupTL';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
 import SINGLE_POST_QUERY from 'library/queries/SINGLE_POST_QUERY';
+import CoolText from 'library/components/UI/CoolText';
 
 const UpdatePostScreen = ({ navigation, route }) => {
   // params
@@ -116,7 +117,6 @@ const UpdatePostScreen = ({ navigation, route }) => {
                 <TextInput
                   style={styles.input}
                   onChangeText={(val) => setUpdateText(val)}
-                  value={updateText}
                   autoFocus
                   autoCompleteType="off"
                   multiline
@@ -124,7 +124,9 @@ const UpdatePostScreen = ({ navigation, route }) => {
                   textAlignVertical="top"
                   placeholder="What's your update?"
                   keyboardType="twitter"
-                />
+                >
+                  <CoolText>{updateText}</CoolText>
+                </TextInput>
               </View>
             </View>
           </View>
