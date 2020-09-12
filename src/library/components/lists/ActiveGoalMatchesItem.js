@@ -10,23 +10,25 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import { getGoalInfo, getTopicFromID } from 'library/utils';
 import POST_MATCHES_QUERY from 'library/queries/POST_MATCHES_QUERY';
 
-const ActiveGoalMatchesItem = ({ navigation, post, loadingPost }) => {
+const ActiveGoalMatchesItem = ({ navigation, post, loadingPost, triggerRefresh }) => {
   const [matches, setMatches] = useState([]);
 
   // get the matches for that goal
-  const [getMatches, { loading: loadingMatches, error, data }] = useLazyQuery(POST_MATCHES_QUERY);
+  const [getMatches, { loading: loadingMatches, error, data }] = useLazyQuery(POST_MATCHES_QUERY, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   useEffect(() => {
     if (!loadingPost && !!post && post.id) {
       getMatches({ variables: { postId: post.id } });
     }
-  }, [post, loadingPost]);
+  }, [post, loadingPost, triggerRefresh]);
 
   useEffect(() => {
-    if (data && data.singlePostMatches && data.singlePostMatches.length > 0) {
+    if (data && data.singlePostMatches && data.singlePostMatches.length >= 0) {
       setMatches(data.singlePostMatches);
     }
-  }, [data]);
+  }, [data, triggerRefresh]);
 
   const renderIcon = () => {
     if (loadingPost || !post) {

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -17,7 +17,7 @@ import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 // 2. RENDER A COMPONENT FOR EACH GOAL
 // 3. INSIDE THE COMPONENT - QUERY MATCHES (WHILE LOADING - SHOW SKELETON PROFILE PICS)
 
-const MatchesGoals = ({ navigation, title }) => {
+const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
   const { currentUserId } = useContext(UserContext);
 
   // GET "MY GOALS" (THIS SHOULD HAVE ALREADY BEEN CALLED ON HOMESCREEN - SO JUST PIGGY BACKING OFF THE INITIAL QUERY)
@@ -52,6 +52,10 @@ const MatchesGoals = ({ navigation, title }) => {
     notifyOnNetworkStatusChange: true,
   });
 
+  useEffect(() => {
+    refetchPostsMyGoals();
+  }, [triggerRefresh]);
+
   // my goals
   const refetchingPostsMyGoals = networkStatusPostsMyGoals === 4;
   const fetchingMorePostsMyGoals = networkStatusPostsMyGoals === 3;
@@ -81,7 +85,15 @@ const MatchesGoals = ({ navigation, title }) => {
           {posts.map((post, i) => {
             const isCustomGoal = isCustomGoalTest(post.goal);
             if (!isCustomGoal) {
-              return <ActiveGoalMatchesItem key={i} navigation={navigation} post={post} loadingPost={false} />;
+              return (
+                <ActiveGoalMatchesItem
+                  key={post.id}
+                  triggerRefresh={triggerRefresh}
+                  navigation={navigation}
+                  post={post}
+                  loadingPost={false}
+                />
+              );
             }
             return null;
           })}

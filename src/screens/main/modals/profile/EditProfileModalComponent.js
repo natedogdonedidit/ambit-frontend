@@ -275,9 +275,9 @@ const EditProfileModalComponent = ({ navigation, user }) => {
                 autoCorrect={false}
                 autoCompleteType="off"
               />
-              <View style={{ height: '100%', justifyContent: 'center' }}>
+              {/* <View style={{ height: '100%', justifyContent: 'center' }}>
                 <Icon name="plus" size={15} color={colors.iconGray} style={{ paddingRight: 5 }} />
-              </View>
+              </View> */}
             </View>
             <View style={{ ...styles.rowMultiline, borderBottomWidth: 0.2, borderBottomColor: colors.borderBlack }}>
               <View style={{ ...styles.rowTitle, marginTop: 4 }}>
