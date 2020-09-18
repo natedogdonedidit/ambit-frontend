@@ -92,7 +92,7 @@ const CameraModal = ({ navigation, route }) => {
           }
         }
       })
-      .catch((e) => alert(e));
+      .catch((e) => console.log(e));
   };
 
   const renderCurrentIntro = () => {

@@ -121,10 +121,14 @@ function TopicsOfFocus({ navigation, myTopics }) {
 
   return (
     <View style={styles.section}>
-      <Text style={{ ...defaultStyles.headerMedium, paddingBottom: 10 }}>Topics of focus</Text>
+      <Text style={{ ...defaultStyles.headerMedium, paddingBottom: 10 }}>Topics of interest</Text>
+      <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
+        These are topics you enjoy following and{'\n'}reading about
+      </Text>
+      {/* <Text style={{ ...defaultStyles.headerMedium, paddingBottom: 10 }}>Topics of focus</Text>
       <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingBottom: 20 }}>
         These are topics you are focused on building{'\n'}your career goals around
-      </Text>
+      </Text> */}
       {topics.length > 0 && <View style={styles.topicsSection}>{renderTopics()}</View>}
       <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>Add some topics</ButtonDefault>
     </View>

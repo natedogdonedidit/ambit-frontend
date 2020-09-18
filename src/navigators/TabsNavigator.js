@@ -25,7 +25,9 @@ const TabsNavigator = () => {
   const { currentUserId } = useContext(UserContext);
 
   // MESSAGES QUERY
-  const [getMessages, { data: userData, refetch: refetchMessages }] = useLazyQuery(CURRENT_USER_MESSAGES);
+  const [getMessages, { data: userData, refetch: refetchMessages }] = useLazyQuery(CURRENT_USER_MESSAGES, {
+    // pollInterval: 60000,
+  });
 
   // NOTIFICATIONS QUERY
   const [getNotifications, { data: notificationsData }] = useLazyQuery(NOTIFICATIONS_QUERY, {

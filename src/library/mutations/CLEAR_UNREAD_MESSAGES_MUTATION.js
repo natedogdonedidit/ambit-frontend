@@ -1,13 +1,12 @@
 import { gql } from '@apollo/client';
-import { UserWithMessages } from 'library/queries/_fragments';
+// import { MessageFragment } from 'library/queries/_fragments';
 
 const CLEAR_UNREAD_MESSAGES_MUTATION = gql`
-  mutation CLEAR_UNREAD_MESSAGES_MUTATION($groupID: ID) {
-    clearUnReadMessages(groupID: $groupID) {
-      ...UserWithMessages
+  mutation CLEAR_UNREAD_MESSAGES_MUTATION($data: MessageUpdateManyMutationInput!, $where: MessageWhereInput) {
+    updateManyMessage(data: $data, where: $where) {
+      count
     }
   }
-  ${UserWithMessages}
 `;
 
 export default CLEAR_UNREAD_MESSAGES_MUTATION;

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/client';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -51,6 +51,9 @@ const CustomDrawer = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}>
           <View style={styles.button}>
+            <View style={{ width: 38, justifyContent: 'center', alignItems: 'center' }}>
+              <Icon name="user" size={22} color={colors.iconGray} solid />
+            </View>
             <Text style={styles.buttonText}>My Profile</Text>
           </View>
         </TouchableOpacity>
@@ -62,29 +65,38 @@ const CustomDrawer = ({ navigation }) => {
           }}
         >
           <View style={styles.button}>
+            <View style={{ width: 38, justifyContent: 'center', alignItems: 'center' }}>
+              <Icon name="bolt" size={22} color={colors.iconGray} solid />
+            </View>
             <Text style={styles.buttonText}>My Intro</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('MyTopics')}>
           <View style={styles.button}>
+            <View style={{ width: 38, justifyContent: 'center', alignItems: 'center' }}>
+              <Icon name="comment" size={22} color={colors.iconGray} solid />
+            </View>
             <Text style={styles.buttonText}>My Topics</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('MyHats')}>
           <View style={styles.button}>
+            <View style={{ width: 38, justifyContent: 'center', alignItems: 'center' }}>
+              <Icon name="hat-cowboy-side" size={22} color={colors.iconGray} solid />
+            </View>
             <Text style={styles.buttonText}>My Hats</Text>
           </View>
         </TouchableOpacity>
       </View>
       <View>
         <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-          <View style={styles.button}>
+          <View style={styles.buttonBottom}>
             <Text style={styles.buttonText}>Settings</Text>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => handleLogout()}>
-          <View style={styles.button}>
+          <View style={styles.buttonBottom}>
             <Text style={styles.buttonText}>Logout</Text>
           </View>
         </TouchableOpacity>
@@ -121,11 +133,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
+    paddingLeft: 15,
     width: '100%',
     padding: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   buttonText: {
-    ...defaultStyles.largeLight,
+    ...defaultStyles.hugeLight,
+    paddingLeft: 10,
+  },
+  buttonBottom: {
+    width: '100%',
+    padding: 15,
+    paddingLeft: 0,
   },
 });
 

@@ -87,7 +87,7 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
           }
         />
       )}
-      renderItem={({ item, section }) => {
+      renderItem={({ item, section, index }) => {
         if (section.title === 'My Topics') {
           const topicID = item;
           const { parentTopic, color, icon, name } = getTopicFromID(topicID);
@@ -95,9 +95,10 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
           const isSubTopic = !!parentTopic;
           const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;
           const subTopic = isSubTopic ? topicID : null;
+          const isLast = index === favoriteTopics.length - 1;
 
           return (
-            <View key={item} style={styles.categorySection}>
+            <View key={item} style={[styles.categorySection, isLast && styles.borderBottom]}>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })}
@@ -117,7 +118,7 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
                     {name}
                   </Text>
                   <Ionicons
-                    name="ios-arrow-forward"
+                    name="ios-chevron-forward"
                     size={15}
                     color={colors.blueGray}
                     style={{ paddingHorizontal: 10, opacity: 0.6 }}
@@ -149,7 +150,7 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
                     {name}
                   </Text>
                   <Ionicons
-                    name="ios-arrow-forward"
+                    name="ios-chevron-forward"
                     size={15}
                     color={colors.blueGray}
                     style={{ paddingHorizontal: 10, opacity: 0.6 }}
@@ -172,6 +173,10 @@ const TopicsList = ({ navigation, scrollY, paddingTop }) => {
 const styles = StyleSheet.create({
   categorySection: {
     borderTopWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
+  },
+  borderBottom: {
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
   },
   mainRow: {

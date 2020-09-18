@@ -104,9 +104,10 @@ const EditProfileModalComponent = ({ navigation, user }) => {
       waitAnimationEnd: false,
       includeExif: true,
       cropping: true,
+      // cropperCircleOverlay: true,
     })
       .then((img) => setProfilePic(img.path))
-      .catch((e) => alert(e));
+      .catch((e) => console.log(e));
   };
 
   const handleEditBannerButton = () => {
@@ -119,7 +120,7 @@ const EditProfileModalComponent = ({ navigation, user }) => {
       height: 100 + top,
     })
       .then((img) => setBannerPic(img.path))
-      .catch((e) => alert(e));
+      .catch((e) => console.log(e));
   };
 
   const uploadProfilePic = async () => {

@@ -35,7 +35,7 @@ const Popover = ({ messageComponent, onPress }) => {
         }}
       >
         <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>{messageComponent}</Text>
-        <Ionicons name="ios-arrow-forward" size={18} color="white" />
+        <Ionicons name="ios-chevron-forward" size={18} color="white" />
       </TouchableOpacity>
     </View>
   );

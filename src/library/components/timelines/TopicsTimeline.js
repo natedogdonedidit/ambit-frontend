@@ -64,7 +64,7 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         refreshing={refetching}
         contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
         style={styles.timeline}
-        // ListHeaderComponent={<StoriesTopic topicID={activeSubTopic} navigation={navigation} refetching={refetching} />}
+        ListHeaderComponent={<StoriesTopic topicID={activeSubTopic} navigation={navigation} refetching={refetching} />}
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no posts yet for this topic

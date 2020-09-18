@@ -16,7 +16,7 @@ const SeeMoreButton = ({ onPress, loading = false }) => {
             <Loader size="small" loading={loading} full backgroundColor={colors.white} />
           </View>
         ) : (
-          <Ionicons name="ios-arrow-forward" size={18} color={colors.iconGray} />
+          <Ionicons name="ios-chevron-forward" size={18} color={colors.iconGray} />
         )}
       </View>
     </TouchableOpacity>

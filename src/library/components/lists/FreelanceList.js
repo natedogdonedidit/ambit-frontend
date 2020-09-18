@@ -49,7 +49,7 @@ const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSel
             </View>
 
             <Text style={styles.mainRowText}>{name}</Text>
-            <Ionicons name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'} size={22} color={colors.iconGray} />
+            <Ionicons name={isExpanded ? 'ios-chevron-down' : 'ios-chevron-forward'} size={22} color={colors.iconGray} />
           </View>
         </TouchableOpacity>
         {isExpanded && children.length > 0 && (

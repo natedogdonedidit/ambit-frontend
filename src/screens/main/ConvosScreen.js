@@ -16,6 +16,7 @@ import { sortChats } from 'library/utils';
 const ConvosScreen = ({ navigation }) => {
   // CONSTANTS
   // const TABS = ['Messages', 'Requests'];
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // STATE
   // const [activeTab, setActiveTab] = useState(TABS[0]);
@@ -36,7 +37,13 @@ const ConvosScreen = ({ navigation }) => {
   const loading = networkStatus === 1;
 
   // HOOKS
-  const currentTime = new Date();
+
+  // updates the time on each focus
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      setCurrentTime(new Date());
+    });
+  }, []);
 
   if (errorUser) return <Error error={errorUser} />;
   if (loading)
@@ -50,7 +57,7 @@ const ConvosScreen = ({ navigation }) => {
   const { userLoggedIn } = dataUser;
 
   const convos = [...userLoggedIn.convos] || [];
-  convos.sort(sortChats); // sort convos by date
+  // convos.sort(sortChats); // sort convos by date
 
   return (
     <View style={{ ...styles.container, paddingTop: top }}>

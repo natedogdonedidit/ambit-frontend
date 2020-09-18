@@ -146,7 +146,7 @@ const SearchScreen = ({ navigation, route }) => {
               hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
             >
               <Ionicons
-                name={goal ? 'md-close' : 'md-arrow-dropdown'}
+                name={goal ? 'close' : 'chevron-down'}
                 size={goal ? 16 : 22}
                 color={goal ? colors.white : colors.darkGray}
               />
@@ -177,7 +177,7 @@ const SearchScreen = ({ navigation, route }) => {
               hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
             >
               <Ionicons
-                name={hasTopics ? 'md-close' : 'md-arrow-dropdown'}
+                name={hasTopics ? 'close' : 'chevron-down'}
                 size={hasTopics ? 16 : 22}
                 color={hasTopics ? colors.white : colors.darkGray}
               />
@@ -201,7 +201,7 @@ const SearchScreen = ({ navigation, route }) => {
               hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
             >
               <Ionicons
-                name={location ? 'md-close' : 'md-arrow-dropdown'}
+                name={location ? 'close' : 'chevron-down'}
                 size={location ? 16 : 22}
                 color={location ? colors.white : colors.darkGray}
               />

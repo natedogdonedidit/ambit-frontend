@@ -62,7 +62,7 @@ const ConnectionsScreen = ({ navigation }) => {
               backgroundColor: 'transparent',
             }}
             size="small"
-            color={colors.purp}
+            // color={colors.purp}
             animating={showRefreshing}
             hidesWhenStopped={false}
           />

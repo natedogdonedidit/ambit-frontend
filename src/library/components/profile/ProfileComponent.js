@@ -96,7 +96,7 @@ const ProfileComponent = ({
           { useNativeDriver: true }
         )}
         scrollEventThrottle={1}
-        refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} />} // not really being used right now
+        refreshControl={<RefreshControl refreshing={loading} onRefresh={refetch} tintColor="white" />} // not really being used right now
       >
         {/* Placeholder view to push evertyhing down into the scrollview to be below outside header */}
         <View style={{ width: '100%', height: OUTSIDE_HEADER_HEIGHT, backgroundColor: 'white' }} />

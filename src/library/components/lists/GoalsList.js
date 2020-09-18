@@ -20,7 +20,7 @@ const GoalsList = ({ handleGoalSelect, handleCustomGoalSelect, includeCustom = f
             </View>
 
             <Text style={styles.mainRowText}>{goal.name}</Text>
-            <Ionicons name="ios-arrow-forward" size={22} color={colors.iconGray} />
+            <Ionicons name="ios-chevron-forward" size={22} color={colors.iconGray} />
           </View>
         </TouchableOpacity>
       );
@@ -37,7 +37,7 @@ const GoalsList = ({ handleGoalSelect, handleCustomGoalSelect, includeCustom = f
             </View>
 
             <Text style={styles.mainRowText}>Custom Goal</Text>
-            <Ionicons name="ios-arrow-forward" size={22} color={colors.iconGray} />
+            <Ionicons name="ios-chevron-forward" size={22} color={colors.iconGray} />
           </View>
         </TouchableOpacity>
       )}

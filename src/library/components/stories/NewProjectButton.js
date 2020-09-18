@@ -15,9 +15,13 @@ const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uplo
 
 const NewProjectButton = ({ navigation, loadingCreateStory }) => {
   const { data } = useQuery(CURRENT_USER_QUERY);
+  if (!data) {
+    return null;
+  }
+
   const { userLoggedIn } = data;
 
-  if (!data || !userLoggedIn) {
+  if (!userLoggedIn) {
     return null;
   }
 

@@ -10,6 +10,15 @@ import { UserContext } from 'library/utils/UserContext';
 import AuthStack from 'navigators/AuthStack';
 import MainStack from 'navigators/MainStack';
 
+import * as Sentry from '@sentry/react-native';
+import { VERSION } from './src/styles/constants';
+
+Sentry.init({
+  release: `ambit@${VERSION}`,
+  dsn: 'https://47935ea32c8c4270aff14584c94e17cc@o448985.ingest.sentry.io/5431210',
+  enableAutoSessionTracking: true,
+});
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {

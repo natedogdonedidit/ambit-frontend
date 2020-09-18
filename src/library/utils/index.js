@@ -425,7 +425,7 @@ export const createThumbnail = (url) => {
 };
 
 export const timeDifference = (laterDate, earlierDate) => {
-  let timeDiff = differenceInSeconds(laterDate, earlierDate);
+  let timeDiff = Math.max(differenceInSeconds(laterDate, earlierDate), 0); // cant be negative
   let period = 's';
 
   if (timeDiff >= 60) {

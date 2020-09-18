@@ -68,7 +68,7 @@ export const StoryNoOwner = gql`
     type
     showcase
     topic
-    items {
+    items(orderBy: [{ createdAt: asc }]) {
       ...StoryItemFragment
     }
   }
@@ -90,7 +90,7 @@ export const StoryWithOwner = gql`
         id
         title
         type
-        items {
+        items(orderBy: [{ createdAt: asc }]) {
           ...StoryItemFragment
         }
       }
@@ -98,7 +98,7 @@ export const StoryWithOwner = gql`
     type
     showcase
     topic
-    items {
+    items(orderBy: [{ createdAt: asc }]) {
       ...StoryItemFragment
     }
   }
@@ -152,6 +152,7 @@ export const MessageFragment = gql`
     hidden {
       id
     }
+    unread
   }
 `;
 
@@ -161,7 +162,7 @@ export const ConvoFragment = gql`
     users {
       ...MinimalUser
     }
-    messages(first: 5, orderBy: [{ createdAt: desc }]) {
+    messages(first: 5, orderBy: [{ createdAt: asc }]) {
       ...MessageFragment
     }
     hidden {
@@ -335,14 +336,16 @@ export const UserFollowing = gql`
 export const UserWithMessages = gql`
   fragment UserWithMessages on User {
     ...MinimalUser
-    convos {
-      ...ConvoFragment
+    convos(orderBy: [{ lastUpdated: asc }]) {
+      id
+      lastUpdated
+      users {
+        ...MinimalUser
+      }
     }
     unReadMessagesCount
   }
   ${MinimalUser}
-  ${ConvoFragment}
-  ${MessageFragment}
 `;
 
 export const NotificationFragment = gql`

@@ -40,14 +40,14 @@ function StoryFooter({
   const { currentUserId } = useContext(UserContext);
   // console.log(item.likedByMe, item.text);
 
-  const [topicsSorted, setTopicsSorted] = useState([]);
+  // const [topicsSorted, setTopicsSorted] = useState([]);
   const [isLiked, setIsLiked] = useState(item.likedByMe);
   const [likesCount, setLikesCount] = useState(item.likesCount);
   const [sentMutation, setSentMutation] = useState(false);
 
   // console.log(isLiked, item.text);
 
-  const { owner, title, type, topics } = story;
+  const { owner, title, type, topic } = story;
   const { intro } = owner;
   const showIntroButton = type !== 'INTRO' && intro.items.length > 0;
 
@@ -60,35 +60,35 @@ function StoryFooter({
     onError: () => null,
   });
 
-  useEffect(() => {
-    if (type === 'PROJECT' && topics && topics.length > 0) {
-      // sort the topics based on favoriteTopics array passed in
-      const sortTopics = (a, b) => {
-        const indexOfA = favoriteTopics.indexOf(a.topicID);
-        const indexOfB = favoriteTopics.indexOf(b.topicID);
+  // useEffect(() => {
+  //   if (type === 'PROJECT' && topics && topics.length > 0) {
+  //     // sort the topics based on favoriteTopics array passed in
+  //     const sortTopics = (a, b) => {
+  //       const indexOfA = favoriteTopics.indexOf(a.topicID);
+  //       const indexOfB = favoriteTopics.indexOf(b.topicID);
 
-        // if a is a favorite but not b
-        if (indexOfA >= 0 && indexOfB === -1) {
-          return -1;
-        }
-        // if b is a favorite but not a
-        if (indexOfB >= 0 && indexOfA === -1) {
-          return 1;
-        }
-        // if both are favorites
-        if (indexOfA >= 0 && indexOfB >= 0) {
-          if (indexOfA < indexOfB) {
-            return -1;
-          }
-          return 1;
-        }
-        // if neither are favorites
-        return -1;
-      };
-      const topicsSortedNew = [...topics].sort(sortTopics);
-      setTopicsSorted(topicsSortedNew);
-    }
-  }, [topics, favoriteTopics]);
+  //       // if a is a favorite but not b
+  //       if (indexOfA >= 0 && indexOfB === -1) {
+  //         return -1;
+  //       }
+  //       // if b is a favorite but not a
+  //       if (indexOfB >= 0 && indexOfA === -1) {
+  //         return 1;
+  //       }
+  //       // if both are favorites
+  //       if (indexOfA >= 0 && indexOfB >= 0) {
+  //         if (indexOfA < indexOfB) {
+  //           return -1;
+  //         }
+  //         return 1;
+  //       }
+  //       // if neither are favorites
+  //       return -1;
+  //     };
+  //     const topicsSortedNew = [...topics].sort(sortTopics);
+  //     setTopicsSorted(topicsSortedNew);
+  //   }
+  // }, [topics, favoriteTopics]);
 
   // if the item isn't active...don't render anything. But this will allow us to keep our state (isLiked, likeCount)
   if (!itemIsActive) {
@@ -155,9 +155,10 @@ function StoryFooter({
 
   // RENDER FUNCTIONS
   const renderTopics = () => {
-    const hasTopics = topicsSorted.length > 0;
+    const hasTopics = !!topic;
 
-    if (hasTopics || owner.location) {
+    if (hasTopics) {
+      const { icon, color, name } = getTopicFromID(topic);
       return (
         <ScrollView
           horizontal
@@ -173,34 +174,24 @@ function StoryFooter({
             onPressOut={() => setDisableOutterScroll(false)}
             style={{ flexDirection: 'row' }}
           >
-            <>
-              {hasTopics &&
-                topicsSorted.map((topic) => {
-                  const { icon, color, name } = getTopicFromID(topic.topicID);
-
-                  return (
-                    <View
-                      key={topic.topicID}
-                      style={{
-                        height: 26,
-                        paddingHorizontal: 6,
-                        borderRadius: 6,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(255,255,255,0.4)',
-                        marginRight: 5,
-                        ...defaultStyles.shadowButton,
-                      }}
-                    >
-                      {icon && (
-                        <Icon name={icon} solid size={14} color={colors[color] || colors.blueGray} style={{ paddingRight: 6 }} />
-                      )}
-                      <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{name}</Text>
-                    </View>
-                  );
-                })}
-              {owner.location && (
+            <View
+              key={topic.topicID}
+              style={{
+                height: 26,
+                paddingHorizontal: 6,
+                borderRadius: 6,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(255,255,255,0.4)',
+                marginRight: 5,
+                ...defaultStyles.shadowButton,
+              }}
+            >
+              {icon && <Icon name={icon} solid size={14} color={colors[color] || colors.blueGray} style={{ paddingRight: 6 }} />}
+              <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{name}</Text>
+            </View>
+            {/* {owner.location && (
                 <View
                   style={{
                     height: 26,
@@ -217,8 +208,7 @@ function StoryFooter({
                   <Icon name="map-marker-alt" solid size={10} color={colors.white} style={{ paddingRight: 6, paddingLeft: 2 }} />
                   <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{owner.location}</Text>
                 </View>
-              )}
-            </>
+              )} */}
           </TouchableOpacity>
         </ScrollView>
       );

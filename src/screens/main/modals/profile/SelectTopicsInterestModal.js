@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
 //           <TouchableOpacity activeOpacity={0.7} onPress={() => handleCategorySelect(topicID)}>
 //             <View style={{ ...styles.mainRow }}>
 //               <Text style={{ ...defaultStyles.hugeSemibold, color: colors.purp, paddingRight: 15, flex: 1 }}>{name}</Text>
-//               <Ionicons name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'} size={24} color={colors.iconGray} />
+//               <Ionicons name={isExpanded ? 'ios-chevron-down' : 'ios-chevron-forward'} size={24} color={colors.iconGray} />
 //             </View>
 //           </TouchableOpacity>
 //           {isExpanded && children.length > 0 && (

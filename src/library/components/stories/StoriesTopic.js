@@ -13,7 +13,6 @@ import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import Loader from 'library/components/UI/Loader';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import StoryBox from 'library/components/stories/StoryBox';
-import NewStoryButton from 'library/components/stories/NewStoryButton';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
 import { UserContext } from 'library/utils/UserContext';
 
@@ -32,7 +31,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
       where: {
         AND: [
           {
-            topic: { startsWith: topicIDtoSearch },
+            topic: { startsWith: topicID },
           },
           {
             items: { some: { id: { gt: 'a' } } },
@@ -57,7 +56,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
     return <View style={{ height: 10 }} />;
   }
 
-  const stories = dataStories.storiesTopic;
+  const { stories } = dataStories;
 
   const sortStoriesTopic = (a, b) => {
     // if user story - check if viewed entire story (used in logic below)
@@ -146,8 +145,6 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
       contentContainerStyle={{ paddingVertical: 10, paddingRight: 15, paddingLeft: 5 }}
       showsHorizontalScrollIndicator={false}
     >
-      {/* <NewStoryButton navigation={navigation} /> */}
-      {/* <ExploreTopicButton navigation={navigation} topicID={topicID} /> */}
       {renderStories()}
     </ScrollView>
   );

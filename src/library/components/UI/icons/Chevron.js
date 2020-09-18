@@ -9,7 +9,7 @@ import colors from 'styles/colors';
 const Chevron = ({ onPress, size = 18, color = colors.iconGray }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
-      <Ionicons name="ios-arrow-down" size={size} color={colors.iconGray} />
+      <Ionicons name="ios-chevron-down" size={size} color={colors.iconGray} />
     </TouchableOpacity>
   );
 };

@@ -45,7 +45,7 @@ const setupAnalytics = async () => {
 setupAnalytics();
 
 // eslint-disable-next-line no-undef
-GLOBAL.Blob = null; // required so Network Inspect works on RNdebugger
+// GLOBAL.Blob = null; // required so Network Inspect works on RNdebugger
 
 const errorLink = onError(({ graphQLErrors }) => {
   if (graphQLErrors) graphQLErrors.map(({ message }) => console.log(message));
@@ -68,14 +68,14 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/', // simulator
-    // ios: 'http://192.168.123.48:4000/graphql', // work
-    // ios: 'http://192.168.1.214:4000/graphql', // home
+    // ios: 'http://192.168.123.164:4000/graphql', // work
+    ios: 'http://192.168.1.214:4000/graphql', // home
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
     // ios: 'http://192.168.0.16:4000', // Moms
     // ios: 'https://ambit-yoga-prod.herokuapp.com/',
-    ios: 'https://ambit-backend-nexus.herokuapp.com/graphql',
+    // ios: 'https://ambit-backend-nexus.herokuapp.com/graphql',
   }),
 });
 
@@ -83,14 +83,14 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/', // simulator
-    // ios: 'ws://192.168.123.48:4000/graphql', // work
-    // ios: 'ws://192.168.1.214:4000/graphql', // home
+    // ios: 'ws://192.168.123.164:4000/graphql', // work
+    ios: 'ws://192.168.1.214:4000/graphql', // home
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
     // ios: 'ws://192.168.0.16:4000', // Moms
     // ios: 'ws://ambit-yoga-prod.herokuapp.com/',
-    ios: 'ws://ambit-backend-nexus.herokuapp.com/graphql',
+    // ios: 'ws://ambit-backend-nexus.herokuapp.com/graphql',
   }),
   options: {
     reconnect: true,

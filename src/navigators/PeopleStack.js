@@ -13,6 +13,8 @@ import UpdatePostScreen from 'screens/main/UpdatePostScreen';
 import TopicScreen from 'screens/main/TopicScreen';
 import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';
+import MyTopicsScreen from 'screens/main/MyTopicsScreen';
+import MyHatsScreen from 'screens/main/MyHatsScreen';
 
 const Stack = createStackNavigator();
 
@@ -48,6 +50,8 @@ const PeopleStack = ({ navigation, route }) => {
           locationLonToSearch: null,
         }}
       />
+      <Stack.Screen name="MyTopics" component={MyTopicsScreen} />
+      <Stack.Screen name="MyHats" component={MyHatsScreen} />
     </Stack.Navigator>
   );
 };

@@ -21,21 +21,33 @@ const ProfileScreen = ({ navigation, route }) => {
   // QUERIES
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BASIC, {
     variables: { where: { username } },
-    onError: () =>
-      Alert.alert('Oh no!', 'That username does not exist', [
+    onError: () => {
+      navigation.goBack();
+      Alert.alert('Oh no!', `We can't find that user`, [
         {
           text: 'OK',
           onPress: () => {
             console.log('OK Pressed');
-            navigation.goBack();
+            // navigation.goBack();
           },
         },
-      ]),
+      ]);
+    },
   });
 
   if (loading) return <Loader loading={loading} size="small" />;
 
   if (error || !data) {
+    navigation.goBack();
+    Alert.alert('Oh no!', `We can't find that user`, [
+      {
+        text: 'OK',
+        onPress: () => {
+          console.log('OK Pressed');
+          // navigation.goBack();
+        },
+      },
+    ]);
     return null;
   }
 

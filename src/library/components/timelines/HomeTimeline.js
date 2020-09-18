@@ -209,7 +209,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     setShowRefreshing(true);
     setTimeout(() => {
       setShowRefreshing(false);
-    }, 2000);
+    }, 1500);
     refetchPostsNetwork();
     refetchPostsForYou();
     refetchPostsMyGoals();
@@ -247,8 +247,8 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
               justifyContent: 'center',
               backgroundColor: 'transparent',
             }}
-            size="small"
-            color={colors.purp}
+            // size="small"
+            // color={colors.purp}
             animating={showRefreshing}
             hidesWhenStopped={false}
           />

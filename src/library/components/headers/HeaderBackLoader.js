@@ -24,7 +24,7 @@ const HeaderBackLoader = ({ navigation, handleRight, textRight, title, loading }
     <View style={{ ...styles.container, paddingTop: top, height: HEADER_HEIGHT + top }}>
       <View style={styles.leftSide}>
         <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>
-          <Ionicons name="ios-arrow-back" size={28} color={colors.purp} style={{}} />
+          <Ionicons name="ios-chevron-back" size={28} color={colors.purp} style={{}} />
         </TouchableOpacity>
       </View>
 
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
     backgroundColor: colors.white,
@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    paddingRight: 5,
   },
   // contents
   leftText: {

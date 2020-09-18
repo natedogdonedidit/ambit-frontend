@@ -13,7 +13,7 @@ const HeaderBackBlank = ({ navigation, title, rightComponent, leftText = '' }) =
     <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
       <View style={styles.leftSide}>
         <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>
-          <Ionicons name="ios-arrow-back" size={28} color={colors.purp} style={{}} />
+          <Ionicons name="ios-chevron-back" size={28} color={colors.purp} style={{}} />
           <Text style={{ ...defaultStyles.largeMedium, color: colors.purp, paddingLeft: 5, paddingBottom: 2 }}>{leftText}</Text>
         </TouchableOpacity>
       </View>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     backgroundColor: colors.white,
   },
   leftSide: {

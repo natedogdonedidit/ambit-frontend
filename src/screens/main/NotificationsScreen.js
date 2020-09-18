@@ -39,7 +39,17 @@ const NotificationsScreen = ({ navigation }) => {
     onError: (e) => {
       console.log(e);
     },
-    onCompleted: () => refetch(),
+    // onCompleted: () => refetch(),
+    refetchQueries: [
+      {
+        query: NOTIFICATIONS_QUERY,
+        variables: {
+          where: { targetId: { equals: currentUserId } },
+          first: 20,
+          orderBy: [{ createdAt: 'desc' }],
+        },
+      },
+    ],
   });
 
   useEffect(() => {
@@ -90,11 +100,18 @@ const NotificationsScreen = ({ navigation }) => {
   // console.log(notifications);
   if (!data || !notifications) {
     return (
-      <View style={{ ...styles.container, paddingTop: top }}>
+      <View style={{ ...styles.container, paddingTop: top, backgroundColor: colors.white }}>
         <HeaderNotifications
           handleMiddle={() => null}
           handleRight={() => navigation.navigate('Search')}
           navigation={navigation}
+        />
+        {/* Gives a solid background to the StatusBar */}
+        <View
+          style={{
+            ...styles.statusBar,
+            height: top,
+          }}
         />
         <Loader loading={loading} size="small" full={false} backgroundColor={colors.lightGray} />
       </View>
@@ -107,7 +124,7 @@ const NotificationsScreen = ({ navigation }) => {
       <HeaderNotifications handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
 
       {/* This is the loading animation */}
-      {/* <Animated.View
+      <Animated.View
         style={{
           position: 'absolute',
           top: 15,
@@ -115,7 +132,7 @@ const NotificationsScreen = ({ navigation }) => {
           width: '100%',
           height: 60,
           justifyContent: 'flex-end',
-          // backgroundColor: 'pink',
+          backgroundColor: colors.lightGray,
           transform: [
             {
               translateY: scrollY.interpolate({
@@ -134,17 +151,16 @@ const NotificationsScreen = ({ navigation }) => {
               height: '100%',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: 'transparent',
             }}
             size="small"
-            color={colors.purp}
+            // color={colors.purp}
             animating={refetching}
             hidesWhenStopped={false}
           />
         </View>
-      </Animated.View> */}
+      </Animated.View>
       <FlatList
-        // refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
+        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={refetch}
         refreshing={refetching}
         initialNumToRender={20} // speeds up load time
@@ -197,12 +213,12 @@ const NotificationsScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.lightGray,
     overflow: 'hidden',
     position: 'relative',
   },
   flatList: {
-    backgroundColor: colors.lightGray,
+    // backgroundColor: colors.lightGray,
     flex: 1,
     width: '100%',
   },

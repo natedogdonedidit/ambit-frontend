@@ -11,7 +11,7 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import { getGoalInfo, buildSearchWhere } from 'library/utils';
 import POSTS_QUERY from 'library/queries/POSTS_QUERY';
 
-const HatMatchesRow = ({ navigation, hats, type }) => {
+const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
   const [matchingPosts, setMatchingPosts] = useState([]);
 
   const goal = useMemo(() => {
@@ -22,7 +22,7 @@ const HatMatchesRow = ({ navigation, hats, type }) => {
   }, [type]);
 
   const topicIDs = useMemo(() => {
-    return hats.map((topic) => topic.topicID);
+    return hats.map((topic) => topic.id);
   }, [hats]);
 
   const where = buildSearchWhere({ goal, topicIDs });
@@ -40,6 +40,10 @@ const HatMatchesRow = ({ navigation, hats, type }) => {
     notifyOnNetworkStatusChange: true,
   });
 
+  useEffect(() => {
+    refetch();
+  }, [triggerRefresh]);
+
   // useEffect(() => {
   //   // send query
   //   getPostsMatchingHat({
@@ -56,7 +60,7 @@ const HatMatchesRow = ({ navigation, hats, type }) => {
     }
   }, [data]);
 
-  const foundMatches = !loadingMatches && matchingPosts.length > 0;
+  const foundMatches = !loadingQuery && matchingPosts.length > 0;
 
   const renderIcon = () => {
     if (type === 'freelance') {
@@ -71,7 +75,7 @@ const HatMatchesRow = ({ navigation, hats, type }) => {
   };
 
   const renderTitle = () => {
-    if (loadingMatches) {
+    if (loadingQuery) {
       if (type === 'invest') {
         return (
           <Text style={{ paddingRight: 12 }}>
@@ -179,7 +183,7 @@ const HatMatchesRow = ({ navigation, hats, type }) => {
     >
       <View style={styles.iconView}>{renderIcon()}</View>
       <View style={styles.rightSide}>{renderTitle()}</View>
-      {foundMatches && <Ionicons name="ios-arrow-forward" size={28} color={colors.iconGray} style={{}} />}
+      {foundMatches && <Ionicons name="ios-chevron-forward" size={28} color={colors.iconGray} style={{}} />}
     </TouchableOpacity>
   );
 };

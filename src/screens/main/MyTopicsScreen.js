@@ -28,10 +28,10 @@ const MyTopicsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} title="My Topics" />
+      <HeaderBack navigation={navigation} title="Topics" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
         <TopicsOfFocus navigation={navigation} myTopics={myTopics} />
-        <TopicsOfInterest navigation={navigation} myTopics={myTopics} />
+        {/* <TopicsOfInterest navigation={navigation} myTopics={myTopics} /> */}
       </ScrollView>
     </View>
   );

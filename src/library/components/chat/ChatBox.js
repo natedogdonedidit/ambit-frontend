@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect } from 'react';
 import { StyleSheet, View, Alert } from 'react-native';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import colors from 'styles/colors';
@@ -13,6 +13,7 @@ import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 
 const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
+  const client = useApolloClient();
   // MUTATIONS
   const [createOneMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
     refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
@@ -39,22 +40,68 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
   const fetchingMore = networkStatus === 3;
   const ok = networkStatus === 7;
 
-  const [clearUnReadMessages, { loading: clearingUnreadMessages }] = useMutation(CLEAR_UNREAD_MESSAGES_MUTATION, {
+  const [updateManyMessage, { loading: clearingUnreadMessages }] = useMutation(CLEAR_UNREAD_MESSAGES_MUTATION, {
+    variables: {
+      where: {
+        AND: [
+          { to: { id: { equals: convo.id } } },
+          { unread: { equals: true } },
+          { from: { id: { not: { equals: userLoggedIn.id } } } },
+        ],
+      },
+      data: {
+        unread: false,
+      },
+    },
+    refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
     onError: (e) => {
       console.log(e);
     },
+    onCompleted: () => {
+      // grab latest data from cache
+      const messagesDataInCache = client.readQuery({
+        query: MESSAGES_CONNECTION,
+        variables: {
+          where: { to: { id: { equals: convo.id } } },
+        },
+      });
+
+      const messagesDataInCacheUpdated = [...messagesDataInCache.messages].map((m) => {
+        return {
+          ...m,
+          unread: false,
+        };
+      });
+
+      // update cache to set all unread to false in this convo
+      if (messagesDataInCache && messagesDataInCache.messages && messagesDataInCache.messages.length > 0) {
+        client.writeQuery({
+          query: MESSAGES_CONNECTION,
+          data: {
+            messages: [...messagesDataInCacheUpdated],
+          },
+        });
+      }
+    },
   });
 
-  // THIS EFFECT CLEARS THE UNREAD MESSAGES AFTER MESSAGES CONNECTION IS LOADED
-  // useEffect(() => {
-  //   if (convo.id) {
-  //     const unReadInThisConvo = [...userLoggedIn.unReadMessages].filter((message) => message.to.id === convo.id);
-  //     const numToRemove = unReadInThisConvo.length;
-  //     if (numToRemove > 0 && !clearingUnreadMessages) {
-  //       // clearUnReadMessages({ variables: { groupID: convo.id } });
-  //     }
-  //   }
-  // }, [convo.id, userLoggedIn.unReadMessages]);
+  // THIS EFFECT CLEARS THE UNREAD MESSAGES WHENEVER THE PAGE IS FOCUSED
+  useEffect(() => {
+    navigation.addListener('focus', () => {
+      if (data && data.messages && !clearingUnreadMessages) {
+        // clear unread messages
+        updateManyMessage();
+      }
+    });
+  }, []);
+
+  // THIS EFFECT CLEARS THE UNREAD MESSAGES WHENEVER NEW DATA COMES IN
+  useEffect(() => {
+    if (data && data.messages && !clearingUnreadMessages) {
+      // clear unread messages
+      updateManyMessage();
+    }
+  }, [data]);
 
   // console.log(networkStatus);
   // networkStatus states:

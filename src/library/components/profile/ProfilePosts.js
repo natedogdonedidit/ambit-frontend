@@ -81,7 +81,8 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
       style={styles.timeline}
       data={posts}
       keyExtractor={(item, index) => item + index}
-      renderItem={({ item }) => {
+      renderItem={({ item, index }) => {
+        console.log(index === 0);
         return (
           <PostGroupTL
             post={item}
@@ -90,6 +91,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
             setModalVisibleEditPost={setModalVisibleEditPost}
             setPostToEdit={setPostToEdit}
             editable
+            showTopBorder={index === 0}
           />
         );
       }}

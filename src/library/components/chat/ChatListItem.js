@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient, useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -10,34 +10,82 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 
 const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
-  const client = useApolloClient();
+  // const client = useApolloClient();
 
   // pre-fetch conversation when messages tab is clicked
-  useEffect(() => {
-    console.log('fetching messages for this chat', convo.id);
-    client.query({
-      query: MESSAGES_CONNECTION,
-      variables: {
-        where: { to: { id: { equals: convo.id } } },
-        first: 10,
-        orderBy: [{ createdAt: 'desc' }],
-      },
-    });
-  }, []);
+  // useEffect(() => {
+  //   console.log('fetching messages for this chat', convo.id);
+  //   client.query({
+  //     query: MESSAGES_CONNECTION,
+  //     variables: {
+  //       where: { to: { id: { equals: convo.id } } },
+  //       first: 10,
+  //       orderBy: [{ createdAt: 'desc' }],
+  //     },
+  //   });
+  // }, []);
 
+  const { error: errorMessages, data, fetchMore, networkStatus, loading } = useQuery(MESSAGES_CONNECTION, {
+    variables: {
+      where: { to: { id: { equals: convo.id } } },
+      // first: 10,
+      orderBy: [{ createdAt: 'desc' }],
+    },
+    notifyOnNetworkStatusChange: true,
+  });
+
+  // grab users from convo
   const users = convo.users.filter((user) => user.id !== userLoggedIn.id);
   const otherUser = users[0];
-  // console.log(convo);
 
-  const latestMessage = convo.messages[0] || {};
+  const renderRightSide = () => {
+    if (loading || errorMessages || !data) {
+      return (
+        <View style={styles.rightSide}>
+          <View style={styles.topRow}>
+            <Text style={{ ...defaultStyles.largeSemibold }}>{otherUser.name}</Text>
+            <Text style={defaultStyles.defaultMute}>{`${` `}`}</Text>
+          </View>
+          <View style={styles.bottomRow}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ ...defaultStyles.largeMute }}>{`${` `}`}</Text>
+            </View>
+          </View>
+        </View>
+      );
+    }
 
-  const updatedAt = new Date(latestMessage.createdAt);
-  const { timeDiff, period } = timeDifference(currentTime, updatedAt);
+    // grab latest message from MESSAGES_CONNECTION - this will allow it to update when new subscription message comes in
+    const { messages } = data;
 
-  const hasUnread = latestMessage ? latestMessage.unread : false;
+    const latestMessage = messages[0] || {};
+    const updatedAt = new Date(latestMessage.createdAt);
+    const { timeDiff, period } = timeDifference(currentTime, updatedAt);
 
-  // const unReadMessageGroupIDs = userLoggedIn.unReadMessages.map(unRead => unRead.to.id);
-  // const hasUnread = unReadMessageGroupIDs.includes(convo.id);
+    let hasUnread = false;
+
+    // if latest message is not from me
+    if (latestMessage && latestMessage.from.id !== userLoggedIn.id) {
+      hasUnread = latestMessage.unread || false;
+    }
+
+    return (
+      <View style={styles.rightSide}>
+        <View style={styles.topRow}>
+          <Text style={{ ...defaultStyles.largeSemibold }}>{otherUser.name}</Text>
+          <Text style={defaultStyles.defaultMute}>
+            {timeDiff} {period}
+          </Text>
+        </View>
+        <View style={styles.bottomRow}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ ...defaultStyles.largeMute }}>{latestMessage.content}</Text>
+          </View>
+          <View style={{ width: 20, justifyContent: 'center' }}>{hasUnread && <View style={styles.redDot} />}</View>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <TouchableOpacity
@@ -49,20 +97,7 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
         <View style={styles.leftSide}>
           <ProfilePic size="medium" navigation={navigation} user={otherUser} />
         </View>
-        <View style={styles.rightSide}>
-          <View style={styles.topRow}>
-            <Text style={{ ...defaultStyles.largeSemibold }}>{otherUser.name}</Text>
-            <Text style={defaultStyles.defaultMute}>
-              {timeDiff} {period}
-            </Text>
-          </View>
-          <View style={styles.bottomRow}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ ...defaultStyles.largeMute }}>{latestMessage.content}</Text>
-            </View>
-            <View style={{ width: 20, justifyContent: 'center' }}>{hasUnread && <View style={styles.redDot} />}</View>
-          </View>
-        </View>
+        {renderRightSide()}
       </View>
     </TouchableOpacity>
   );

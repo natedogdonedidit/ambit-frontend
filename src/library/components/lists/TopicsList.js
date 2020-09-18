@@ -69,7 +69,7 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
             )}
             <View style={{ flex: 1 }} />
             <Ionicons
-              name={isExpanded ? 'ios-arrow-down' : 'ios-arrow-forward'}
+              name={isExpanded ? 'ios-chevron-down' : 'ios-chevron-forward'}
               size={22}
               color={colors.iconGray}
               style={{ paddingTop: 2 }}

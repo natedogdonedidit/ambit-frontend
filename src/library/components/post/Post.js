@@ -27,7 +27,15 @@ import { UserContext } from 'library/utils/UserContext';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import CoolText from 'library/components/UI/CoolText';
 
-function Post({ post, navigation, showDetails = false, showLine = false, hideButtons = false, disableVideo = false }) {
+function Post({
+  post,
+  navigation,
+  showDetails = false,
+  showLine = false,
+  hideButtons = false,
+  disableVideo = false,
+  showTopBorder,
+}) {
   // HOOKS
   const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
@@ -401,7 +409,13 @@ function Post({ post, navigation, showDetails = false, showLine = false, hideBut
   if (post._deleted) return null;
 
   return (
-    <View style={[{ ...styles.postContainer }, showLine && { borderBottomWidth: 0 }]}>
+    <View
+      style={[
+        { ...styles.postContainer },
+        showLine && { borderBottomWidth: 0 },
+        showTopBorder && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderBlack },
+      ]}
+    >
       <View style={styles.post}>
         <View style={styles.leftColumn}>
           <ProfilePic
@@ -417,7 +431,7 @@ function Post({ post, navigation, showDetails = false, showLine = false, hideBut
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
+              onPress={() => navigation.navigate('Profile', { username: post.owner.username })}
               hitSlop={{ top: 5, left: 0, bottom: 20, right: 20 }}
               style={{ flexDirection: 'row', alignItems: 'center' }}
             >

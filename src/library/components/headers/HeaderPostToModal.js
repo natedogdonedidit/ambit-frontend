@@ -16,7 +16,7 @@ const HeaderPostToModal = ({ navigation, title, rightComponent }) => {
     <View style={{ ...styles.container, paddingTop: insets.top, height: HEADER_HEIGHT + insets.top }}>
       <View style={styles.leftSide}>
         <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>
-          <Ionicons name="ios-arrow-back" size={28} color={colors.purp} style={{}} />
+          <Ionicons name="ios-chevron-back" size={28} color={colors.purp} style={{}} />
         </TouchableOpacity>
       </View>
 

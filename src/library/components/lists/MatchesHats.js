@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -17,11 +17,15 @@ import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 // 2. RENDER A COMPONENT FOR EACH GOAL
 // 3. INSIDE THE COMPONENT - QUERY MATCHES (WHILE LOADING - SHOW SKELETON PROFILE PICS)
 
-const MatchesHats = ({ navigation, title }) => {
+const MatchesHats = ({ navigation, title, triggerRefresh }) => {
   // GET "MY TOPICS" (THIS SHOULD HAVE ALREADY BEEN CALLED ON HOMESCREEN - SO JUST PIGGY BACKING OFF THE INITIAL QUERY)
-  const { loading: loadingTopics, error, data } = useQuery(CURRENT_USER_TOPICS);
+  const { loading: loadingTopics, error, data, refetch } = useQuery(CURRENT_USER_TOPICS);
 
   // RENDER FUNCTIONS
+
+  useEffect(() => {
+    refetch();
+  }, [triggerRefresh]);
 
   const renderRows = () => {
     // if loading my topics - render skeleton
@@ -36,7 +40,7 @@ const MatchesHats = ({ navigation, title }) => {
       );
     }
 
-    const { myTopics } = data;
+    const { userLoggedIn: myTopics } = data;
 
     const isFreelancer = myTopics.topicsFreelance.length > 0;
     const isMentor = myTopics.topicsMentor.length > 0;
@@ -48,9 +52,20 @@ const MatchesHats = ({ navigation, title }) => {
     if (hasHats) {
       return (
         <>
-          {isInvestor && <HatMatchesRow navigation={navigation} hats={myTopics.topicsInvest} type="invest" />}
-          {isFreelancer && <HatMatchesRow navigation={navigation} hats={myTopics.topicsFreelance} type="freelance" />}
-          {isMentor && <HatMatchesRow navigation={navigation} hats={myTopics.topicsMentor} type="mentor" />}
+          {isInvestor && (
+            <HatMatchesRow navigation={navigation} hats={myTopics.topicsInvest} type="invest" triggerRefresh={triggerRefresh} />
+          )}
+          {isFreelancer && (
+            <HatMatchesRow
+              navigation={navigation}
+              hats={myTopics.topicsFreelance}
+              type="freelance"
+              triggerRefresh={triggerRefresh}
+            />
+          )}
+          {isMentor && (
+            <HatMatchesRow navigation={navigation} hats={myTopics.topicsMentor} type="mentor" triggerRefresh={triggerRefresh} />
+          )}
         </>
       );
     }

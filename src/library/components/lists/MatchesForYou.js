@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import CURRENT_USER_MATCHES from 'library/queries/CURRENT_USER_MATCHES';
+import USERS_QUERY from 'library/queries/USERS_QUERY';
 import SuggestedConnection from 'library/components/lists/SuggestedConnection';
 import Section from 'library/components/UI/Section';
 import Loader from 'library/components/UI/Loader';
@@ -14,7 +14,7 @@ import { UserContext } from 'library/utils/UserContext';
 const MatchesForYou = ({ navigation, title, triggerRefresh }) => {
   const { currentUserId } = useContext(UserContext);
 
-  const { loading, error, data, refetch } = useQuery(CURRENT_USER_MATCHES, {
+  const { loading, error, data, refetch } = useQuery(USERS_QUERY, {
     variables: {
       where: {
         id: { notIn: [currentUserId] },

@@ -314,34 +314,26 @@ const NewPostModal = ({ navigation, route }) => {
   // images & video stuff
 
   const handleCameraIconPress = () => {
-    ImagePicker.openPicker({
-      multiple: true,
-      maxFiles: 4,
-      waitAnimationEnd: false,
-      includeExif: true,
-      loadingLabelText: 'Uploading files',
-    })
-      .then((imgs) => {
-        const newArray = imgs.map((img) => {
-          // console.log('received image', img);
-          // return { uri: img.path, width: img.width, height: img.height };
-          // console.log(img.path);
-          return img.path;
-        });
+    navigation.navigate('CameraModal', { isIntro: false });
 
-        setImages([...newArray]);
-      })
-      .catch((e) => alert(e));
-  };
+    // ImagePicker.openPicker({
+    //   multiple: true,
+    //   maxFiles: 4,
+    //   waitAnimationEnd: false,
+    //   includeExif: true,
+    //   loadingLabelText: 'Uploading files',
+    // })
+    //   .then((imgs) => {
+    //     const newArray = imgs.map((img) => {
+    //       // console.log('received image', img);
+    //       // return { uri: img.path, width: img.width, height: img.height };
+    //       // console.log(img.path);
+    //       return img.path;
+    //     });
 
-  const cleanupImages = () => {
-    ImagePicker.clean()
-      .then(() => {
-        console.log('removed tmp images from tmp directory');
-      })
-      .catch((e) => {
-        alert(e);
-      });
+    //     setImages([...newArray]);
+    //   })
+    //   .catch((e) => console.log(e));
   };
 
   // must pass this to location modal
@@ -471,7 +463,7 @@ const NewPostModal = ({ navigation, route }) => {
             onPress={handleGoalRowSelect}
             hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
           >
-            <Ionicons name="ios-arrow-forward" size={20} color={colors.iconGray} />
+            <Ionicons name="ios-chevron-forward" size={20} color={colors.iconGray} />
           </TouchableOpacity>
         </>
       );
@@ -542,7 +534,7 @@ const NewPostModal = ({ navigation, route }) => {
             onPress={handleTopicRowSelect}
             hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
           >
-            <Ionicons name="ios-arrow-forward" size={20} color={colors.iconGray} />
+            <Ionicons name="ios-chevron-forward" size={20} color={colors.iconGray} />
           </TouchableOpacity>
         </>
       );

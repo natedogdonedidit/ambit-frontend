@@ -22,15 +22,17 @@ const styles = StyleSheet.create({
   dot: {
     position: 'absolute',
     top: -7,
-    right: -8,
+    right: -10,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 18,
-    minWidth: 18,
+    height: 20,
+    minWidth: 20,
     paddingHorizontal: 4,
-    borderRadius: 9,
+    borderRadius: 10,
     backgroundColor: colors.peach,
-    ...defaultStyles.shadow3,
+    borderColor: 'white',
+    borderWidth: 2,
+    // ...defaultStyles.shadow3,
   },
 });
 

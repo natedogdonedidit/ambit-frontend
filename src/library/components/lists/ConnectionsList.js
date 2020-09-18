@@ -59,17 +59,21 @@ const ConnectionsList = ({ navigation, scrollY, showRefreshing, setShowRefreshin
   const onRefresh = () => {
     // setShowRefreshing(true);
     // refetch();
+    setShowRefreshing(true);
     setTriggerRefresh((prev) => prev + 1);
+    setTimeout(() => {
+      setShowRefreshing(false);
+    }, 1500);
   };
 
   // RENDER
   return (
     <View style={{ flex: 1 }}>
       <FlatList
-        refreshControl={<RefreshControl refreshing={false} onRefresh={onRefresh} tintColor="transparent" />}
+        refreshControl={<RefreshControl refreshing={showRefreshing} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
-        refreshing={false}
-        contentContainerStyle={{ paddingTop: 10, paddingBottom: 20 }}
+        refreshing={showRefreshing}
+        contentContainerStyle={{ paddingTop: 15, paddingBottom: 20 }}
         style={styles.timeline}
         onScroll={Animated.event(
           [
@@ -88,7 +92,7 @@ const ConnectionsList = ({ navigation, scrollY, showRefreshing, setShowRefreshin
           const { name, title } = item;
 
           if (name === 'goals') return <MatchesGoals triggerRefresh={triggerRefresh} navigation={navigation} title={title} />;
-          // if (name === 'hats') return <MatchesHats navigation={navigation} title={title} />;
+          if (name === 'hats') return <MatchesHats triggerRefresh={triggerRefresh} navigation={navigation} title={title} />;
           if (name === 'more') return <MatchesForYou triggerRefresh={triggerRefresh} navigation={navigation} title={title} />;
 
           return null;

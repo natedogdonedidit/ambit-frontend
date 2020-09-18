@@ -17,14 +17,14 @@ const HeaderSearch = ({ user, handleLeft, handleRight, textInput, setTextInput }
     <View style={{ ...styles.container, paddingTop: insets.top }}>
       <View style={styles.header}>
         <TouchableOpacity style={styles.leftSide} onPress={handleLeft}>
-          <Ionicons name="ios-arrow-back" size={28} color={colors.iosBlue} style={{}} />
+          <Ionicons name="ios-chevron-back" size={28} color={colors.iosBlue} style={{}} />
         </TouchableOpacity>
 
         <View style={styles.middle}>
           <Icon name="search" size={18} color={colors.blueGray} />
           <TextInput
             style={{ ...styles.searchBarView, ...defaultStyles.defaultText, color: colors.darkGray }}
-            onChangeText={val => setTextInput(val)}
+            onChangeText={(val) => setTextInput(val)}
             value={textInput}
             placeholder="Search Ambit"
             maxLength={50}
@@ -41,7 +41,7 @@ const HeaderSearch = ({ user, handleLeft, handleRight, textInput, setTextInput }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     // borderBottomWidth: StyleSheet.hairlineWidth,
     // borderBottomColor: colors.borderBlack,
     backgroundColor: colors.white,

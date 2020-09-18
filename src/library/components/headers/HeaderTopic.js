@@ -10,7 +10,7 @@ const HeaderTopic = ({ navigation, handleMiddle, handleRight, user, height = 44,
   return (
     <View style={{ ...styles.container, height }}>
       <TouchableOpacity style={styles.leftSide} onPress={() => navigation.goBack()}>
-        <Ionicons name="ios-arrow-back" size={28} color={colors.purp} />
+        <Ionicons name="ios-chevron-back" size={28} color={colors.purp} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.headerSmall }}>{topicName}</Text>
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 6,
     // backgroundColor: colors.lightLightGray,
     backgroundColor: 'white',
     // backgroundColor: 'gray',
@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
+    paddingRight: 5,
   },
   middleSection: {
     flex: 1,

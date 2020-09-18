@@ -13,6 +13,7 @@ import {
   InputAccessoryView,
 } from 'react-native';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { CommonActions } from '@react-navigation/native';
 // import Editor, { displayTextWithMentions } from 'react-native-mentions-editor';
 import ImagePicker from 'react-native-image-crop-picker';
 // import Image from 'react-native-scalable-image';
@@ -81,7 +82,7 @@ const CommentScreen = ({ navigation, route }) => {
 
   // initialize content with the mention if it's a subcomment
   useEffect(() => {
-    console.log(parentCommentForDB);
+    // console.log(parentCommentForDB);
     if (comment && comment.owner && comment.owner.username && content === '') {
       setContent(`@${comment.owner.username} `);
     }
@@ -143,7 +144,19 @@ const CommentScreen = ({ navigation, route }) => {
 
     try {
       const uploadedImage = await uploadImage();
-      navigation.navigate('Post', { post: parentPost });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes: [
+            { name: 'Home' },
+            {
+              name: 'Post',
+              params: { post: parentPost },
+            },
+          ],
+        })
+      );
+      // navigation.navigate('Post', { post: parentPost });
 
       createOneComment({
         variables: {
@@ -158,99 +171,6 @@ const CommentScreen = ({ navigation, route }) => {
             parentComment: parentCommentObject,
           },
         },
-        // update: (proxy, { data: dataReturned }) => {
-        //   if (useOptimisticResponse) {
-        //     const previousData = proxy.readQuery({ query: POST_COMMENTS_QUERY, variables: { id: parentPost.id } });
-
-        //     if (isComment || isSubComment) {
-        //       if (isUpdate) {
-        //         // if subComment on comment on update
-        //         const indexOfUpdate = previousData.singlePost.updates.findIndex((item) => item.id === parentUpdate.id);
-        //         const indexOfParentComment = previousData.singlePost.updates[indexOfUpdate].comments.findIndex(
-        //           (item) => item.id === parentComment.id
-        //         );
-        //         const newUpdatesArray = [...previousData.singlePost.updates];
-        //         // add the new comment to the correct comment of the correct update
-        //         newUpdatesArray[indexOfUpdate].comments[indexOfParentComment].comments.push(dataReturned.createOneComment);
-        //         proxy.writeQuery({
-        //           query: POST_COMMENTS_QUERY,
-        //           data: {
-        //             singlePost: {
-        //               ...previousData.singlePost,
-        //               updates: newUpdatesArray,
-        //             },
-        //           },
-        //         });
-        //       } else {
-        //         // if subComment on comment on post
-        //         const indexOfParentComment = previousData.singlePost.comments.findIndex((item) => item.id === parentComment.id);
-        //         const newCommentsArray = [...previousData.singlePost.comments];
-
-        //         // add the new subcomment to the comment array of the parentComment
-        //         newCommentsArray[indexOfParentComment].comments.push(dataReturned.createOneComment);
-
-        //         proxy.writeQuery({
-        //           query: POST_COMMENTS_QUERY,
-        //           data: {
-        //             singlePost: {
-        //               ...previousData.singlePost,
-        //               comments: newCommentsArray,
-        //             },
-        //           },
-        //         });
-        //       }
-        //     } else if (isUpdate) {
-        //       // if comment on update
-        //       const indexOfUpdate = previousData.singlePost.updates.findIndex((item) => item.id === parentUpdate.id);
-        //       const newUpdatesArray = [...previousData.singlePost.updates];
-        //       // add the new comment to the correct update comments array
-
-        //       newUpdatesArray[indexOfUpdate].comments.push(dataReturned.createOneComment);
-
-        //       proxy.writeQuery({
-        //         query: POST_COMMENTS_QUERY,
-        //         data: {
-        //           singlePost: {
-        //             ...previousData.singlePost,
-        //             updates: newUpdatesArray,
-        //           },
-        //         },
-        //       });
-        //     } else {
-        //       // if comment on post
-        //       proxy.writeQuery({
-        //         query: POST_COMMENTS_QUERY,
-        //         data: {
-        //           singlePost: {
-        //             ...previousData.singlePost,
-        //             comments: [...previousData.singlePost.comments, dataReturned.createOneComment],
-        //           },
-        //         },
-        //       });
-        //     }
-        //   }
-        // },
-        optimisticResponse: useOptimisticResponse
-          ? {
-              __typename: 'Mutation',
-              createOneComment: {
-                __typename: 'Comment',
-                createdAt: new Date(),
-                owner: userLoggedIn,
-                parentPost: post,
-                parentUpdate,
-                parentComment: parentCommentForDB,
-                content,
-                image: uploadedImage,
-                likes: [],
-                comments: [],
-                id: Math.random(),
-                likesCount: null,
-                likedByMe: false,
-                commentsCount: null,
-              },
-            }
-          : null,
         refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { where: { id: parentPost.id } } }],
       });
     } catch (e) {
@@ -293,7 +213,7 @@ const CommentScreen = ({ navigation, route }) => {
       .then((img) => {
         setCommentImage(img.path);
       })
-      .catch((e) => alert(e));
+      .catch((e) => console.log(e));
   };
 
   const validateInputs = () => {
