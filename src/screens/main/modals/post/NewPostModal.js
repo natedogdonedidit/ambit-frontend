@@ -35,6 +35,7 @@ import Loader from 'library/components/UI/Loader';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 import CoolText from 'library/components/UI/CoolText';
+import MentionsSelect from 'library/components/MentionsSelect';
 
 const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
@@ -54,7 +55,7 @@ const NewPostModal = ({ navigation, route }) => {
   const [locationLat, setLocationLat] = useState('');
   const [locationLon, setLocationLon] = useState('');
   const [cursorLocation, setCursorLocation] = useState(0);
-  const [showMentions, setShowMentions] = useState(false);
+  const [mentionText, setMentionText] = useState('');
 
   const [uploading, setUploading] = useState(false);
 
@@ -72,6 +73,21 @@ const NewPostModal = ({ navigation, route }) => {
 
     return [];
   }, [dataFollowing]);
+
+  // FOR MENTION SEARCH
+  useEffect(() => {
+    // see if the string ends in a mention
+    const re = /\B@\w+$/g;
+    const mentions = content.match(re);
+
+    // if it does, save to state
+    if (mentions && mentions.length > 0) {
+      const mentionToSearch = mentions[0].substr(1).toLowerCase();
+      setMentionText(mentionToSearch);
+    } else {
+      setMentionText('');
+    }
+  }, [content]);
 
   useEffect(() => {
     if (data && data.userLoggedIn) {
@@ -265,6 +281,23 @@ const NewPostModal = ({ navigation, route }) => {
     }
   };
 
+  const handleMentionSelect = (usernameClicked) => {
+    setContent((prevState) => {
+      // see if the string ends in a mention
+      const re = /\B@\w+$/g;
+      const mentions = prevState.match(re);
+
+      // if it does, remove the partial mention, add in the full mention
+      if (mentions && mentions.length > 0) {
+        const mentionToSearch = mentions[0].substr(1).toLowerCase();
+        const startOfString = prevState.substr(0, prevState.length - mentionToSearch.length);
+
+        return `${startOfString}${usernameClicked} `;
+      }
+      return prevState;
+    });
+  };
+
   const handleGoalRowSelect = () => {
     navigation.navigate('SelectGoalModal', { setGoal, setTopic, setSubField });
   };
@@ -314,26 +347,26 @@ const NewPostModal = ({ navigation, route }) => {
   // images & video stuff
 
   const handleCameraIconPress = () => {
-    navigation.navigate('CameraModal', { isIntro: false });
+    // navigation.navigate('CameraModal', { isIntro: false });
 
-    // ImagePicker.openPicker({
-    //   multiple: true,
-    //   maxFiles: 4,
-    //   waitAnimationEnd: false,
-    //   includeExif: true,
-    //   loadingLabelText: 'Uploading files',
-    // })
-    //   .then((imgs) => {
-    //     const newArray = imgs.map((img) => {
-    //       // console.log('received image', img);
-    //       // return { uri: img.path, width: img.width, height: img.height };
-    //       // console.log(img.path);
-    //       return img.path;
-    //     });
+    ImagePicker.openPicker({
+      multiple: true,
+      maxFiles: 4,
+      waitAnimationEnd: false,
+      includeExif: true,
+      loadingLabelText: 'Uploading files',
+    })
+      .then((imgs) => {
+        const newArray = imgs.map((img) => {
+          // console.log('received image', img);
+          // return { uri: img.path, width: img.width, height: img.height };
+          // console.log(img.path);
+          return img.path;
+        });
 
-    //     setImages([...newArray]);
-    //   })
-    //   .catch((e) => console.log(e));
+        setImages([...newArray]);
+      })
+      .catch((e) => console.log(e));
   };
 
   // must pass this to location modal
@@ -356,7 +389,6 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const onPressMention = () => {
-    // setShowMentions((prev) => !prev);
     setContent((prevState) => {
       const beg = prevState.substring(0, cursorLocation);
       const end = prevState.substring(cursorLocation);
@@ -366,7 +398,7 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const renderImages = () => {
-    if (images.length < 1 || showMentions) return null;
+    if (images.length < 1 || !!mentionText) return null;
     if (images.length === 1) {
       return (
         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', marginTop: 15, paddingLeft: 48 }}>
@@ -573,40 +605,32 @@ const NewPostModal = ({ navigation, route }) => {
       />
       <KeyboardAvoidingView behavior="padding" enabled>
         <View style={styles.container}>
-          <ScrollView contentContainerStyle={[styles.scrollView, showMentions && { flex: 1 }]} keyboardShouldPersistTaps="always">
-            <TouchableOpacity onPress={handleGoalRowSelect} activeOpacity={0.7}>
-              <View style={styles.selectGoalView}>{renderGoalText()}</View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleTopicRowSelect} activeOpacity={0.7}>
-              <View style={styles.selectTopicView}>{renderTopicText()}</View>
-            </TouchableOpacity>
+          <ScrollView contentContainerStyle={styles.scrollView} keyboardShouldPersistTaps="always">
+            {true && (
+              <>
+                <TouchableOpacity onPress={handleGoalRowSelect} activeOpacity={0.7}>
+                  <View style={styles.selectGoalView}>{renderGoalText()}</View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleTopicRowSelect} activeOpacity={0.7}>
+                  <View style={styles.selectTopicView}>{renderTopicText()}</View>
+                </TouchableOpacity>
+              </>
+            )}
 
             <View style={styles.postInputView}>
               <View style={styles.leftSide}>
                 <ProfilePicBasic pic={data.userLoggedIn.profilePic} size={34} />
               </View>
-              <View
-                style={[
-                  styles.rightSide,
-                  showMentions && {
-                    height: 64,
-                  },
-                ]}
-              >
+              <View style={styles.rightSide}>
                 <TextInput
-                  style={[
-                    {
-                      flex: 1,
-                      paddingTop: 6,
-                      paddingRight: 15,
-                      ...defaultStyles.largeRegular,
-                      paddingBottom: 10,
-                      // backgroundColor: 'pink',
-                    },
-                    showMentions && {
-                      height: 64,
-                    },
-                  ]}
+                  style={{
+                    flex: 1,
+                    paddingTop: 6,
+                    paddingRight: 15,
+                    ...defaultStyles.largeRegular,
+                    paddingBottom: 10,
+                    // backgroundColor: 'pink',
+                  }}
                   onChangeText={(val) => setContent(val)}
                   // value={content}
                   autoFocus
@@ -624,38 +648,13 @@ const NewPostModal = ({ navigation, route }) => {
                 </TextInput>
               </View>
             </View>
-            {showMentions && (
-              <ScrollView style={styles.aboveKeyboardMentions}>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-                <Text>chad</Text>
-              </ScrollView>
-            )}
             {renderImages()}
           </ScrollView>
         </View>
         <InputAccessoryView nativeID="1">
-          {true && (
+          {mentionText ? (
+            <MentionsSelect mentionText={mentionText} handleMentionSelect={handleMentionSelect} />
+          ) : (
             <View style={styles.aboveKeyboard}>
               <View style={{ ...styles.aboveKeyboardLeft }}>
                 <TouchableOpacity
@@ -706,7 +705,7 @@ const NewPostModal = ({ navigation, route }) => {
                   <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                  <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
+                  <Icon name="at" size={18} color={colors.blue} style={{ paddingRight: 10, opacity: 0.7 }} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -810,18 +809,5 @@ const styles = StyleSheet.create({
   },
   aboveKeyboardRight: {
     flexDirection: 'row',
-  },
-  aboveKeyboardMentions: {
-    width: '100%',
-    backgroundColor: 'tomato',
-    // height: 100,
-    flex: 1,
-    // flexDirection: 'row',
-    // justifyContent: 'space-between',
-    // alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(0, 0, 0, 0.2)',
   },
 });

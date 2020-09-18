@@ -30,6 +30,8 @@ const ProfilePic = ({
     sizePX = 70;
   } else if (size === 'xlarge') {
     sizePX = 110;
+  } else if (size === 'xsmall') {
+    sizePX = 28;
   }
 
   // NOTE: GO BACK TO VERSION 0.0.15 CODE IF YOU WANT TO GO BACK TO INTRO ONLY LOGIC!!

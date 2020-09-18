@@ -39,6 +39,7 @@ import Post from 'library/components/post/Post';
 import Comment from 'library/components/post/Comment';
 import SubComment from 'library/components/post/SubComment';
 import CoolText from 'library/components/UI/CoolText';
+import MentionsSelect from 'library/components/MentionsSelect';
 
 const CommentScreen = ({ navigation, route }) => {
   const scrollViewRef = useRef(null);
@@ -61,9 +62,8 @@ const CommentScreen = ({ navigation, route }) => {
   const [content, setContent] = useState('');
   const [commentImage, setCommentImage] = useState('');
   const [uploading, setUploading] = useState(false);
-  // const [mentions, setMentions] = useState([]);
-  // const [selection, setSelection] = useState({ start: 0, end: 0 });
-  // const [showMentionList, setShowMentionList] = useState(false);
+  const [mentionText, setMentionText] = useState('');
+  const [cursorLocation, setCursorLocation] = useState(0);
 
   // constants
   const currentTime = new Date();
@@ -79,6 +79,21 @@ const CommentScreen = ({ navigation, route }) => {
       parentCommentForDB = comment;
     }
   }
+
+  // FOR MENTION SEARCH
+  useEffect(() => {
+    // see if the string ends in a mention
+    const re = /\B@\w+$/g;
+    const mentions = content.match(re);
+
+    // if it does, save to state
+    if (mentions && mentions.length > 0) {
+      const mentionToSearch = mentions[0].substr(1).toLowerCase();
+      setMentionText(mentionToSearch);
+    } else {
+      setMentionText('');
+    }
+  }, [content]);
 
   // initialize content with the mention if it's a subcomment
   useEffect(() => {
@@ -204,6 +219,41 @@ const CommentScreen = ({ navigation, route }) => {
     return '';
   };
 
+  const handleMentionSelect = (usernameClicked) => {
+    setContent((prevState) => {
+      // see if the string ends in a mention
+      const re = /\B@\w+$/g;
+      const mentions = prevState.match(re);
+
+      // if it does, remove the partial mention, add in the full mention
+      if (mentions && mentions.length > 0) {
+        const mentionToSearch = mentions[0].substr(1).toLowerCase();
+        const startOfString = prevState.substr(0, prevState.length - mentionToSearch.length);
+
+        return `${startOfString}${usernameClicked} `;
+      }
+      return prevState;
+    });
+  };
+
+  const onPressHashtag = () => {
+    setContent((prevState) => {
+      const beg = prevState.substring(0, cursorLocation);
+      const end = prevState.substring(cursorLocation);
+
+      return `${beg}#${end}`;
+    });
+  };
+
+  const onPressMention = () => {
+    setContent((prevState) => {
+      const beg = prevState.substring(0, cursorLocation);
+      const end = prevState.substring(cursorLocation);
+
+      return `${beg}@${end}`;
+    });
+  };
+
   const handleCameraIconPress = () => {
     ImagePicker.openPicker({
       multiple: false,
@@ -319,15 +369,13 @@ const CommentScreen = ({ navigation, route }) => {
                     onChangeText={onChangeText}
                     autoFocus
                     autoCompleteType="off"
-                    // autoCorrect={false}
                     multiline
                     scrollEnabled={false}
                     textAlignVertical="top"
                     placeholder="Start your comment"
-                    // onSelectionChange={(event) => setSelection(event.nativeEvent.selection)}
                     inputAccessoryViewID="1"
-                    // onBlur={() => setShowMentionList(false)}
                     keyboardType="twitter"
+                    onSelectionChange={({ nativeEvent }) => setCursorLocation(nativeEvent.selection.end)}
                   >
                     <CoolText>{content}</CoolText>
                   </TextInput>
@@ -348,16 +396,24 @@ const CommentScreen = ({ navigation, route }) => {
         </View>
 
         <InputAccessoryView nativeID="1">
-          <View style={styles.aboveKeyboard}>
-            <View style={styles.aboveKeyboardLeft}>
-              <TouchableOpacity onPress={handleCameraIconPress} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.6 }} />
-              </TouchableOpacity>
+          {mentionText ? (
+            <MentionsSelect mentionText={mentionText} handleMentionSelect={handleMentionSelect} />
+          ) : (
+            <View style={styles.aboveKeyboard}>
               <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <IconM name="camera-outline" size={22} color={colors.purp} style={{ paddingRight: 32, opacity: 0.6 }} />
+                <Text style={{ ...defaultStyles.hugeBold, color: colors.purp, opacity: 0.7, paddingRight: 27 }}>GIF</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleCameraIconPress} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.7 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 30, opacity: 0.7 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
               </TouchableOpacity>
             </View>
-          </View>
+          )}
         </InputAccessoryView>
       </KeyboardAvoidingView>
       {uploading && <Loader loading={uploading} />}
@@ -428,7 +484,7 @@ const styles = StyleSheet.create({
   aboveKeyboard: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 10,
