@@ -773,15 +773,15 @@ export const investList = [
     color: 'green',
   },
   {
-    name: 'Venture Capital',
-    topicID: 'invest_venturecapital',
-    icon: 'dollar-sign',
-    color: 'green',
-  },
-  {
     name: 'Real Estate',
     topicID: 'invest_realestate',
     icon: 'home',
+    color: 'green',
+  },
+  {
+    name: 'Venture Capital',
+    topicID: 'invest_venturecapital',
+    icon: 'dollar-sign',
     color: 'green',
   },
   {

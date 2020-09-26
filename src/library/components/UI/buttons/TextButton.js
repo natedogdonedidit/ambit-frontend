@@ -6,7 +6,7 @@ import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const TextButton = ({ onPress, buttonStyle, textStyle, children }) => {
+const TextButton = ({ onPress = () => null, buttonStyle, textStyle, children }) => {
   return (
     <TouchableOpacity onPress={() => onPress()} activeOpacity={0.5} hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}>
       <View style={{ ...styles.button, ...buttonStyle }}>

@@ -12,8 +12,8 @@ const UserContext = createContext();
 const UserContextProvider = (props) => {
   const [loadingToken, setLoadingToken] = useState(true);
   const [creatingStory, setCreatingStory] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(null);
-  const [currentUsername, setCurrentUsername] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState('');
+  const [currentUsername, setCurrentUsername] = useState('');
   const [homePosition, setHomePosition] = useState(0);
 
   const client = useApolloClient();
@@ -30,8 +30,8 @@ const UserContextProvider = (props) => {
         await setCurrentUsername(username);
       } else {
         signOut();
-        await setCurrentUserId(null);
-        await setCurrentUsername(null);
+        await setCurrentUserId('');
+        await setCurrentUsername('');
       }
 
       setLoadingToken(false);
@@ -71,8 +71,8 @@ const UserContextProvider = (props) => {
       console.log('Cleared apollo store')
 
       // 3. clear user in context
-      setCurrentUserId(null)
-      setCurrentUsername(null)
+      setCurrentUserId('')
+      setCurrentUsername('')
       console.log('Cleared user from context')
     } catch (e) {
       // AsyncStorage errors would lead us here
@@ -83,16 +83,16 @@ const UserContextProvider = (props) => {
 
   return (
     <UserContext.Provider
-      value={{ 
-        loadingToken, 
+      value={{
+        loadingToken,
         currentUserId,
         currentUsername,
-        loginCTX, 
-        logoutCTX, 
-        homePosition, 
-        setHomePosition, 
-        creatingStory, 
-        setCreatingStory 
+        loginCTX,
+        logoutCTX,
+        homePosition,
+        setHomePosition,
+        creatingStory,
+        setCreatingStory
       }}
     >
       {props.children}

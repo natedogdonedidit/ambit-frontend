@@ -24,7 +24,7 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import analytics from '@segment/analytics-react-native';
 import mixpanel from '@segment/analytics-react-native-mixpanel';
 
-import { SafeAreaProvider, initialWindowSafeAreaInsets, initialWindowMetrics } from 'react-native-safe-area-context';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { UserContextProvider } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
 import AppNavigator from './App';
@@ -67,8 +67,8 @@ const authLink = setContext(async (req, { headers }) => {
 // Create an http link:
 const httpLink = new HttpLink({
   uri: Platform.select({
-    // ios: 'http://localhost:4000/', // simulator
-    // ios: 'http://192.168.123.164:4000/graphql', // work
+    // ios: 'http://localhost:4000/graphql', // simulator
+    // ios: 'http://192.168.123.89:4000/graphql', // work
     // ios: 'http://192.168.1.214:4000/graphql', // home
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
@@ -82,8 +82,8 @@ const httpLink = new HttpLink({
 // Create a WebSocket link:
 const wsLink = new WebSocketLink({
   uri: Platform.select({
-    // ios: 'ws://localhost:4000/', // simulator
-    // ios: 'ws://192.168.123.164:4000/graphql', // work
+    // ios: 'ws://localhost:4000/graphql', // simulator
+    // ios: 'ws://192.168.123.89:4000/graphql', // work
     // ios: 'ws://192.168.1.214:4000/graphql', // home
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats

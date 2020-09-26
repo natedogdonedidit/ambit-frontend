@@ -43,7 +43,7 @@ const SelectSearchTopicsModal = ({ navigation, route }) => {
 
     setActiveTopics(newArray);
     setTopics(newArray);
-    console.log(newArray);
+    // console.log(newArray);
   };
 
   const handleCategorySelect = (category) => {

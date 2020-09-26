@@ -242,6 +242,11 @@ const styles = StyleSheet.create({
     fontFamily: 'SFProDisplay-Light',
   },
   // HUGE, 17px
+  hugeMute: {
+    color: colors.blueGray,
+    fontSize: huge,
+    fontFamily: 'SFProText-Regular',
+  },
   hugeThin: {
     color: colors.black,
     fontSize: huge,
@@ -321,6 +326,11 @@ const styles = StyleSheet.create({
   ambitLogo: {
     color: colors.purp,
     fontSize: 26,
+    fontFamily: 'Poppins-SemiBold',
+  },
+  ambitLogoSmall: {
+    color: colors.purp,
+    fontSize: 20,
     fontFamily: 'Poppins-SemiBold',
   },
   ambitLogoSplash: {

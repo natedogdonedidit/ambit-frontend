@@ -5,6 +5,7 @@ import { sub, isBefore } from 'date-fns';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import { enableScreens } from 'react-native-screens';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
@@ -32,6 +33,8 @@ const ProfilePic = ({
     sizePX = 110;
   } else if (size === 'xsmall') {
     sizePX = 28;
+  } else if (size === 'drawer') {
+    sizePX = 52;
   }
 
   // NOTE: GO BACK TO VERSION 0.0.15 CODE IF YOU WANT TO GO BACK TO INTRO ONLY LOGIC!!
@@ -186,12 +189,12 @@ const ProfilePic = ({
     // if only INTRO
     if (hasIntro && enableIntro) {
       // if small
-      if (size === 'small') {
-        return null;
-      }
-      if (size === 'medium') {
-        return null;
-      }
+      // if (size === 'small') {
+      //   return null;
+      // }
+      // if (size === 'medium') {
+      //   return null;
+      // }
       if (size === 'large') {
         return (
           <TouchableOpacity
@@ -223,6 +226,9 @@ const ProfilePic = ({
           </TouchableOpacity>
         );
       }
+
+      // else
+      return null;
     }
   };
 

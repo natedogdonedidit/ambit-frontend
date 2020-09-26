@@ -1,44 +1,45 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, Button, TextInput, TouchableOpacity, Alert } from 'react-native';
-// import { NavigationEvents } from 'react-navigation';
-// import { HeaderBackButton } from 'react-navigation-stack';
-import { useLazyQuery } from '@apollo/client';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useMutation, useApolloClient } from '@apollo/client';
 
 import { UserContext } from 'library/utils/UserContext';
-import LOGIN_QUERY from 'library/queries/LOGIN_QUERY';
+import LOGIN_MUTATION from 'library/mutations/LOGIN_MUTATION';
+import { signOut } from 'library/utils/authUtil';
 
-const LoginScreen = (props) => {
+import colors from 'styles/colors';
+import defaultStyles from 'styles/defaultStyles';
+import TextButton from 'library/components/UI/buttons/TextButton';
+
+const LoginScreen = ({ navigation }) => {
+  const client = useApolloClient();
+
   // state declaration
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const { loginCTX } = useContext(UserContext);
 
-  const { navigation } = props;
-
   // MUTATIONS
-  const [login, { loading, data, error }] = useLazyQuery(LOGIN_QUERY, {
+  const [login, { loading, error }] = useMutation(LOGIN_MUTATION, {
     variables: {
       username,
       password,
     },
-    // wait for the response from the mutation, write User data (returned from mutation)
-    // into cache CURRENT_USER_QUERY
-    // update: (proxy, { data: dataReturned }) => {
-    //   proxy.writeQuery({
-    //     query: CURRENT_USER_QUERY,
-    //     data: {
-    //       userLoggedIn: dataReturned.login.user,
-    //     },
-    //   });
-    // },
+    onCompleted: async (data) => {
+      // 2. store token & ID to storage, save user in CTX
+      await loginCTX(data.login);
+      setUsername('');
+      setPassword('');
+      navigation.navigate('MainStack');
+    },
   });
 
+  // had to do this to make sure token was cleared from storage upon signout
   useEffect(() => {
-    if (data && data.login && data.login.token && data.login.user)
-      // 2. store token & ID to storage, save user in CTX
-      loginCTX(data.login);
-  }, [data]);
+    signOut();
+    client.clearStore();
+  }, []);
 
   const onLoginSubmit = async () => {
     try {
@@ -61,113 +62,77 @@ const LoginScreen = (props) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <Text style={{ ...defaultStyles.ambitLogo, fontSize: 36, paddingTop: 45, paddingBottom: 35 }}>ambit</Text>
         <TextInput
           style={styles.input}
-          placeholder="Username"
+          placeholder="Email or username"
           value={username}
           onChangeText={(val) => setUsername(val)}
           editable={!loading}
+          autoCapitalize="none"
+          textContentType="emailAddress"
+          keyboardType="email-address"
         />
         <TextInput
           style={styles.input}
           placeholder="Password"
           value={password}
           onChangeText={(val) => setPassword(val)}
+          textContentType="password"
           secureTextEntry
           editable={!loading}
         />
-        <TouchableOpacity onPress={() => onLoginSubmit()}>
-          <View style={styles.loginButton}>
-            <Text style={{ color: 'white' }}>Log{loading ? 'ging in...' : 'in'}</Text>
-          </View>
+
+        <TouchableOpacity onPress={onLoginSubmit} style={{ ...styles.button }} activeOpacity={0.8}>
+          <Text style={{ ...defaultStyles.hugeMedium, color: 'white' }}>Sign{loading ? 'ing in...' : ' in'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => null}>
-          <View style={styles.linkedinButton}>
-            <Text style={{ color: 'white' }}>Login with LinkedIn</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => null}>
-          <View style={styles.googleButton}>
-            <Text style={{ color: 'white' }}>Login with Google</Text>
-          </View>
-        </TouchableOpacity>
-        <Button title="Create Account" onPress={() => navigation.navigate('CreateAccount')} />
-
+        <TextButton buttonStyle={{ marginTop: 44 }}>Forgot password</TextButton>
         {renderErrors()}
+        <View style={{ flex: 1 }} />
 
-        {/* <NavigationEvents
-          onDidFocus={() => {
-            setEmail('');
-            setPassword('');
-          }}
-          onDidBlur={() => {
-            setEmail('');
-            setPassword('');
-          }}
-        /> */}
-      </View>
-    </SafeAreaView>
+        <TextButton onPress={() => navigation.navigate('CreateAccount')}>Don't have an account? Create here</TextButton>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
-    padding: 20,
+    paddingHorizontal: 42,
+    paddingBottom: 10,
   },
   input: {
-    width: 200,
-    fontSize: 20,
+    width: '100%',
     borderBottomWidth: 1,
-    borderBottomColor: 'black',
-    margin: 10,
+    borderBottomColor: colors.borderBlack,
+    marginVertical: 13,
     paddingBottom: 4,
-  },
-  loginButton: {
-    backgroundColor: 'tomato',
-    width: 200,
-    padding: 10,
-    margin: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderRadius: 5,
-  },
-  linkedinButton: {
-    backgroundColor: '#3b5998',
-    width: 200,
-    padding: 10,
-    margin: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderRadius: 5,
-  },
-  googleButton: {
-    backgroundColor: '#db3236',
-    width: 200,
-    padding: 10,
-    margin: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    borderRadius: 5,
+    ...defaultStyles.hugeRegular,
+    fontSize: 18,
   },
   error: {
     padding: 5,
     margin: 5,
     color: 'red',
+    marginTop: 20,
+  },
+  button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.purp,
+    borderRadius: 27,
+    height: 54,
+    paddingHorizontal: 30,
+    width: '100%',
+    ...defaultStyles.shadow3,
+    marginTop: 35,
   },
 });
-
-// LoginScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     title: 'Login',
-//     headerLeft: <HeaderBackButton onPress={() => navigation.navigate('Tabs')} />,
-//   };
-// };
 
 export default LoginScreen;

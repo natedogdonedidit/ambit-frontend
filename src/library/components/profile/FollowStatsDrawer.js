@@ -8,7 +8,7 @@ import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import { useQuery } from '@apollo/client';
 
 // user is from SINGLE_USER_BASIC
-const FollowStats = ({ username, navigation }) => {
+const FollowStatsDrawer = ({ username, navigation }) => {
   // const [followingCount, setFollowingCount] = useState(user.followingCount);
   // const [followersCount, setFollowersCount] = useState(user.followersCount);
 
@@ -36,25 +36,25 @@ const FollowStats = ({ username, navigation }) => {
         style={{ flexDirection: 'row' }}
         onPress={() => navigation.navigate('Followers', { username, followersCount })}
       >
-        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
+        <Text style={{ ...defaultStyles.largeSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
           {followersCount}
         </Text>
-        <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Followers</Text>
+        <Text style={{ ...defaultStyles.largeMute, marginRight: 20, fontWeight: '500', color: colors.gray40 }}>Followers</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={{ flexDirection: 'row' }}
         onPress={() => navigation.navigate('Following', { username, followingCount })}
       >
-        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
+        <Text style={{ ...defaultStyles.largeSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
           {followingCount}
         </Text>
-        <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Following</Text>
+        <Text style={{ ...defaultStyles.largeMute, marginRight: 10, fontWeight: '500', color: colors.gray40 }}>Following</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-export default FollowStats;
+export default FollowStatsDrawer;
 
 const styles = StyleSheet.create({
   stats: {

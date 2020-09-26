@@ -182,7 +182,7 @@ export const profilePicUpload = async (userId, uri) => {
       body: uploadData,
     });
     const resJson = await res.json();
-    console.log('resJson', resJson);
+    // console.log('resJson', resJson);
 
     // return the image url
     return resJson.url;

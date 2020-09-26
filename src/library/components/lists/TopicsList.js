@@ -4,13 +4,13 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { topicsList } from 'library/utils/lists';
-import { getIconID, getTopicFromID } from 'library/utils';
+// import { getIconID, getTopicFromID } from 'library/utils';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect, handleCategorySelect }) => {
-  console.log(activeTopicIDs);
+  // console.log(activeTopicIDs);
   const renderSubtopics = (subTopics) => {
     return subTopics.map((subTopic) => {
       const { name, topicID } = subTopic;
@@ -62,12 +62,13 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
               <Icon name={icon} solid size={20} color={colors[color] || colors.blueGray} />
             </View>
             <Text style={styles.mainRowText}>{name}</Text>
+            <View style={{ flex: 1 }} />
             {countSelected > 0 && (
               <View style={styles.countCircle}>
                 <Text style={{ ...defaultStyles.smallMedium, textAlign: 'center', color: colors.white }}>{countSelected}</Text>
               </View>
             )}
-            <View style={{ flex: 1 }} />
+
             <Ionicons
               name={isExpanded ? 'ios-chevron-down' : 'ios-chevron-forward'}
               size={22}

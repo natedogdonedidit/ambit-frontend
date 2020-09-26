@@ -13,24 +13,24 @@ const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, s
       ]}
     >
       <View style={styles.sectionHeader}>
-        <View style={styles.buttons}>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => setActiveTimeline(0)}
-            style={{ paddingRight: 10 }}
-            hitSlop={{ top: 12, left: 20, bottom: 12 }}
-          >
-            <Text style={activeTimeline === 0 ? styles.selectedButton : styles.nonSelectedButton}>For you</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.9}
-            onPress={() => setActiveTimeline(1)}
-            style={{ paddingHorizontal: 10 }}
-            hitSlop={{ top: 12, bottom: 12, right: 20 }}
-          >
-            <Text style={activeTimeline === 1 ? styles.selectedButton : styles.nonSelectedButton}>Following</Text>
-          </TouchableOpacity>
-        </View>
+        {/* <View style={styles.buttons}> */}
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => setActiveTimeline(0)}
+          style={{ paddingRight: 20 }}
+          hitSlop={{ top: 12, left: 20, bottom: 12 }}
+        >
+          <Text style={activeTimeline === 0 ? styles.selectedButton : styles.nonSelectedButton}>For you</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => setActiveTimeline(1)}
+          style={{ paddingHorizontal: 20 }}
+          hitSlop={{ top: 12, bottom: 12, right: 20 }}
+        >
+          <Text style={activeTimeline === 1 ? styles.selectedButton : styles.nonSelectedButton}>Following</Text>
+        </TouchableOpacity>
+        {/* </View> */}
 
         <TouchableOpacity
           activeOpacity={0.9}
@@ -38,7 +38,7 @@ const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, s
           style={{ paddingLeft: 20 }}
           hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}
         >
-          <Text style={activeTimeline === 2 ? styles.selectedButton : styles.nonSelectedButton2}>My Goals</Text>
+          <Text style={activeTimeline === 2 ? styles.selectedButton : styles.nonSelectedButton}>My Goals</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 15,

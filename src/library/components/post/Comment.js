@@ -222,7 +222,7 @@ function Comment({
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('Profile', { profileId: comment.owner.id })}
+              onPress={() => navigation.navigate('Profile', { username: comment.owner.username })}
               hitSlop={{ top: 5, left: 0, bottom: 20, right: 20 }}
               style={{ flexDirection: 'row', alignItems: 'center' }}
             >

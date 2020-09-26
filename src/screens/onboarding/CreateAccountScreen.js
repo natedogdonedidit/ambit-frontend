@@ -1,55 +1,60 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
-import { useMutation } from '@apollo/client';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useMutation, useApolloClient } from '@apollo/client';
+import { signOut } from 'library/utils/authUtil';
 
 import { UserContext } from 'library/utils/UserContext';
 import SIGNUP_MUTATION from 'library/mutations/SIGNUP_MUTATION';
 
-const CreateAccountScreen = (props) => {
+import colors from 'styles/colors';
+import defaultStyles from 'styles/defaultStyles';
+import TextButton from 'library/components/UI/buttons/TextButton';
+
+const CreateAccountScreen = ({ navigation }) => {
+  const client = useApolloClient();
+
   // state declaration
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const { loginCTX } = useContext(UserContext);
 
-  // navigation
-  // const { navigation } = props;
+  // had to do this to make sure token was cleared from storage upon signout
+  useEffect(() => {
+    signOut();
+    client.clearStore();
+  }, []);
 
   // MUTATIONS
   const [signup, { loading, error }] = useMutation(SIGNUP_MUTATION, {
     variables: {
       name,
+      email,
       username,
       password,
     },
-    // wait for the response from the mutation, write User data (returned from mutation)
-    // into cache CURRENT_USER_QUERY
-    // update: (proxy, { data: dataReturned }) => {
-    //   proxy.writeQuery({
-    //     query: CURRENT_USER_QUERY,
-    //     data: {
-    //       userLoggedIn: dataReturned.signup.user,
-    //     },
-    //   });
-    // },
+    onCompleted: async (data) => {
+      // 2. store token in storage, save user in CTX
+      await loginCTX(data.signup);
+
+      // 3. clear state
+      setName('');
+      setUsername('');
+      setEmail('');
+      setPassword('');
+
+      // 4. navigate to Onboarding (changing to Main for now)
+      navigation.navigate('OnboardingProfile', { username: data.signup.user.username });
+    },
   });
 
   const onSignupSubmit = async () => {
     try {
       // 1. send signup request to backend
-      const res = await signup();
-
-      // 2. store token in storage, save user in CTX
-      await loginCTX(res.data.signup);
-
-      // 3. clear state
-      setName('');
-      setUsername('');
-      setPassword('');
-
-      // 4. navigate to Onboarding (changing to Main for now)
-      // navigation.navigate('Main');
+      await signup();
     } catch (e) {
       // Backend GraphQL errors would lead us here
       console.log('ERROR SIGNING UP IN BACKEND:', e.message);
@@ -58,39 +63,73 @@ const CreateAccountScreen = (props) => {
 
   const renderErrors = () => {
     if (!error) return null;
-    return error.graphQLErrors.map(({ message }, i) => <Text key={i}>{message}</Text>);
+    return error.graphQLErrors.map(({ message }, i) => (
+      <Text key={i} style={styles.error}>
+        {message}
+      </Text>
+    ));
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={(val) => setName(val)} editable={!loading} />
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={(val) => {
-          const noSymbol = val.replace(/[^a-zA-Z0-9_]/g, '');
-          setUsername(noSymbol);
-        }}
-        autoCapitalize="none"
-        editable={!loading}
-        keyboardType="name-phone-pad" // no underscore, should fix eventually
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={(val) => setPassword(val)}
-        secureTextEntry
-        editable={!loading}
-      />
-      <TouchableOpacity onPress={() => onSignupSubmit(signup, loginCTX)}>
-        <View style={styles.signupButton}>
-          <Text style={{ color: 'white' }}>Sign{loading ? 'ing Up...' : ' Up'}</Text>
-        </View>
-      </TouchableOpacity>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <Text style={{ ...defaultStyles.ambitLogo, fontSize: 36, paddingTop: 45, paddingBottom: 35 }}>ambit</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={(val) => setName(val)}
+          editable={!loading}
+          textContentType="name"
+          autoCapitalize="words"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={(val) => {
+            setEmail(val);
+          }}
+          autoCapitalize="none"
+          textContentType="emailAddress"
+          keyboardType="email-address"
+          editable={!loading}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          value={username}
+          onChangeText={(val) => {
+            const noSymbol = val.replace(/[^a-zA-Z0-9_]/g, '');
+            setUsername(noSymbol);
+          }}
+          autoCapitalize="none"
+          editable={!loading}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={(val) => setPassword(val)}
+          textContentType="newPassword"
+          secureTextEntry
+          editable={!loading}
+        />
 
-      {renderErrors(error)}
+        <TouchableOpacity onPress={onSignupSubmit} style={{ ...styles.button }} activeOpacity={0.8}>
+          <Text style={{ ...defaultStyles.hugeMedium, color: 'white' }}>{loading ? 'Creating Account' : 'Create Account'}</Text>
+        </TouchableOpacity>
+
+        <Text style={{ ...defaultStyles.smallMute, marginTop: 36, textAlign: 'center' }}>
+          By registering, you confirm that you accept our{' '}
+          <Text style={{ ...defaultStyles.smallMedium, color: colors.purp }}>Terms of Service</Text> and{' '}
+          <Text style={{ ...defaultStyles.smallMedium, color: colors.purp }}>Privacy Policy</Text>
+        </Text>
+        {renderErrors()}
+        <View style={{ flex: 1 }} />
+
+        <TextButton onPress={() => navigation.navigate('Login')}>Already have an account? Login here</TextButton>
+      </SafeAreaView>
     </View>
   );
 };
@@ -98,32 +137,37 @@ const CreateAccountScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
-    padding: 20,
+    paddingHorizontal: 42,
+    paddingBottom: 10,
   },
   input: {
-    width: 200,
-    fontSize: 20,
+    width: '100%',
     borderBottomWidth: 1,
-    borderBottomColor: 'black',
-    margin: 10,
+    borderBottomColor: colors.borderBlack,
+    marginVertical: 13,
     paddingBottom: 4,
+    ...defaultStyles.hugeRegular,
+    fontSize: 18,
   },
-  signupButton: {
-    backgroundColor: 'tomato',
-    width: 200,
-    padding: 10,
-    margin: 10,
-    flexDirection: 'row',
+  error: {
+    padding: 5,
+    margin: 5,
+    color: 'red',
+    marginTop: 20,
+  },
+  button: {
     justifyContent: 'center',
-    borderRadius: 5,
+    alignItems: 'center',
+    backgroundColor: colors.purp,
+    borderRadius: 27,
+    height: 54,
+    paddingHorizontal: 30,
+    width: '100%',
+    ...defaultStyles.shadow3,
+    marginTop: 35,
   },
 });
-
-CreateAccountScreen.navigationOptions = {
-  title: 'Create Account',
-};
 
 export default CreateAccountScreen;

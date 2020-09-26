@@ -2,7 +2,10 @@ import React, { useContext } from 'react';
 import { StyleSheet, View, Text, Image, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/client';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+import { CommonActions } from '@react-navigation/native';
 
 import { UserContext } from 'library/utils/UserContext';
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -11,8 +14,10 @@ import defaultStyles from 'styles/defaultStyles';
 import { VERSION } from 'styles/constants';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import FollowStatsDrawer from './profile/FollowStatsDrawer';
 
 const CustomDrawer = ({ navigation }) => {
+  // const client = useApolloClient();
   const { logoutCTX } = useContext(UserContext);
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
     onError: () => handleLogout(),
@@ -23,9 +28,15 @@ const CustomDrawer = ({ navigation }) => {
 
   const handleLogout = async () => {
     try {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        })
+      );
+
       // attempt to sign out (remove JWT token to storage)
       await logoutCTX();
-      navigation.closeDrawer();
     } catch (e) {
       // AsyncStorage errors would lead us here
       console.log('ERROR LOGGING OUT:', e.message);
@@ -41,23 +52,33 @@ const CustomDrawer = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
-      <View>
+      <View style={{ flex: 1 }}>
         <TouchableOpacity
           style={styles.header}
           onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}
+          activeOpacity={0.6}
         >
-          <ProfilePic user={userLoggedIn} size="small" navigation={navigation} enableIntro={false} enableStory={false} />
-          <Text style={{ ...defaultStyles.hugeLight, paddingLeft: 15 }}>Hi, {userLoggedIn.username}!</Text>
+          <ProfilePic user={userLoggedIn} size="drawer" navigation={navigation} enableIntro={false} enableStory={false} />
+          <View style={{ justifyContent: 'flex-end' }}>
+            <Text style={{ ...defaultStyles.largeBold, paddingLeft: 12, paddingTop: 8, fontSize: 16 }}>{userLoggedIn.name}</Text>
+            <Text style={{ ...defaultStyles.largeMute, paddingLeft: 12, paddingTop: 2, fontSize: 16 }}>
+              @{userLoggedIn.username}
+            </Text>
+          </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}>
+        <View style={{ paddingLeft: 21, paddingTop: 5, paddingBottom: 3 }}>
+          <FollowStatsDrawer username={userLoggedIn.username} navigation={navigation} />
+        </View>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}>
           <View style={styles.button}>
-            <View style={{ width: 38, justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name="user" size={22} color={colors.iconGray} solid />
+            <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
+              <Feather name="user" size={20} color={colors.blueGray} />
             </View>
-            <Text style={styles.buttonText}>My Profile</Text>
+            <Text style={styles.buttonText}>Profile</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
+          activeOpacity={0.6}
           onPress={() => {
             // navigation.navigate('CreateIntroModal', { userLoggedIn });
             navigation.navigate('CameraModal', { isIntro: true });
@@ -65,45 +86,38 @@ const CustomDrawer = ({ navigation }) => {
           }}
         >
           <View style={styles.button}>
-            <View style={{ width: 38, justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name="bolt" size={22} color={colors.iconGray} solid />
+            <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
+              <Ionicons name="play-circle-outline" size={25} color={colors.blueGray} />
             </View>
-            <Text style={styles.buttonText}>My Intro</Text>
+            <Text style={styles.buttonText}>Your Intro</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MyTopics')}>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyTopics')}>
           <View style={styles.button}>
-            <View style={{ width: 38, justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name="comment" size={22} color={colors.iconGray} solid />
+            <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
+              <Ionicons name="chatbubbles-outline" size={22} color={colors.blueGray} />
             </View>
-            <Text style={styles.buttonText}>My Topics</Text>
+            <Text style={styles.buttonText}>Topics</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MyHats')}>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyHats')}>
           <View style={styles.button}>
-            <View style={{ width: 38, justifyContent: 'center', alignItems: 'center' }}>
-              <Icon name="hat-cowboy-side" size={22} color={colors.iconGray} solid />
+            <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
+              <Feather name="bell" size={22} color={colors.blueGray} />
             </View>
-            <Text style={styles.buttonText}>My Hats</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-      <View>
-        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-          <View style={styles.buttonBottom}>
-            <Text style={styles.buttonText}>Settings</Text>
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handleLogout()}>
-          <View style={styles.buttonBottom}>
-            <Text style={styles.buttonText}>Logout</Text>
+            <Text style={styles.buttonText}>Hats</Text>
           </View>
         </TouchableOpacity>
         <View style={{ position: 'absolute', bottom: 15, right: 10 }}>
-          <Text style={{ ...styles.buttonText, textAlign: 'right', paddingRight: 15 }}>{VERSION}</Text>
+          <Text style={{ ...defaultStyles.smallMute, textAlign: 'right', paddingRight: 10 }}>{VERSION}</Text>
         </View>
       </View>
+      <TouchableOpacity activeOpacity={0.6} onPress={handleLogout} style={styles.buttonBottom}>
+        <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
+          <Ionicons name="log-out-outline" size={22} color={colors.blueGray} />
+        </View>
+        <Text style={styles.buttonText}>Sign out</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -112,7 +126,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    paddingBottom: 15,
+    paddingBottom: 4,
   },
   name: {
     padding: 10,
@@ -122,10 +136,10 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
-    marginBottom: 15,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
+    padding: 21,
+    // marginBottom: 15,
+    // borderBottomWidth: StyleSheet.hairlineWidth,
+    // borderBottomColor: colors.borderBlack,
   },
   headerText: {
     color: 'tomato',
@@ -140,14 +154,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    ...defaultStyles.hugeLight,
-    paddingLeft: 10,
+    ...defaultStyles.hugeRegular,
+    paddingLeft: 18,
+    color: colors.blueGray,
   },
   buttonBottom: {
+    paddingLeft: 15,
     width: '100%',
     padding: 15,
-    paddingLeft: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderTopColor: colors.borderBlack,
+    borderTopWidth: StyleSheet.hairlineWidth,
   },
+  // buttonBottom: {
+  //   flexDirection: 'row',
+  //   padding: 15,
+  //   paddingLeft: 8,
+  //   borderTopColor: colors.borderBlack,
+  //   borderTopWidth: StyleSheet.hairlineWidth,
+  // },
 });
 
 CustomDrawer.navigationOptions = {

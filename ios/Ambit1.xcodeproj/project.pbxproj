@@ -1090,7 +1090,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Ambit;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.AmbitDev;
 				PRODUCT_NAME = "Ambit Dev";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1113,7 +1113,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Ambit;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.AmbitDev;
 				PRODUCT_NAME = "Ambit Dev";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";

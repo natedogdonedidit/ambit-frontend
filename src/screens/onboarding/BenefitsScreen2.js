@@ -1,71 +1,76 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StyleSheet, SafeAreaView, View, Text } from 'react-native';
 
 import colors from 'styles/colors';
-import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
+import defaultStyles from 'styles/defaultStyles';
+import TextButton from 'library/components/UI/buttons/TextButton';
 
-const BenefitsScreen2 = props => {
-  // state declaration
-
-  // navigation
-  const { navigation } = props;
-
-  useEffect(() => {
-    const timer = setTimeout(() => navigation.navigate('Benefits3'), 2000);
-
-    return function cleanup() {
-      clearTimeout(timer);
-    };
-  });
-
+const BenefitsScreen2 = ({ navigation }) => {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Text>Benefits #2</Text>
-        <ButtonDefault onPress={() => navigation.navigate('Login')}>Get Started</ButtonDefault>
-        <View style={styles.circles}>
-          <View style={styles.circle} />
-          <View style={styles.circleFilled} />
-          <View style={styles.circle} />
+    <View style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <Text style={{ ...defaultStyles.hugeSemibold, paddingTop: 80, paddingBottom: 35 }}>Highlights #2</Text>
+
+        <View style={{ flex: 1 }} />
+
+        <View style={styles.bottom}>
+          <View style={{ width: 80, flexDirection: 'row', justifyContent: 'flex-start' }}>
+            <TextButton onPress={() => navigation.navigate('Login')}>Skip</TextButton>
+          </View>
+          <View style={styles.circles}>
+            <View style={styles.circle} />
+            <View style={styles.circleFilled} />
+            <View style={styles.circle} />
+          </View>
+          <View style={{ width: 80, flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <TextButton onPress={() => navigation.navigate('Benefits3')}>Next</TextButton>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'powderblue',
-    padding: 20,
+    backgroundColor: 'white',
+    paddingHorizontal: 42,
+    width: '100%',
   },
+  bottom: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.borderBlack,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 15,
+    paddingHorizontal: 16,
+    width: '100%',
+  },
+
   circles: {
     flexDirection: 'row',
     justifyContent: 'center',
   },
   circle: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: colors.darkGray1,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.blueGray,
     margin: 5,
   },
   circleFilled: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: colors.darkGray1,
-    backgroundColor: colors.darkGray1,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.blueGray,
+    backgroundColor: colors.blueGray,
     margin: 5,
   },
 });
-
-BenefitsScreen2.navigationOptions = {
-  title: 'Benefits2',
-};
 
 export default BenefitsScreen2;
