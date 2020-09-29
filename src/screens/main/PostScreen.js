@@ -31,7 +31,7 @@ const PostScreen = ({ navigation, route }) => {
   const currentTime = new Date();
   const { currentUserId } = useContext(UserContext);
 
-  // QUERIES
+  // MUTATION
   const [updatePost] = useMutation(UPDATE_POST_MUTATION, {
     onError: () =>
       Alert.alert('Oh no!', 'An error occured when trying to update this post. Try again later!', [

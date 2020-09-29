@@ -66,13 +66,13 @@ const CustomDrawer = ({ navigation }) => {
             </Text>
           </View>
         </TouchableOpacity>
-        <View style={{ paddingLeft: 21, paddingTop: 5, paddingBottom: 3 }}>
+        <View style={{ paddingLeft: 21, paddingTop: 0, paddingBottom: 10 }}>
           <FollowStatsDrawer username={userLoggedIn.username} navigation={navigation} />
         </View>
         <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}>
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
-              <Feather name="user" size={20} color={colors.blueGray} />
+              <Feather name="user" size={22} color={colors.blueGray} />
             </View>
             <Text style={styles.buttonText}>Profile</Text>
           </View>
@@ -87,7 +87,7 @@ const CustomDrawer = ({ navigation }) => {
         >
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
-              <Ionicons name="play-circle-outline" size={25} color={colors.blueGray} />
+              <Ionicons name="play-circle-outline" size={26} color={colors.blueGray} />
             </View>
             <Text style={styles.buttonText}>Your Intro</Text>
           </View>
@@ -95,7 +95,7 @@ const CustomDrawer = ({ navigation }) => {
         <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyTopics')}>
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
-              <Ionicons name="chatbubbles-outline" size={22} color={colors.blueGray} />
+              <Ionicons name="chatbubbles-outline" size={24} color={colors.blueGray} />
             </View>
             <Text style={styles.buttonText}>Topics</Text>
           </View>
@@ -103,7 +103,7 @@ const CustomDrawer = ({ navigation }) => {
         <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyHats')}>
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
-              <Feather name="bell" size={22} color={colors.blueGray} />
+              <Feather name="smile" size={22} color={colors.blueGray} />
             </View>
             <Text style={styles.buttonText}>Hats</Text>
           </View>

@@ -39,7 +39,7 @@ const FollowStatsDrawer = ({ username, navigation }) => {
         <Text style={{ ...defaultStyles.largeSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
           {followersCount}
         </Text>
-        <Text style={{ ...defaultStyles.largeMute, marginRight: 20, fontWeight: '500', color: colors.gray40 }}>Followers</Text>
+        <Text style={{ ...defaultStyles.largeMute, marginRight: 20 }}>Followers</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={{ flexDirection: 'row' }}
@@ -48,7 +48,7 @@ const FollowStatsDrawer = ({ username, navigation }) => {
         <Text style={{ ...defaultStyles.largeSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
           {followingCount}
         </Text>
-        <Text style={{ ...defaultStyles.largeMute, marginRight: 10, fontWeight: '500', color: colors.gray40 }}>Following</Text>
+        <Text style={{ ...defaultStyles.largeMute, marginRight: 10 }}>Following</Text>
       </TouchableOpacity>
     </View>
   );

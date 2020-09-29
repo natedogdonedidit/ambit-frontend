@@ -8,7 +8,8 @@ import POSTS_QUERY from 'library/queries/POSTS_QUERY';
 
 import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
-import BigButton from 'library/components/UI/buttons/BigButton';
+// import BigButton from 'library/components/UI/buttons/BigButton';
+import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
 const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId, username }) => {
   // QUERIES
@@ -45,16 +46,15 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
     );
   }
 
-  const posts = data ? data.posts || [] : [];
+  // const posts = data ? data.posts || [] : [];
+  const posts = [];
 
   if (posts.length < 1 && !loading && isMyProfile) {
     if (isMyProfile) {
       return (
         <View style={{ height: 100, width: '100%', alignItems: 'center', marginVertical: 40 }}>
-          <Text style={defaultStyles.defaultText}>You don't have any posts yet!</Text>
-          <BigButton onPress={() => navigation.navigate('Home')} buttonStyle={{ ...defaultStyles.shadow3, marginTop: 20 }}>
-            Create a post
-          </BigButton>
+          <Text style={{ ...defaultStyles.defaultText, paddingBottom: 15 }}>You don't have any posts yet!</Text>
+          <ButtonDefault onPress={() => navigation.navigate('NewPostModal', { topicsPassedIn: [] })}>Create a post</ButtonDefault>
         </View>
       );
     }

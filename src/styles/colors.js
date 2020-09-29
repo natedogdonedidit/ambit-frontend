@@ -11,7 +11,7 @@ const colors = {
   // black: 'rgb(0,0,0)',
   // black: 'rgba(11, 24, 38, 1)',
   // blueGray: 'rgb(101,119,134)', // twitter
-  blueGray: 'rgb(97, 103, 112)', // facebook
+  blueGray: 'rgba(97, 103, 112, 0.8)', // facebook
   // blueGray: '#455A64', // from Material
   // blueGray: 'rgba(16, 36, 56, 0.75)', // from Truebill website
 
@@ -22,7 +22,7 @@ const colors = {
   borderBlack: 'rgba(0, 0, 0, 0.2)',
 
   // icon colors
-  iconGray: 'rgba(101,119,134, 0.6)', // twitter
+  iconGray: 'rgba(101,119,134, 0.54)', // twitter
   // iconGray: 'rgb(174,174,178)', // systemGray2
   iconDark: 'rgba(101,119,134, 1)', // twitter
   // iconDark: 'rgb(44,44,46)', // darkGray2

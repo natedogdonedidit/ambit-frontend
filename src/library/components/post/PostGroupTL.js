@@ -19,6 +19,7 @@ function PostGroupTL({
   showAll = false,
   disableVideo = false,
   showTopBorder = false,
+  showRepost = false,
 }) {
   const hasUpdates = post.updates.length > 0;
 
@@ -57,6 +58,7 @@ function PostGroupTL({
             showDetails={showDetails}
             disableVideo={disableVideo}
             showTopBorder={showTopBorder}
+            showRepost={showRepost}
           />
         </TouchableOpacity>
         {post.updates.length > 0 && renderAllUpdates()}
@@ -77,6 +79,7 @@ function PostGroupTL({
             showDetails={showDetails}
             disableVideo={disableVideo}
             showTopBorder={showTopBorder}
+            showRepost={showRepost}
           />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
@@ -107,6 +110,7 @@ function PostGroupTL({
           showDetails={showDetails}
           disableVideo={disableVideo}
           showTopBorder={showTopBorder}
+          showRepost={showRepost}
         />
       </TouchableOpacity>
     );
@@ -124,6 +128,7 @@ function PostGroupTL({
           showDetails={showDetails}
           disableVideo={disableVideo}
           showTopBorder={showTopBorder}
+          showRepost={showRepost}
         />
       </TouchableOpacity>
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>

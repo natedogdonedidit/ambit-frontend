@@ -10,8 +10,12 @@ const BellDot = ({ color, unReadNotifications }) => {
     <View style={{ width: 32, justifyContent: 'center', alignItems: 'center' }}>
       <Icon name="bell" size={22} color={color} solid />
       {unReadNotifications > 0 && (
-        <View style={styles.dot}>
-          <Text style={{ ...defaultStyles.smallMedium, color: colors.white, textAlign: 'center' }}>{unReadNotifications}</Text>
+        <View style={styles.dotBorder}>
+          <View style={styles.dot}>
+            <Text style={{ ...defaultStyles.smallMedium, color: colors.white, textAlign: 'center' }}>
+              {Math.min(unReadNotifications, 99)}
+            </Text>
+          </View>
         </View>
       )}
     </View>
@@ -19,20 +23,24 @@ const BellDot = ({ color, unReadNotifications }) => {
 };
 
 const styles = StyleSheet.create({
-  dot: {
+  dotBorder: {
+    padding: 2,
+    backgroundColor: 'white',
     position: 'absolute',
     top: -7,
-    right: -6,
+    left: 17,
+    borderRadius: 11,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 20,
-    minWidth: 20,
+  },
+  dot: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 18,
+    minWidth: 18,
     paddingHorizontal: 4,
-    borderRadius: 10,
+    borderRadius: 9,
     backgroundColor: colors.peach,
-    borderColor: 'white',
-    borderWidth: 2,
-    // ...defaultStyles.shadow3,
   },
 });
 

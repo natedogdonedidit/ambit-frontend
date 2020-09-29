@@ -1085,6 +1085,7 @@
 				);
 				INFOPLIST_FILE = Ambit1/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 0.2.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1108,6 +1109,7 @@
 				DEVELOPMENT_TEAM = 4Q2397L86H;
 				INFOPLIST_FILE = Ambit1/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 0.2.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

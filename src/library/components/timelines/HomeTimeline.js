@@ -18,6 +18,7 @@ import PostGroupTL from 'library/components/post/PostGroupTL';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
+import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // const currentTime = new Date();
@@ -85,9 +86,20 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         },
       ],
       where: {
-        owner: {
-          id: { in: [...network, currentUserId] },
-        },
+        OR: [
+          {
+            owner: {
+              id: { in: [...network, currentUserId] },
+            },
+          },
+          {
+            reposts: {
+              some: {
+                id: { in: [...network, currentUserId] },
+              },
+            },
+          },
+        ],
       },
     },
     onError: (e) => console.log('error loading network posts', e),
@@ -272,6 +284,29 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
           />
         }
         ListEmptyComponent={() => {
+          if (activeTimeline === 2) {
+            return (
+              <>
+                <HomeTimelineHeader
+                  navigation={navigation}
+                  activeTimeline={activeTimeline}
+                  setActiveTimeline={setActiveTimeline}
+                />
+                <View style={{ width: '100%', height: 400 }}>
+                  {loading ? (
+                    <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
+                  ) : (
+                    <View style={{ height: 100, width: '100%', alignItems: 'center', marginVertical: 40 }}>
+                      <Text style={{ ...defaultStyles.defaultText, paddingBottom: 15 }}>You don't have any goals yet!</Text>
+                      <ButtonDefault onPress={() => navigation.navigate('NewPostModal', { topicsPassedIn: [] })}>
+                        Create a goal
+                      </ButtonDefault>
+                    </View>
+                  )}
+                </View>
+              </>
+            );
+          }
           return (
             <>
               <HomeTimelineHeader navigation={navigation} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
@@ -326,6 +361,18 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         //   return <View style={{ height: 15 }} />;
         // }}
         renderItem={({ item }) => {
+          // if it is the "Following" timeline - check to see if post is a re-post
+          if (activeTimeline === 1) {
+            // check if the post owner is from your network
+            let showRepost = false;
+            if (item && item.owner && network && network.length > 0) {
+              if (!network.includes(item.owner.id) && item.owner.id !== currentUserId) {
+                showRepost = true;
+              }
+            }
+            return <PostGroupTL post={item} navigation={navigation} showRepost={showRepost} />;
+          }
+
           return <PostGroupTL post={item} navigation={navigation} />;
         }}
         // viewabilityConfig={{
@@ -455,53 +502,6 @@ const styles = StyleSheet.create({
     // height: '100%',
     flex: 1,
     width: '100%',
-  },
-  tasks: {
-    marginTop: 15,
-    width: '100%',
-    // height: 120,
-    justifyContent: 'center',
-    paddingTop: 10,
-    backgroundColor: 'white',
-    borderTopColor: colors.borderBlack,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  task: {
-    height: 60,
-    borderRadius: 10,
-    // backgroundColor: colors.purp,
-    // backgroundColor: 'white',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 15,
-  },
-  welcomeText: {
-    fontSize: 14,
-    fontFamily: 'SFProDisplay-Light',
-    color: 'black',
-    // marginTop: 2,
-    width: '100%',
-    textAlign: 'center',
-  },
-  slideIndicator: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    paddingBottom: 10,
-  },
-  dot: {
-    height: 6,
-    width: 6,
-    borderRadius: 3,
-    marginHorizontal: 6,
-  },
-  xOut: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
   },
 });
 

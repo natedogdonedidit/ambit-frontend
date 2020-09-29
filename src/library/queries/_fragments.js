@@ -196,6 +196,7 @@ export const BasicPost = gql`
     video
     likesCount
     likedByMe
+    repostedByMe
     commentsCount
     sharesCount
     updates {

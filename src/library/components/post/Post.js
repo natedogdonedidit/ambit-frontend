@@ -11,6 +11,9 @@ import { timeDifference, isCustomGoalTest } from 'library/utils';
 import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
 import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import UNLIKE_POST_MUTATION from 'library/mutations/UNLIKE_POST_MUTATION';
+import REPOST_POST_MUTATION from 'library/mutations/REPOST_POST_MUTATION';
+import UNDO_REPOST_POST_MUTATION from 'library/mutations/UNDO_REPOST_POST_MUTATION';
+
 import { BasicPost } from 'library/queries/_fragments';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -19,13 +22,18 @@ import CustomGoal from 'library/components/UI/CustomGoal';
 import Heart from 'library/components/UI/icons/Heart';
 import Comment from 'library/components/UI/icons/Comment';
 import Chevron from 'library/components/UI/icons/Chevron';
-import Share from 'library/components/UI/icons/Share';
+// import Ellipsis from 'library/components/UI/icons/Ellipsis';
+
+import ShareIcon from 'library/components/UI/icons/Share';
+import Repost from 'library/components/UI/icons/Repost';
+
 import Topic from 'library/components/post/Topic';
 import Location from 'library/components/post/Location';
 import GoalStatus from 'library/components/post/GoalStatus';
 import { UserContext } from 'library/utils/UserContext';
 import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import CoolText from 'library/components/UI/CoolText';
+import RepostedBy from 'library/components/post/RepostedBy';
 
 function Post({
   post,
@@ -35,6 +43,7 @@ function Post({
   hideButtons = false,
   disableVideo = false,
   showTopBorder,
+  showRepost = false,
 }) {
   // HOOKS
   const client = useApolloClient();
@@ -90,6 +99,44 @@ function Post({
         ...post,
         likedByMe: false,
         likesCount: post.likesCount - 1,
+      },
+    },
+    onError: () => null,
+  });
+
+  // MUTATION FOR REPOST
+  const [rePost] = useMutation(REPOST_POST_MUTATION, {
+    variables: {
+      where: { id: post.id },
+      data: {
+        reposts: { connect: [{ id: currentUserId }] },
+      },
+    },
+    optimisticResponse: {
+      __typename: 'Mutation',
+      rePost: {
+        __typename: 'Post',
+        ...post,
+        repostedByMe: true,
+        sharesCount: post.sharesCount + 1,
+      },
+    },
+  });
+
+  const [undoRePost] = useMutation(UNDO_REPOST_POST_MUTATION, {
+    variables: {
+      where: { id: post.id },
+      data: {
+        reposts: { disconnect: [{ id: currentUserId }] },
+      },
+    },
+    optimisticResponse: {
+      __typename: 'Mutation',
+      undoRePost: {
+        __typename: 'Post',
+        ...post,
+        repostedByMe: false,
+        sharesCount: post.sharesCount - 1,
       },
     },
     onError: () => null,
@@ -163,6 +210,20 @@ function Post({
         // setIsLiked(true);
         // setLikesCount(likesCount + 1);
         likePost();
+      }
+    });
+  };
+
+  const handleRepost = async () => {
+    requestAnimationFrame(() => {
+      if (post.repostedByMe) {
+        // setIsLiked(false);
+        // setLikesCount(likesCount - 1);
+        undoRePost();
+      } else if (!post.repostedByMe) {
+        // setIsLiked(true);
+        // setLikesCount(likesCount + 1);
+        rePost();
       }
     });
   };
@@ -414,8 +475,10 @@ function Post({
         { ...styles.postContainer },
         showLine && { borderBottomWidth: 0 },
         showTopBorder && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderBlack },
+        showRepost && { paddingTop: 7 },
       ]}
     >
+      {showRepost && <RepostedBy postId={post.id} />}
       <View style={styles.post}>
         <View style={styles.leftColumn}>
           <ProfilePic
@@ -529,10 +592,11 @@ function Post({
                     <Comment onPress={() => navigation.navigate('Comment', { post })} />
                   </View>
                   <View style={{ paddingLeft: 30 }}>
-                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Heart liked={post.likedByMe} onPress={() => handleLike()} />
                   </View>
                   <View style={{ paddingLeft: 30 }}>
-                    <Share onPress={() => null} />
+                    {/* <ShareIcon onPress={onShare} /> */}
+                    <ShareIcon shared={post.repostedByMe} onPress={() => navigation.navigate('SharePopup', { handleRepost })} />
                   </View>
                 </View>
               </View>
@@ -548,14 +612,20 @@ function Post({
                     </Text>
                   </View>
                   <View style={styles.button}>
-                    <Heart color={post.likedByMe ? colors.peach : colors.iconGray} onPress={() => handleLike()} />
+                    <Heart liked={post.likedByMe} onPress={() => handleLike()} />
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
                       {post.likesCount <= 0 ? null : post.likesCount}
                     </Text>
                   </View>
-                  <View style={styles.button}>
-                    <Share onPress={() => null} />
+                  {/* <View style={styles.button}>
+                    <Repost onPress={() => navigation.navigate('SharePopup', { postId: post.id })} />
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
+                  </View> */}
+                  <View style={styles.button}>
+                    <ShareIcon shared={post.repostedByMe} onPress={() => navigation.navigate('SharePopup', { handleRepost })} />
+                    <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
+                      {post.sharesCount <= 0 ? null : post.sharesCount}
+                    </Text>
                   </View>
                 </View>
               </View>
@@ -574,6 +644,7 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,
+    paddingTop: 10,
   },
   post: {
     width: '100%',
@@ -596,7 +667,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 4,
     width: 76,
-    paddingTop: 10,
+    // paddingTop: 10,
   },
   rightColumn: {
     flex: 1,
@@ -604,8 +675,8 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     // paddingTop: 4,
     // paddingLeft: 8,
-    paddingTop: 10,
-    paddingBottom: 12,
+    // paddingTop: 10,
+    paddingBottom: 8,
   },
   topRow: {
     flexDirection: 'row',
@@ -631,7 +702,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'pink',
   },
   content: {
-    paddingBottom: 10,
+    paddingBottom: 8,
   },
   topics: {
     flexDirection: 'row',
@@ -653,7 +724,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    width: 60,
+    width: 65,
     flexDirection: 'row',
     alignItems: 'center',
   },

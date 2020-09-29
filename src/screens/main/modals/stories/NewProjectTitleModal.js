@@ -19,7 +19,7 @@ const NewProjectTitleModal = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <HeaderBackBlank navigation={navigation} rightComponent={<ButtonHeader onPress={handleDone}>Topic</ButtonHeader>} />
-      <View style={{ flex: 1, paddingHorizontal: 15 }}>
+      <View style={{ flex: 1, paddingHorizontal: 25 }}>
         <Text style={{ ...defaultStyles.headerMedium, paddingTop: 20 }}>Story Title:</Text>
         <TextInput
           style={styles.textInput}
@@ -42,8 +42,9 @@ const styles = StyleSheet.create({
   },
   textInput: {
     marginTop: 5,
-    ...defaultStyles.largeRegular,
-    paddingVertical: 12,
+    ...defaultStyles.hugeRegular,
+    paddingTop: 15,
+    paddingBottom: 8,
     // paddingHorizontal: 15,
     // borderRadius: 10,
     borderBottomWidth: StyleSheet.hairlineWidth,
