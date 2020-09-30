@@ -42,6 +42,7 @@ import SelectTopicsMentorModal from 'screens/main/modals/profile/SelectTopicsMen
 // popups
 import SelectorModal from 'screens/main/modals/general/SelectorModal';
 import SharePopup from 'screens/main/modals/general/SharePopup';
+import DMPostPopup from 'screens/main/modals/general/DMPostPopup';
 import EditSkillsPopup from 'screens/main/modals/profile/EditSkillsPopup';
 import YearModal from 'screens/main/modals/general/YearModal';
 import MonthModal from 'screens/main/modals/general/MonthModal';
@@ -207,6 +208,7 @@ const MainStack = ({ navigation }) => {
       <Stack.Screen name="EditSkillsPopup" component={EditSkillsPopup} options={halfModalOptions} />
       <Stack.Screen name="SelectorModal" component={SelectorModal} options={halfModalOptions} />
       <Stack.Screen name="SharePopup" component={SharePopup} options={halfModalOptions} />
+      <Stack.Screen name="DMPostPopup" component={DMPostPopup} options={halfModalOptions} />
       <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} options={halfModalOptions} />
       <Stack.Screen name="IntroInfoPopup" component={IntroInfoPopup} options={halfModalOptions} />
       <Stack.Screen name="ForYouSettingsPopup" component={ForYouSettingsPopup} options={halfModalOptions} />

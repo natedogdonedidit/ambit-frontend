@@ -14,8 +14,7 @@ import { UserContext } from 'library/utils/UserContext';
 const SharePopup = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();
 
-  // const { currentUserId } = useContext(UserContext);
-  const { handleRepost } = route.params;
+  const { handleRepost, postId } = route.params;
 
   const onShare = async () => {
     try {
@@ -57,7 +56,7 @@ const SharePopup = ({ navigation, route }) => {
             <View style={{ ...styles.buttonCircle, backgroundColor: colors.purp, ...defaultStyles.shadowButton }}>
               <Feather name="external-link" size={24} color={colors.white} />
             </View>
-            <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>Share to</Text>
+            <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>Share via..</Text>
           </TouchableOpacity>
           <TouchableOpacity activeOpacity={0.8} style={styles.buttonView} onPress={null}>
             <View style={{ ...styles.buttonCircle, backgroundColor: colors.white, ...defaultStyles.shadowButton }}>
@@ -68,7 +67,14 @@ const SharePopup = ({ navigation, route }) => {
 
             <Text style={{ ...defaultStyles.defaultMute, paddingTop: 8 }}>Copy</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.8} style={styles.buttonView} onPress={null}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.buttonView}
+            onPress={() => {
+              navigation.goBack();
+              navigation.navigate('DMPostPopup', { postId });
+            }}
+          >
             <View
               style={{ ...styles.buttonCircle, backgroundColor: colors.orange, ...defaultStyles.shadowButton, paddingTop: 3 }}
             >

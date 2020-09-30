@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -19,7 +19,7 @@ const ChatScreen = ({ navigation, route }) => {
   // HOOKS
   const { currentUserId } = useContext(UserContext);
 
-  // get the list of convos of the logged in user
+  // get the list of convos of the logged in user (includes hidden convos)
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_MESSAGES);
 
   if (errorUser) return <Error error={errorUser} />;
@@ -31,10 +31,11 @@ const ChatScreen = ({ navigation, route }) => {
       </View>
     );
   }
+
   const { userLoggedIn } = dataUser;
   const { convos } = userLoggedIn;
 
-  // get Group based on otherUserPassedIn
+  // get Convo based on otherUserPassedIn
   const convo = convos.find((c) => {
     // get the other user in the chat
     const otherUser = c.users.find((user) => user.id !== currentUserId);
@@ -43,20 +44,14 @@ const ChatScreen = ({ navigation, route }) => {
     return otherUser.id === otherUserPassedIn.id;
   });
 
-  // const unReadMessageGroupIDs = [...userLoggedIn.unReadMessages].map((unRead) => unRead.to.id);
-  // const hasUnread = convo ? unReadMessageGroupIDs.includes(convo.id) : false;
-
-  // clear unread messages here?
-
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title={otherUserPassedIn.name} />
       <ChatBox
         navigation={navigation}
-        convo={convo}
+        convo={convo} // will be null if no convo exists
         userLoggedIn={userLoggedIn}
         otherUserPassedIn={otherUserPassedIn}
-        // hasUnread={hasUnread}
       />
     </View>
   );

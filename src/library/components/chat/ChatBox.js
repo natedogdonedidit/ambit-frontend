@@ -1,21 +1,35 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View, Alert, Text } from 'react-native';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 import colors from 'styles/colors';
 import CREATE_MESSAGE_MUTATION from 'library/mutations/CREATE_MESSAGE_MUTATION';
+import CREATE_MESSAGE_MISSING_CONVO_MUTATION from 'library/mutations/CREATE_MESSAGE_MISSING_CONVO_MUTATION';
 import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
 import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSAGES_MUTATION';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
+import SharedPost from 'library/components/chat/SharedPost';
 
 const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
   const client = useApolloClient();
+
   // MUTATIONS
   const [createOneMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
+    refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
+    onCompleted: () => {},
+    onError: (error) => {
+      console.log(error);
+      Alert.alert('Oh no!', 'An error occured when trying to send this message. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
+  });
+
+  const [createOneMessageMissingConvo, { loading: loadingCreate2 }] = useMutation(CREATE_MESSAGE_MISSING_CONVO_MUTATION, {
     refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
     onCompleted: () => {},
     onError: (error) => {
@@ -122,6 +136,13 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
   };
 
   const renderBubble = (props) => {
+    // if it is a share
+    if (props && props.currentMessage && props.currentMessage.isShare) {
+      const { currentMessage } = props;
+
+      return <SharedPost navigation={navigation} message={currentMessage} />;
+    }
+
     return (
       <Bubble
         {...props}
@@ -138,21 +159,11 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
   const onSendCreate = async (payload) => {
     const newMessage = payload[0];
 
-    // await createOneMessage({
-    //   variables: {
-    //     data: {
-    //       content: newMessage.text,
-    //       to: { create: { users: { connect: [{ id: userLoggedIn.id }, { id: otherUserPassedIn.id }] } } },
-    //       from: { connect: { id: newMessage.user._id } },
-    //     },
-    //   },
-    // });
-    await createOneMessage({
+    await createOneMessageMissingConvo({
       variables: {
         content: newMessage.text,
         to: otherUserPassedIn.id,
         from: userLoggedIn.id,
-        isNew: true,
       },
     });
   };
@@ -187,6 +198,9 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
         return {
           _id: message.id,
           text: message.content,
+          image: message.image,
+          video: message.video,
+          isShare: message.isShare,
           createdAt: message.createdAt,
           user: {
             _id: message.from.id,
@@ -202,20 +216,11 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
   const onSend = async (payload) => {
     const newMessage = payload[0];
 
-    // await createOneMessage({
-    //   variables: {
-    //     data: {
-    //       content: newMessage.text,
-    //       to: { connect: { id: convo.id } },
-    //       from: { connect: { id: newMessage.user._id } },
-    //     },
-    //   },
     await createOneMessage({
       variables: {
         content: newMessage.text,
         to: convo.id,
         from: userLoggedIn.id,
-        isNew: false,
       },
       // optimisticResponse: {
       //   __typename: 'Mutation',

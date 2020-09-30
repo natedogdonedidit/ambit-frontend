@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { MessageFragment } from 'library/queries/_fragments';
 
 const CREATE_MESSAGE_MUTATION = gql`
-  mutation CREATE_MESSAGE_MUTATION($content: String!, $to: ID!, $from: ID!, $isNew: Boolean!) {
-    createOneMessage(content: $content, to: $to, from: $from, isNew: $isNew) {
+  mutation CREATE_MESSAGE_MUTATION($content: String!, $to: ID!, $from: ID!, $image: String, $video: String, $isShare: Boolean) {
+    createOneMessage(content: $content, to: $to, from: $from, image: $image, video: $video, isShare: $isShare) {
       ...MessageFragment
     }
   }

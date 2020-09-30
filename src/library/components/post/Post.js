@@ -596,7 +596,10 @@ function Post({
                   </View>
                   <View style={{ paddingLeft: 30 }}>
                     {/* <ShareIcon onPress={onShare} /> */}
-                    <ShareIcon shared={post.repostedByMe} onPress={() => navigation.navigate('SharePopup', { handleRepost })} />
+                    <ShareIcon
+                      shared={post.repostedByMe}
+                      onPress={() => navigation.navigate('SharePopup', { handleRepost, postId: post.id })}
+                    />
                   </View>
                 </View>
               </View>
@@ -622,7 +625,10 @@ function Post({
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount}</Text>
                   </View> */}
                   <View style={styles.button}>
-                    <ShareIcon shared={post.repostedByMe} onPress={() => navigation.navigate('SharePopup', { handleRepost })} />
+                    <ShareIcon
+                      shared={post.repostedByMe}
+                      onPress={() => navigation.navigate('SharePopup', { handleRepost, postId: post.id })}
+                    />
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
                       {post.sharesCount <= 0 ? null : post.sharesCount}
                     </Text>

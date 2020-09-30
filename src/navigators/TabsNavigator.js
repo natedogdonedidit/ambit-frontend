@@ -44,7 +44,7 @@ const TabsNavigator = () => {
     const timer = setTimeout(() => {
       getMessages(); // this just gets the information for the Group & latest message & unread
       getNotifications();
-    }, 5000);
+    }, 3000);
     return () => clearTimeout(timer);
   }, []);
 

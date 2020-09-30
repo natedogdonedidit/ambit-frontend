@@ -149,6 +149,9 @@ export const MessageFragment = gql`
       profilePic
     }
     content
+    image
+    video
+    isShare
     hidden {
       id
     }

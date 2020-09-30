@@ -17,7 +17,8 @@ const colors = {
 
   // backgrounds used
   lightGray: 'rgba(239,239,244,1)', // systemBackgroundSecondary: used for app background
-  searchGray: 'rgb(242,242,247)', // systemGray6
+  // searchGray: 'rgb(242,242,247)', // systemGray6
+  searchGray: 'rgb(229,229,234)', // systemGray4
   lightLightGray: '#F9F9F9',
   borderBlack: 'rgba(0, 0, 0, 0.2)',
 
@@ -56,6 +57,7 @@ const colors = {
   systemGray1: 'rgb(142,142,147)',
   systemGray2: 'rgb(174,174,178)',
   systemGray3: 'rgb(199,199,204)',
+  systemGray4: 'rgb(199,199,204)',
   systemGray5: 'rgb(229,229,234)',
   systemGray6: 'rgb(242,242,247)',
 

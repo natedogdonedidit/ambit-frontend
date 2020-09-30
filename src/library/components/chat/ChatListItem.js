@@ -36,6 +36,7 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
 
   // grab users from convo
   const users = convo.users.filter((user) => user.id !== userLoggedIn.id);
+
   const otherUser = users[0];
 
   const renderRightSide = () => {
@@ -79,13 +80,15 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
         </View>
         <View style={styles.bottomRow}>
           <View style={{ flex: 1 }}>
-            <Text style={{ ...defaultStyles.largeMute }}>{latestMessage.content}</Text>
+            <Text style={{ ...defaultStyles.largeMute }}>{latestMessage.isShare ? `Shared a post` : latestMessage.content}</Text>
           </View>
           <View style={{ width: 20, justifyContent: 'center' }}>{hasUnread && <View style={styles.redDot} />}</View>
         </View>
       </View>
     );
   };
+
+  if (!otherUser) return null;
 
   return (
     <TouchableOpacity
