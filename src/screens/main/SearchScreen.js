@@ -248,8 +248,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   selectorFilled: {
-    borderRadius: 8,
-    backgroundColor: colors.blueGray,
+    borderRadius: 10,
+    backgroundColor: colors.purp,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,

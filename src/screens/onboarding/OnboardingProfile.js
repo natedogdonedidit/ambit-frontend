@@ -145,7 +145,8 @@ const OnboardingProfile = ({ navigation, route }) => {
         </View>
 
         <View style={styles.bottom}>
-          <TextButton onPress={() => navigation.navigate('MainStack')}>Skip</TextButton>
+          {/* <TextButton onPress={() => navigation.navigate('MainStack')}>Skip</TextButton> */}
+          <View />
           <ButtonDefault buttonStyle={styles.buttonStyle} onPress={handleNext}>
             Next
           </ButtonDefault>

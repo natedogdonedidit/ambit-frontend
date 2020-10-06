@@ -21,7 +21,7 @@ const HeaderSearch = ({ user, handleLeft, handleRight, textInput, setTextInput }
         </TouchableOpacity>
 
         <View style={styles.middle}>
-          <Icon name="search" size={18} color={colors.blueGray} />
+          <Icon name="search" size={18} color={colors.black} />
           <TextInput
             style={{ ...styles.searchBarView, ...defaultStyles.defaultText, color: colors.darkGray }}
             onChangeText={(val) => setTextInput(val)}

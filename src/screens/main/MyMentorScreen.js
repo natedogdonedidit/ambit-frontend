@@ -6,13 +6,12 @@ import HeaderBack from 'library/components/headers/HeaderBack';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
-import TopicsOfFreelance from 'library/components/settings/TopicsOfFreelance';
-import TopicsOfInvest from 'library/components/settings/TopicsOfInvest';
+
 import TopicsOfMentor from 'library/components/settings/TopicsOfMentor';
 
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
-const MyHatsScreen = ({ navigation }) => {
+const MyNetworkScreen = ({ navigation }) => {
   // ////////////////////////////////////////
   // QUERIES
   // this is the single source of truth
@@ -20,7 +19,7 @@ const MyHatsScreen = ({ navigation }) => {
   if (loading)
     return (
       <View style={styles.container}>
-        <HeaderBack navigation={navigation} title="My Hats" />
+        <HeaderBack navigation={navigation} title="Mentor" />
         <Loader loading={loading} />
       </View>
     );
@@ -29,11 +28,9 @@ const MyHatsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} title="My Hats" />
+      <HeaderBack navigation={navigation} title="Mentor" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
-        <TopicsOfInvest navigation={navigation} myTopics={myTopics} />
-        <TopicsOfFreelance navigation={navigation} myTopics={myTopics} />
-        <TopicsOfMentor navigation={navigation} myTopics={myTopics} />
+        <TopicsOfMentor navigation={navigation} myTopics={myTopics} showX />
       </ScrollView>
     </View>
   );
@@ -46,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyHatsScreen;
+export default MyNetworkScreen;

@@ -11,7 +11,7 @@ import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import { getTopicFromID } from 'library/utils';
 
-const TopicsOfFreelance = ({ navigation, myTopics }) => {
+const TopicsOfFreelance = ({ navigation, myTopics, showX }) => {
   const client = useApolloClient();
 
   const { topicsFreelance: topics } = myTopics;
@@ -87,6 +87,32 @@ const TopicsOfFreelance = ({ navigation, myTopics }) => {
 
   // //////////////////////////////////////////////////////
   // RENDER FUNCTIONS
+  const renderAddButton = (id, isSelected) => {
+    if (isSelected) {
+      if (showX) {
+        return (
+          <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(id)}>
+            <Ionicons name="md-close" size={20} color={colors.iconGray} />
+          </TouchableOpacity>
+        );
+      }
+      return (
+        <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(id)}>
+          <View style={styles.addedButton}>
+            <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+    return (
+      <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(id)}>
+        <View style={styles.addButton}>
+          <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   const renderTopics = () => {
     return topics.map(({ id }) => {
       const isSelected = topicsIDonly.includes(id);
@@ -100,19 +126,7 @@ const TopicsOfFreelance = ({ navigation, myTopics }) => {
             <Text style={{ ...defaultStyles.largeMedium, color: colors.darkGray, paddingLeft: 10, paddingRight: 15, flex: 1 }}>
               {name}
             </Text>
-            {isSelected ? (
-              <TouchableOpacity key={id} activeOpacity={0.7} onPress={() => handleTopicSelect(id)}>
-                <View style={styles.addedButton}>
-                  <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity key={id} activeOpacity={0.7} onPress={() => handleTopicSelect(id)}>
-                <View style={styles.addButton}>
-                  <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
-                </View>
-              </TouchableOpacity>
-            )}
+            {renderAddButton(id, isSelected)}
           </View>
         </TouchableOpacity>
       );

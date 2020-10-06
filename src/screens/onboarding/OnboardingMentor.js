@@ -23,7 +23,7 @@ const OnboardingMentor = ({ navigation, route }) => {
   const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION);
 
   const handleNext = async () => {
-    navigation.navigate('MainStack');
+    navigation.navigate('OnboardingInvest1', { username });
 
     // upload profile pic if they selected one
     if (activeTopics.length > 0) {
@@ -82,9 +82,9 @@ const OnboardingMentor = ({ navigation, route }) => {
           <Text style={{ ...defaultStyles.ambitLogoSmall }}>ambit</Text>
         </View>
         <View style={styles.titleSection}>
-          <Text style={{ ...defaultStyles.headerMedium, textAlign: 'center' }}>Are you interested in{`\n`}Mentoring others?</Text>
+          <Text style={{ ...defaultStyles.headerMedium, textAlign: 'center' }}>Select your areas of expertise</Text>
           <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingTop: 10, paddingHorizontal: 20 }}>
-            Select your specialty. Then Ambit will connect you with users looking for a mentor.
+            Ambit will use this information to recommend you as a mentor to others
           </Text>
         </View>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 10 }}>
@@ -97,7 +97,7 @@ const OnboardingMentor = ({ navigation, route }) => {
         </ScrollView>
 
         <View style={styles.bottom}>
-          <TextButton onPress={() => navigation.navigate('MainStack')}>Skip</TextButton>
+          <TextButton onPress={() => navigation.navigate('OnboardingMentor1')}>Back</TextButton>
           <ButtonDefault buttonStyle={styles.buttonStyle} onPress={handleNext}>
             Next
           </ButtonDefault>

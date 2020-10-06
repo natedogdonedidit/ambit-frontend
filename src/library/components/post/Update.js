@@ -182,7 +182,16 @@ function Update({
   };
 
   const renderMedia = () => {
-    return <Image style={{ width: '100%', height: 160 }} source={{ uri: update.image }} resizeMode="cover" />;
+    return (
+      <View style={{ width: '100%', height: 160 }}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate('ImageViewerModal', { images: [update.image], index: 0 })}
+        >
+          <Image style={{ width: '100%', height: '100%' }} source={{ uri: update.image }} resizeMode="cover" />
+        </TouchableOpacity>
+      </View>
+    );
   };
 
   return (
@@ -259,7 +268,7 @@ function Update({
                     <Comment onPress={() => navigation.navigate('Comment', { post, update, isUpdate: true })} />
                   </View>
                   <View style={{ paddingLeft: 25 }}>
-                    <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={handleLike} />
+                    <Heart liked={update.likedByMe} onPress={handleLike} />
                   </View>
                   <View style={{ paddingLeft: 25 }}>
                     <Share onPress={() => null} />
@@ -276,7 +285,7 @@ function Update({
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount || ''}</Text>
                   </View>
                   <View style={styles.button}>
-                    <Heart color={update.likedByMe ? colors.peach : colors.iconGray} onPress={handleLike} />
+                    <Heart liked={update.likedByMe} onPress={handleLike} />
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
                       {update.likesCount === 0 ? null : update.likesCount}
                     </Text>
@@ -394,6 +403,14 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 15,
+  },
+  media: {
+    width: '100%',
+    borderRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.borderBlack,
+    marginBottom: 10,
+    overflow: 'hidden',
   },
 });
 

@@ -137,7 +137,7 @@ const DMPostPopup = ({ navigation, route }) => {
 
   const renderSearchResults = () => {
     if (!searchResults || searchResults.length < 1) {
-      return <Text>No users match</Text>;
+      return null;
     }
 
     return searchResults.map((user) => {

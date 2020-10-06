@@ -17,6 +17,9 @@ import OnboardingTopics from 'screens/onboarding/OnboardingTopics';
 import OnboardingFreelance from 'screens/onboarding/OnboardingFreelance';
 import OnboardingInvest from 'screens/onboarding/OnboardingInvest';
 import OnboardingMentor from 'screens/onboarding/OnboardingMentor';
+import OnboardingFreelance1 from 'screens/onboarding/OnboardingFreelance1';
+import OnboardingInvest1 from 'screens/onboarding/OnboardingInvest1';
+import OnboardingMentor1 from 'screens/onboarding/OnboardingMentor1';
 import EditLocationModal from 'screens/main/modals/general/EditLocationModal';
 
 import { UserContext } from 'library/utils/UserContext';
@@ -70,9 +73,14 @@ const AppNavigator = () => {
           <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
           <Stack.Screen name="OnboardingProfile" component={OnboardingProfile} />
           <Stack.Screen name="OnboardingTopics" component={OnboardingTopics} />
+
           <Stack.Screen name="OnboardingInvest" component={OnboardingInvest} />
           <Stack.Screen name="OnboardingFreelance" component={OnboardingFreelance} />
           <Stack.Screen name="OnboardingMentor" component={OnboardingMentor} />
+
+          <Stack.Screen name="OnboardingInvest1" component={OnboardingInvest1} />
+          <Stack.Screen name="OnboardingFreelance1" component={OnboardingFreelance1} />
+          <Stack.Screen name="OnboardingMentor1" component={OnboardingMentor1} />
           <Stack.Screen
             name="EditLocationModalRight"
             component={EditLocationModal}
@@ -100,9 +108,14 @@ const AppNavigator = () => {
           <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
           <Stack.Screen name="OnboardingProfile" component={OnboardingProfile} />
           <Stack.Screen name="OnboardingTopics" component={OnboardingTopics} />
+
           <Stack.Screen name="OnboardingInvest" component={OnboardingInvest} />
           <Stack.Screen name="OnboardingFreelance" component={OnboardingFreelance} />
           <Stack.Screen name="OnboardingMentor" component={OnboardingMentor} />
+
+          <Stack.Screen name="OnboardingInvest1" component={OnboardingInvest1} />
+          <Stack.Screen name="OnboardingFreelance1" component={OnboardingFreelance1} />
+          <Stack.Screen name="OnboardingMentor1" component={OnboardingMentor1} />
           <Stack.Screen
             name="EditLocationModalRight"
             component={EditLocationModal}
@@ -130,9 +143,14 @@ const AppNavigator = () => {
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
         <Stack.Screen name="OnboardingProfile" component={OnboardingProfile} />
         <Stack.Screen name="OnboardingTopics" component={OnboardingTopics} />
+
         <Stack.Screen name="OnboardingInvest" component={OnboardingInvest} />
         <Stack.Screen name="OnboardingFreelance" component={OnboardingFreelance} />
         <Stack.Screen name="OnboardingMentor" component={OnboardingMentor} />
+
+        <Stack.Screen name="OnboardingInvest1" component={OnboardingInvest1} />
+        <Stack.Screen name="OnboardingFreelance1" component={OnboardingFreelance1} />
+        <Stack.Screen name="OnboardingMentor1" component={OnboardingMentor1} />
         <Stack.Screen
           name="EditLocationModalRight"
           component={EditLocationModal}

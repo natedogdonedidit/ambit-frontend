@@ -36,7 +36,7 @@ const FollowStatsDrawer = ({ username, navigation }) => {
         style={{ flexDirection: 'row' }}
         onPress={() => navigation.navigate('Followers', { username, followersCount })}
       >
-        <Text style={{ ...defaultStyles.largeSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
+        <Text style={{ ...defaultStyles.largeSemibold, marginRight: 7, marginLeft: 0, color: colors.iosBlue }}>
           {followersCount}
         </Text>
         <Text style={{ ...defaultStyles.largeMute, marginRight: 20 }}>Followers</Text>
@@ -45,7 +45,7 @@ const FollowStatsDrawer = ({ username, navigation }) => {
         style={{ flexDirection: 'row' }}
         onPress={() => navigation.navigate('Following', { username, followingCount })}
       >
-        <Text style={{ ...defaultStyles.largeSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
+        <Text style={{ ...defaultStyles.largeSemibold, marginRight: 7, marginLeft: 0, color: colors.iosBlue }}>
           {followingCount}
         </Text>
         <Text style={{ ...defaultStyles.largeMute, marginRight: 10 }}>Following</Text>

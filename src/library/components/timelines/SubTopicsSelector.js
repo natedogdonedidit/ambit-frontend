@@ -12,7 +12,7 @@ const SubTopicsSelector = ({ activeTopic, activeSubTopic, setActiveSubTopic, hei
 
   useEffect(() => {
     // tries to put the activeSubTopic at the middle of the screen. Not perfect but close.
-    const index = activeTopic.children.findIndex(top => top.topicID === activeSubTopic);
+    const index = activeTopic.children.findIndex((top) => top.topicID === activeSubTopic);
 
     const initPad = 10 + 51; // initial horizontal padding of list + "All"
     const pad = 24 + 8; // padding of each item + marginRight
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 0.5,
     borderColor: colors.blueGray,
-    backgroundColor: colors.blueGray,
+    backgroundColor: colors.purp,
     paddingHorizontal: 12,
     marginRight: 8,
   },

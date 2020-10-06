@@ -277,7 +277,7 @@ function Comment({
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.commentsCount || ''}</Text>
                 </View>
                 <View style={styles.button}>
-                  <Heart color={comment.likedByMe ? colors.peach : colors.iconGray} onPress={handleLike} />
+                  <Heart liked={comment.likedByMe} onPress={handleLike} />
                   <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
                     {comment.likesCount === 0 ? null : comment.likesCount}
                   </Text>

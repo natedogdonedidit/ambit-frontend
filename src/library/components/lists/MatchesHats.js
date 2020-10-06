@@ -89,7 +89,7 @@ const MatchesHats = ({ navigation, title, triggerRefresh }) => {
       <Section
         text={title}
         marginTop
-        rightComponent={<TextButton onPress={() => navigation.navigate('MyHats')}>Edit</TextButton>}
+        // rightComponent={<TextButton onPress={() => navigation.navigate('MyHats')}>Edit</TextButton>}
       />
       {renderRows()}
     </View>

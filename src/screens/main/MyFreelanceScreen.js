@@ -6,20 +6,21 @@ import HeaderBack from 'library/components/headers/HeaderBack';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
-import TopicsOfFocus from 'library/components/settings/TopicsOfFocus';
 
-// import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import TopicsOfFreelance from 'library/components/settings/TopicsOfFreelance';
+
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
-const MyTopicsScreen = ({ navigation }) => {
+const MyFreelanceScreen = ({ navigation }) => {
+  // ////////////////////////////////////////
   // QUERIES
   // this is the single source of truth
   const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
   if (loading)
     return (
       <View style={styles.container}>
-        <HeaderBack navigation={navigation} title="Topics of Interest" />
-        <Loader loading={loading} full={false} />
+        <HeaderBack navigation={navigation} title="Freelance" />
+        <Loader loading={loading} />
       </View>
     );
   if (error) return <Text>{`Error! ${error}`}</Text>;
@@ -27,9 +28,9 @@ const MyTopicsScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} title="Topics" />
+      <HeaderBack navigation={navigation} title="Freelance" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
-        <TopicsOfFocus navigation={navigation} myTopics={myTopics} showX />
+        <TopicsOfFreelance navigation={navigation} myTopics={myTopics} showX />
       </ScrollView>
     </View>
   );
@@ -42,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyTopicsScreen;
+export default MyFreelanceScreen;

@@ -290,8 +290,8 @@ const styles = StyleSheet.create({
 
   headerHat: {
     color: colors.black,
-    fontSize: 18,
-    fontFamily: 'SFProText-Semibold',
+    fontSize: 20,
+    fontFamily: 'SFProDisplay-Semibold',
   },
   headerTitle: {
     color: colors.black,

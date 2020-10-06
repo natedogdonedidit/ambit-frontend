@@ -60,7 +60,7 @@ const CommentScreen = ({ navigation, route }) => {
   // state declaration\
   // const [comment, setComment] = useState(isComment ? `@[${clicked.owner.name}](${clicked.owner.id}) ` : '');
   const [content, setContent] = useState('');
-  const [commentImage, setCommentImage] = useState('');
+  const [image, setImage] = useState('');
   const [uploading, setUploading] = useState(false);
   const [mentionText, setMentionText] = useState('');
   const [cursorLocation, setCursorLocation] = useState(0);
@@ -122,7 +122,7 @@ const CommentScreen = ({ navigation, route }) => {
   const parentCommentObject = parentCommentForDB ? { connect: { id: parentCommentForDB.id } } : null;
 
   // MUTATIONS
-  const [createOneComment] = useMutation(CREATE_COMMENT_MUTATION, {
+  const [createOneComment, { loading: loadingMutation }] = useMutation(CREATE_COMMENT_MUTATION, {
     onError: (error) => {
       console.log('something went wrong either creating post or notifications', error);
       // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
@@ -146,7 +146,7 @@ const CommentScreen = ({ navigation, route }) => {
   const post = dataPost.post;
 
   // optimistic response will throw an error if the comments query hasn't been called yet
-  const useOptimisticResponse = dataPostComments ? !!dataPostComments.post.comments : false;
+  // const useOptimisticResponse = dataPostComments ? !!dataPostComments.post.comments : false;
 
   // CUSTOM FUNCTIONS
   const handleSubmit = async () => {
@@ -159,6 +159,7 @@ const CommentScreen = ({ navigation, route }) => {
 
     try {
       const uploadedImage = await uploadImage();
+      // navigation.navigate('Post', { post: parentPost });
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
@@ -171,23 +172,24 @@ const CommentScreen = ({ navigation, route }) => {
           ],
         })
       );
-      // navigation.navigate('Post', { post: parentPost });
 
-      createOneComment({
-        variables: {
-          data: {
-            content,
-            image: uploadedImage,
-            owner: {
-              connect: { id: userLoggedIn.id },
+      if (!loadingMutation) {
+        createOneComment({
+          variables: {
+            data: {
+              content,
+              image: uploadedImage,
+              owner: {
+                connect: { id: userLoggedIn.id },
+              },
+              parentPost: parentPostObject,
+              parentUpdate: parentUpdateObject,
+              parentComment: parentCommentObject,
             },
-            parentPost: parentPostObject,
-            parentUpdate: parentUpdateObject,
-            parentComment: parentCommentObject,
           },
-        },
-        refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { where: { id: parentPost.id } } }],
-      });
+          refetchQueries: () => [{ query: POST_COMMENTS_QUERY, variables: { where: { id: parentPost.id } } }],
+        });
+      }
     } catch (e) {
       setUploading(false);
       console.log(e);
@@ -208,12 +210,12 @@ const CommentScreen = ({ navigation, route }) => {
   };
 
   const uploadImage = async () => {
-    if (commentImage) {
+    if (image) {
       setUploading(true);
 
-      const uploadedImage = await postPicUpload(userLoggedIn, commentImage);
+      const uploadedImage = await postPicUpload(userLoggedIn, image);
       setUploading(false);
-      // setCommentImage(uploadedImage);
+      // setImage(uploadedImage);
       return uploadedImage;
     }
     return '';
@@ -261,13 +263,13 @@ const CommentScreen = ({ navigation, route }) => {
       includeExif: true,
     })
       .then((img) => {
-        setCommentImage(img.path);
+        setImage(img.path);
       })
       .catch((e) => console.log(e));
   };
 
   const validateInputs = () => {
-    if (!content && !commentImage) return 'Oops';
+    if (!content && !image) return 'Oops';
     return null;
   };
 
@@ -380,12 +382,12 @@ const CommentScreen = ({ navigation, route }) => {
                     <CoolText>{content}</CoolText>
                   </TextInput>
                 </View>
-                {!!commentImage && (
+                {!!image && (
                   <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingRight: 10 }}>
                     <View style={{ ...styles.image, width: '100%' }}>
-                      <FitImage source={{ uri: commentImage }} />
+                      <FitImage source={{ uri: image }} />
                       <View style={styles.removeImageButton}>
-                        <Icon name="times" solid size={15} color="white" onPress={() => setCommentImage('')} />
+                        <Icon name="times" solid size={15} color="white" onPress={() => setImage('')} />
                       </View>
                     </View>
                   </View>

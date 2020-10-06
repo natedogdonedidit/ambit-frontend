@@ -149,28 +149,30 @@ const NewPostModal = ({ navigation, route }) => {
       navigation.goBack();
       // console.log('saving', uploadedImages);
 
-      createOnePost({
-        variables: {
-          data: {
-            isGoal: !!goal,
-            goal: goal ? goal.name : null,
-            subField,
-            goalStatus: goal ? 'Active' : null,
-            topic,
-            location,
-            locationID,
-            locationLat,
-            locationLon,
-            content,
-            video,
-            images: { set: uploadedImages },
-            lastUpdated: new Date(),
-            owner: {
-              connect: { id: currentUserId },
+      if (!loadingCreate) {
+        createOnePost({
+          variables: {
+            data: {
+              isGoal: !!goal,
+              goal: goal ? goal.name : null,
+              subField,
+              goalStatus: goal ? 'Active' : null,
+              topic,
+              location,
+              locationID,
+              locationLat,
+              locationLon,
+              content,
+              video,
+              images: { set: uploadedImages },
+              lastUpdated: new Date(),
+              owner: {
+                connect: { id: currentUserId },
+              },
             },
           },
-        },
-      });
+        });
+      }
 
       // const topicsArrayForOptResp =
       //   topics.length > 0

@@ -22,7 +22,7 @@ const OnboardingInvest = ({ navigation, route }) => {
   const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION);
 
   const handleNext = async () => {
-    navigation.navigate('OnboardingMentor', { username });
+    navigation.navigate('MainStack');
 
     // upload profile pic if they selected one
     if (activeTopics.length > 0) {
@@ -68,11 +68,9 @@ const OnboardingInvest = ({ navigation, route }) => {
           <Text style={{ ...defaultStyles.ambitLogoSmall }}>ambit</Text>
         </View>
         <View style={styles.titleSection}>
-          <Text style={{ ...defaultStyles.headerMedium, textAlign: 'center' }}>
-            Are you interested in{`\n`}Investment Opportunities?
-          </Text>
-          <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingTop: 18, paddingHorizontal: 20 }}>
-            Select your target markets. Then Ambit will connect you with users looking for investors.
+          <Text style={{ ...defaultStyles.headerMedium, textAlign: 'center' }}>Select your target{`\n`}investment markets</Text>
+          <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingTop: 18, paddingHorizontal: 30 }}>
+            Ambit will use this information to find investment opportunities for you
           </Text>
         </View>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 10 }}>
@@ -80,7 +78,7 @@ const OnboardingInvest = ({ navigation, route }) => {
         </ScrollView>
 
         <View style={styles.bottom}>
-          <TextButton onPress={() => navigation.navigate('OnboardingMentor', { username })}>Skip</TextButton>
+          <TextButton onPress={() => navigation.navigate('OnboardingInvest1', { username })}>Back</TextButton>
           <ButtonDefault buttonStyle={styles.buttonStyle} onPress={handleNext}>
             Next
           </ButtonDefault>

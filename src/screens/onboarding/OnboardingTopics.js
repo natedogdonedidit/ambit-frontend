@@ -23,7 +23,7 @@ const OnboardingTopics = ({ navigation, route }) => {
   const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION);
 
   const handleNext = async () => {
-    navigation.navigate('OnboardingFreelance', { username });
+    navigation.navigate('OnboardingFreelance1', { username });
 
     // upload profile pic if they selected one
     if (activeTopics.length > 0) {
@@ -97,7 +97,8 @@ const OnboardingTopics = ({ navigation, route }) => {
         </ScrollView>
 
         <View style={styles.bottom}>
-          <TextButton onPress={() => navigation.navigate('OnboardingFreelance', { username })}>Skip</TextButton>
+          {/* <TextButton onPress={() => navigation.navigate('OnboardingFreelance1', { username })}>Skip</TextButton> */}
+          <View />
           <ButtonDefault buttonStyle={styles.buttonStyle} onPress={handleNext}>
             Next
           </ButtonDefault>

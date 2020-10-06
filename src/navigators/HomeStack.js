@@ -13,10 +13,13 @@ import UpdatePostScreen from 'screens/main/UpdatePostScreen';
 import TopicScreen from 'screens/main/TopicScreen';
 import SearchScreen from 'screens/main/SearchScreen';
 import MyTopicsScreen from 'screens/main/MyTopicsScreen';
-import MyHatsScreen from 'screens/main/MyHatsScreen';
+import MyMentorScreen from 'screens/main/MyMentorScreen';
 import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';
 import { UserContext } from 'library/utils/UserContext';
+import MyFreelanceScreen from '../screens/main/MyFreelanceScreen';
+import MyInvestScreen from '../screens/main/MyInvestScreen';
+import MyNetworkScreen from '../screens/main/MyNetworkScreen';
 
 const Stack = createStackNavigator();
 
@@ -92,7 +95,11 @@ const HomeStack = ({ navigation, route }) => {
         }}
       />
       <Stack.Screen name="MyTopics" component={MyTopicsScreen} />
-      <Stack.Screen name="MyHats" component={MyHatsScreen} />
+      <Stack.Screen name="MyFreelance" component={MyFreelanceScreen} />
+      <Stack.Screen name="MyInvest" component={MyInvestScreen} />
+      <Stack.Screen name="MyMentor" component={MyMentorScreen} />
+      <Stack.Screen name="MyNetwork" component={MyNetworkScreen} />
+
       <Stack.Screen name="Chat" component={ChatScreen} />
     </Stack.Navigator>
   );
