@@ -13,36 +13,18 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
 
   return (
     // color background w/ black text
-    <TouchableOpacity
-      style={{ flexDirection: 'row', flex: 1 }}
-      onPress={() => navigation.navigate('Search', { goalToSearch: getGoalInfo(goal), topicIDsToSearch: [subField] || null })}
-      activeOpacity={0.6}
-      disabled
-    >
-      <View
-        style={{
-          backgroundColor: 'white',
-          flexDirection: 'row',
-          borderRadius: 10,
-          flex: 1,
-          flexShrink: 10,
-          // ...defaultStyles.shadowGoal,
-        }}
-      >
-        <View style={{ ...styles.goalView, backgroundColor: getGoalInfo(goal, 'secondaryColor') }}>
-          <View style={styles.iconView}>
-            <Icon name={getGoalInfo(goal, 'icon')} size={16} color={getGoalInfo(goal, 'primaryColor')} solid />
-          </View>
-          <View style={styles.textView}>
-            <Text>
-              <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
-              <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
-              <Text style={{ ...defaultStyles.defaultMedium }}>{name}</Text>
-            </Text>
-          </View>
+    <View style={styles.whiteBack}>
+      <View style={{ ...styles.goalView, backgroundColor: getGoalInfo(goal, 'secondaryColor') }}>
+        <View style={styles.iconView}>
+          <Icon name={getGoalInfo(goal, 'icon')} size={16} color={getGoalInfo(goal, 'primaryColor')} solid />
         </View>
+        <Text style={{ paddingRight: 16 }}>
+          <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
+          <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
+          <Text style={{ ...defaultStyles.defaultMedium }}>{name}</Text>
+        </Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -50,28 +32,32 @@ export default Goal;
 
 const styles = StyleSheet.create({
   whiteBack: {
-    height: 32,
-    borderRadius: 8,
     backgroundColor: 'white',
-    // ...defaultStyles.shadowGoal,
+    borderRadius: 15,
+    ...defaultStyles.shadowGoal,
+    // flexDirection: 'row',
+    // flex: 1,
+    // flexShrink: 10,
+    marginRight: 25,
+    marginTop: 5,
+    marginBottom: 10,
   },
   goalView: {
+    minWidth: 0,
     flexDirection: 'row',
-    flexShrink: 10,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    borderRadius: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    borderRadius: 15,
+    paddingLeft: 16,
+    paddingVertical: 10,
     backgroundColor: colors.grayButton,
+    // marginRight: 25,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: colors.borderBlack,
+    // flexShrink: 10,
   },
   iconView: {
     justifyContent: 'center',
     paddingRight: 10,
-  },
-  textView: {
-    flexShrink: 10,
   },
 });

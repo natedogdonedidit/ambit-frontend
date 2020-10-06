@@ -8,7 +8,7 @@ import Feather from 'react-native-vector-icons/Feather';
 
 import colors from 'styles/colors';
 
-const Share = ({ onPress, size = 20, color = colors.iconGray, shared = false }) => {
+const Share = ({ onPress, size = 18, color = colors.iconGray, shared = false }) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5} hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}>
       <Icon name="share" solid size={size} color={shared ? colors.green : colors.iconGray} />

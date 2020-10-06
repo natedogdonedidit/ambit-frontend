@@ -83,7 +83,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
               <Text style={defaultStyles.headerMedium}>{heading}</Text>
             </View>
             <View style={styles.subTitle}>
-              <Text style={defaultStyles.defaultMute}>Your post will also appear on this\ntopic timeline</Text>
+              <Text style={defaultStyles.defaultMute}>Your post will also appear on this topic timeline</Text>
             </View>
           </View>
           <TopicsList

@@ -540,13 +540,11 @@ function Post({
 
           {post.isGoal &&
             (isCustomGoalTest(post.goal) ? (
-              <View style={styles.goalView}>
-                <CustomGoal navigation={navigation} goal={post.goal} />
-              </View>
+              // <View style={styles.goalView}>
+              <CustomGoal navigation={navigation} goal={post.goal} />
             ) : (
-              <View style={styles.goalView}>
-                <Goal navigation={navigation} goal={post.goal} subField={post.subField} />
-              </View>
+              // </View>
+              <Goal navigation={navigation} goal={post.goal} subField={post.subField} />
             ))}
 
           <View style={styles.content}>
@@ -678,7 +676,7 @@ const styles = StyleSheet.create({
   rightColumn: {
     flex: 1,
     // flexDirection: 'column', defaults to this
-    alignItems: 'stretch',
+    alignItems: 'flex-start',
     // paddingTop: 4,
     // paddingLeft: 8,
     // paddingTop: 10,
@@ -708,7 +706,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'pink',
   },
   content: {
-    paddingBottom: 8,
+    paddingBottom: 10,
   },
   topics: {
     flexDirection: 'row',
@@ -735,6 +733,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   date: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingTop: 10,
@@ -745,6 +744,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderBlack,
   },
   likesRow: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

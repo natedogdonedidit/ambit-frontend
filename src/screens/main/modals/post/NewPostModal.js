@@ -703,11 +703,11 @@ const NewPostModal = ({ navigation, route }) => {
                 <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                   <IconM name="poll" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                  <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
-                </TouchableOpacity>
                 <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                  <Icon name="at" size={18} color={colors.blue} style={{ paddingRight: 10, opacity: 0.7 }} />
+                  <Icon name="at" size={18} color={colors.blue} style={{ paddingRight: 26, opacity: 0.7 }} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                  <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
                 </TouchableOpacity>
               </View>
             </View>

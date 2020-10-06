@@ -12,35 +12,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 const CustomGoal = ({ navigation, goal }) => {
   return (
     // color background w/ black text
-    <TouchableOpacity
-      // style={{ width: '100%', height: '100%' }}
-      style={{ flexDirection: 'row', flex: 1 }}
-      onPress={() => navigation.navigate('Search', { textToSearch: goal })}
-      activeOpacity={0.6}
-      disabled
-    >
-      <View
-        style={{
-          backgroundColor: 'white',
-          flexDirection: 'row',
-          borderRadius: 10,
-          flex: 1,
-          flexShrink: 10,
-          // ...defaultStyles.shadowGoal,
-        }}
-      >
-        <View style={{ ...styles.goalView, backgroundColor: colors.gray12 }}>
-          <View style={styles.iconView}>
-            <Ionicons name="ios-rocket" size={22} color={colors.red} />
-          </View>
-          <View style={styles.textView}>
-            <Text>
-              <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
-            </Text>
-          </View>
+    <View style={styles.whiteBack}>
+      <View style={{ ...styles.goalView, backgroundColor: colors.goalGreen }}>
+        <View style={styles.iconView}>
+          <Ionicons name="ios-rocket" size={22} color={colors.blueGray} />
         </View>
+        <Text style={{ paddingRight: 16 }}>
+          <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
+        </Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -48,28 +29,32 @@ export default CustomGoal;
 
 const styles = StyleSheet.create({
   whiteBack: {
-    height: 32,
-    borderRadius: 8,
     backgroundColor: 'white',
-    // ...defaultStyles.shadowGoal,
+    borderRadius: 15,
+    ...defaultStyles.shadowGoal,
+    // flexDirection: 'row',
+    // flex: 1,
+    // flexShrink: 10,
+    marginRight: 25,
+    marginTop: 5,
+    marginBottom: 10,
   },
   goalView: {
+    minWidth: 0,
     flexDirection: 'row',
-    flexShrink: 10,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    borderRadius: 10,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.borderBlack,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    borderRadius: 15,
+    paddingLeft: 16,
+    paddingVertical: 10,
     backgroundColor: colors.grayButton,
+    // marginRight: 25,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: colors.borderBlack,
+    // flexShrink: 10,
   },
   iconView: {
     justifyContent: 'center',
     paddingRight: 10,
-  },
-  textView: {
-    flexShrink: 10,
   },
 });

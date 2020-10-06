@@ -246,11 +246,11 @@ const UpdatePostScreen = ({ navigation, route }) => {
               <TouchableOpacity onPress={handleCameraIconPress} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                 <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.7 }} />
               </TouchableOpacity>
-              <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 30, opacity: 0.7 }} />
-              </TouchableOpacity>
               <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
+                <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
               </TouchableOpacity>
             </View>
           )}

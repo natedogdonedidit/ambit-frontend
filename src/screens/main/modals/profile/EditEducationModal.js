@@ -186,19 +186,19 @@ const EditEducationModal = ({ navigation, route }) => {
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView contentContainerStyle={{ flex: 1, paddingHorizontal: 20, paddingVertical: 20 }}>
           <View style={styles.inputTitle}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>School</Text>
+            <Text style={{ ...defaultStyles.hugeMedium, color: colors.peach }}>School</Text>
           </View>
           <TextInput
-            style={{ ...styles.input, ...defaultStyles.defaultText }}
+            style={{ ...styles.input, ...defaultStyles.largeRegular }}
             onChangeText={(val) => setName(val)}
             value={name}
             placeholder="Add school name"
           />
           <View style={styles.inputTitle}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Degree</Text>
+            <Text style={{ ...defaultStyles.hugeMedium, color: colors.peach }}>Degree</Text>
           </View>
           <TextInput
-            style={{ ...styles.input, ...defaultStyles.defaultText }}
+            style={{ ...styles.input, ...defaultStyles.largeRegular }}
             onChangeText={(val) => setSubText(val)}
             value={subText}
             placeholder="Add degree"
@@ -209,10 +209,10 @@ const EditEducationModal = ({ navigation, route }) => {
           >
             <View>
               <View style={styles.inputTitle}>
-                <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Location</Text>
+                <Text style={{ ...defaultStyles.hugeMedium, color: colors.peach }}>Location</Text>
               </View>
               <View style={styles.input}>
-                <Text style={location ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder}>
+                <Text style={location ? defaultStyles.largeRegular : defaultStyles.defaultPlaceholder}>
                   {location || 'Add location'}
                 </Text>
               </View>
@@ -220,7 +220,7 @@ const EditEducationModal = ({ navigation, route }) => {
           </TouchableOpacity>
 
           <View style={styles.inputTitle}>
-            <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Start Date</Text>
+            <Text style={{ ...defaultStyles.hugeMedium, color: colors.peach }}>Start Date</Text>
           </View>
           <View style={styles.dateView}>
             <View style={styles.dateInput}>
@@ -229,7 +229,7 @@ const EditEducationModal = ({ navigation, route }) => {
                   navigation.navigate('MonthModal', { handleSelect: setStartDateMonth });
                 }}
               >
-                <Text style={[{ width: 80 }, startDateMonth ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder]}>
+                <Text style={[{ width: 80 }, startDateMonth ? defaultStyles.largeRegular : defaultStyles.defaultPlaceholder]}>
                   {startDateMonth || `Month`}
                 </Text>
               </TouchableOpacity>
@@ -240,7 +240,7 @@ const EditEducationModal = ({ navigation, route }) => {
                   navigation.navigate('YearModal', { handleSelect: setStartDateYear });
                 }}
               >
-                <Text style={[{ width: 80 }, startDateYear ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder]}>
+                <Text style={[{ width: 80 }, startDateYear ? defaultStyles.largeRegular : defaultStyles.defaultPlaceholder]}>
                   {startDateYear || `Year`}
                 </Text>
               </TouchableOpacity>
@@ -249,7 +249,7 @@ const EditEducationModal = ({ navigation, route }) => {
           {!currentRole && (
             <View>
               <View style={styles.inputTitle}>
-                <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>Graduation Date</Text>
+                <Text style={{ ...defaultStyles.hugeMedium, color: colors.peach }}>Graduation Date</Text>
               </View>
               <View style={styles.dateView}>
                 <View style={styles.dateInput}>
@@ -258,7 +258,7 @@ const EditEducationModal = ({ navigation, route }) => {
                       navigation.navigate('MonthModal', { handleSelect: setEndDateMonth });
                     }}
                   >
-                    <Text style={[{ width: 80 }, endDateMonth ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder]}>
+                    <Text style={[{ width: 80 }, endDateMonth ? defaultStyles.largeRegular : defaultStyles.defaultPlaceholder]}>
                       {endDateMonth || `Month`}
                     </Text>
                   </TouchableOpacity>
@@ -269,7 +269,7 @@ const EditEducationModal = ({ navigation, route }) => {
                       navigation.navigate('YearModal', { handleSelect: setEndDateYear });
                     }}
                   >
-                    <Text style={[{ width: 80 }, endDateYear ? defaultStyles.defaultText : defaultStyles.defaultPlaceholder]}>
+                    <Text style={[{ width: 80 }, endDateYear ? defaultStyles.largeRegular : defaultStyles.defaultPlaceholder]}>
                       {endDateYear || `Year`}
                     </Text>
                   </TouchableOpacity>
@@ -279,7 +279,7 @@ const EditEducationModal = ({ navigation, route }) => {
           )}
 
           <View style={styles.switchRow}>
-            <Text style={{ ...defaultStyles.defaultText }}>I am currently enrolled</Text>
+            <Text style={{ ...defaultStyles.largeRegular }}>I am currently enrolled</Text>
             <View style={styles.switch}>
               <Switch value={currentRole} onValueChange={(val) => setCurrentRole(val)} />
             </View>
@@ -324,7 +324,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   input: {
-    paddingVertical: 10,
+    paddingTop: 12,
+    paddingBottom: 7,
     borderBottomColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
     marginBottom: 10,

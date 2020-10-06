@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import colors from 'styles/colors';
 
-const Heart = ({ onPress, size = 18, liked }) => {
+const Heart = ({ onPress, size = 17, liked }) => {
   if (liked) {
     return (
       <TouchableOpacity onPress={onPress} activeOpacity={0.5} hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}>
