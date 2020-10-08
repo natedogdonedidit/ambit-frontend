@@ -541,7 +541,7 @@ function Post({
           {post.isGoal &&
             (isCustomGoalTest(post.goal) ? (
               // <View style={styles.goalView}>
-              <CustomGoal navigation={navigation} goal={post.goal} />
+              <CustomGoal navigation={navigation} goal={post.goal} color={post.goalColor} />
             ) : (
               // </View>
               <Goal navigation={navigation} goal={post.goal} subField={post.subField} />

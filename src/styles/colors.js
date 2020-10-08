@@ -46,12 +46,20 @@ const colors = {
   brown: 'rgba(139, 69, 19, 1)',
 
   // goal backgrounds
-  goalBlue: 'rgba(0,35,229,0.1)', // ios
-  goalPurp: 'rgba(94,92,230,0.1)', // ios
-  goalPeach: 'rgba(255,69,58,0.1)', // ios
-  goalGreen: 'rgba(50,215,75,0.1)', // ios
-  goalOrange: 'rgba(255, 149, 0, 0.1)', // ios
-  goalYellow: 'rgba(255, 204, 0, 0.1)', // ios
+  // goalBlue: 'rgba(0,35,229,0.1)', // ios
+  // goalPurp: 'rgba(94,92,230,0.1)', // ios
+  // goalPeach: 'rgba(255,69,58,0.1)', // ios
+  // goalGreen: 'rgba(50,215,75,0.1)', // ios
+  // goalOrange: 'rgba(255, 149, 0, 0.1)', // ios
+  // goalYellow: 'rgba(255, 204, 0, 0.1)', // ios
+
+  goalBlue: 'rgba(153, 221, 255, 1)', // ios
+  goalPurp: 'rgba(189, 178, 255, 1)', // ios
+  goalPeach: 'rgba(255, 198, 255, 1)', // ios
+  goalGreen: 'rgba(202, 255, 191, 1)', // ios
+  goalOrange: 'rgba(255, 166, 158, 1)', // ios
+  goalYellow: 'rgba(252, 239, 180, 1)', // ios
+  goalPurple: 'rgb(205, 193, 255)',
 
   // system grays
   systemGray1: 'rgb(142,142,147)',

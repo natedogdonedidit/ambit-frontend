@@ -489,6 +489,7 @@ export const getGoalInfo = (goal, field) => {
       primaryColor: colors.green,
       secondaryColor: colors.goalGreen,
       icon: 'rocket',
+      emoji: '🚀',
     };
     if (!field) {
       return customGoalInfo;

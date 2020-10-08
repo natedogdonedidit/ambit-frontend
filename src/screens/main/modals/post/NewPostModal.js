@@ -19,6 +19,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import ImagePicker from 'react-native-image-crop-picker';
 import Image from 'react-native-scalable-image';
 import FitImage from 'react-native-fit-image';
+import AllIcons from 'react-native-vector-icons/glyphmaps/FontAwesome5Free.json';
 
 import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -27,7 +28,7 @@ import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
 
 import { UserContext } from 'library/utils/UserContext';
-import { postPicUpload, getTopicID, addMainTopics, getNetworkIDsFromUser, getTopicFromID } from 'library/utils';
+import { postPicUpload, getTopicID, addMainTopics, getNetworkIDsUser, getTopicFromID, isCustomGoalTest } from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -36,6 +37,8 @@ import HeaderWhite from 'library/components/headers/HeaderWhite';
 import ProfilePicBasic from 'library/components/UI/ProfilePicBasic';
 import CoolText from 'library/components/UI/CoolText';
 import MentionsSelect from 'library/components/MentionsSelect';
+import Goal from 'library/components/UI/Goal';
+import CustomGoal from 'library/components/UI/CustomGoal';
 
 const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
@@ -155,6 +158,7 @@ const NewPostModal = ({ navigation, route }) => {
             data: {
               isGoal: !!goal,
               goal: goal ? goal.name : null,
+              goalColor: goal ? goal.secondaryColor : null,
               subField,
               goalStatus: goal ? 'Active' : null,
               topic,
@@ -315,6 +319,7 @@ const NewPostModal = ({ navigation, route }) => {
   const clearGoal = () => {
     setGoal(null);
     setSubField('');
+    setTopic(null);
   };
 
   const clearTopic = () => {
@@ -594,6 +599,115 @@ const NewPostModal = ({ navigation, route }) => {
     );
   };
 
+  const renderTop = () => {
+    // if there is a goal - show only the goal
+    if (goal) {
+      if (isCustomGoalTest(goal.name)) {
+        return (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              paddingTop: 15,
+              paddingLeft: 7,
+              // paddingRight: 30,
+              // position: 'relative',
+              // backgroundColor: 'pink',
+              width: '100%',
+            }}
+          >
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() =>
+                navigation.navigate('CustomGoalModal', { goalText: goal.name, goalColor: goal.secondaryColor, setGoal, setTopic })
+              }
+            >
+              <CustomGoal navigation={navigation} goal={goal.name} color={goal.secondaryColor} />
+            </TouchableOpacity>
+            <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
+              <TouchableOpacity
+                style={{ justifyContent: 'center', alignItems: 'center', paddingRight: 3 }}
+                onPress={clearGoal}
+                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+              >
+                <Ionicons name="md-close" size={20} color={colors.iconGray} style={{ paddingBottom: 5 }} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        );
+      }
+
+      return (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            paddingTop: 15,
+            paddingLeft: 7,
+            // paddingRight: 30,
+            // position: 'relative',
+            // backgroundColor: 'pink',
+            width: '100%',
+          }}
+        >
+          <View>
+            <Goal goal={goal.name} subField={subField} />
+          </View>
+          <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
+            <TouchableOpacity
+              style={{ justifyContent: 'center', alignItems: 'center', paddingRight: 3 }}
+              onPress={clearGoal}
+              hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+            >
+              <Ionicons name="md-close" size={20} color={colors.iconGray} style={{ paddingBottom: 5 }} />
+            </TouchableOpacity>
+          </View>
+          {/* <View
+            style={{
+              // flexGrow: 1,
+              // flexDirection: 'row',
+              // justifyContent: 'flex-end',
+              // alignItems: 'center',
+              // paddingRight: 5,
+              // backgroundColor: 'pink',
+              // position: 'absolute',
+              top: 28,
+              right: 0,
+            }}
+          >
+            <TouchableOpacity
+              style={{ justifyContent: 'center', alignItems: 'center' }}
+              onPress={clearGoal}
+              hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+            >
+              <Ionicons name="md-close" size={20} color={colors.iconGray} />
+            </TouchableOpacity>
+          </View> */}
+        </View>
+      );
+    }
+
+    // if there is no goal, but a topic - show only topic
+    if (topic) {
+      return (
+        <TouchableOpacity onPress={handleTopicRowSelect} activeOpacity={0.7}>
+          <View style={styles.selectTopicView}>{renderTopicText()}</View>
+        </TouchableOpacity>
+      );
+    }
+
+    return (
+      <>
+        <TouchableOpacity onPress={handleGoalRowSelect} activeOpacity={0.7}>
+          <View style={styles.selectGoalView}>{renderGoalText()}</View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleTopicRowSelect} activeOpacity={0.7}>
+          <View style={styles.selectTopicView}>{renderTopicText()}</View>
+        </TouchableOpacity>
+      </>
+    );
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar barStyle="dark-content" />
@@ -608,16 +722,7 @@ const NewPostModal = ({ navigation, route }) => {
       <KeyboardAvoidingView behavior="padding" enabled>
         <View style={styles.container}>
           <ScrollView contentContainerStyle={styles.scrollView} keyboardShouldPersistTaps="always">
-            {true && (
-              <>
-                <TouchableOpacity onPress={handleGoalRowSelect} activeOpacity={0.7}>
-                  <View style={styles.selectGoalView}>{renderGoalText()}</View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleTopicRowSelect} activeOpacity={0.7}>
-                  <View style={styles.selectTopicView}>{renderTopicText()}</View>
-                </TouchableOpacity>
-              </>
-            )}
+            {renderTop()}
 
             <View style={styles.postInputView}>
               <View style={styles.leftSide}>

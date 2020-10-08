@@ -16,7 +16,11 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
     <View style={styles.whiteBack}>
       <View style={{ ...styles.goalView, backgroundColor: getGoalInfo(goal, 'secondaryColor') }}>
         <View style={styles.iconView}>
-          <Icon name={getGoalInfo(goal, 'icon')} size={16} color={getGoalInfo(goal, 'primaryColor')} solid />
+          {getGoalInfo(goal, 'emoji') ? (
+            <Text style={{ ...defaultStyles.defaultMedium }}>{getGoalInfo(goal, 'emoji')}</Text>
+          ) : (
+            <Icon name={getGoalInfo(goal, 'icon')} size={16} color={getGoalInfo(goal, 'iconColor')} solid />
+          )}
         </View>
         <Text style={{ paddingRight: 16 }}>
           <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>

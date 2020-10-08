@@ -73,7 +73,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
         <HeaderBackBlank
           navigation={navigation}
           title={warning}
-          // rightComponent={<ButtonHeader onPress={() => navigation.navigate('NewPostModal')}>Done</ButtonHeader>}
+          rightComponent={<ButtonHeader onPress={() => navigation.navigate('NewPostModal')}>Done</ButtonHeader>}
           // leftText="Done"
         />
 
