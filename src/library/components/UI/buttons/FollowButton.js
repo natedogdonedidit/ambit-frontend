@@ -44,7 +44,7 @@ const FollowButton = ({ userToFollowID, username, setFollowersCount, small = fal
   // QUERY - need this to know if we're following this user or not
   const { data, loadingUser, errorUser } = useQuery(CURRENT_USER_FOLLOWING);
 
-  // syncs isFollowing with cache (should only update once because cache-only)
+  // syncs isFollowing with cache
   useEffect(() => {
     if (data && data.iFollow) {
       const alreadyFollowingInd = data.iFollow.findIndex((id) => id === userToFollowID);
@@ -80,6 +80,7 @@ const FollowButton = ({ userToFollowID, username, setFollowersCount, small = fal
         followUser: [...data.iFollow, userToFollowID],
       },
       update: (proxy, { data: dataReturned }) => {
+        // console.log('follow mutation');
         // update the followers count directly
         proxy.modify({
           id: proxy.identify({ __typename: 'User', username }),
@@ -121,6 +122,7 @@ const FollowButton = ({ userToFollowID, username, setFollowersCount, small = fal
         unfollowUser: newFollowing,
       },
       update: (proxy, { data: dataReturned }) => {
+        // console.log('unfollow mutation');
         // update the followers count directly
         proxy.modify({
           id: proxy.identify({ __typename: 'User', username }),
@@ -170,7 +172,7 @@ const FollowButton = ({ userToFollowID, username, setFollowersCount, small = fal
         setFollowersCount((prev) => prev + 1);
       }
 
-      setButtonPressed(true);
+      // setButtonPressed(true);
       // requestAnimationFrame(() => {
       //   followMutation();
       // });

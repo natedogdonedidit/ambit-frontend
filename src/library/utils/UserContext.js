@@ -15,6 +15,7 @@ const UserContextProvider = (props) => {
   const [currentUserId, setCurrentUserId] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
   const [homePosition, setHomePosition] = useState(0);
+  const [goToTopics, setGoToTopics] = useState(false);
 
   const client = useApolloClient();
 
@@ -92,7 +93,9 @@ const UserContextProvider = (props) => {
         homePosition,
         setHomePosition,
         creatingStory,
-        setCreatingStory
+        setCreatingStory,
+        goToTopics,
+        setGoToTopics,
       }}
     >
       {props.children}

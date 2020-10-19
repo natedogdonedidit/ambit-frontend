@@ -15,6 +15,7 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import StoryBox from 'library/components/stories/StoryBox';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
 import { UserContext } from 'library/utils/UserContext';
+import NewProjectButton from './NewProjectButton';
 
 const StoriesTopic = ({ navigation, refetching, topicID }) => {
   const { currentUserId } = useContext(UserContext);
@@ -103,8 +104,9 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
   const storiesSorted = [...stories].sort(sortStoriesTopic) || [];
 
   if (storiesSorted.length <= 0) {
-    return null;
-    // return <View style={{ height: 10 }} />;
+    // return null;
+    // return <View style={{ height: 12, borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }} />;
+    return <View style={{ height: 12 }} />;
   }
 
   const renderStories = () => {
@@ -145,6 +147,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
       contentContainerStyle={{ paddingVertical: 10, paddingRight: 15, paddingLeft: 5 }}
       showsHorizontalScrollIndicator={false}
     >
+      <NewProjectButton navigation={navigation} />
       {renderStories()}
     </ScrollView>
   );

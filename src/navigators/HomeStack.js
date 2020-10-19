@@ -10,7 +10,7 @@ import PostMatchesScreen from 'screens/main/PostMatchesScreen';
 import UpdateScreen from 'screens/main/UpdateScreen';
 import CommentScreen from 'screens/main/CommentScreen';
 import UpdatePostScreen from 'screens/main/UpdatePostScreen';
-import TopicScreen from 'screens/main/TopicScreen';
+import TopicScreen from 'screens/main/TopicScreen2';
 import SearchScreen from 'screens/main/SearchScreen';
 import MyTopicsScreen from 'screens/main/MyTopicsScreen';
 import MyMentorScreen from 'screens/main/MyMentorScreen';

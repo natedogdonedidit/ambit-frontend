@@ -18,7 +18,7 @@ import FollowStatsDrawer from './profile/FollowStatsDrawer';
 
 const CustomDrawer = ({ navigation }) => {
   // const client = useApolloClient();
-  const { logoutCTX } = useContext(UserContext);
+  const { logoutCTX, setHomePosition, setGoToTopics } = useContext(UserContext);
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
     onError: () => handleLogout(),
   });
@@ -92,7 +92,13 @@ const CustomDrawer = ({ navigation }) => {
             <Text style={styles.buttonText}>Your Intro</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyTopics')}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            setGoToTopics(true);
+            navigation.navigate('Home');
+          }}
+        >
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
               <Ionicons name="chatbubbles-outline" size={24} color={colors.blueGray} />

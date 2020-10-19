@@ -16,6 +16,12 @@ const huge = 17;
 // heavy:     800
 
 const styles = StyleSheet.create({
+  followButton: {
+    color: colors.white,
+    fontSize: 14,
+    fontFamily: 'SFProDisplay-Medium',
+    fontWeight: '500',
+  },
   // SMALL
   smallMute: {
     color: colors.blueGray,
@@ -303,11 +309,6 @@ const styles = StyleSheet.create({
     fontSize: large,
     fontFamily: 'SFProText-Heavy',
   },
-  headerTopic: {
-    color: colors.black,
-    fontSize: 18,
-    fontFamily: 'SFProDisplay-Medium',
-  },
   headerSmall: {
     color: colors.black,
     fontSize: 19,
@@ -322,6 +323,11 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontSize: 30,
     fontFamily: 'SFProDisplay-Bold',
+  },
+  headerTopic: {
+    color: colors.black,
+    fontSize: 23,
+    fontFamily: 'SFProDisplay-Heavy',
   },
   ambitLogo: {
     color: colors.purp,

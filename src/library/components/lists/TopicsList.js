@@ -8,31 +8,44 @@ import { topicsList } from 'library/utils/lists';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import TopicFollowButton from 'library/components/UI/buttons/TopicFollowButton';
 
-const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect, handleCategorySelect }) => {
+const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect, handleCategorySelect, showFollowButton }) => {
   // console.log(activeTopicIDs);
   const renderSubtopics = (subTopics) => {
     return subTopics.map((subTopic) => {
       const { name, topicID } = subTopic;
-      const isSelected = activeTopicIDs.includes(topicID);
+
+      const renderButton = () => {
+        if (showFollowButton) {
+          return <TopicFollowButton topicID={topicID} onRow />;
+        }
+        // if adding a topic to a post - show ADD or ADDED instead of follow
+        const isSelected = activeTopicIDs.includes(topicID);
+
+        if (isSelected) {
+          return (
+            <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+              <View style={styles.addedButton}>
+                <Text style={defaultStyles.followButton}>Added</Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }
+        return (
+          <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+            <View style={styles.addButton}>
+              <Text style={{ ...defaultStyles.followButton, color: colors.purp }}>Add</Text>
+            </View>
+          </TouchableOpacity>
+        );
+      };
 
       return (
         <TouchableOpacity key={topicID} activeOpacity={1} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={styles.subRow}>
             <Text style={styles.subRowText}>{name}</Text>
-            {isSelected ? (
-              <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-                <View style={styles.addedButton}>
-                  <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-                <View style={styles.addButton}>
-                  <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
-                </View>
-              </TouchableOpacity>
-            )}
+            {renderButton()}
           </View>
         </TouchableOpacity>
       );
@@ -79,20 +92,20 @@ const TopicsList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect
         </TouchableOpacity>
         {isExpanded && children.length > 0 && (
           <View style={styles.subRowView}>
-            <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+            {/* <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
               <View style={styles.subRow}>
                 <Text style={styles.subRowText}>{name} (general)</Text>
                 {isSelected ? (
                   <View style={styles.addedButton}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
+                    <Text style={defaultStyles.followButton}>Following</Text>
                   </View>
                 ) : (
                   <View style={styles.addButton}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.purp }}>Add</Text>
+                    <Text style={{ ...defaultStyles.followButton, color: colors.purp }}>Follow</Text>
                   </View>
                 )}
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {renderSubtopics(children)}
           </View>
         )}
@@ -141,7 +154,7 @@ const styles = StyleSheet.create({
   // add button
   addButton: {
     height: 32,
-    width: 70,
+    width: 84,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 16,
@@ -151,7 +164,7 @@ const styles = StyleSheet.create({
   },
   addedButton: {
     height: 32,
-    width: 70,
+    width: 84,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 16,

@@ -12,7 +12,7 @@ import HeaderHome from 'library/components/headers/HeaderHome';
 // import Error from 'library/components/UI/Error';
 
 import HomeTimeline from 'library/components/timelines/HomeTimeline';
-import TopicsList from 'library/components/timelines/TopicsList';
+import TopicsHome from 'library/components/timelines/TopicsHome';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 import { HEADER_HEIGHT } from 'styles/constants';
@@ -26,7 +26,7 @@ const HomeScreen = ({ navigation }) => {
   const client = useApolloClient();
 
   // CONTEXT
-  const { homePosition, setHomePosition, creatingStory, currentUserId } = useContext(UserContext);
+  const { homePosition, setHomePosition, goToTopics, setGoToTopics, creatingStory, currentUserId } = useContext(UserContext);
 
   // STATE
   const [scrollY] = useState(new Animated.Value(0));
@@ -51,13 +51,21 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [homePosition]);
 
+  // if user presses Topics from drawer, mimic them pressing the Star button
   useEffect(() => {
-    // pre-fetch user logged in profile
-    // client.query({
-    //   query: SINGLE_USER_BIO,
-    //   variables: { id: currentUserId },
-    // });
-  }, []);
+    if (goToTopics && homePosition === 0) {
+      handleTopicsButton();
+    }
+    setGoToTopics(false);
+  }, [goToTopics]);
+
+  // useEffect(() => {
+  // pre-fetch user logged in profile
+  // client.query({
+  //   query: SINGLE_USER_BIO,
+  //   variables: { id: currentUserId },
+  // });
+  // }, []);
 
   // QUERIES
   // const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
@@ -66,6 +74,7 @@ const HomeScreen = ({ navigation }) => {
 
   // if press top button --> auto scroll
   const handleTopicsButton = () => {
+    console.log(homePosition);
     if (homePosition === 0) {
       horizontalScrollRef.current.scrollToEnd();
     } else {
@@ -108,23 +117,25 @@ const HomeScreen = ({ navigation }) => {
           <HomeTimeline navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
         </View>
         <View style={{ width, borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: colors.borderBlack }}>
-          <TopicsList navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
+          <TopicsHome navigation={navigation} scrollY={scrollY} paddingTop={SLIDE_HEIGHT} />
         </View>
       </ScrollView>
 
       {/* Absolute positioned stoff */}
-      <View style={styles.newPostButtonAbsolute}>
-        <TouchableOpacity
-          activeOpacity={0.8}
-          onPress={() => {
-            navigation.navigate('NewPostModal', { topicsPassedIn: [] });
-          }}
-        >
-          <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
-            <Icon name="pencil-alt" size={24} color="white" />
-          </View>
-        </TouchableOpacity>
-      </View>
+      {homePosition === 0 && (
+        <View style={styles.newPostButtonAbsolute}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => {
+              navigation.navigate('NewPostModal', { topicsPassedIn: [] });
+            }}
+          >
+            <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
+              <Icon name="pencil-alt" size={24} color="white" />
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
 
       {/* this contains the Header, Banner, and Tabs. They all slide up together clamped at SLIDE_HEIGHT */}
       <Animated.View

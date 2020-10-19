@@ -42,14 +42,14 @@ import CustomGoal from 'library/components/UI/CustomGoal';
 
 const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
-  const { topicsPassedIn = [] } = route.params;
+  const { topicPassedIn } = route.params;
 
   const { width } = Dimensions.get('window');
 
   // STATE
   const [goal, setGoal] = useState('');
   const [subField, setSubField] = useState('');
-  const [topic, setTopic] = useState(null);
+  const [topic, setTopic] = useState(topicPassedIn);
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [video, setVideo] = useState('');

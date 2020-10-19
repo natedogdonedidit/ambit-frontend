@@ -1,6 +1,16 @@
-import React from 'react';
-import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator } from 'react-native';
-import { useQuery } from '@apollo/client';
+import React, { useContext, useMemo } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Animated,
+  RefreshControl,
+  ActivityIndicator,
+  Image,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
+import { useQuery, useMutation } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -9,9 +19,19 @@ import StoriesTopic from 'library/components/stories/StoriesTopic';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import POSTS_QUERY from 'library/queries/POSTS_QUERY';
+import { getTopicFromID } from 'library/utils/';
+import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
+import { UserContext } from 'library/utils/UserContext';
+import TopicFollowButton from 'library/components/UI/buttons/TopicFollowButton';
 
-const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, paddingTop }) => {
+const picExample =
+  'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
+
+const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
+  const { name, topicID, image } = getTopicFromID(activeTopicID);
+  const { currentUserId } = useContext(UserContext);
 
   // QUERIES
   const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
@@ -23,11 +43,59 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         },
       ],
       where: {
-        topic: { contains: activeSubTopic },
+        topic: { contains: activeTopicID },
       },
     },
     notifyOnNetworkStatusChange: true,
   });
+
+  // GET MY TOPICS
+  // const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
+  // const topicsIDonly = useMemo(() => {
+  //   if (dataTopics && dataTopics.userLoggedIn && dataTopics.userLoggedIn.topicsFocus) {
+  //     return dataTopics.userLoggedIn.topicsFocus.map((topic) => topic.id);
+  //   }
+
+  //   return [];
+  // }, [dataTopics]);
+  // const isFollowing = useMemo(() => {
+  //   return topicsIDonly.includes(topicID);
+  // }, [topicsIDonly]);
+
+  // MUTATIONS
+  // const [updateOneUser, { loading: loadingMutation, error: errorMutation }] = useMutation(EDIT_TOPICS_MUTATION, {
+  //   onError: () =>
+  //     Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
+  //       { text: 'OK', onPress: () => console.log('OK Pressed') },
+  //     ]),
+  //   refetchQueries: () => [{ query: CURRENT_USER_TOPICS }],
+  // });
+
+  // const handleTopicSelect = () => {
+  //   if (!loadingMutation && !errorMutation) {
+  //     if (isFollowing) {
+  //       // unfollow
+  //       updateOneUser({
+  //         variables: {
+  //           where: { id: currentUserId }, // userLoggedIn
+  //           data: {
+  //             topicsFocus: { disconnect: [{ id: topicID }] },
+  //           },
+  //         },
+  //       });
+  //     } else {
+  //       // follow
+  //       updateOneUser({
+  //         variables: {
+  //           where: { id: currentUserId }, // userLoggedIn
+  //           data: {
+  //             topicsFocus: { connect: [{ id: topicID }] },
+  //           },
+  //         },
+  //       });
+  //     }
+  //   }
+  // };
 
   // networkStatus states: 1: loadin, 3: fetchMore, 4: refetch, 7: no loading, no refetch, everything OK!
   // LOADING STATES
@@ -44,11 +112,11 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
     );
   }
 
-  if (!data || loading) {
-    return <Loader backgroundColor={colors.lightGray} size="small" />;
-  }
+  // if (!data || loading) {
+  //   return <Loader backgroundColor={colors.lightGray} size="small" />;
+  // }
 
-  const posts = data.posts || [];
+  const posts = data ? data.posts || [] : [];
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
@@ -62,9 +130,55 @@ const TopicsTimeline = ({ activeTopic, activeSubTopic, navigation, scrollY, padd
         refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
         onRefresh={onRefresh}
         refreshing={refetching}
-        contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
         style={styles.timeline}
-        ListHeaderComponent={<StoriesTopic topicID={activeSubTopic} navigation={navigation} refetching={refetching} />}
+        ListHeaderComponent={
+          <View style={{}}>
+            <View
+              style={{
+                paddingTop: 50,
+                paddingBottom: 20,
+                alignItems: 'center',
+                backgroundColor: 'white',
+                borderBottomColor: colors.borderBlack,
+                borderBottomWidth: StyleSheet.hairlineWidth,
+              }}
+            >
+              <View style={{ width: 94, height: 94, borderRadius: 47, ...defaultStyles.shadow6 }}>
+                <Image
+                  style={styles.pic}
+                  resizeMode="cover"
+                  source={{
+                    uri: image || picExample,
+                  }}
+                />
+              </View>
+              <Text style={{ ...defaultStyles.headerTopic, paddingVertical: 12 }}>{name}</Text>
+              <TopicFollowButton topicID={topicID} />
+              {/* {isFollowing ? (
+                <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID)}>
+                  <View style={styles.addedButton}>
+                    <Text style={defaultStyles.followButton}>Following</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => {
+                    handleTopicSelect(topicID);
+                  }}
+                >
+                  <View style={styles.addButton}>
+                    <Text style={{ ...defaultStyles.followButton, color: colors.purp }}>Follow</Text>
+                  </View>
+                </TouchableOpacity>
+              )} */}
+              <Text style={{ ...defaultStyles.smallMute, paddingTop: 12 }}>1,724 Followers</Text>
+            </View>
+
+            <StoriesTopic topicID={activeTopicID} navigation={navigation} refetching={refetching} />
+          </View>
+        }
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
             Sorry, no posts yet for this topic
@@ -159,6 +273,29 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightGray,
     flex: 1,
     width: '100%',
+  },
+  pic: {
+    width: 94,
+    height: 94,
+    borderRadius: 47,
+  },
+  addButton: {
+    height: 32,
+    width: 84,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.purp,
+    opacity: 0.9,
+  },
+  addedButton: {
+    height: 32,
+    width: 84,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    backgroundColor: colors.purp,
   },
 });
 

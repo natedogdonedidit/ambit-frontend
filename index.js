@@ -148,10 +148,28 @@ const client = new ApolloClient({
               return [...existing, ...incoming];
             },
           },
+          // for follow button opt response
+          iFollow: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          // updateOneUser: {
+          //   merge(existing = [], incoming = [], options) {
+          //     return { ...existing, ...incoming };
+          //   },
+          // },
         },
       },
       User: {
         keyFields: ['username'],
+        fields: {
+          topicsFocus: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+        },
       },
     },
     // dataIdFromObject: o => o.id,

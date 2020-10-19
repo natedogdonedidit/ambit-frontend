@@ -1987,7 +1987,8 @@ export const topicsList = [
 ];
 
 // automatically create the allTopics array from topicsList and freelanceList
-const allTopicsArray = [];
+export const allTopicsArray = [];
+export const allNormalTopics = [];
 
 let i = 0;
 for (i = 0; i < topicsList.length; i++) {
@@ -1996,13 +1997,14 @@ for (i = 0; i < topicsList.length; i++) {
   allTopicsArray.push({ name, topicID, icon, color, image, parentTopic });
   // add the children
   allTopicsArray.push(...children);
+  allNormalTopics.push(...children);
 }
 
 let j = 0;
 for (j = 0; j < freelanceList.length; j++) {
   const { name, topicID, icon, color, parentTopic, children } = freelanceList[j]; // get main topic
   // add the parent object
-  allTopicsArray.push({ name, topicID, icon, color, parentTopic });
+  // allTopicsArray.push({ name, topicID, icon, color, parentTopic });
   // add the children
   allTopicsArray.push(...children);
 }

@@ -1,6 +1,7 @@
 const colors = {
   // active colors
   purp: '#126CFC', // #4E6EF4 (78,110,244), or #126CFC,
+  purpO: 'rgba(18,108,252, 0.88)',
   purpGradient: 'rgba(78,110,244, 0.2)',
   iosBlue: 'rgb(0,122,255)',
   salmon: '#F27373',

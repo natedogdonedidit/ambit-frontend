@@ -32,7 +32,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
         activeOpacity={0.8}
       >
         <Image
-          style={{ position: 'absolute', top: 0, left: 0, width: 100, height: 160 }}
+          style={{ position: 'absolute', top: 0, left: 0, width: 80, height: 128 }}
           source={{ uri: story.items[story.items.length - 1].preview || null }}
           resizeMode="cover"
         />
@@ -103,7 +103,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
         activeOpacity={0.8}
       >
         <Image
-          style={{ position: 'absolute', top: 0, left: 0, width: 100, height: 160 }}
+          style={{ position: 'absolute', top: 0, left: 0, width: 80, height: 128 }}
           source={{ uri: story.items[story.items.length - 1].preview || null }}
           resizeMode="cover"
         />
@@ -166,8 +166,8 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
 const styles = StyleSheet.create({
   storyBox: {
     justifyContent: 'space-between',
-    height: 160,
-    width: 100,
+    height: 128,
+    width: 80,
     borderRadius: 12,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,
@@ -176,8 +176,8 @@ const styles = StyleSheet.create({
   },
   storyBoxBlank: {
     justifyContent: 'space-between',
-    height: 160,
-    width: 100,
+    height: 128,
+    width: 80,
     borderRadius: 12,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,
