@@ -1,0 +1,41 @@
+diff --git a/node_modules/react-native-video/ios/Video/RCTVideo.m b/node_modules/react-native-video/ios/Video/RCTVideo.m
+index 4710afa..9b6ed25 100644
+--- a/node_modules/react-native-video/ios/Video/RCTVideo.m
++++ b/node_modules/react-native-video/ios/Video/RCTVideo.m
+@@ -367,6 +367,7 @@ - (void)setSrc:(NSDictionary *)source
+       }
+         
+       _player = [AVPlayer playerWithPlayerItem:_playerItem];
++      [self touchPlayerLayer]; // chad added
+       _player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+         
+       [_player addObserver:self forKeyPath:playbackRate options:0 context:nil];
+@@ -1300,13 +1301,25 @@ - (void)usePlayerViewController
+   }
+ }
+ 
++// chad added
++-(void)touchPlayerLayer{
++    if(!_player)return;
++    if(_playerLayer)return;
++    
++    _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
++    _playerLayer.frame = self.bounds;
++    _playerLayer.needsDisplayOnBoundsChange = YES;
++    
++    [self.layer addSublayer:_playerLayer];
++    self.layer.needsDisplayOnBoundsChange=YES;
++}
++
++
+ - (void)usePlayerLayer
+ {
+   if( _player )
+   {
+-    _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
+-    _playerLayer.frame = self.bounds;
+-    _playerLayer.needsDisplayOnBoundsChange = YES;
++    [self touchPlayerLayer]; // chad added
+     
+     // to prevent video from being animated when resizeMode is 'cover'
+     // resize mode must be set before layer is added
