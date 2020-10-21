@@ -38,7 +38,6 @@ import SelectTopicsInterestModal from 'screens/main/modals/profile/SelectTopicsI
 import SelectTopicsFreelanceModal from 'screens/main/modals/profile/SelectTopicsFreelanceModal';
 import SelectTopicsInvestModal from 'screens/main/modals/profile/SelectTopicsInvestModal';
 import SelectTopicsMentorModal from 'screens/main/modals/profile/SelectTopicsMentorModal';
-import EmojiModal from 'screens/main/modals/post/EmojiModal';
 
 // popups
 import SelectorModal from 'screens/main/modals/general/SelectorModal';
@@ -119,7 +118,6 @@ const MainStack = ({ navigation }) => {
       <Stack.Screen name="MainDrawer" component={MainDrawer} />
 
       {/* modals */}
-      <Stack.Screen name="EmojiModal" component={EmojiModal} />
       <Stack.Screen name="StoryModal" component={StoryModal} />
       <Stack.Screen name="IntroModal" component={IntroModal} />
       <Stack.Screen name="CameraModal" component={CameraModal} />

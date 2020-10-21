@@ -159,6 +159,7 @@ const NewPostModal = ({ navigation, route }) => {
               isGoal: !!goal,
               goal: goal ? goal.name : null,
               goalColor: goal ? goal.secondaryColor : null,
+              goalIcon: goal ? goal.goalIcon : null,
               subField,
               goalStatus: goal ? 'Active' : null,
               topic,
@@ -619,10 +620,16 @@ const NewPostModal = ({ navigation, route }) => {
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() =>
-                navigation.navigate('CustomGoalModal', { goalText: goal.name, goalColor: goal.secondaryColor, setGoal, setTopic })
+                navigation.navigate('CustomGoalModal', {
+                  goalText: goal.name,
+                  goalColor: goal.secondaryColor,
+                  goalIcon: goal.goalIcon,
+                  setGoal,
+                  setTopic,
+                })
               }
             >
-              <CustomGoal navigation={navigation} goal={goal.name} color={goal.secondaryColor} />
+              <CustomGoal navigation={navigation} goal={goal.name} color={goal.secondaryColor} icon={goal.goalIcon} />
             </TouchableOpacity>
             <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
               <TouchableOpacity

@@ -17,7 +17,7 @@ const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, s
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => setActiveTimeline(0)}
-          style={{ paddingRight: 20 }}
+          style={activeTimeline === 0 ? styles.tabSelected : styles.tab}
           hitSlop={{ top: 12, left: 20, bottom: 12 }}
         >
           <Text style={activeTimeline === 0 ? styles.selectedButton : styles.nonSelectedButton}>For you</Text>
@@ -25,7 +25,7 @@ const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, s
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => setActiveTimeline(1)}
-          style={{ paddingHorizontal: 20 }}
+          style={activeTimeline === 1 ? styles.tabSelected : styles.tab}
           hitSlop={{ top: 12, bottom: 12, right: 20 }}
         >
           <Text style={activeTimeline === 1 ? styles.selectedButton : styles.nonSelectedButton}>Following</Text>
@@ -35,7 +35,7 @@ const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, s
         <TouchableOpacity
           activeOpacity={0.9}
           onPress={() => setActiveTimeline(2)}
-          style={{ paddingLeft: 20 }}
+          style={activeTimeline === 2 ? styles.tabSelected : styles.tab}
           hitSlop={{ top: 12, left: 20, bottom: 12, right: 20 }}
         >
           <Text style={activeTimeline === 2 ? styles.selectedButton : styles.nonSelectedButton}>My Goals</Text>
@@ -53,10 +53,9 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     flexDirection: 'row',
-    // justifyContent: 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
+    // paddingHorizontal: 15,
   },
   buttons: {
     flexDirection: 'row',
@@ -73,6 +72,22 @@ const styles = StyleSheet.create({
   nonSelectedButton2: {
     ...defaultStyles.largeBoldDisplay,
     color: colors.gray30,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomColor: 'white',
+    borderBottomWidth: 2.4,
+  },
+  tabSelected: {
+    flex: 1,
+    paddingVertical: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomColor: colors.purp,
+    borderBottomWidth: 2.4,
   },
 });
 

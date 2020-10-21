@@ -31,7 +31,7 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
       onPress={() => navigation.navigate('CameraModal', { isIntro: false })}
       style={styles.storyBox}
     >
-      <View style={{ width: '100%', height: 72 }}>
+      <View style={{ width: '100%', height: 80 }}>
         <Image
           style={{ width: '100%', height: '100%' }}
           resizeMode="cover"
@@ -44,7 +44,7 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
         style={{
           width: '100%',
           height: 36,
-          top: 80 - 26,
+          top: 85 - 24,
           position: 'absolute',
           justifyContent: 'center',
           alignItems: 'center',
@@ -78,7 +78,7 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
       <View
         style={{
           flex: 1,
-          paddingTop: 18,
+          paddingTop: 17,
           paddingHorizontal: 8,
         }}
       >
@@ -93,8 +93,8 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: 80,
-            height: 128,
+            width: 85,
+            height: 136,
             justifyContent: 'center',
             alignItems: 'center',
           }}
@@ -109,8 +109,8 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
 const styles = StyleSheet.create({
   storyBox: {
     // justifyContent: 'space-between',
-    height: 128,
-    width: 80,
+    height: 136,
+    width: 85,
     borderRadius: 10,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,

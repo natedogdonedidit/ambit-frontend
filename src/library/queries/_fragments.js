@@ -188,6 +188,7 @@ export const BasicPost = gql`
     isGoal
     goal
     goalColor
+    goalIcon
     goalStatus
     subField
     topic

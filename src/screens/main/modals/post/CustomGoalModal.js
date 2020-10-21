@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -10,15 +10,9 @@ import {
   KeyboardAvoidingView,
   Alert,
   InputAccessoryView,
+  Keyboard,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {
-  SliderHuePicker,
-  // SliderSaturationPicker,
-  // SliderValuePicker,
-} from 'react-native-slider-color-picker';
-import Slider from '@react-native-community/slider';
-import tinycolor from 'tinycolor2';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -27,18 +21,36 @@ import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 import TextButton from 'library/components/UI/buttons/TextButton';
 
-const CustomGoalModal = ({ navigation, route }) => {
-  const { goalText, goalColor } = route.params;
+import EmojiBoard from 'react-native-emoji-board';
 
-  const { goal, setGoal, setTopic } = route.params;
+const CustomGoalModal = ({ navigation, route }) => {
+  const { goalText, goalColor, goalIcon } = route.params;
+
+  const { setGoal, setTopic } = route.params;
   const [customGoalText, setCustomGoalText] = useState(goalText || '');
+  const [emojiSelected, setEmojiSelected] = useState(goalIcon || '🚀');
   const [color, setColor] = useState(goalColor || 'rgba(116,116,128,0.12)');
-  const [emoji, setEmoji] = useState('🚀');
-  const [showSlider, setShowSlider] = useState(false);
+  // const [emoji, setEmoji] = useState('🚀');
+  const [showEmojis, setShowEmojis] = useState(false);
+
+  const textInputRef = useRef(null);
+
+  const onClickEmoji = (em) => {
+    // console.log(em);
+    setEmojiSelected(em.code);
+    setShowEmojis(false);
+    textInputRef.current.focus();
+  };
+
+  const openEmojiKeyboard = () => {
+    Keyboard.dismiss();
+    setShowEmojis(true);
+  };
 
   const handleDone = () => {
     const customGoal = {
       name: customGoalText,
+      goalIcon: emojiSelected,
       topicID: 'goals_customgoal',
       modalType: 'none',
       primaryColor: colors.blue,
@@ -76,10 +88,11 @@ const CustomGoalModal = ({ navigation, route }) => {
             <View style={{ flexDirection: 'row', alignItems: 'center', position: 'relative' }}>
               <View style={styles.whiteBack}>
                 <View style={{ ...styles.goalView, backgroundColor: color }}>
-                  <View style={styles.iconView}>
-                    <Text style={{ ...defaultStyles.hugeRegular }}>{emoji}</Text>
-                  </View>
+                  <TouchableOpacity onPress={openEmojiKeyboard} style={styles.iconView} activeOpacity={0.6}>
+                    <Text style={{ ...defaultStyles.hugeRegular }}>{emojiSelected}</Text>
+                  </TouchableOpacity>
                   <TextInput
+                    ref={textInputRef}
                     style={{
                       flex: 1,
                       ...defaultStyles.hugeRegular,
@@ -105,11 +118,12 @@ const CustomGoalModal = ({ navigation, route }) => {
             </View>
           </View>
         </View>
+        <EmojiBoard showBoard={showEmojis} onClick={onClickEmoji} emojiSize={28} hideBackSpace />
 
         <InputAccessoryView nativeID="1">
           <View style={styles.aboveKeyboard}>
-            <TouchableOpacity style={{ paddingRight: 15 }}>
-              <Text style={{ fontSize: 20 }}>{emoji}</Text>
+            <TouchableOpacity onPress={openEmojiKeyboard} style={{ paddingRight: 15 }}>
+              <Text style={{ fontSize: 20 }}>{emojiSelected}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{ paddingRight: 15 }} onPress={() => setColor(colors.gray12)}>
               <View

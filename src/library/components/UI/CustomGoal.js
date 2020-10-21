@@ -9,14 +9,14 @@ import defaultStyles from 'styles/defaultStyles';
 import { getGoalInfo } from 'library/utils';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const CustomGoal = ({ navigation, goal, color }) => {
+const CustomGoal = ({ navigation, goal, color, icon }) => {
   return (
     // color background w/ black text
     <View style={styles.whiteBack}>
       <View style={{ ...styles.goalView, backgroundColor: color || colors.gray12 }}>
         <View style={styles.iconView}>
           {/* <Ionicons name="ios-rocket" size={22} color={colors.blueGray} /> */}
-          <Text style={{ ...defaultStyles.defaultMedium }}>🚀</Text>
+          <Text style={{ ...defaultStyles.defaultMedium }}>{icon || '🚀'}</Text>
         </View>
         <Text style={{ paddingRight: 16 }}>
           <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
