@@ -309,6 +309,11 @@ const styles = StyleSheet.create({
     fontSize: large,
     fontFamily: 'SFProText-Heavy',
   },
+  headerXSmall: {
+    color: colors.black,
+    fontSize: 17,
+    fontFamily: 'SFProDisplay-Semibold',
+  },
   headerSmall: {
     color: colors.black,
     fontSize: 19,

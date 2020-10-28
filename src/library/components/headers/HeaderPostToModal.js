@@ -21,7 +21,7 @@ const HeaderPostToModal = ({ navigation, title, rightComponent }) => {
       </View>
 
       <View style={styles.middle}>
-        <Text style={{ ...defaultStyles.headerSmall, ...styles.headerText }}>{title}</Text>
+        <Text style={{ ...defaultStyles.headerXSmall, ...styles.headerText }}>{title}</Text>
       </View>
 
       <View style={styles.rightSide}>{rightComponent}</View>

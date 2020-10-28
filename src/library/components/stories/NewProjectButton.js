@@ -26,11 +26,7 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
   }
 
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      onPress={() => navigation.navigate('CameraModal', { isIntro: false })}
-      style={styles.storyBox}
-    >
+    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('PostToModal')} style={styles.storyBox}>
       <View style={{ width: '100%', height: 80 }}>
         <Image
           style={{ width: '100%', height: '100%' }}
@@ -85,7 +81,9 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
         <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>
           Create a
         </Text>
-        <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>story</Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>
+          Project
+        </Text>
       </View>
       {loadingCreateStory && (
         <View

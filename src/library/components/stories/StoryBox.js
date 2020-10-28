@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+// import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
 
 import colors from 'styles/colors';
@@ -70,7 +70,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
             {isMyStory ? 'Your story' : story.owner.name}
           </Text>
         </View>
-        <View
+        {/* <View
           style={{
             position: 'absolute',
             top: 7,
@@ -84,7 +84,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
             solid
             style={{ textAlign: 'center', paddingTop: 1, ...defaultStyles.shadowButton }}
           />
-        </View>
+        </View> */}
       </TouchableOpacity>
     );
   }
@@ -141,7 +141,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
             {story.title}
           </Text>
         </View>
-        <View
+        {/* <View
           style={{
             position: 'absolute',
             top: 7,
@@ -155,7 +155,7 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
             solid
             style={{ textAlign: 'center', paddingTop: 1, ...defaultStyles.shadowButton }}
           />
-        </View>
+        </View> */}
       </TouchableOpacity>
     );
   }

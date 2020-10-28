@@ -56,7 +56,7 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
             {story.title}
           </Text>
         </View>
-        <View
+        {/* <View
           style={{
             position: 'absolute',
             top: 7,
@@ -70,7 +70,7 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
             solid
             style={{ textAlign: 'center', paddingTop: 1, ...defaultStyles.shadowButton }}
           />
-        </View>
+        </View> */}
       </TouchableOpacity>
     );
   }
@@ -121,7 +121,7 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
             {story.title}
           </Text>
         </View>
-        {story.items[0].type === 'VIDEO' && (
+        {/* {story.items[0].type === 'VIDEO' && (
           <View
             style={{
               position: 'absolute',
@@ -137,7 +137,7 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
               style={{ textAlign: 'center', paddingTop: 1, ...defaultStyles.shadowButton }}
             />
           </View>
-        )}
+        )} */}
       </TouchableOpacity>
     );
   }

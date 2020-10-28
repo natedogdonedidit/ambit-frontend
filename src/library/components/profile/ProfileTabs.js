@@ -10,32 +10,31 @@ import defaultStyles from 'styles/defaultStyles';
 import Lines from 'library/components/UI/icons/Lines';
 
 const ProfileTabs = ({ tabState, setTabState }) => {
-  const tabNames = ['user', 'lines', 'bars'];
-  // const tabNames = ['Bio', 'Posts', 'Media'];
-
-  const renderTabs = () => {
-    return tabNames.map((tabName, i) => {
-      if (tabName === 'lines') {
-        return (
-          <View key={i} style={tabState === i ? styles.tabSelected : styles.tab}>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => setTabState(i)} style={styles.touchable}>
-              <Lines />
-            </TouchableOpacity>
-          </View>
-        );
-      }
-
-      return (
-        <View key={i} style={tabState === i ? styles.tabSelected : styles.tab}>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => setTabState(i)} style={styles.touchable}>
-            <Icon name={tabName} solid={tabName === 'user'} size={18} color={colors.blueGray} />
-          </TouchableOpacity>
-        </View>
-      );
-    });
-  };
-
-  return <View style={styles.tabs}>{renderTabs()}</View>;
+  return (
+    <View style={styles.tabs}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={tabState === 0 ? styles.tabSelected : styles.tab}
+        onPress={() => setTabState(0)}
+      >
+        <Icon name="user" solid size={18} color={colors.blueGray} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={tabState === 1 ? styles.tabSelected : styles.tab}
+        onPress={() => setTabState(1)}
+      >
+        <Lines />
+      </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={tabState === 2 ? styles.tabSelected : styles.tab}
+        onPress={() => setTabState(2)}
+      >
+        <Icon name="bars" solid size={18} color={colors.blueGray} />
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 export default ProfileTabs;
@@ -47,35 +46,23 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopColor: colors.borderBlack,
     borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  tab: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexBasis: 0,
-    flexGrow: 1,
-    height: 42,
     borderBottomColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
-  tabSelected: {
-    flexBasis: 0,
-    flexGrow: 1,
-    height: 42,
-    borderBottomColor: colors.blueGray,
-    borderBottomWidth: 2,
-  },
-  touchable: {
+  tab: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height: '100%',
+    height: 42,
+    borderBottomColor: 'white',
+    borderBottomWidth: 2.4,
   },
-  tabText: {
-    ...defaultStyles.hugeLight,
-    color: colors.blueGray,
-  },
-  tabSelectedText: {
-    ...defaultStyles.hugeMedium,
-    color: colors.black,
+  tabSelected: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 42,
+    borderBottomColor: colors.purp,
+    borderBottomWidth: 2.4,
   },
 });

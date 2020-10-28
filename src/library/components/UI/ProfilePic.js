@@ -48,14 +48,14 @@ const ProfilePic = ({
     }
   }
 
-  let hasStory = false;
-  if (user) {
-    if (user.myStory) {
-      if (user.myStory.items.length > 0) {
-        hasStory = true;
-      }
-    }
-  }
+  const hasStory = false;
+  // if (user) {
+  //   if (user.myStory) {
+  //     if (user.myStory.items.length > 0) {
+  //       hasStory = true;
+  //     }
+  //   }
+  // }
 
   let hasProject = false;
   if (user) {

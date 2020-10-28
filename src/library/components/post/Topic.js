@@ -15,7 +15,7 @@ const Topic = ({ navigation, topicToShow }) => {
   const subTopic = isSubTopic ? topicID : null;
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })} activeOpacity={0.3}>
+    <TouchableOpacity onPress={() => navigation.navigate('Topic', { topicID: topicToShow })} activeOpacity={0.3}>
       <View style={styles.topic}>
         <Text style={defaultStyles.smallMute}>{name}</Text>
       </View>

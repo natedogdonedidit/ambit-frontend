@@ -14,6 +14,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import Video from 'react-native-video';
+import { useIsFocused } from '@react-navigation/native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -30,6 +31,8 @@ const CapturedStoryItem = ({
   userId,
   isIntro,
   intro,
+  isNewProject,
+  project,
   capturedImage,
   capturedVideo,
   setCapturedVideo,
@@ -41,6 +44,9 @@ const CapturedStoryItem = ({
   const [uploading, setUploading] = useState(false);
   const [textInput, setTextInput] = useState('');
   const [textFocused, setTextFocused] = useState(false);
+  const [muted, setMuted] = useState(false);
+
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     if (textInputRef.current) {
@@ -52,6 +58,14 @@ const CapturedStoryItem = ({
     }
   }, [textFocused]);
 
+  useEffect(() => {
+    if (isFocused && muted) {
+      setMuted(false);
+    } else if (!isFocused && !muted) {
+      setMuted(true);
+    }
+  }, [isFocused]);
+
   // MUTATIONS FOR INTRO
   const [updateStory] = useMutation(UPDATE_STORY_MUTATION);
 
@@ -61,8 +75,9 @@ const CapturedStoryItem = ({
     setCapturedVideo(null);
   };
 
-  const handleSendTo = () => {
-    navigation.navigate('PostToModal', { capturedImage, capturedVideo, textInput });
+  const handleNext = () => {
+    setMuted(true);
+    navigation.navigate('PostClipModal', { capturedImage, capturedVideo, textInput, isNewProject, project });
   };
 
   const handleSaveIntro = async () => {
@@ -165,6 +180,7 @@ const CapturedStoryItem = ({
           style={{ height: '100%', width: '100%' }}
           resizeMode="cover"
           repeat
+          muted={muted}
         />
       );
     }
@@ -192,30 +208,30 @@ const CapturedStoryItem = ({
         </View>
       ) : (
         <View style={{ ...styles.sendButton, bottom: insets.bottom + 30 }}>
-          <TouchableOpacity activeOpacity={0.8} onPress={handleSendTo} style={styles.sendButtonView}>
-            <Text style={{ ...defaultStyles.hugeMedium, color: colors.white }}>Share to</Text>
+          <TouchableOpacity activeOpacity={0.8} onPress={handleNext} style={styles.sendButtonView}>
+            <Text style={{ ...defaultStyles.hugeMedium, color: colors.white }}>Next</Text>
             <Feather name="chevron-right" size={30} color={colors.white} style={{ paddingTop: 4 }} />
           </TouchableOpacity>
         </View>
       )}
 
       <View style={{ ...styles.sideButtons, top: insets.top + 15 }}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           activeOpacity={0.8}
           style={styles.sideButton}
           onPress={handleTextButton}
           hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
         >
           <Feather name="type" size={24} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </TouchableOpacity> */}
+        {/* <TouchableOpacity
           activeOpacity={0.8}
           style={styles.sideButton}
           onPress={() => null}
           hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
         >
           <Feather name="link" size={24} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {!!textInput && (
         <TouchableOpacity onPress={handleTextButton} style={{ ...styles.textDisplay, bottom: insets.bottom + 30 }}>
@@ -224,7 +240,7 @@ const CapturedStoryItem = ({
       )}
 
       {uploading && <Loader loading={uploading} size="small" />}
-      {textFocused && (
+      {/* {textFocused && (
         <InputAccessoryView backgroundColor="#fffffff7">
           <View style={styles.textInputContainer}>
             <TextInput
@@ -244,7 +260,7 @@ const CapturedStoryItem = ({
             />
           </View>
         </InputAccessoryView>
-      )}
+      )} */}
     </View>
   );
 };

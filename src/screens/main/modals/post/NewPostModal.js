@@ -724,7 +724,7 @@ const NewPostModal = ({ navigation, route }) => {
         textLeft="Cancel"
         textRight="Post"
         solidRight
-        title={`New ${goal ? 'Goal' : 'Post'}`}
+        title={`Create a ${goal ? 'Goal' : 'Bit'}`}
       />
       <KeyboardAvoidingView behavior="padding" enabled>
         <View style={styles.container}>
@@ -746,9 +746,10 @@ const NewPostModal = ({ navigation, route }) => {
                     // backgroundColor: 'pink',
                   }}
                   onChangeText={(val) => setContent(val)}
-                  // value={content}
                   autoFocus
                   autoCompleteType="off"
+                  keyboardType="twitter"
+                  textContentType="none"
                   // autoCorrect={false}
                   multiline
                   maxLength={320}
@@ -756,7 +757,6 @@ const NewPostModal = ({ navigation, route }) => {
                   placeholder={goal ? 'Tell us about your goal' : "What's going on?"}
                   inputAccessoryViewID="1"
                   onSelectionChange={({ nativeEvent }) => setCursorLocation(nativeEvent.selection.end)}
-                  keyboardType="twitter"
                 >
                   <CoolText>{content}</CoolText>
                 </TextInput>

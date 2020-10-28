@@ -14,7 +14,9 @@ import MainDrawer from 'navigators/MainDrawer';
 import StoryModal from 'screens/main/modals/stories/StoryModal';
 import IntroModal from 'screens/main/modals/stories/IntroModal';
 import CameraModal from 'screens/main/modals/stories/CameraModal';
-import PostToModal from 'screens/main/modals/stories/PostToModal';
+import StoryCameraModal from 'screens/main/modals/stories/StoryCameraModal';
+import PostToModal from 'screens/main/modals/stories/PostToModal2';
+import PostClipModal from 'screens/main/modals/stories/PostClipModal';
 import NewProjectTitleModal from 'screens/main/modals/stories/NewProjectTitleModal';
 import NewProjectTopicsModal from 'screens/main/modals/stories/NewProjectTopicsModal';
 import SelectStoryTopicsModal from 'screens/main/modals/stories/SelectStoryTopicsModal';
@@ -121,9 +123,17 @@ const MainStack = ({ navigation }) => {
       <Stack.Screen name="StoryModal" component={StoryModal} />
       <Stack.Screen name="IntroModal" component={IntroModal} />
       <Stack.Screen name="CameraModal" component={CameraModal} />
+      <Stack.Screen name="StoryCameraModal" component={StoryCameraModal} />
       <Stack.Screen
         name="PostToModal"
         component={PostToModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="PostClipModal"
+        component={PostClipModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

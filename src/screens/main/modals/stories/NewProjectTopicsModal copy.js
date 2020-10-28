@@ -10,20 +10,24 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const NewProjectTopicsModal = ({ navigation, route }) => {
-  const { setTopic } = route.params;
+  const { handleProjectCreate, projectTitle } = route.params;
 
   const [selectedCategories, setSelectedCategories] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('');
+  console.log(selectedTopic);
 
-  const handleTopicSelect = (selectedTopicID) => {
+  const handleDone = () => {
+    handleProjectCreate(projectTitle, selectedTopic);
+    navigation.navigate('PostToModal');
+  };
+
+  const handleTopicSelect = (selectedTopicID, _) => {
     if (selectedTopicID === selectedTopic) {
       // remove it
       setSelectedTopic('');
     } else {
       // add it
       setSelectedTopic(selectedTopicID);
-      setTopic(selectedTopicID);
-      navigation.goBack();
     }
   };
 
@@ -44,15 +48,15 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
     <View style={styles.container}>
       <HeaderBackBlank
         navigation={navigation}
-        // rightComponent={
-        //   !selectedTopic ? (
-        //     <TextButton textStyle={styles.rightText} onPress={handleDone}>
-        //       Skip
-        //     </TextButton>
-        //   ) : (
-        //     <ButtonHeader onPress={handleDone}>Done</ButtonHeader>
-        //   )
-        // }
+        rightComponent={
+          !selectedTopic ? (
+            <TextButton textStyle={styles.rightText} onPress={handleDone}>
+              Skip
+            </TextButton>
+          ) : (
+            <ButtonHeader onPress={handleDone}>Done</ButtonHeader>
+          )
+        }
       />
 
       <ScrollView style contentContainerStyle={styles.scrollView}>

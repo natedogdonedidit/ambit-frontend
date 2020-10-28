@@ -11,6 +11,7 @@ import UPDATE_STORY_ITEM_MUTATION from 'library/mutations/UPDATE_STORY_ITEM_MUTA
 // import UNLIKE_STORYITEM_MUTATION from 'library/mutations/UNLIKE_STORYITEM_MUTATION';
 import { StoryItemFragment } from 'library/queries/_fragments';
 import { UserContext } from 'library/utils/UserContext';
+import ProfilePic from 'library/components/UI/ProfilePic';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
 function areEqual(prevProps, nextProps) {
@@ -166,6 +167,7 @@ function StoryFooter({
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{
             paddingLeft: 12,
+            paddingBottom: 5,
           }}
         >
           <TouchableOpacity
@@ -220,7 +222,8 @@ function StoryFooter({
 
   const renderActions = () => {
     return (
-      <View style={{ paddingRight: 8, paddingBottom: 55, paddingLeft: 10, alignItems: 'center' }}>
+      <View style={{ paddingRight: 8, paddingBottom: 12, paddingLeft: 10, alignItems: 'center' }}>
+        {/* <ProfilePic size="medium" user={owner} navigation={navigation} enableClick enableStory={false} enableIntro={false} /> */}
         <TouchableOpacity
           onPress={handleLike}
           style={styles.sideButtonCircle}
@@ -235,9 +238,12 @@ function StoryFooter({
           hitSlop={{ top: 15, left: 15, bottom: 15, right: 15 }}
         >
           <Icon name="share" solid size={20} color="white" style={{ paddingTop: 1 }} />
-          <Text style={styles.sideButtonText}>12</Text>
+          {/* <Text style={styles.sideButtonText}>12</Text> */}
         </TouchableOpacity>
-
+        <View style={{ marginTop: 32 }}>
+          <ProfilePic size="medium" user={owner} navigation={navigation} enableClick enableStory={false} enableIntro={false} />
+        </View>
+        {/* 
         {showIntroButton ? (
           <TouchableOpacity
             onPress={() => {
@@ -262,7 +268,7 @@ function StoryFooter({
           >
             <Icon name={link ? 'link' : 'user'} solid size={20} color="white" style={{ paddingTop: 1 }} />
           </TouchableOpacity>
-        )}
+        )} */}
       </View>
     );
   };
@@ -271,8 +277,25 @@ function StoryFooter({
     if (type === 'INTRO') {
       return (
         <>
-          <View style={{ paddingRight: 70, paddingBottom: 16 }}>
-            {!!title && (
+          <View style={{ paddingRight: 70, paddingBottom: 12 }}>
+            <View
+              style={{
+                marginLeft: 12,
+                height: 26,
+                paddingHorizontal: 6,
+                borderRadius: 6,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(255,255,255,0.4)',
+                marginRight: 5,
+                ...defaultStyles.shadowButton,
+                alignSelf: 'flex-start',
+              }}
+            >
+              <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>👋 Intro</Text>
+            </View>
+            {/* {!!title && (
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 12 }}>
                 <Text
                   style={{
@@ -284,7 +307,7 @@ function StoryFooter({
                   {`${owner.username}'s Intro`}
                 </Text>
               </View>
-            )}
+            )} */}
             {!!text && (
               <Text
                 numberOfLines={3}
@@ -307,7 +330,7 @@ function StoryFooter({
     if (type === 'MYSTORY') {
       return (
         <>
-          <View style={{ paddingRight: 70, paddingBottom: 16 }}>
+          <View style={{ paddingRight: 70, paddingBottom: 12 }}>
             {!!text && (
               <Text
                 numberOfLines={3}
@@ -331,7 +354,8 @@ function StoryFooter({
     if (type === 'PROJECT') {
       return (
         <>
-          <View style={{ paddingRight: 70, paddingBottom: 16 }}>
+          <View style={{ paddingRight: 70, paddingBottom: 12 }}>
+            {renderTopics()}
             {!!title && (
               <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 12 }}>
                 <Text
@@ -353,15 +377,13 @@ function StoryFooter({
                   ...defaultStyles.defaultRegular,
                   color: 'rgba(255,255,255,1)',
                   paddingLeft: 12,
-                  paddingTop: 10,
+                  paddingTop: 8,
                 }}
               >
                 {text}
               </Text>
             )}
           </View>
-
-          {renderTopics()}
         </>
       );
     }

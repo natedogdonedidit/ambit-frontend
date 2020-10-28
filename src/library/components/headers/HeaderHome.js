@@ -38,7 +38,7 @@ const HeaderHome = ({ navigation, handleMiddle, handleTopicsButton, homePosition
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Search')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
           <View style={styles.iconCircle}>
-            <Icon name="search" size={16} color={colors.black} />
+            <Icon name="search" size={16} color={colors.black} style={{ paddingLeft: 1 }} />
           </View>
         </TouchableOpacity>
       </View>

@@ -36,7 +36,14 @@ function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
   return (
     <View style={{ ...styles.absoluteTop, top: 18 }}>
       <View style={styles.header}>
-        <ProfilePic size="small" user={owner} navigation={navigation} enableClick={type !== 'INTRO'} enableStory={false} />
+        <ProfilePic
+          size="small"
+          user={owner}
+          navigation={navigation}
+          enableClick={type !== 'INTRO'}
+          enableIntro={false}
+          enableStory={false}
+        />
         <TouchableOpacity
           onPress={() => {
             navigation.navigate('Profile', { username: owner.username });

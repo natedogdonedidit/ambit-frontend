@@ -254,18 +254,18 @@ const styles = StyleSheet.create({
 
   // small version // story
   buttonSmall: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     height: 28,
-    borderRadius: 8,
+    borderRadius: 14,
     backgroundColor: colors.purp,
     justifyContent: 'center',
     alignItems: 'center',
     ...defaultStyles.shadowButton,
   },
   buttonActiveSmall: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     height: 28,
-    borderRadius: 8,
+    borderRadius: 14,
     backgroundColor: 'rgba(255,255,255,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
