@@ -32,10 +32,8 @@ const MatchesForYou = ({ navigation, title, triggerRefresh }) => {
 
     if (loading) {
       return (
-        <View style={styles.loadingMessage}>
-          <View style={{ height: 40, width: '100%' }}>
-            <Loader loading={loading} size="small" full={false} backgroundColor={colors.white} />
-          </View>
+        <View style={{ height: 70, width: '100%' }}>
+          <Loader active size="small" full={false} backgroundColor={colors.white} />
         </View>
       );
     }

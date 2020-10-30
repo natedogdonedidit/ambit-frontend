@@ -216,14 +216,16 @@ const CapturedStoryItem = ({
       )}
 
       <View style={{ ...styles.sideButtons, top: insets.top + 15 }}>
-        {/* <TouchableOpacity
-          activeOpacity={0.8}
-          style={styles.sideButton}
-          onPress={handleTextButton}
-          hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
-        >
-          <Feather name="type" size={24} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
-        </TouchableOpacity> */}
+        {isIntro && (
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.sideButton}
+            onPress={handleTextButton}
+            hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
+          >
+            <Feather name="type" size={24} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
+          </TouchableOpacity>
+        )}
         {/* <TouchableOpacity
           activeOpacity={0.8}
           style={styles.sideButton}
@@ -240,7 +242,7 @@ const CapturedStoryItem = ({
       )}
 
       {uploading && <Loader loading={uploading} size="small" />}
-      {/* {textFocused && (
+      {textFocused && (
         <InputAccessoryView backgroundColor="#fffffff7">
           <View style={styles.textInputContainer}>
             <TextInput
@@ -260,7 +262,7 @@ const CapturedStoryItem = ({
             />
           </View>
         </InputAccessoryView>
-      )} */}
+      )}
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -13,6 +13,8 @@ import Error from 'library/components/UI/Error';
 import { getTopicFromID } from 'library/utils';
 
 const PostMatches = ({ navigation, post, matches, loading }) => {
+  const [selectedUser, setSelectedUser] = useState(null);
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -76,7 +78,15 @@ const PostMatches = ({ navigation, post, matches, loading }) => {
         {matches.map((user) => {
           return (
             <View key={user.id}>
-              <SuggestedConnection user={user} navigation={navigation} />
+              <SuggestedConnection
+                user={user}
+                navigation={navigation}
+                showHide
+                showFollow={false}
+                postId={post.id}
+                selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
+              />
             </View>
           );
         })}

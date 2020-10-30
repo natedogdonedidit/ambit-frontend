@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -9,53 +9,56 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { getGoalInfo, getTopicFromID } from 'library/utils';
 import POST_MATCHES_QUERY from 'library/queries/POST_MATCHES_QUERY';
+import Loader from 'library/components/UI/Loader';
 
-const ActiveGoalMatchesItem = ({ navigation, post, loadingPost, triggerRefresh }) => {
+const ActiveGoalMatchesItem = ({ navigation, post, triggerRefresh }) => {
   const [matches, setMatches] = useState([]);
 
   // get the matches for that goal
-  const [getMatches, { loading: loadingMatches, error, data }] = useLazyQuery(POST_MATCHES_QUERY, {
+  const { loading, error, data, refetch, networkStatus } = useQuery(POST_MATCHES_QUERY, {
+    variables: {
+      postId: post.id,
+    },
     fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
   });
+  // networkStatus states:
+  // 1: loading
+  // 3: fetchMore
+  // 4: refetch
+  // 7: no loading, no refetch, everything OK!
+
+  const loadingMatches = networkStatus === 1;
+  const refetching = networkStatus === 4;
 
   useEffect(() => {
-    if (!loadingPost && !!post && post.id) {
-      getMatches({ variables: { postId: post.id } });
-    }
-  }, [post, loadingPost, triggerRefresh]);
+    refetch();
+  }, [triggerRefresh]);
 
   useEffect(() => {
     if (data && data.singlePostMatches && data.singlePostMatches.length >= 0) {
       setMatches(data.singlePostMatches);
     }
-  }, [data, triggerRefresh]);
+  }, [data]);
+
+  if (!data || !data.singlePostMatches) {
+    return null;
+  }
 
   const renderIcon = () => {
-    if (loadingPost || !post) {
-      return <View style={styles.skeletonCircle} />;
-    }
-
-    return (
-      <Icon
-        name={getGoalInfo(post.goal, 'icon')}
-        size={24}
-        color={getGoalInfo(post.goal, 'primaryColor')}
-        solid
-        style={{ paddingTop: 5 }}
-      />
-    );
+    return <Text style={{ fontSize: 28 }}>{getGoalInfo(post.goal, 'emoji')}</Text>;
+    // return (
+    //   <Icon
+    //     name={getGoalInfo(post.goal, 'icon')}
+    //     size={24}
+    //     color={getGoalInfo(post.goal, 'primaryColor')}
+    //     solid
+    //     style={{ paddingTop: 5 }}
+    //   />
+    // );
   };
 
   const renderTitle = () => {
-    if (loadingPost || !post) {
-      return (
-        <View style={{ paddingRight: 15 }}>
-          <View style={{ ...styles.skeletonRectangle, width: '85%' }} />
-          <View style={{ ...styles.skeletonRectangle, width: '65%' }} />
-        </View>
-      );
-    }
-
     const { name } = post.subField ? getTopicFromID(post.subField) : '';
 
     if (loadingMatches) {
@@ -85,23 +88,10 @@ const ActiveGoalMatchesItem = ({ navigation, post, loadingPost, triggerRefresh }
 
   const renderProfilePics = () => {
     // render skeleton pics if loading
-    if (loadingMatches || loadingPost) {
-      const skel = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-      return skel.map((item, i) => {
-        const top = (i % 2) * 5;
-        const left = -i * 8;
-        return (
-          <View key={i} style={{ top, left }}>
-            <View style={styles.skeletonCircleSmall} />
-          </View>
-        );
-      });
-    }
-
-    if (matches.length <= 0) {
+    if (loadingMatches) {
       return (
-        <View style={styles.emptyComponent}>
-          <Text style={{ ...defaultStyles.defaultMuteItalic }}>No matches yet...check back later!</Text>
+        <View style={{ height: 70, width: '100%' }}>
+          <Loader active size="small" full={false} backgroundColor={colors.white} />
         </View>
       );
     }
@@ -127,11 +117,10 @@ const ActiveGoalMatchesItem = ({ navigation, post, loadingPost, triggerRefresh }
 
   if (error) {
     return null;
-    // return (
-    //   <View style={styles.emptyComponent}>
-    //     <Text style={{ ...defaultStyles.defaultMuteItalic, textAlign: 'center' }}>No matches yet...check back later!</Text>
-    //   </View>
-    // );
+  }
+
+  if (matches.length <= 0) {
+    return null;
   }
 
   return (

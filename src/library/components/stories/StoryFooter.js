@@ -161,39 +161,42 @@ function StoryFooter({
     if (hasTopics) {
       const { icon, color, name } = getTopicFromID(topic);
       return (
-        <ScrollView
-          horizontal
-          style={{ flex: 1 }}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingLeft: 12,
-            paddingBottom: 5,
-          }}
-        >
-          <TouchableOpacity
-            activeOpacity={1}
-            onPressIn={() => setDisableOutterScroll(true)}
-            onPressOut={() => setDisableOutterScroll(false)}
-            style={{ flexDirection: 'row' }}
+        // <ScrollView
+        //   horizontal
+        //   style={{ flex: 1 }}
+        //   showsHorizontalScrollIndicator={false}
+        //   contentContainerStyle={{
+        //     paddingLeft: 12,
+        //     paddingBottom: 5,
+        //   }}
+        // >
+        //   <TouchableOpacity
+        //     activeOpacity={1}
+        //     onPressIn={() => setDisableOutterScroll(true)}
+        //     onPressOut={() => setDisableOutterScroll(false)}
+        //     style={{ flexDirection: 'row' }}
+        //   >
+        <View style={{ paddingLeft: 12, paddingBottom: 5, alignSelf: 'flex-start' }}>
+          <View
+            key={topic.topicID}
+            style={{
+              height: 26,
+              paddingHorizontal: 6,
+              borderRadius: 6,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(255,255,255,0.4)',
+              marginRight: 5,
+              ...defaultStyles.shadowButton,
+            }}
           >
-            <View
-              key={topic.topicID}
-              style={{
-                height: 26,
-                paddingHorizontal: 6,
-                borderRadius: 6,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: 'rgba(255,255,255,0.4)',
-                marginRight: 5,
-                ...defaultStyles.shadowButton,
-              }}
-            >
-              {icon && <Icon name={icon} solid size={14} color={colors[color] || colors.blueGray} style={{ paddingRight: 6 }} />}
-              <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{name}</Text>
-            </View>
-            {/* {owner.location && (
+            {/* {icon && <Icon name={icon} solid size={14} color={colors[color] || colors.blueGray} style={{ paddingRight: 6 }} />} */}
+            <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{name}</Text>
+          </View>
+        </View>
+
+        /* {owner.location && (
                 <View
                   style={{
                     height: 26,
@@ -210,9 +213,9 @@ function StoryFooter({
                   <Icon name="map-marker-alt" solid size={10} color={colors.white} style={{ paddingRight: 6, paddingLeft: 2 }} />
                   <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>{owner.location}</Text>
                 </View>
-              )} */}
-          </TouchableOpacity>
-        </ScrollView>
+              )} */
+        //   </TouchableOpacity>
+        // </ScrollView>
       );
     }
 

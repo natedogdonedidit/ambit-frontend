@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useMutation, useApolloClient } from '@apollo/client';
+import { CommonActions } from '@react-navigation/native';
 
 import { UserContext } from 'library/utils/UserContext';
 import LOGIN_MUTATION from 'library/mutations/LOGIN_MUTATION';
@@ -31,7 +32,15 @@ const LoginScreen = ({ navigation }) => {
       await loginCTX(data.login);
       setUsername('');
       setPassword('');
-      navigation.navigate('MainStack');
+      // navigation.navigate('MainStack');
+
+      // did it this way to remove LoginScreen from stack. Prevents the ability to go back to Login Screen via swipe
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'MainStack' }],
+        })
+      );
     },
   });
 

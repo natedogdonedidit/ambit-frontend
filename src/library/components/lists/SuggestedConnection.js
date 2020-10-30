@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -8,8 +9,15 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import FollowButton from 'library/components/UI/buttons/FollowButton';
 import MessageButton from 'library/components/UI/buttons/MessageButton';
+import HideButton from 'library/components/UI/buttons/HideButton';
 
-const SuggestedConnection = ({ navigation, user, showMessage, showFollow }) => {
+const SuggestedConnection = ({ navigation, user, showMessage, showFollow, showHide, postId, selectedUser, setSelectedUser }) => {
+  const [isHidden, setIsHidden] = useState(false);
+
+  if (isHidden) {
+    return null;
+  }
+
   return (
     <TouchableOpacity
       activeOpacity={0.7}
@@ -26,12 +34,21 @@ const SuggestedConnection = ({ navigation, user, showMessage, showFollow }) => {
           {/* {user.location && <Text style={defaultStyles.defaultMute}>{user.location}</Text>} */}
           {user.bio && <Text style={{ ...defaultStyles.defaultText, paddingTop: 8 }}>{user.bio}</Text>}
           <View style={styles.absoluteButtons}>
-            <FollowButton userToFollowID={user.id} username={user.username} small onRow />
-            <MessageButton
+            {showFollow && <FollowButton userToFollowID={user.id} username={user.username} small onRow />}
+            {showHide && (
+              <HideButton
+                postId={postId}
+                userId={user.id}
+                setIsHidden={setIsHidden}
+                selectedUser={selectedUser}
+                setSelectedUser={setSelectedUser}
+              />
+            )}
+            {/* <MessageButton
               onPress={() => navigation.navigate('Chat', { otherUserPassedIn: user })}
               buttonStyle={{ marginLeft: 6 }}
               small
-            />
+            /> */}
           </View>
         </View>
       </View>

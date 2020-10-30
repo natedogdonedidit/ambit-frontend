@@ -10,6 +10,7 @@ import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
 import { isCustomGoalTest } from 'library/utils';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import { UserContext } from 'library/utils/UserContext';
+import Loader from 'library/components/UI/Loader';
 import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 
 // MATCHES - BASED ON GOALS
@@ -65,14 +66,11 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
 
   const renderRows = () => {
     // if loading my goals - render skeleton
-    if (loadingPostsMyGoals) {
-      const skel = [0, 1];
+    if (loadingPostsMyGoals || !dataPostsMyGoals) {
       return (
-        <>
-          {skel.map((item, i) => (
-            <ActiveGoalMatchesItem key={i} post={null} loadingPost />
-          ))}
-        </>
+        <View style={{ height: 70, width: '100%' }}>
+          <Loader active size="small" full={false} backgroundColor={colors.white} />
+        </View>
       );
     }
 
@@ -85,15 +83,7 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
           {posts.map((post, i) => {
             const isCustomGoal = isCustomGoalTest(post.goal);
             if (!isCustomGoal) {
-              return (
-                <ActiveGoalMatchesItem
-                  key={post.id}
-                  triggerRefresh={triggerRefresh}
-                  navigation={navigation}
-                  post={post}
-                  loadingPost={false}
-                />
-              );
+              return <ActiveGoalMatchesItem key={post.id} triggerRefresh={triggerRefresh} navigation={navigation} post={post} />;
             }
             return null;
           })}
@@ -112,7 +102,7 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
     );
   };
 
-  if (!dataPostsMyGoals) return null;
+  // if (!dataPostsMyGoals) return null;
 
   return (
     <View style={styles.container}>

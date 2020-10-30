@@ -5,7 +5,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 
-const Section = ({ children, text, loading = false, marginTop = true, borderBottom = true, rightComponent }) => {
+const Section = ({ children, text, loading = false, marginTop = true, borderBottom = true, rightComponent, subText }) => {
   return (
     <View
       style={[
@@ -23,6 +23,7 @@ const Section = ({ children, text, loading = false, marginTop = true, borderBott
         )}
         {!!rightComponent && rightComponent}
       </View>
+      {subText}
       {children}
     </View>
   );
@@ -33,13 +34,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderBlack,
+    paddingVertical: 12,
+    paddingHorizontal: 15,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
   },
 });
 

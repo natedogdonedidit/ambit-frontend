@@ -144,6 +144,13 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
           text={section.title}
           marginTop={false}
           borderBottom={false}
+          subText={
+            section.title === 'Following' ? (
+              <Text style={{ ...defaultStyles.smallMute, paddingTop: 2 }}>
+                Topics will appear in <Text style={{ ...defaultStyles.smallBold, color: colors.purp }}>For You</Text> timeline
+              </Text>
+            ) : null
+          }
           // rightComponent={
           //   section.title === 'Following' ? <TextButton onPress={() => navigation.navigate('MyTopics')}>Edit</TextButton> : null
           // }

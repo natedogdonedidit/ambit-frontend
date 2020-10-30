@@ -10,6 +10,7 @@ import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import HatMatchesRow from 'library/components/lists/HatMatchesRow';
 import TextButton from 'library/components/UI/buttons/TextButton';
+import Loader from 'library/components/UI/Loader';
 import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 
 // MATCHES - BASED ON GOALS
@@ -30,14 +31,19 @@ const MatchesHats = ({ navigation, title, triggerRefresh }) => {
   const renderRows = () => {
     // if loading my topics - render skeleton
     if (loadingTopics) {
-      const skel = [0, 1];
       return (
-        <>
-          {skel.map((item, i) => (
-            <ActiveGoalMatchesItem key={i} post={null} loadingPost />
-          ))}
-        </>
+        <View style={{ height: 70, width: '100%' }}>
+          <Loader active size="small" full={false} backgroundColor={colors.white} />
+        </View>
       );
+      // const skel = [0, 1];
+      // return (
+      //   <>
+      //     {skel.map((item, i) => (
+      //       <ActiveGoalMatchesItem key={i} post={null} loadingPost />
+      //     ))}
+      //   </>
+      // );
     }
 
     const { userLoggedIn: myTopics } = data;

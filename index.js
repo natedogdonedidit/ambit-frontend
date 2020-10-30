@@ -135,6 +135,11 @@ const client = new ApolloClient({
           //   console.log(toReference({ __typename: 'MessageConnection', id: `${args.groupID}` }));
           //   return existingData || toReference({ __typename: 'MessageConnection', id: `${args.groupID}` });
           // },
+          singlePostMatches: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
           messages: {
             merge(existing = [], incoming = [], options) {
               // console.log(existing, incoming, options);
