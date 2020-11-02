@@ -108,7 +108,7 @@ const SelectTopicsInvestModal = ({ navigation }) => {
               <Text style={defaultStyles.defaultMute}>We will send you investment opporunities from these markets</Text>
             </View>
           </View>
-          <InvestList activeTopicIDs={topicsIDonly} handleTopicSelect={handleTopicSelect} />
+          <InvestList />
         </ScrollView>
       </View>
     </View>

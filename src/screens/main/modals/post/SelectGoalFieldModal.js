@@ -29,7 +29,6 @@ const SelectGoalFieldModal = ({ navigation, route }) => {
     }
 
     setActiveSubfield(selectedTopicID);
-
     // if its a topic type goal - then set topic also
     if (goal.modalType === 'topic') {
       // if its a topic type goal - then set topic also
@@ -43,43 +42,16 @@ const SelectGoalFieldModal = ({ navigation, route }) => {
     const timeout = setTimeout(() => navigation.navigate('NewPostModal'), 300);
   };
 
-  const handleCategorySelect = (category) => {
-    if (selectedCategories.includes(category)) {
-      const index = selectedCategories.indexOf(category);
-      if (index > -1) {
-        const newArray = [...selectedCategories];
-        newArray.splice(index, 1);
-        setSelectedCategories(newArray);
-      }
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-
   const renderList = () => {
     if (goal.modalType === 'specialist') {
-      return (
-        <FreelanceList
-          activeTopicIDs={[activeSubfield]}
-          selectedCategories={selectedCategories}
-          handleTopicSelect={handleTopicSelect}
-          handleCategorySelect={handleCategorySelect}
-        />
-      );
+      return <FreelanceList handleTopicSelect={handleTopicSelect} disableFollow />;
     }
 
     if (goal.modalType === 'invest') {
-      return <InvestList activeTopicIDs={[activeSubfield]} handleTopicSelect={handleTopicSelect} />;
+      return <InvestList handleTopicSelect={handleTopicSelect} disableFollow />;
     }
 
-    return (
-      <TopicsList
-        activeTopicIDs={[activeSubfield]}
-        selectedCategories={selectedCategories}
-        handleTopicSelect={handleTopicSelect}
-        handleCategorySelect={handleCategorySelect}
-      />
-    );
+    return <TopicsList handleTopicSelect={handleTopicSelect} />;
   };
 
   return (

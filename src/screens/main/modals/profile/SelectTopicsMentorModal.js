@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { StyleSheet, View, Text, ScrollView, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -12,10 +12,6 @@ import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsMentorModal = ({ navigation }) => {
-  const client = useApolloClient();
-
-  const [selectedCategories, setSelectedCategories] = useState('');
-
   // ////////////////////////////////////////
   // MUTATIONS
   const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION, {
@@ -92,19 +88,6 @@ const SelectTopicsMentorModal = ({ navigation }) => {
     });
   };
 
-  const handleCategorySelect = (category) => {
-    if (selectedCategories.includes(category)) {
-      const index = selectedCategories.indexOf(category);
-      if (index > -1) {
-        const newArray = [...selectedCategories];
-        newArray.splice(index, 1);
-        setSelectedCategories(newArray);
-      }
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
@@ -124,12 +107,7 @@ const SelectTopicsMentorModal = ({ navigation }) => {
               </Text>
             </View>
           </View>
-          <TopicsList
-            activeTopicIDs={topicsIDonly}
-            selectedCategories={selectedCategories}
-            handleTopicSelect={handleTopicSelect}
-            handleCategorySelect={handleCategorySelect}
-          />
+          <TopicsList activeTopicIDs={topicsIDonly} handleTopicSelect={handleTopicSelect} showFollowButton topicType="mentor" />
         </ScrollView>
       </View>
     </View>

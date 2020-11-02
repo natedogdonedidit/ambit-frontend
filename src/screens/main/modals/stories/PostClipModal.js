@@ -301,7 +301,9 @@ const PostClipModal = ({ navigation, route }) => {
           {topic ? (
             <TopicRow topicID={topic} />
           ) : (
-            <Text style={{ ...defaultStyles.hugeHeavy, fontSize: 18, color: colors.gray30 }}>Select a topic</Text>
+            <Text style={{ ...defaultStyles.hugeHeavy, fontSize: 18, color: colors.gray30, paddingTop: 4, paddingBottom: 6 }}>
+              Select a topic
+            </Text>
           )}
         </TouchableOpacity>
       </ScrollView>

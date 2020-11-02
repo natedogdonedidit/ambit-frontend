@@ -41,17 +41,17 @@ const ConnectionsList = ({ navigation, scrollY, showRefreshing, setShowRefreshin
     {
       id: '1',
       name: 'goals',
-      title: 'Based on your goals',
+      title: 'Goal Matches',
     },
     {
       id: '2',
       name: 'hats',
-      title: 'Based on your hats',
+      title: 'Opportunities',
     },
     {
       id: '3',
       name: 'more',
-      title: 'More matches for you',
+      title: 'Suggested Connections',
     },
   ];
 

@@ -38,8 +38,8 @@ const ProfileGrid = ({ navigation, username }) => {
   const renderGrid = () => {
     if (stories.length < 1) {
       return (
-        <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center', paddingTop: 30 }}>
-          {user.username && `${user.username}'s `}stories & projects will appear here
+        <Text style={{ ...defaultStyles.hugeBold, color: colors.gray40, textAlign: 'center', paddingTop: 45 }}>
+          No projects yet...sad
         </Text>
       );
     }

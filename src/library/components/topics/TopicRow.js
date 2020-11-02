@@ -11,7 +11,7 @@ import TopicFollowButton from 'library/components/UI/buttons/TopicFollowButton';
 const picExample =
   'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
 
-const TopicRow = ({ topicID }) => {
+const TopicRow = ({ topicID, showFollowButton, navigation, showBottomBorder }) => {
   const { name, icon, color, image } = getTopicFromID(topicID);
 
   // this makes it so reads "following" immediately after follow
@@ -51,12 +51,12 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     width: '100%',
-    // height: 50,
     alignItems: 'center',
+    backgroundColor: 'white',
+    // height: 50,
     // borderTopWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,
-    paddingRight: 6,
-    backgroundColor: 'white',
+    // paddingRight: 6,
   },
   // add button
   addButton: {

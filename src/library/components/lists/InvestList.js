@@ -6,33 +6,31 @@ import defaultStyles from 'styles/defaultStyles';
 import { investList } from 'library/utils/lists';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import TopicFollowButtonInvest from 'library/components/UI/buttons/TopicFollowButtonInvest';
 
-const InvestList = ({ activeTopicIDs = [], handleTopicSelect }) => {
-  // RETURN FUNCTION
-
+// only uses handleTopicSelect if disableFollow is true
+const InvestList = ({ handleTopicSelect, disableFollow = false }) => {
   return investList.map((mainTopic, i) => {
     const { name, icon, color, topicID } = mainTopic;
 
-    const isSelected = activeTopicIDs.includes(topicID);
-
     return (
-      <TouchableOpacity key={topicID} activeOpacity={0.8} onPress={() => handleTopicSelect(topicID, name)}>
+      <View key={topicID}>
         <View style={[styles.mainRow, i === investList.length - 1 && styles.addBottomBorder]}>
           <View style={styles.iconView}>
             <Icon name={icon} solid size={20} color={colors[color] || colors.blueGray} />
           </View>
           <Text style={styles.mainRowText}>{name}</Text>
-          {isSelected ? (
-            <View style={styles.addedButton}>
-              <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-            </View>
+          {disableFollow ? (
+            <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID)}>
+              <View style={styles.addButton}>
+                <Text style={{ ...defaultStyles.followButton, color: colors.green }}>Add</Text>
+              </View>
+            </TouchableOpacity>
           ) : (
-            <View style={styles.addButton}>
-              <Text style={{ ...defaultStyles.defaultMedium, color: colors.blueGray }}>Add</Text>
-            </View>
+            <TopicFollowButtonInvest topicID={topicID} />
           )}
         </View>
-      </TouchableOpacity>
+      </View>
     );
   });
 };
@@ -58,21 +56,21 @@ const styles = StyleSheet.create({
   },
   // add button
   addButton: {
-    height: 32,
-    width: 70,
+    height: 34,
+    width: 68,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 17,
     borderWidth: 1,
     borderColor: colors.green,
     opacity: 0.9,
   },
   addedButton: {
-    height: 32,
-    width: 70,
+    height: 34,
+    width: 68,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 17,
     backgroundColor: colors.green,
   },
   addBottomBorder: {

@@ -181,12 +181,12 @@ function StoryFooter({
             key={topic.topicID}
             style={{
               height: 26,
-              paddingHorizontal: 6,
+              paddingHorizontal: 7,
               borderRadius: 6,
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: 'rgba(255,255,255,0.4)',
+              backgroundColor: 'rgba(255,255,255,0.2)',
               marginRight: 5,
               ...defaultStyles.shadowButton,
             }}
@@ -285,12 +285,12 @@ function StoryFooter({
               style={{
                 marginLeft: 12,
                 height: 26,
-                paddingHorizontal: 6,
+                paddingHorizontal: 7,
                 borderRadius: 6,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: 'rgba(255,255,255,0.4)',
+                backgroundColor: 'rgba(255,255,255,0.2)',
                 marginRight: 5,
                 ...defaultStyles.shadowButton,
                 alignSelf: 'flex-start',

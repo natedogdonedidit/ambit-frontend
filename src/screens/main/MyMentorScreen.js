@@ -30,7 +30,7 @@ const MyNetworkScreen = ({ navigation }) => {
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title="Mentor" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
-        <TopicsOfMentor navigation={navigation} myTopics={myTopics} showX />
+        <TopicsOfMentor navigation={navigation} myTopics={myTopics} />
       </ScrollView>
     </View>
   );

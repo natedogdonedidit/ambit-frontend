@@ -16,6 +16,7 @@ import PostComments from 'library/components/post/PostComments';
 import PostUpdates from 'library/components/post/PostUpdates';
 import Post from 'library/components/post/Post';
 import Popover from 'library/components/UI/Popover';
+import { isCustomGoalTest } from 'library/utils';
 
 import { UserContext } from 'library/utils/UserContext';
 import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
@@ -72,6 +73,8 @@ const PostScreen = ({ navigation, route }) => {
   const daysRemainingTillInactive = DAYS_TILL_INACTIVE - daysSinceUpdated;
 
   const showPopover = isMyPost && !hidePopover && post.isGoal && post.goalStatus === 'Active' && daysRemainingTillInactive <= 5;
+
+  const isCustomGoal = isCustomGoalTest(post.goal);
 
   const updateLastUpdated = async () => {
     await updatePost({
@@ -147,8 +150,10 @@ const PostScreen = ({ navigation, route }) => {
         navigation={navigation}
         title={post.goal ? 'Goal' : 'Post'}
         loading={showMatchesLoader}
-        handleRight={loadingMatches || !isMyPost || !post.goal ? null : () => navigation.navigate('PostMatches', { post })}
-        textRight={loadingMatches || !isMyPost || !post.goal ? '' : `${matches.length || ''} Matches`}
+        handleRight={
+          loadingMatches || !isMyPost || !post.goal || isCustomGoal ? null : () => navigation.navigate('PostMatches', { post })
+        }
+        textRight={loadingMatches || !isMyPost || !post.goal || isCustomGoal ? '' : `${matches.length || ''} Matches`}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
         {renderPost()}

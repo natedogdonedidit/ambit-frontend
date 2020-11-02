@@ -193,7 +193,7 @@ const CapturedStoryItem = ({
 
       <TouchableOpacity
         activeOpacity={0.8}
-        style={{ ...styles.clearButton, top: insets.top + 15 }}
+        style={{ ...styles.clearButton, top: insets.top + 10 }}
         onPress={clearCapturedItem}
         hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
       >
@@ -272,9 +272,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 30,
     left: 10,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: colors.storyButtonBackground,
     justifyContent: 'center',
     alignItems: 'center',

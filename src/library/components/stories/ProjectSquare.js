@@ -30,7 +30,7 @@ const ProjectSquare = ({ navigation, project, newProject = false, loading = fals
         {loading ? (
           <Loader loading={loading} size="small" full={false} backgroundColor="transparent" />
         ) : (
-          <Icon name="plus" solid size={20} color={colors.gray60} />
+          <Icon name="camera" size={20} color={colors.gray60} />
         )}
       </View>
     );

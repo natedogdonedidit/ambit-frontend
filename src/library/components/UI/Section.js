@@ -15,7 +15,10 @@ const Section = ({ children, text, loading = false, marginTop = true, borderBott
       ]}
     >
       <View style={styles.sectionHeader}>
-        <Text style={defaultStyles.hugeHeavy}>{text}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={defaultStyles.hugeHeavy}>{text}</Text>
+          {subText}
+        </View>
         {loading && (
           <View style={{ paddingRight: 15 }}>
             <Loader size="small" loading={loading} full backgroundColor={colors.white} />
@@ -23,7 +26,6 @@ const Section = ({ children, text, loading = false, marginTop = true, borderBott
         )}
         {!!rightComponent && rightComponent}
       </View>
-      {subText}
       {children}
     </View>
   );
@@ -34,12 +36,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.borderBlack,
-    paddingVertical: 12,
-    paddingHorizontal: 15,
   },
   sectionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
     alignItems: 'center',
   },
 });

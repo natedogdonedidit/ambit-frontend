@@ -30,7 +30,7 @@ const MyFreelanceScreen = ({ navigation }) => {
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title="Freelance" />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
-        <TopicsOfFreelance navigation={navigation} myTopics={myTopics} showX />
+        <TopicsOfFreelance navigation={navigation} myTopics={myTopics} />
       </ScrollView>
     </View>
   );

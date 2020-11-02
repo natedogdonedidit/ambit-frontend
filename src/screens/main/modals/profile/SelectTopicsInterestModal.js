@@ -12,9 +12,7 @@ import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const SelectTopicsInterestModal = ({ navigation }) => {
-  const client = useApolloClient();
-
-  const [selectedCategories, setSelectedCategories] = useState('');
+  // const client = useApolloClient();
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -93,19 +91,6 @@ const SelectTopicsInterestModal = ({ navigation }) => {
     });
   };
 
-  const handleCategorySelect = (category) => {
-    if (selectedCategories.includes(category)) {
-      const index = selectedCategories.indexOf(category);
-      if (index > -1) {
-        const newArray = [...selectedCategories];
-        newArray.splice(index, 1);
-        setSelectedCategories(newArray);
-      }
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
@@ -120,15 +105,10 @@ const SelectTopicsInterestModal = ({ navigation }) => {
               <Text style={defaultStyles.headerMedium}>Select your topics{`\n`}of interest</Text>
             </View>
             <View style={styles.subTitle}>
-              <Text style={defaultStyles.defaultMute}>We will use this data to show you interesting content</Text>
+              <Text style={defaultStyles.defaultMute}>We will use this data to help you network within these topics</Text>
             </View>
           </View>
-          <TopicsList
-            activeTopicIDs={topicsIDonly}
-            selectedCategories={selectedCategories}
-            handleTopicSelect={handleTopicSelect}
-            handleCategorySelect={handleCategorySelect}
-          />
+          <TopicsList activeTopicIDs={topicsIDonly} handleTopicSelect={handleTopicSelect} showFollowButton topicType="network" />
         </ScrollView>
       </View>
     </View>

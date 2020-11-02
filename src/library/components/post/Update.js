@@ -211,7 +211,7 @@ function Update({
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('Profile', { profileId: post.owner.id })}
+              onPress={() => navigation.navigate('Profile', { username: post.owner.username })}
               hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
               style={{ flexDirection: 'row', alignItems: 'center' }}
             >

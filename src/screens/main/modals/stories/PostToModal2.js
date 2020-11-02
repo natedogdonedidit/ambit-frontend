@@ -21,6 +21,7 @@ import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
+import TextButton from 'library/components/UI/buttons/TextButton';
 
 const PostToModal = ({ navigation, route }) => {
   const { currentUserId, currentUsername } = useContext(UserContext);
@@ -29,15 +30,6 @@ const PostToModal = ({ navigation, route }) => {
   const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(SINGLE_USER_BIO, {
     variables: { where: { id: currentUserId } },
   });
-
-  if (loadingUser || errorUser) {
-    return null;
-  }
-  const { user } = dataUser;
-
-  const stories = user ? user.stories : [];
-  const projects = user ? [...stories].filter((story) => story.type === 'PROJECT') : [];
-  const myStoryID = user && user.myStory ? user.myStory.id : '123ihavenostory';
 
   const renderTopics = (proj) => {
     if (proj.topic) {
@@ -53,6 +45,20 @@ const PostToModal = ({ navigation, route }) => {
   };
 
   const renderProjects = () => {
+    if (errorUser) {
+      return null;
+    }
+
+    if (loadingUser) {
+      return <Text style={{ ...defaultStyles.defaultMute, paddingTop: 20 }}>Loading projects...</Text>;
+    }
+
+    const { user } = dataUser || {};
+
+    const stories = user ? user.stories : [];
+    const projects = user ? [...stories].filter((story) => story.type === 'PROJECT') : [];
+    // const myStoryID = user && user.myStory ? user.myStory.id : '123ihavenostory';
+
     if (projects.length < 1) {
       return null;
     }
@@ -122,6 +128,11 @@ const PostToModal = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
         {renderProjects()}
+        <View style={{ paddingTop: 30 }}>
+          <TextButton textStyle={{ fontSize: 17 }} onPress={() => null}>
+            See an example
+          </TextButton>
+        </View>
       </ScrollView>
     </View>
   );

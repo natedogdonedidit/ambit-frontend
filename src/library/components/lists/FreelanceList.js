@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import colors from 'styles/colors';
@@ -7,28 +7,42 @@ import { freelanceList } from 'library/utils/lists';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import TopicFollowButtonFreelance from 'library/components/UI/buttons/TopicFollowButtonFreelance';
 
-const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSelect, handleCategorySelect }) => {
+// only uses handleTopicSelect if disableFollow is true
+const FreelanceList = ({ handleTopicSelect, disableFollow = false }) => {
+  const [selectedCategories, setSelectedCategories] = useState('');
+
+  const handleCategorySelect = (category) => {
+    if (selectedCategories.includes(category)) {
+      const index = selectedCategories.indexOf(category);
+      if (index > -1) {
+        const newArray = [...selectedCategories];
+        newArray.splice(index, 1);
+        setSelectedCategories(newArray);
+      }
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+
   const renderSubtopics = (subTopics) => {
     return subTopics.map((subTopic) => {
       const { name, topicID } = subTopic;
-      const isSelected = activeTopicIDs.includes(topicID);
 
       return (
-        <TouchableOpacity key={topicID} activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-          <View style={styles.subRow}>
-            <Text style={styles.subRowText}>{name}</Text>
-            {isSelected ? (
-              <View style={styles.addedButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-              </View>
-            ) : (
+        <View key={topicID} style={styles.subRow}>
+          <Text style={styles.subRowText}>{name}</Text>
+          {disableFollow ? (
+            <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID)}>
               <View style={styles.addButton}>
-                <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
+                <Text style={{ ...defaultStyles.followButton, color: colors.peach }}>Add</Text>
               </View>
-            )}
-          </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+          ) : (
+            <TopicFollowButtonFreelance topicID={topicID} />
+          )}
+        </View>
       );
     });
   };
@@ -37,7 +51,6 @@ const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSel
   return freelanceList.map((mainTopic, i) => {
     const { name, icon, color, topicID, children } = mainTopic;
 
-    const isSelected = activeTopicIDs.includes(topicID);
     const isExpanded = selectedCategories.includes(topicID);
 
     return (
@@ -52,25 +65,7 @@ const FreelanceList = ({ activeTopicIDs = [], selectedCategories, handleTopicSel
             <Ionicons name={isExpanded ? 'ios-chevron-down' : 'ios-chevron-forward'} size={22} color={colors.iconGray} />
           </View>
         </TouchableOpacity>
-        {isExpanded && children.length > 0 && (
-          <View style={styles.subRowView}>
-            <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-              <View style={styles.subRow}>
-                <Text style={styles.subRowText}>{name} (general)</Text>
-                {isSelected ? (
-                  <View style={styles.addedButton}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: 'white' }}>Added</Text>
-                  </View>
-                ) : (
-                  <View style={styles.addButton}>
-                    <Text style={{ ...defaultStyles.defaultMedium, color: colors.peach }}>Add</Text>
-                  </View>
-                )}
-              </View>
-            </TouchableOpacity>
-            {renderSubtopics(children)}
-          </View>
-        )}
+        {isExpanded && children.length > 0 && <View style={styles.subRowView}>{renderSubtopics(children)}</View>}
       </View>
     );
   });
@@ -115,21 +110,21 @@ const styles = StyleSheet.create({
   },
   // add button
   addButton: {
-    height: 32,
-    width: 70,
+    height: 34,
+    width: 68,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 17,
     borderWidth: 1,
     borderColor: colors.peach,
     opacity: 0.9,
   },
   addedButton: {
-    height: 32,
-    width: 70,
+    height: 34,
+    width: 68,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 17,
     backgroundColor: colors.peach,
   },
   addBottomBorder: {

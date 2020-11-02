@@ -27,36 +27,8 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
   // QUERY TO GET USERS TOPICS
   const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
 
-  const topicsIDonly = useMemo(() => {
-    if (data && data.userLoggedIn && data.userLoggedIn.topicsFocus) {
-      return data.userLoggedIn.topicsFocus.map((topic) => topic.id);
-    }
-    return [];
-  }, [data]);
-
-  const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION, {
-    onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to edit your topics. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
-    refetchQueries: () => [{ query: CURRENT_USER_TOPICS }],
-  });
-
   // //////////////////////////////////////////////////////
   // CUSTOM FUNCTIONS
-  const handleFollow = (selectedTopicID) => {
-    requestAnimationFrame(() => {
-      // run the mutation
-      updateOneUser({
-        variables: {
-          where: { id: currentUserId }, // userLoggedIn
-          data: {
-            topicsFocus: { connect: [{ id: selectedTopicID }] },
-          },
-        },
-      });
-    });
-  };
 
   // compiles the list of favoriteTopics whenever myTopics changes
   const favoriteTopics = useMemo(() => {
@@ -169,28 +141,19 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
       renderItem={({ item, section, index }) => {
         if (section.title === 'Following') {
           return (
-            <RecommendedTopic
-              key={item}
-              topicID={item}
-              navigation={navigation}
-              showBottomBorder={index === section.data.length - 1}
-            />
+            <RecommendedTopic key={item} topicID={item} showBottomBorder={index === section.data.length - 1} allowNavigation />
           );
         }
         if (section.title === 'Recommended') {
           const { topicID } = item;
-
-          const isFollowing = topicsIDonly.includes(topicID);
 
           return (
             <RecommendedTopic
               key={topicID}
               topicID={topicID}
               showFollowButton
-              following={isFollowing}
-              handleFollow={handleFollow}
-              navigation={navigation}
               showBottomBorder={index === section.data.length - 1}
+              allowNavigation
             />
           );
         }

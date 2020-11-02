@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { StyleSheet, View, ScrollView, Text, TextInput } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import TopicsList from 'library/components/lists/TopicsList';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 
 const TOPIC_LIMIT = 3;
 
@@ -25,9 +23,7 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
   const { setTopic, setSubField, topicsPassedIn = [] } = route.params;
 
   // STATE
-  const [selectedCategories, setSelectedCategories] = useState('');
   const [activeTopics, setActiveTopics] = useState(topicsPassedIn);
-  const [warning, setWarning] = useState('');
 
   // CONSTANTS
   let { heading } = goal;
@@ -54,44 +50,22 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
     const timeout = setTimeout(() => navigation.navigate('NewPostModal'), 300);
   };
 
-  const handleCategorySelect = (category) => {
-    if (selectedCategories.includes(category)) {
-      const index = selectedCategories.indexOf(category);
-      if (index > -1) {
-        const newArray = [...selectedCategories];
-        newArray.splice(index, 1);
-        setSelectedCategories(newArray);
-      }
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
-        <HeaderBackBlank
-          navigation={navigation}
-          title={warning}
-          rightComponent={<ButtonHeader onPress={() => navigation.navigate('NewPostModal')}>Done</ButtonHeader>}
-          // leftText="Done"
-        />
-
+        <HeaderBackBlank navigation={navigation} />
         <ScrollView style contentContainerStyle={styles.scrollView}>
           <View style={{ width: '100%', paddingHorizontal: 5 }}>
             <View style={styles.mainTitle}>
-              <Text style={defaultStyles.headerMedium}>{heading}</Text>
+              <Text style={{ ...defaultStyles.headerMedium, textAlign: 'center' }}>{heading}</Text>
             </View>
             <View style={styles.subTitle}>
-              <Text style={defaultStyles.defaultMute}>Your post will also appear on this topic timeline</Text>
+              <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center' }}>
+                Your post will also appear on this topic timeline
+              </Text>
             </View>
           </View>
-          <TopicsList
-            activeTopicIDs={activeTopicsIDonly}
-            selectedCategories={selectedCategories}
-            handleTopicSelect={handleTopicSelect}
-            handleCategorySelect={handleCategorySelect}
-          />
+          <TopicsList activeTopicIDs={activeTopicsIDonly} handleTopicSelect={handleTopicSelect} />
         </ScrollView>
       </View>
     </View>
@@ -106,13 +80,14 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingBottom: 20,
-    paddingTop: 10,
+    paddingTop: 5,
     paddingHorizontal: 10,
   },
   mainTitle: {
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 8,
+    paddingBottom: 13,
   },
   subTitle: {
     width: '100%',

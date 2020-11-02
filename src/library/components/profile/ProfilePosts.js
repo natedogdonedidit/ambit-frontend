@@ -27,6 +27,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
     },
     notifyOnNetworkStatusChange: true,
   });
+
   const currentTime = new Date();
 
   // if (loading) {
@@ -46,26 +47,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
     );
   }
 
-  // const posts = data ? data.posts || [] : [];
-  const posts = [];
-
-  if (posts.length < 1 && !loading && isMyProfile) {
-    if (isMyProfile) {
-      return (
-        <View style={{ height: 100, width: '100%', alignItems: 'center', marginVertical: 40 }}>
-          <Text style={{ ...defaultStyles.defaultText, paddingBottom: 15 }}>You don't have any posts yet!</Text>
-          <ButtonDefault onPress={() => navigation.navigate('NewPostModal', { topicsPassedIn: [] })}>Create a post</ButtonDefault>
-        </View>
-      );
-    }
-    return (
-      <View style={{ height: 100, width: '100%', alignItems: 'center', marginVertical: 40 }}>
-        <Text style={defaultStyles.defaultText}>No posts yet</Text>
-      </View>
-    );
-  }
-
-  if (posts.length < 1) {
+  if (loading) {
     return (
       <>
         <View style={{ height: 100, width: '100%', marginTop: 10 }}>
@@ -76,13 +58,31 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
     );
   }
 
+  const posts = data ? data.posts || [] : [];
+  // const posts = [];
+
+  if (posts.length < 1) {
+    if (isMyProfile) {
+      return (
+        <View style={{ height: 100, width: '100%', alignItems: 'center', marginVertical: 40 }}>
+          <Text style={{ ...defaultStyles.defaultText, paddingBottom: 15 }}>You don't have any posts yet!</Text>
+          <ButtonDefault onPress={() => navigation.navigate('NewPostModal', { topicsPassedIn: [] })}>Create a post</ButtonDefault>
+        </View>
+      );
+    }
+    return (
+      <Text style={{ ...defaultStyles.hugeBold, color: colors.gray40, textAlign: 'center', paddingTop: 45 }}>
+        No posts yet...sad
+      </Text>
+    );
+  }
+
   return (
     <FlatList
       style={styles.timeline}
       data={posts}
       keyExtractor={(item, index) => item + index}
       renderItem={({ item, index }) => {
-        console.log(index === 0);
         return (
           <PostGroupTL
             post={item}

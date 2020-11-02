@@ -15,10 +15,7 @@ import getTopicFromID from 'library/utils/index';
 import RecommendedTopic from 'library/components/topics/RecommendedTopic';
 
 const SelectTopicsFocusModal = ({ navigation }) => {
-  const client = useApolloClient();
-
-  const [selectedCategories, setSelectedCategories] = useState('');
-  const [searchText, setSearchText] = useState('');
+  // const client = useApolloClient();
 
   // ////////////////////////////////////////
   // MUTATIONS
@@ -40,11 +37,6 @@ const SelectTopicsFocusModal = ({ navigation }) => {
   const topicsIDonly = useMemo(() => {
     return topics.map((topic) => topic.id);
   }, [topics]);
-
-  const matchingTopics = useMemo(() => {
-    // if search text changes - find matching topics
-    return allNormalTopics.filter((t) => t.name.includes(searchText));
-  }, [searchText]);
 
   // ////////////////////////////////////////
   // CUSTOM FUNCTIONS
@@ -82,44 +74,12 @@ const SelectTopicsFocusModal = ({ navigation }) => {
     });
   };
 
-  const handleCategorySelect = (category) => {
-    if (selectedCategories.includes(category)) {
-      const index = selectedCategories.indexOf(category);
-      if (index > -1) {
-        const newArray = [...selectedCategories];
-        newArray.splice(index, 1);
-        setSelectedCategories(newArray);
-      }
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
-
-  const renderMatchingTopics = () => {
-    return matchingTopics.map((matchingTop, i) => {
-      const { topicID } = matchingTop;
-
-      const isFollowing = topicsIDonly.includes(topicID);
-
-      return (
-        <RecommendedTopic
-          key={topicID}
-          topicID={topicID}
-          isFollowing={isFollowing}
-          handleTopicSelect={handleTopicSelect}
-          navigation={navigation}
-          showBottomBorder={i === matchingTopics.length - 1}
-        />
-      );
-    });
-  };
-
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
         <HeaderBackBlank
           navigation={navigation}
-          rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
+          // rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
         />
 
         <ScrollView style contentContainerStyle={styles.scrollView}>
@@ -133,27 +93,7 @@ const SelectTopicsFocusModal = ({ navigation }) => {
               </Text>
             </View>
           </View>
-          <View style={styles.searchBar}>
-            <Icon name="search" size={18} color={colors.black} />
-            <TextInput
-              style={{ ...styles.searchBarInput, ...defaultStyles.largeRegular, color: colors.darkGray }}
-              onChangeText={(val) => setSearchText(val)}
-              value={searchText}
-              placeholder="Search Ambit"
-              maxLength={50}
-            />
-          </View>
-          {!searchText ? (
-            <TopicsList
-              activeTopicIDs={topicsIDonly}
-              selectedCategories={selectedCategories}
-              handleTopicSelect={handleTopicSelect}
-              handleCategorySelect={handleCategorySelect}
-              showFollowButton
-            />
-          ) : (
-            renderMatchingTopics()
-          )}
+          <TopicsList activeTopicIDs={topicsIDonly} handleTopicSelect={handleTopicSelect} showFollowButton />
         </ScrollView>
       </View>
     </View>
