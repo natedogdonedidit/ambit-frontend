@@ -7,6 +7,7 @@ import defaultStyles from 'styles/defaultStyles';
 const SelectorModal = ({ navigation, route }) => {
   // array: [{ text: '', color: '', onPress: function }]
   const options = route.params.options || [];
+  const onCancel = route.params.onCancel || navigation.goBack;
 
   const renderButtons = () => {
     if (options.length < 1) return null;
@@ -15,13 +16,13 @@ const SelectorModal = ({ navigation, route }) => {
       return (
         <TouchableOpacity
           key={i}
-          activeOpacity={0.8}
+          activeOpacity={0.7}
           style={i === 0 ? styles.row : styles.rowLineTop}
           onPress={() => {
-            onPress();
             if (closeModal) {
               navigation.goBack();
             }
+            onPress();
           }}
         >
           <Text style={{ ...defaultStyles.hugeRegular, color: color || colors.black }}>{text}</Text>
@@ -34,7 +35,8 @@ const SelectorModal = ({ navigation, route }) => {
     <View style={styles.container}>
       <TouchableWithoutFeedback
         onPress={() => {
-          navigation.goBack();
+          // navigation.goBack();
+          onCancel();
         }}
       >
         <View style={styles.transparentSection} />
@@ -43,7 +45,7 @@ const SelectorModal = ({ navigation, route }) => {
         <View style={styles.modalContent}>{renderButtons()}</View>
 
         <View style={styles.closeButtonView}>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.goBack()} style={styles.closeButton}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => onCancel()} style={styles.closeButton}>
             <Text style={defaultStyles.hugeRegular}>Cancel</Text>
           </TouchableOpacity>
         </View>

@@ -33,7 +33,7 @@ const CameraModal = ({ navigation, route }) => {
   // STATE
   const [flashMode, setFlashMode] = useState('auto');
   const [direction, setDirection] = useState('back');
-  const [mode, setMode] = useState('photo');
+  const [mode, setMode] = useState('video');
   const [recording, setRecording] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [capturedVideo, setCapturedVideo] = useState(null);
@@ -95,30 +95,57 @@ const CameraModal = ({ navigation, route }) => {
       .catch((e) => console.log(e));
   };
 
-  const renderCurrentIntro = () => {
-    if (isIntro) {
-      if (intro && intro.items) {
+  const renderHeader = () => {
+    if (!recording) {
+      if (isIntro) {
         return (
-          <View style={{ position: 'absolute', top: insets.top + 15, right: 10, width: 45, height: 70, borderRadius: 10 }}>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('IntroModal', {
-                  intro,
-                })
-              }
-            >
-              {intro.items[0] && (
-                <Image
-                  style={{ width: 45, height: 70, borderRadius: 10 }}
-                  source={{ uri: intro.items[0] ? intro.items[0].preview : '' }}
-                  resizeMode="cover"
-                />
-              )}
-            </TouchableOpacity>
+          <View
+            style={{
+              position: 'absolute',
+              top: insets.top + 20,
+              left: 0,
+              width: '100%',
+              paddingHorizontal: 100,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ ...defaultStyles.largeBold, color: 'rgba(255,255,255,0.9)' }}>Record your Intro</Text>
           </View>
         );
       }
     }
+
+    return null;
+  };
+
+  const renderCurrentIntro = () => {
+    if (!recording) {
+      if (isIntro) {
+        if (intro && intro.items) {
+          return (
+            <View style={{ position: 'absolute', top: insets.top + 15, right: 10, width: 45, height: 70, borderRadius: 10 }}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('IntroModal', {
+                    intro,
+                  })
+                }
+              >
+                {intro.items[0] && (
+                  <Image
+                    style={{ width: 45, height: 70, borderRadius: 10 }}
+                    source={{ uri: intro.items[0] ? intro.items[0].preview : '' }}
+                    resizeMode="cover"
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          );
+        }
+      }
+    }
+
     return null;
   };
 
@@ -162,6 +189,14 @@ const CameraModal = ({ navigation, route }) => {
         colors={['transparent', 'rgba(0,0,0,0.5)']}
         style={{ ...styles.linearGradientBottom, height: insets.bottom + 170 }}
       />
+      {!recording && (
+        <LinearGradient
+          start={{ x: 0.5, y: 1 }}
+          end={{ x: 0.5, y: 0 }}
+          colors={['transparent', 'rgba(0,0,0,0.5)']}
+          style={{ ...styles.linearGradientTop, height: insets.top + 60 }}
+        />
+      )}
       <CameraControls
         cameraRef={cameraRef}
         setCapturedImage={setCapturedImage}
@@ -178,7 +213,8 @@ const CameraModal = ({ navigation, route }) => {
         handleCameraRollButton={handleCameraRollButton}
         firstImage={firstImage}
       />
-      {isIntro && (
+      {renderHeader()}
+      {isIntro && !recording && (
         <View style={{ position: 'absolute', top: insets.top + 15, left: 10 }}>
           <TouchableOpacity
             activeOpacity={0.8}
@@ -186,7 +222,7 @@ const CameraModal = ({ navigation, route }) => {
             onPress={() => navigation.navigate('IntroInfoPopup')}
             hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
           >
-            <Icon name="question" solid size={16} color={colors.white} />
+            <Icon name="question" solid size={14} color={colors.white} />
           </TouchableOpacity>
         </View>
       )}
@@ -205,10 +241,17 @@ const styles = StyleSheet.create({
     height: 170,
     width: '100%',
   },
+  linearGradientTop: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    height: 50,
+    width: '100%',
+  },
   sideButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: colors.storyButtonBackground,
     justifyContent: 'center',
     alignItems: 'center',

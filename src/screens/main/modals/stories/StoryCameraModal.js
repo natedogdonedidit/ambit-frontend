@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, Alert, Image, View, Text } from 'react-native';
+import { StyleSheet, Alert, Image, View, Text, Animated, Easing } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import CameraRoll from '@react-native-community/cameraroll';
 import LinearGradient from 'react-native-linear-gradient';
@@ -17,6 +17,8 @@ import CapturedStoryItem from 'library/components/camera/CapturedStoryItem';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import Loader from 'library/components/UI/Loader';
 
+const MAX_DURATION = 40;
+
 const flashModeOrder = {
   auto: 'off',
   off: 'on',
@@ -33,11 +35,14 @@ const StoryCameraModal = ({ navigation, route }) => {
   // STATE
   const [flashMode, setFlashMode] = useState('auto');
   const [direction, setDirection] = useState('back');
-  const [mode, setMode] = useState('photo');
+  const [mode, setMode] = useState('video');
   const [recording, setRecording] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [capturedVideo, setCapturedVideo] = useState(null);
   const [firstImage, setFirstImage] = useState(null);
+
+  const [videoDuration] = useState(new Animated.Value(0));
+  const [videoDur, setVideoDur] = useState(0);
 
   const cameraRef = useRef(null);
 
@@ -132,7 +137,7 @@ const StoryCameraModal = ({ navigation, route }) => {
           userId={id}
           isIntro
           intro={intro}
-          isNewProject={isNewProject}
+          isNewProject={false}
           project={project}
           capturedImage={capturedImage}
           capturedVideo={capturedVideo}
@@ -159,6 +164,23 @@ const StoryCameraModal = ({ navigation, route }) => {
 
   const renderHeader = () => {
     if (!recording) {
+      if (isIntro) {
+        return (
+          <View
+            style={{
+              position: 'absolute',
+              top: insets.top + 20,
+              left: 0,
+              width: '100%',
+              paddingHorizontal: 100,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ ...defaultStyles.largeBold, color: 'rgba(255,255,255,0.9)' }}>Record your Intro</Text>
+          </View>
+        );
+      }
       if (isNewProject) {
         return (
           <View
@@ -202,9 +224,32 @@ const StoryCameraModal = ({ navigation, route }) => {
     return null;
   };
 
+  const onRecordingStart = () => {
+    console.log('started record');
+    setRecording(true);
+
+    // start 60s timer
+    Animated.timing(videoDuration, {
+      toValue: 1,
+      duration: MAX_DURATION * 1000,
+      easing: Easing.linear,
+      useNativeDriver: false,
+    }).start();
+
+    videoDuration.addListener(({ value }) => setVideoDur(value));
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <RNCamera ref={cameraRef} style={{ flex: 1, width: '100%' }} type={direction} flashMode={flashMode} keepAudioSession />
+      <RNCamera
+        ref={cameraRef}
+        style={{ flex: 1, width: '100%' }}
+        type={direction}
+        flashMode={flashMode}
+        keepAudioSession
+        onRecordingStart={onRecordingStart}
+        // onRecordingEnd={onRecordingEnd}
+      />
       <LinearGradient
         start={{ x: 0.5, y: 0 }}
         end={{ x: 0.5, y: 1 }}
@@ -234,6 +279,10 @@ const StoryCameraModal = ({ navigation, route }) => {
         setDirection={setDirection}
         handleCameraRollButton={handleCameraRollButton}
         firstImage={firstImage}
+        videoDuration={videoDuration}
+        videoDur={videoDur}
+        setVideoDur={setVideoDur}
+        MAX_DURATION={MAX_DURATION}
       />
       {renderHeader()}
       {isIntro && (

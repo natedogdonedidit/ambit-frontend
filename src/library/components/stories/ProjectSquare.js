@@ -10,13 +10,19 @@ import Loader from 'library/components/UI/Loader';
 
 const ProjectSquare = ({ navigation, project, newProject = false, loading = false }) => {
   const renderImage = () => {
-    if (project.preview) {
-      return <Image source={{ uri: project.preview }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />;
-    }
+    // if (project.preview) {
+    //   return <Image source={{ uri: project.preview }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />;
+    // }
 
     if (project.items.length > 0) {
-      if (project.items[0].preview) {
-        return <Image source={{ uri: project.items[0].preview }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />;
+      if (project.items[project.items.length - 1].preview) {
+        return (
+          <Image
+            source={{ uri: project.items[project.items.length - 1].preview }}
+            style={{ width: '100%', height: '100%' }}
+            resizeMode="cover"
+          />
+        );
       }
     }
 

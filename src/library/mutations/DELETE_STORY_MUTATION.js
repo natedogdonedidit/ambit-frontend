@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 const DELETE_STORY_MUTATION = gql`
-  mutation DELETE_STORY_MUTATION($id: ID!) {
-    deleteStory(id: $id) {
+  mutation DELETE_STORY_MUTATION($where: StoryWhereUniqueInput!) {
+    deleteOneStory(where: $where) {
       id
     }
   }

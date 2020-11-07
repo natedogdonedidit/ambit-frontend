@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect, useContext, useMemo } from 'react';
 import { StyleSheet, View, Text, Alert, Dimensions, InteractionManager } from 'react-native';
 import { useMutation, useApolloClient } from '@apollo/client';
+import { useNavigation } from '@react-navigation/native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserContext } from 'library/utils/UserContext';
 
 import colors from 'styles/colors';
-import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
+import DELETE_STORYITEM_MUTATION from 'library/mutations/DELETE_STORYITEM_MUTATION';
+import DELETE_STORY_MUTATION from 'library/mutations/DELETE_STORY_MUTATION';
+
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 import StoryTapRegions from 'library/components/stories/StoryTapRegions';
@@ -43,7 +46,7 @@ import { STORY_IMAGE_DURATION } from 'styles/constants';
 // }
 
 function Story({
-  navigation,
+  // navigation,
   story,
   storyIsActive,
   tryGoToPrevStory,
@@ -54,6 +57,7 @@ function Story({
   const { width } = Dimensions.get('window');
   // const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
+  const navigation = useNavigation();
   const videoRef = useRef(null);
 
   // will return the index of the newest unseen story item - only runs on first render
@@ -90,14 +94,39 @@ function Story({
   const isMyPost = owner.id === currentUserId;
 
   // MUTATIONS
-  const [updateStory] = useMutation(UPDATE_STORY_MUTATION, {
-    // onCompleted: () => {},
-    onError: (error) => {
-      console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+  // DELETE POST MUTATION
+  const [deleteOneStoryItem] = useMutation(DELETE_STORYITEM_MUTATION, {
+    variables: { where: { id: activeItem.id } },
+    optimisticResponse: {
+      __typename: 'Mutation',
+      deleteOneStoryItem: { __typename: 'StoryItem', id: activeItem.id },
     },
+    update(cache, { data: deleteOneStoryItem }) {
+      // remove from cache
+      cache.evict({ id: cache.identify({ __typename: 'StoryItem', id: activeItem.id }) });
+      cache.gc();
+    },
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to delete this item. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
+  const [deleteOneStory] = useMutation(DELETE_STORY_MUTATION, {
+    variables: { where: { id: story.id } },
+    optimisticResponse: {
+      __typename: 'Mutation',
+      deleteOneStory: { __typename: 'Story', id: story.id },
+    },
+    update(cache, { data: deleteOneStory }) {
+      // remove from cache
+      cache.evict({ id: cache.identify({ __typename: 'Story', id: story.id }) });
+      cache.gc();
+    },
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to delete this story. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
   });
 
   const [viewedStoryItem] = useMutation(VIEWED_STORY_ITEM_MUTATION, {
@@ -175,22 +204,22 @@ function Story({
   }, [storyIsActive]);
 
   // this is so story unpauses when you close Intro or the "More" modal
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setPaused(false);
-    });
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('focus', () => {
+  //     setPaused(false);
+  //   });
 
-    return unsubscribe;
-  }, [navigation]);
+  //   return unsubscribe;
+  // }, [navigation]);
 
   // this is so when you open the "Intro" modal, the story pauses when un-focused
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('blur', () => {
-      setPaused(true);
-    });
+  // useEffect(() => {
+  //   const unsubscribe = navigation.addListener('blur', () => {
+  //     setPaused(true);
+  //   });
 
-    return unsubscribe;
-  }, [navigation]);
+  //   return unsubscribe;
+  // }, [navigation]);
 
   // anytime the story item changes, add the user to viewed list
   useEffect(() => {
@@ -204,118 +233,69 @@ function Story({
   }, [activeItemIndex]);
 
   // CUSTOM FUNCTIONS
-  function engagePause() {
-    if (!paused) {
-      setPaused(true);
-    }
-  }
+  // function engagePause() {
+  // console.log('engage Pause');
+  // if (!paused) {
+  // console.log('setting pause to true');
+  // setPaused(true);
+  // }
+  // }
 
-  function disengagePause() {
-    if (paused) {
-      setPaused(false);
-    }
-  }
+  // function disengagePause() {
+  // console.log('disengage Pause');
+  // if (paused) {
+  // console.log('setting pause to false');
+  // setPaused(false);
+  // }
+  // }
 
   const handleDoubleTap = () => {};
 
   // functions for "More" modal
   const removeFromProject = () => {
     // setPaused(true); // doesnt work
-    Alert.alert(`Are you sure you want to remove this ${activeItem.type.toLowerCase()} from your project?`, '', [
+    Alert.alert(`Are you sure you want to delete this ${activeItem.type.toLowerCase()} from your project?`, '', [
       {
-        text: 'Remove',
+        text: `Delete`,
         onPress: () => {
           navigation.goBack(); // close options modal
-
-          // make new array for optimistic response
-          const newItemsArray = [...story.items];
-
-          // remove it
-          newItemsArray.splice(activeItemIndex, 1);
-
-          updateStory({
-            variables: {
-              id: story.id,
-              story: {
-                items: { disconnect: [{ id: activeItem.id }] },
-              },
-            },
-            optimisticResponse: {
-              __typename: 'Mutation',
-              updateStory: {
-                __typename: 'Story',
-                ...story,
-                items: newItemsArray,
-              },
-            },
-            refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
-          });
-
-          incrementIndex();
-          // navigation.goBack(); // close story modal
+          deleteOneStoryItem();
         },
       },
-      { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
+      { text: 'Cancel', onPress: () => setPaused(false), style: 'cancel' },
       { cancelable: true },
     ]);
   };
-  const removeFromMyStory = () => {
+
+  const deleteProject = () => {
     // setPaused(true); // doesnt work
-    Alert.alert(`Are you sure you want to remove this ${activeItem.type.toLowerCase()} from your story?`, '', [
+    Alert.alert(`Are you sure you want to delete this entire project?`, 'There is no going back', [
       {
-        text: 'Remove',
+        text: 'Delete',
         onPress: () => {
           navigation.goBack(); // close options modal
-
-          // make new array for optimistic response
-          const newItemsArray = [...story.items];
-
-          // remove it
-          newItemsArray.splice(activeItemIndex, 1);
-
-          updateStory({
-            variables: {
-              id: story.id,
-              story: {
-                items: { disconnect: [{ id: activeItem.id }] },
-              },
-            },
-            optimisticResponse: {
-              __typename: 'Mutation',
-              updateStory: {
-                __typename: 'Story',
-                ...story,
-                items: newItemsArray,
-              },
-            },
-            refetchQueries: () => [{ query: SINGLE_USER_BIO, variables: { id: currentUserId } }],
-          });
-
-          incrementIndex();
-          // navigation.goBack(); // close story modal
+          deleteOneStory();
         },
       },
-      { text: 'Cancel', onPress: () => navigation.goBack(), style: 'cancel' },
+      { text: 'Cancel', onPress: () => setPaused(false), style: 'cancel' },
       { cancelable: true },
     ]);
   };
+
   const removeFromIntro = () => {};
+
   const determineOptions = () => {
     if (story.type === 'PROJECT') {
       return [
         {
-          text: 'Remove from Project',
+          text: `Delete this ${activeItem.type.toLowerCase()}`,
           color: colors.peach,
           onPress: removeFromProject,
         },
-      ];
-    }
-    if (story.type === 'MYSTORY') {
-      return [
         {
-          text: 'Remove from My Story',
+          text: 'Delete entire Project',
           color: colors.peach,
-          onPress: removeFromMyStory,
+          onPress: deleteProject,
         },
       ];
     }
@@ -331,9 +311,14 @@ function Story({
     return [];
   };
   const handleMoreButton = () => {
-    engagePause();
+    const onCancel = () => {
+      navigation.goBack();
+      setPaused(false);
+    };
+
+    setPaused(true);
     const options = determineOptions();
-    navigation.navigate('SelectorModal', { options });
+    navigation.navigate('SelectorModal', { options, onCancel });
   };
 
   // RENDER FUNCTIONS
@@ -389,8 +374,7 @@ function Story({
           decrementIndex={decrementIndex}
           incrementIndex={incrementIndex}
           handleDoubleTap={handleDoubleTap}
-          engagePause={engagePause}
-          disengagePause={disengagePause}
+          setPaused={setPaused}
         />
         <StoryProgressBars
           items={items}

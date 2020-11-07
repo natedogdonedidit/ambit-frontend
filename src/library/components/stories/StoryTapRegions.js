@@ -1,32 +1,32 @@
 import React from 'react';
 import { StyleSheet, View, TouchableWithoutFeedback } from 'react-native';
 
-function StoryTapRegions({ decrementIndex, incrementIndex, handleDoubleTap, engagePause, disengagePause }) {
+function StoryTapRegions({ decrementIndex, incrementIndex, handleDoubleTap, setPaused }) {
   const LONG_TAP_DURATION = 200;
 
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback
         onPress={decrementIndex}
-        onLongPress={() => engagePause()}
+        onLongPress={() => setPaused(true)}
         delayLongPress={LONG_TAP_DURATION}
-        onPressOut={() => disengagePause()}
+        onPressOut={() => setPaused(false)}
       >
         <View style={{ width: 70 }} />
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
         onPress={handleDoubleTap}
-        onLongPress={() => engagePause()}
+        onLongPress={() => setPaused(true)}
         delayLongPress={LONG_TAP_DURATION}
-        onPressOut={() => disengagePause()}
+        onPressOut={() => setPaused(false)}
       >
         <View style={{ flex: 1 }} />
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback
         onPress={incrementIndex}
-        onLongPress={() => engagePause()}
+        onLongPress={() => setPaused(true)}
         delayLongPress={LONG_TAP_DURATION}
-        onPressOut={() => disengagePause()}
+        onPressOut={() => setPaused(false)}
       >
         <View style={{ width: 70 }} />
       </TouchableWithoutFeedback>

@@ -380,9 +380,9 @@ export const storyPicUpload = async (userId, uri) => {
   }
 };
 
-export const storyVideoUpload = async (userId, uri) => {
+export const storyVideoUpload = async (userId, uri, isIntro = false) => {
   // create tags
-  const tags = `${userId}, story, video`;
+  const tags = `${userId}, ${isIntro ? 'intro' : 'project'}, video`;
 
   // create file object (all fields required)
   const video = {
@@ -393,8 +393,12 @@ export const storyVideoUpload = async (userId, uri) => {
   // create body
   const uploadData = new FormData();
   uploadData.append('file', video);
-  uploadData.append('upload_preset', 'ambit-intro-video-preset');
   uploadData.append('tags', tags);
+  if (isIntro) {
+    uploadData.append('upload_preset', 'ambit-intro-video-preset');
+  } else {
+    uploadData.append('upload_preset', 'ambit-project-video-preset');
+  }
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
   try {

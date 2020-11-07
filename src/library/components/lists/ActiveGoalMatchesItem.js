@@ -14,6 +14,10 @@ import Loader from 'library/components/UI/Loader';
 const ActiveGoalMatchesItem = ({ navigation, post, triggerRefresh }) => {
   const [matches, setMatches] = useState([]);
 
+  if (!post) {
+    return null;
+  }
+
   // get the matches for that goal
   const { loading, error, data, refetch, networkStatus } = useQuery(POST_MATCHES_QUERY, {
     variables: {

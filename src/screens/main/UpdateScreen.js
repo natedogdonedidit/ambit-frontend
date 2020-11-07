@@ -15,7 +15,7 @@ const UpdateScreen = ({ navigation, route }) => {
   // PARAMS
   const { updatePassedIn } = route.params;
 
-  if (!updatePassedIn) {
+  if (!updatePassedIn || !updatePassedIn.parentPost) {
     navigation.goBack();
     return null;
   }

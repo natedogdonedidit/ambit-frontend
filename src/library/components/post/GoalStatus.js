@@ -40,24 +40,24 @@ const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
     if (post.goalStatus === 'Inactive') {
       return [
         {
-          text: 'Mark goal Active',
-          onPress: () => updateGoalStatus('Active'),
-        },
-        {
           text: 'Mark goal Complete',
           onPress: () => updateGoalStatus('Complete'),
+        },
+        {
+          text: 'Mark goal Active',
+          onPress: () => updateGoalStatus('Active'),
         },
       ];
     }
     if (post.goalStatus === 'Active') {
       return [
         {
-          text: 'Mark goal Inactive',
-          onPress: () => updateGoalStatus('Inactive'),
-        },
-        {
           text: 'Mark goal Complete',
           onPress: () => updateGoalStatus('Complete'),
+        },
+        {
+          text: 'Mark goal Inactive',
+          onPress: () => updateGoalStatus('Inactive'),
         },
       ];
     }

@@ -26,10 +26,12 @@ function ProgressBar({ duration, storyLength, paused, incrementIndex, videoStart
   // EFFECTS
   useEffect(() => {
     // console.log(paused, videoStarted, !duration, animationStarted, pausedValue);
+
     // start animation if 1) not paused 2) video started OR IMAGE 3) animation not started or after a pause
     if (!paused && (videoStarted || !duration) && (!animationStarted || !!pausedValue)) {
       if (!animationStarted) {
         setAnimationStarted(true);
+        setPausedValue(0);
       }
 
       // console.log('starting animation');
@@ -39,14 +41,14 @@ function ProgressBar({ duration, storyLength, paused, incrementIndex, videoStart
         easing: Easing.linear,
         useNativeDriver: true,
       }).start(({ finished }) => {
-        // when complete, reset animated value & paused value
-        // setProgressBar(new Animated.Value(0));
-        setAnimationStarted(false);
-        setPausedValue(0);
+        if (finished) {
+          setAnimationStarted(false);
+          setPausedValue(0);
 
-        // if it finishe animation & is an image...incrementIndex
-        if (finished && !duration) {
-          incrementIndex();
+          // if it finishe animation & is an image...incrementIndex
+          if (!duration) {
+            incrementIndex();
+          }
         }
       });
 
@@ -55,10 +57,11 @@ function ProgressBar({ duration, storyLength, paused, incrementIndex, videoStart
   }, [paused, videoStarted, duration, animationStarted, pausedValue]);
 
   useEffect(() => {
+    // console.log('in effect', paused, animationStarted);
     if (paused && animationStarted) {
-      // console.log('stopping here paused', i)
+      // console.log('stopping here paused');
       progressBar.stopAnimation((value) => {
-        // console.log('stopping animation with value', value)
+        // console.log('stopping animation with value', value);
 
         // save the timestamp (from 0-1) of when it was paused so we can adjust the next Animated.timing above
         setPausedValue(value);

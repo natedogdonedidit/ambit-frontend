@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { StyleSheet, View, Text, Animated, TouchableOpacity, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import { RNCamera } from 'react-native-camera';
+import * as Progress from 'react-native-progress';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import FitImage from 'react-native-fit-image';
+import SnapButton from 'library/components/camera/SnapButton';
 
 const CameraControls = ({
   cameraRef,
@@ -23,6 +25,10 @@ const CameraControls = ({
   setDirection,
   handleCameraRollButton,
   firstImage,
+  videoDuration,
+  videoDur,
+  setVideoDur,
+  MAX_DURATION,
 }) => {
   const insets = useSafeAreaInsets();
 
@@ -38,33 +44,47 @@ const CameraControls = ({
     }
   };
 
+  const stopRecording = () => {
+    videoDuration.removeAllListeners();
+    videoDuration.setValue(0);
+    setRecording(false);
+
+    setTimeout(() => {
+      setVideoDur(0);
+    }, 500);
+  };
+
   const takeVideo = async () => {
     if (cameraRef && !recording) {
       const options = {
         mute: false,
-        maxDuration: 30,
-        quality: RNCamera.Constants.VideoQuality['720p'], // 288p, 480p, 720p, 1080p, 2160p
+        orientation: 'portrait',
+        maxDuration: MAX_DURATION,
+        maxFileSize: 100 * 1024 * 1024,
+        quality: RNCamera.Constants.VideoQuality['1080p'], // 288p, 480p, 720p, 1080p, 2160p
       };
 
       try {
         const promise = cameraRef.current.recordAsync(options);
 
         if (promise) {
-          setRecording(true);
+          // setRecording(true);
           const data = await promise;
-          console.log(data);
+          // console.log(data);
           setCapturedVideo(data);
+          stopRecording();
         }
       } catch (e) {
         console.error(e);
-        setRecording(false);
+        stopRecording();
       }
     }
   };
 
   const stopVideo = async () => {
+    // console.log('stopped');
     await cameraRef.current.stopRecording();
-    setRecording(false);
+    stopRecording();
   };
 
   const toggleMode = () => {
@@ -80,26 +100,6 @@ const CameraControls = ({
   };
 
   // RENDER FUNCTIONS
-  const renderSnapButton = () => {
-    if (mode === 'video') {
-      if (recording) {
-        return (
-          <TouchableOpacity onPress={stopVideo} style={styles.snapButton}>
-            <View style={{ width: 16, height: 16, borderRadius: 1, backgroundColor: 'red' }} />
-          </TouchableOpacity>
-        );
-      }
-
-      return (
-        <TouchableOpacity onPress={takeVideo} style={styles.snapButton}>
-          <View style={{ width: 16, height: 16, borderRadius: 8, backgroundColor: 'red' }} />
-        </TouchableOpacity>
-      );
-    }
-
-    return <TouchableOpacity onPress={takePicture} style={styles.snapButton} />;
-  };
-
   return (
     <View style={{ ...styles.controls, bottom: insets.bottom + 40 }}>
       <View style={styles.controlsLeft}>
@@ -134,7 +134,16 @@ const CameraControls = ({
           </View>
         </TouchableOpacity>
       </View>
-      {renderSnapButton()}
+      {/* {renderSnapButton()} */}
+      <SnapButton
+        // videoDuration={videoDuration}
+        videoDur={videoDur}
+        mode={mode}
+        recording={recording}
+        takePicture={takePicture}
+        takeVideo={takeVideo}
+        stopVideo={stopVideo}
+      />
       <View style={styles.controlsRight}>
         <TouchableOpacity onPress={toggleDirection} style={{ paddingRight: 40 }} activeOpacity={0.7}>
           <Feather name="refresh-cw" size={26} color={colors.white} style={{ textAlign: 'center', paddingTop: 1 }} />
@@ -170,6 +179,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 40,
     backgroundColor: colors.white,
+    // backgroundColor: 'rgba(0,0,0,0.1)',
     borderWidth: 6,
     borderColor: 'rgba(0,0,0,0.1)',
   },

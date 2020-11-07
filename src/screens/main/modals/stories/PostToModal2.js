@@ -50,7 +50,7 @@ const PostToModal = ({ navigation, route }) => {
     }
 
     if (loadingUser) {
-      return <Text style={{ ...defaultStyles.defaultMute, paddingTop: 20 }}>Loading projects...</Text>;
+      return <Text style={{ ...defaultStyles.defaultMute, paddingTop: 20 }}>Loading your projects...</Text>;
     }
 
     const { user } = dataUser || {};
@@ -128,7 +128,7 @@ const PostToModal = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
         {renderProjects()}
-        <View style={{ paddingTop: 30 }}>
+        <View style={{ paddingTop: 30, paddingBottom: 20 }}>
           <TextButton textStyle={{ fontSize: 17 }} onPress={() => null}>
             See an example
           </TextButton>

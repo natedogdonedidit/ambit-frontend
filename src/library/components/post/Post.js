@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-na
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation, useApolloClient } from '@apollo/client';
 import { format } from 'date-fns';
+import { useRoute } from '@react-navigation/native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -13,6 +14,7 @@ import LIKE_POST_MUTATION from 'library/mutations/LIKE_POST_MUTATION';
 import UNLIKE_POST_MUTATION from 'library/mutations/UNLIKE_POST_MUTATION';
 import REPOST_POST_MUTATION from 'library/mutations/REPOST_POST_MUTATION';
 import UNDO_REPOST_POST_MUTATION from 'library/mutations/UNDO_REPOST_POST_MUTATION';
+import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 
 import { BasicPost } from 'library/queries/_fragments';
 
@@ -31,7 +33,6 @@ import Topic from 'library/components/post/Topic';
 import Location from 'library/components/post/Location';
 import GoalStatus from 'library/components/post/GoalStatus';
 import { UserContext } from 'library/utils/UserContext';
-import DELETE_POST_MUTATION from 'library/mutations/DELETE_POST_MUTATION';
 import CoolText from 'library/components/UI/CoolText';
 import RepostedBy from 'library/components/post/RepostedBy';
 
@@ -45,9 +46,15 @@ function Post({
   showTopBorder,
   showRepost = false,
 }) {
+  if (!post) {
+    navigation.goBack();
+    return null;
+  }
+
   // HOOKS
   const client = useApolloClient();
   const { currentUserId } = useContext(UserContext);
+  const route = useRoute();
   const currentTime = new Date();
 
   // useEffect(() => {
@@ -150,6 +157,10 @@ function Post({
       deleteOnePost: { __typename: 'Post', id: post.id },
     },
     update(cache, { data: deleteOnePost }) {
+      if (route.name === 'Post') {
+        navigation.navigate('Home');
+      }
+
       // remove from cache
       cache.evict({ id: cache.identify({ __typename: 'Post', id: post.id }) });
       cache.gc();
@@ -229,6 +240,11 @@ function Post({
   };
 
   const handleDelete = () => {
+    // if on post screen, navigate back first
+    // console.log(route.name);
+    // if (route.name === 'Post') {
+    //   navigation.goBack();
+    // }
     deleteOnePost();
   };
 
@@ -257,17 +273,17 @@ function Post({
     if (isMyPost && post.goal && post.goalStatus === 'Active') {
       return [
         {
+          text: 'Add an update',
+          onPress: () => navigation.navigate('UpdatePost', { post }),
+          closeModal: false,
+        },
+        {
           text: 'Mark goal Complete',
           onPress: () => updateGoalStatus('Complete'),
         },
         {
           text: 'Mark goal Inactive',
           onPress: () => updateGoalStatus('Inactive'),
-        },
-        {
-          text: 'Add an update',
-          onPress: () => navigation.navigate('UpdatePost', { post }),
-          closeModal: false,
         },
         {
           text: 'Delete post',
@@ -280,17 +296,17 @@ function Post({
     if (isMyPost && post.goal && post.goalStatus === 'Inactive') {
       return [
         {
+          text: 'Add an update',
+          onPress: () => navigation.navigate('UpdatePost', { post }),
+          closeModal: false,
+        },
+        {
           text: 'Mark goal Active',
           onPress: () => updateGoalStatus('Active'),
         },
         {
           text: 'Mark goal Complete',
           onPress: () => updateGoalStatus('Complete'),
-        },
-        {
-          text: 'Add an update',
-          onPress: () => navigation.navigate('UpdatePost', { post }),
-          closeModal: false,
         },
         {
           text: 'Delete post',
@@ -467,7 +483,7 @@ function Post({
     return null;
   };
 
-  if (post._deleted) return null;
+  // if (post._deleted) return null;
 
   return (
     <View
@@ -516,7 +532,7 @@ function Post({
             </TouchableOpacity>
 
             {!hideButtons && (
-              <View style={{ position: 'absolute', top: 0, right: 0 }}>
+              <View style={{ position: 'absolute', top: -2, right: 0 }}>
                 <Chevron onPress={handleMoreButton} />
               </View>
             )}

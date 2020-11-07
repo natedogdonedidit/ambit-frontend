@@ -120,9 +120,19 @@ const client = new ApolloClient({
           user(existingData, { args, toReference }) {
             return existingData || toReference({ __typename: 'User', username: args.where.username });
           },
-          post(existingData, { args, toReference }) {
-            return existingData || toReference({ __typename: 'Post', id: args.where.id });
+          post(existingData, { args, toReference, canRead }) {
+            const item = existingData || toReference({ __typename: 'Post', id: args.where.id });
+            return canRead(item) ? item : null;
           },
+          // post: {
+          //   read(existingData, { args, toReference, canRead }) {
+          //     const item = existingData || toReference({ __typename: 'Post', id: args.where.id });
+          //     return canRead(item) ? item : null;
+          //   },
+          //   merge(existing = {}, incoming = {}, options) {
+          //     return { ...existing, ...incoming };
+          //   },
+          // },
           postsNetwork: relayStylePagination(),
           postsForYou: relayStylePagination(),
           postsMyGoals: relayStylePagination(),
@@ -170,6 +180,101 @@ const client = new ApolloClient({
         keyFields: ['username'],
         fields: {
           topicsFocus: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          topicsInterest: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          topicsFreelance: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          topicsInvest: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          topicsMentor: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+        },
+      },
+      Notification: {
+        // this is to remove dangling refs error if something is deleted. returns 'null' if child ref is deleted from cache
+        fields: {
+          post(existing, { canRead, toReference }) {
+            // If there is no existing thing, return null
+            return canRead(existing) ? existing : null;
+          },
+          comment(existing, { canRead, toReference }) {
+            // If there is no existing thing, return null
+            return canRead(existing) ? existing : null;
+          },
+          update(existing, { canRead, toReference }) {
+            // If there is no existing thing, return null
+            return canRead(existing) ? existing : null;
+          },
+          from(existing, { canRead, toReference }) {
+            // If there is no existing thing, return null
+            return canRead(existing) ? existing : null;
+          },
+        },
+      },
+      Post: {
+        fields: {
+          updates: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          comments: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+        },
+      },
+      Update: {
+        fields: {
+          comments: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+        },
+      },
+      Story: {
+        fields: {
+          items: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+        },
+      },
+      Comment: {
+        // this is to remove dangling refs error if something is deleted. returns 'null' if child ref is deleted from cache
+        fields: {
+          parentPost(existing, { canRead, toReference }) {
+            // If there is no existing thing, return null
+            return canRead(existing) ? existing : null;
+          },
+          parentUpdate(existing, { canRead, toReference }) {
+            // If there is no existing thing, return null
+            return canRead(existing) ? existing : null;
+          },
+          parentComment(existing, { canRead, toReference }) {
+            // If there is no existing thing, return null
+            return canRead(existing) ? existing : null;
+          },
+          comments: {
             merge(existing = [], incoming = [], options) {
               return [...incoming];
             },

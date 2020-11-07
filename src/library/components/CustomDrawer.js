@@ -81,7 +81,7 @@ const CustomDrawer = ({ navigation }) => {
           activeOpacity={0.6}
           onPress={() => {
             // navigation.navigate('CreateIntroModal', { userLoggedIn });
-            navigation.navigate('CameraModal', { isIntro: true });
+            navigation.navigate('StoryCameraModal', { isIntro: true });
             navigation.closeDrawer();
           }}
         >

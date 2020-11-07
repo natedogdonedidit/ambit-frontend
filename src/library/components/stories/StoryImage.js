@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, Text, Image } from 'react-native';
 import Video from 'react-native-video';
 
@@ -16,6 +16,10 @@ function StoryImage({
   setVideoStarted,
   storyIsActive,
 }) {
+  // useEffect(() => {
+
+  // }, [isBuffering])
+
   function onProgress(data) {
     // sometimes this will not fire when video starts...so i must set progressUpdateInterval low so the function will call again quickly
     if (data.currentTime >= 0 && !videoStarted) {
@@ -26,8 +30,10 @@ function StoryImage({
   function onBuffer(data) {
     if (data.isBuffering && !isBuffering) {
       setIsBuffering(data.isBuffering);
+      // setPaused(true);
     } else if (!data.isBuffering && isBuffering) {
       setIsBuffering(data.isBuffering);
+      // setPaused(false);
     }
   }
 
@@ -38,9 +44,11 @@ function StoryImage({
   function onPlaybackRateChange({ playbackRate }) {
     // had to add videoStarted to logic. Otherwise, this will pause the video before it even starts
     if (playbackRate === 0 && !paused && videoStarted) {
+      // console.log('playback pause');
       setPaused(true);
     } else if (playbackRate > 0 && paused) {
-      setPaused(false);
+      console.log('playback unpause');
+      // setPaused(false);
     }
   }
 

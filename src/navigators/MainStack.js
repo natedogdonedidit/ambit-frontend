@@ -13,7 +13,7 @@ import MainDrawer from 'navigators/MainDrawer';
 // modals
 import StoryModal from 'screens/main/modals/stories/StoryModal';
 import IntroModal from 'screens/main/modals/stories/IntroModal';
-import CameraModal from 'screens/main/modals/stories/CameraModal';
+// import CameraModal from 'screens/main/modals/stories/CameraModal';
 import StoryCameraModal from 'screens/main/modals/stories/StoryCameraModal';
 import PostToModal from 'screens/main/modals/stories/PostToModal2';
 import PostClipModal from 'screens/main/modals/stories/PostClipModal';
@@ -122,7 +122,7 @@ const MainStack = ({ navigation }) => {
       {/* modals */}
       <Stack.Screen name="StoryModal" component={StoryModal} />
       <Stack.Screen name="IntroModal" component={IntroModal} />
-      <Stack.Screen name="CameraModal" component={CameraModal} />
+      {/* <Stack.Screen name="CameraModal" component={CameraModal} /> */}
       <Stack.Screen name="StoryCameraModal" component={StoryCameraModal} />
       <Stack.Screen
         name="PostToModal"

@@ -88,7 +88,7 @@ const CapturedStoryItem = ({
       // upload media
       if (capturedImage && capturedImage.uri) {
         try {
-          const uploadedImage = await storyPicUpload(userId, capturedImage.uri);
+          const uploadedImage = await storyPicUpload(userId, capturedImage.uri, true);
           // console.log(uploadedImage);
 
           const itemForMutation = {
@@ -223,7 +223,7 @@ const CapturedStoryItem = ({
             onPress={handleTextButton}
             hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
           >
-            <Feather name="type" size={24} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
+            <Feather name="type" size={20} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
           </TouchableOpacity>
         )}
         {/* <TouchableOpacity
@@ -319,9 +319,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sideButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: colors.storyButtonBackground,
     justifyContent: 'center',
     alignItems: 'center',
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     right: 150,
     backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 15,
-    borderRadius: 10,
+    // borderRadius: 10,
     borderRadius: 25,
   },
 

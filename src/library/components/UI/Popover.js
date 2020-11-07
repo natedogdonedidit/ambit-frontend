@@ -11,7 +11,9 @@ const Popover = ({ messageComponent, onPress }) => {
   const { width } = Dimensions.get('window');
 
   return (
-    <View
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={onPress}
       style={{
         position: 'absolute',
         left: 10,
@@ -22,22 +24,24 @@ const Popover = ({ messageComponent, onPress }) => {
         borderRadius: 10,
       }}
     >
-      <TouchableOpacity
+      <View
         onPress={onPress}
         style={{
           width: '100%',
           height: '100%',
           flexDirection: 'row',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          padding: 10,
-          paddingHorizontal: 14,
+          paddingVertical: 10,
+          paddingLeft: 14,
+          paddingRight: 8,
         }}
       >
-        <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>{messageComponent}</Text>
-        <Ionicons name="ios-chevron-forward" size={18} color="white" />
-      </TouchableOpacity>
-    </View>
+        <View style={{ flex: 1 }}>{messageComponent}</View>
+        <View style={{ paddingLeft: 10 }}>
+          <Ionicons name="ios-chevron-forward" size={18} color="white" />
+        </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 

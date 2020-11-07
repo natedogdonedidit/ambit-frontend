@@ -315,6 +315,8 @@ PODS:
     - React-cxxreact (= 0.62.2)
     - React-jsi (= 0.62.2)
     - ReactCommon/callinvoker (= 0.62.2)
+  - ReactNativeART (1.2.0):
+    - React
   - RNAnalytics (1.2.1):
     - Analytics (= 3.9.0)
     - React
@@ -413,6 +415,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/callinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - "ReactNativeART (from `../node_modules/@react-native-community/art`)"
   - "RNAnalytics (from `../node_modules/@segment/analytics-react-native`)"
   - "RNAnalyticsIntegration-Mixpanel (from `../node_modules/@segment/analytics-react-native-mixpanel`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
@@ -507,6 +510,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/Libraries/Vibration"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeART:
+    :path: "../node_modules/@react-native-community/art"
   RNAnalytics:
     :path: "../node_modules/@segment/analytics-react-native"
   RNAnalyticsIntegration-Mixpanel:
@@ -576,6 +581,7 @@ SPEC CHECKSUMS:
   React-RCTText: fae545b10cfdb3d247c36c56f61a94cfd6dba41d
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
+  ReactNativeART: f003b07dfa7098aa419ed95b69560923440b1eee
   RNAnalytics: e52853832f8b895caf9700023ee5b997902f3b32
   RNAnalyticsIntegration-Mixpanel: 0e25d9849351e78ce9aa88ad5c5ce1ffad3f6f12
   RNCAsyncStorage: db711e29e5e0500d9bd21aa0c2e397efa45302b1

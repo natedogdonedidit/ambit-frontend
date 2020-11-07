@@ -26,6 +26,12 @@ import { DAYS_TILL_INACTIVE } from 'styles/constants';
 const PostScreen = ({ navigation, route }) => {
   // ROUTE PARAMS
   const { post: postToQuery } = route.params; // all the data from parent post down to updates
+
+  if (!postToQuery) {
+    navigation.goBack();
+    return null;
+  }
+
   const [hidePopover, setHidePopover] = useState(false);
 
   // HOOKS
@@ -49,17 +55,24 @@ const PostScreen = ({ navigation, route }) => {
     variables: { where: { id: postToQuery.id } },
   });
 
-  if (error) return <Error error={error} />;
+  if (error) {
+    navigation.goBack();
+    // console.log(error);
+    Alert.alert('Oh no!', 'An error occured when trying to load this post. Try again later!', [
+      { text: 'OK', onPress: () => console.log('OK Pressed') },
+    ]);
+  }
+
   if (loading) {
     return (
       <View style={styles.container}>
         <HeaderBack navigation={navigation} title={postToQuery.goal ? 'Goal' : 'Post'} />
-        <Loader loading={loading} full={false} backgroundColor={colors.lightGray} />
+        <Loader size="small" loading={loading} full={false} backgroundColor={colors.lightGray} />
       </View>
     );
   }
 
-  const post = data.post || null;
+  const post = data ? data.post || null : null;
 
   if (!post) {
     navigation.goBack();
@@ -117,7 +130,7 @@ const PostScreen = ({ navigation, route }) => {
   const decidePopoverMessage = () => {
     if (daysRemainingTillInactive > 1) {
       return (
-        <Text>
+        <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
           {`Your goal will expire in ${daysRemainingTillInactive} days. To keep your goal active, `}
           <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or{' '}
           <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.
@@ -126,7 +139,7 @@ const PostScreen = ({ navigation, route }) => {
     }
     if (daysRemainingTillInactive === 1) {
       return (
-        <Text>
+        <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
           Your goal will expire in 1 day. To keep your goal active,{' '}
           <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or{' '}
           <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.
@@ -134,7 +147,7 @@ const PostScreen = ({ navigation, route }) => {
       );
     }
     return (
-      <Text>
+      <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
         Your goal will expire today. To keep your goal active,{' '}
         <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or{' '}
         <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.

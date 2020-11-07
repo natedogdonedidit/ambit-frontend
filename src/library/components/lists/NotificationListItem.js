@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
@@ -33,40 +33,160 @@ const NotificationListItem = ({ navigation, notification }) => {
   // CUSTOM FUNCTIONS
   const getNotificationOnPress = () => {
     if (style === 'LIKE_POST') {
-      return navigation.navigate('Post', { post });
+      if (post) {
+        return navigation.navigate('Post', { post });
+      }
+      // if post is missing from cache
+      Alert.alert('Oh no!', `We could not find that post`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
     if (style === 'LIKE_UPDATE') {
-      return navigation.navigate('Update', { updatePassedIn: update });
+      if (update) {
+        return navigation.navigate('Update', { updatePassedIn: update });
+      }
+      // if update is missing from cache
+      Alert.alert('Oh no!', `We could not find that update`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
     if (style === 'LIKE_COMMENT') {
-      const isOnPost = !!comment.parentPost;
-      const isOnUpdate = !!comment.parentUpdate;
+      const isOnPost = !!comment && !!comment.parentPost;
+      const isOnUpdate = !!comment && !!comment.parentUpdate;
 
       if (isOnPost) return navigation.navigate('Post', { post: comment.parentPost });
       if (isOnUpdate) return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
 
-      return null;
+      // if update is missing from cache
+      Alert.alert('Oh no!', `We could not find that comment or post`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
     if (style === 'COMMENT_POST') {
-      return navigation.navigate('Post', { post: comment.parentPost });
+      if (!!comment && !!comment.parentPost) {
+        return navigation.navigate('Post', { post: comment.parentPost });
+      }
+      // if parentPost is missing from cache
+      if (!comment.parentPost) {
+        Alert.alert('Oh no!', `We could not find that post`, [
+          {
+            text: 'OK',
+            onPress: () => {
+              console.log('OK Pressed');
+            },
+          },
+        ]);
+      }
+      // if comment is missing from cache
+      if (!comment) {
+        Alert.alert('Oh no!', `We could not find that comment`, [
+          {
+            text: 'OK',
+            onPress: () => {
+              console.log('OK Pressed');
+            },
+          },
+        ]);
+      }
     }
     if (style === 'COMMENT_UPDATE') {
-      return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
+      if (!!comment && !!comment.parentUpdate) {
+        return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
+      }
+      // if comment is missing from cache
+      Alert.alert('Oh no!', `We could not find that comment or update`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
     if (style === 'COMMENT_COMMENT') {
-      return navigation.navigate('Post', { post: comment.parentPost });
+      if (!!comment && !!comment.parentPost) {
+        return navigation.navigate('Post', { post: comment.parentPost });
+      }
+      // if comment is missing from cache
+      Alert.alert('Oh no!', `We could not find that comment or post`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
     if (style === 'NEW_FOLLOWER') {
-      return navigation.navigate('Profile', { profileId: from.id });
+      if (from && from.id) {
+        return navigation.navigate('Profile', { profileId: from.id });
+      }
+      // if user is missing from cache
+      Alert.alert('Oh no!', `We could not find that user`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
     if (style === 'MENTIONED_IN_POST') {
-      return navigation.navigate('Post', { post });
+      if (post) {
+        return navigation.navigate('Post', { post });
+      }
+      // if post is missing from cache
+      Alert.alert('Oh no!', `We could not find that post`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
     if (style === 'MENTIONED_IN_COMMENT') {
-      return navigation.navigate('Post', { post: comment.parentPost });
+      if (!!comment && !!comment.parentPost) {
+        return navigation.navigate('Post', { post: comment.parentPost });
+      }
+      // if post is missing from cache
+      Alert.alert('Oh no!', `We could not find that comment or post`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
     if (style === 'MENTIONED_IN_UPDATE') {
-      return navigation.navigate('Post', { post });
+      if (post) {
+        return navigation.navigate('Post', { post });
+      }
+      // if post is missing from cache
+      Alert.alert('Oh no!', `We could not find that update or post`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
     }
 
     return null;

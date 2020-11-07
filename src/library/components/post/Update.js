@@ -92,9 +92,10 @@ function Update({
     },
     optimisticResponse: {
       __typename: 'Mutation',
-      deleteOneComment: { __typename: 'Update', id: update.id },
+      deleteOneUpdate: { __typename: 'Update', id: update.id },
     },
     update(cache, { data: deleteOneUpdate }) {
+      navigation.navigate('Post', { post });
       // remove from cache
       cache.evict({ id: cache.identify({ __typename: 'Update', id: update.id }) });
       cache.gc();

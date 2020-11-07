@@ -14,6 +14,10 @@ import Error from 'library/components/UI/Error';
 import Section from 'library/components/UI/Section';
 
 const PostComments = ({ navigation, post, updateInd = null }) => {
+  if (!post) {
+    return null;
+  }
+
   // QUERIES
   const { error, data, refetch, networkStatus } = useQuery(POST_COMMENTS_QUERY, {
     variables: { where: { id: post.id } },
@@ -23,13 +27,16 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
   const loading = networkStatus === 1;
   const refetching = networkStatus === 4;
 
-  useEffect(() => {
-    if (networkStatus === 7) {
-      refetch();
-    }
-  }, [post.id]);
+  // useEffect(() => {
+  //   if (networkStatus === 7) {
+  //     refetch();
+  //   }
+  // }, [post.id]);
 
-  if (error) return <Error error={error} />;
+  if (error) {
+    console.log(error);
+    return null;
+  }
   if (loading) {
     return (
       <Section text="Comments">
