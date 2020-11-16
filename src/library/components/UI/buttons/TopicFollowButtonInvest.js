@@ -100,7 +100,7 @@ const TopicFollowButtonInvest = ({ topicID, showX }) => {
   return (
     <TouchableOpacity onPress={() => onPressFollow()} activeOpacity={0.7}>
       <View style={isFollowing ? styles.buttonActiveSmall : styles.buttonSmall}>
-        <Text style={{ ...defaultStyles.followButton, color: isFollowing ? colors.black : colors.white }}>
+        <Text style={{ ...defaultStyles.followButton, color: isFollowing ? colors.white : colors.black }}>
           {isFollowing ? 'Added' : 'Add'}
         </Text>
       </View>
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     height: 34,
     width: 68,
     borderRadius: 17,
-    backgroundColor: colors.green,
+    backgroundColor: colors.grayButton,
     justifyContent: 'center',
     alignItems: 'center',
     // ...defaultStyles.shadowButton,
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     height: 34,
     width: 68,
     borderRadius: 17,
-    backgroundColor: colors.grayButton,
+    backgroundColor: colors.green,
     justifyContent: 'center',
     alignItems: 'center',
     // ...defaultStyles.shadowButton,

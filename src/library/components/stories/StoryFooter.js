@@ -35,6 +35,7 @@ function StoryFooter({
   itemIsActive,
   isMyPost,
   handleMoreButton,
+  setPaused,
   favoriteTopics,
   setDisableOutterScroll,
 }) {
@@ -236,7 +237,10 @@ function StoryFooter({
           <Text style={styles.sideButtonText}>{likesCount === 0 ? null : likesCount}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => null}
+          onPress={() => {
+            setPaused(true);
+            navigation.navigate('DMPostPopup', { storyItemId: item.id, storyId: story.id });
+          }}
           style={styles.sideButtonCircle}
           hitSlop={{ top: 15, left: 15, bottom: 15, right: 15 }}
         >

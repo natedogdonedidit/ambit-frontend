@@ -18,13 +18,14 @@ import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
 const DMPostPopup = ({ navigation, route }) => {
-  const { postId } = route.params;
+  const { postId, storyItemId, storyId } = route.params; // only one of these should be truthy
   const { currentUserId } = useContext(UserContext);
 
   const insets = useSafeAreaInsets();
 
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [shareFullStory, setShareFullStory] = useState(false);
 
   // CREATE MESSAGE MUTATION
   const [createOneMessageMissingConvo, { loading: loadingCreate2 }] = useMutation(CREATE_MESSAGE_MISSING_CONVO_MUTATION, {
@@ -123,9 +124,19 @@ const DMPostPopup = ({ navigation, route }) => {
   }, [userMatchesFollowing, userMatchesAll, usersFollowing]);
 
   const handleMentionSelect = async (userSelected) => {
+    let content = '';
+    if (postId) {
+      content = `Post:${postId}`;
+    } else if (storyItemId && !shareFullStory) {
+      // content = `StoryItem:${storyItemId}`;
+      content = `Story:${storyId}`;
+    } else if (storyId && shareFullStory) {
+      content = `Story:${storyId}`;
+    }
+
     createOneMessageMissingConvo({
       variables: {
-        content: `Post:${postId}`,
+        content,
         to: userSelected.id,
         from: currentUserId,
         isShare: true,
@@ -153,6 +164,31 @@ const DMPostPopup = ({ navigation, route }) => {
     });
   };
 
+  const renderTitle = () => {
+    // if sharing post
+    if (postId) {
+      return <Text style={styles.title}>Share Post</Text>;
+    }
+
+    // if share story
+    if (storyItemId && storyId) {
+      return (
+        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => setShareFullStory(false)}>
+            <Text style={[styles.title, { paddingRight: 15 }, shareFullStory && { color: colors.gray30 }]}>Share Clip</Text>
+          </TouchableOpacity>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => setShareFullStory(true)}>
+            <Text style={[styles.title, { paddingLeft: 15 }, !shareFullStory && { color: colors.gray30 }]}>
+              Share Full Project
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return <Text style={styles.title}>Send Direct Message</Text>;
+  };
+
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback
@@ -163,7 +199,7 @@ const DMPostPopup = ({ navigation, route }) => {
         <View style={styles.transparentSection} />
       </TouchableWithoutFeedback>
       <View style={{ ...styles.modalContent, paddingBottom: insets.bottom }}>
-        <Text style={styles.title}>Send Direct Message</Text>
+        {renderTitle()}
         <View style={styles.searchBarView}>
           <Icon name="search" size={18} color={colors.blueGray} />
           <TextInput

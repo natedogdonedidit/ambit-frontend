@@ -88,12 +88,7 @@ const OnboardingTopics = ({ navigation, route }) => {
           </Text>
         </View>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 10 }}>
-          <TopicsList
-            activeTopicIDs={activeTopicsIDonly}
-            selectedCategories={selectedCategories}
-            handleTopicSelect={handleTopicSelect}
-            handleCategorySelect={handleCategorySelect}
-          />
+          <TopicsList activeTopicIDs={activeTopicsIDonly} handleTopicSelect={handleTopicSelect} showFollowButton />
         </ScrollView>
 
         <View style={styles.bottom}>

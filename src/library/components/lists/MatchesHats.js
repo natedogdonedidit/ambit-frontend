@@ -83,9 +83,9 @@ const MatchesHats = ({ navigation, title, triggerRefresh }) => {
           Are you open to invest, freelance, or mentor?
         </Text>
         <Text style={{ ...defaultStyles.largeMute, textAlign: 'center', paddingBottom: 20, paddingHorizontal: 15 }}>
-          Select your niche markets, then we'll find opportunities just for you!
+          Select your markets, then we'll find opportunities just for you!
         </Text>
-        <ButtonDefault onPress={() => navigation.navigate('NewPostModal', { topicsPassedIn: [] })}>My Hats</ButtonDefault>
+        <ButtonDefault onPress={() => navigation.openDrawer()}>Show me</ButtonDefault>
       </View>
     );
   };

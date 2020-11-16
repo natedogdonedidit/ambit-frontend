@@ -14,7 +14,7 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 const OnboardingFreelance = ({ navigation, route }) => {
   const { username } = route.params;
 
-  const [selectedCategories, setSelectedCategories] = useState('');
+  // const [selectedCategories, setSelectedCategories] = useState('');
   const [activeTopics, setActiveTopics] = useState([]);
 
   const activeTopicsIDonly = activeTopics.map((topic) => topic.topicID);
@@ -62,18 +62,18 @@ const OnboardingFreelance = ({ navigation, route }) => {
     setActiveTopics(newArray);
   };
 
-  const handleCategorySelect = (category) => {
-    if (selectedCategories.includes(category)) {
-      const index = selectedCategories.indexOf(category);
-      if (index > -1) {
-        const newArray = [...selectedCategories];
-        newArray.splice(index, 1);
-        setSelectedCategories(newArray);
-      }
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
+  // const handleCategorySelect = (category) => {
+  //   if (selectedCategories.includes(category)) {
+  //     const index = selectedCategories.indexOf(category);
+  //     if (index > -1) {
+  //       const newArray = [...selectedCategories];
+  //       newArray.splice(index, 1);
+  //       setSelectedCategories(newArray);
+  //     }
+  //   } else {
+  //     setSelectedCategories([...selectedCategories, category]);
+  //   }
+  // };
 
   return (
     <View style={{ flex: 1 }}>
@@ -89,10 +89,10 @@ const OnboardingFreelance = ({ navigation, route }) => {
         </View>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 10 }}>
           <FreelanceList
-            activeTopicIDs={activeTopicsIDonly}
-            selectedCategories={selectedCategories}
+            // activeTopicIDs={activeTopicsIDonly}
+            // selectedCategories={selectedCategories}
             handleTopicSelect={handleTopicSelect}
-            handleCategorySelect={handleCategorySelect}
+            // handleCategorySelect={handleCategorySelect}
           />
         </ScrollView>
 

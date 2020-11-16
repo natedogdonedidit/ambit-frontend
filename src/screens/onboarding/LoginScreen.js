@@ -28,6 +28,7 @@ const LoginScreen = ({ navigation }) => {
       password,
     },
     onCompleted: async (data) => {
+      console.log('login completed');
       // 2. store token & ID to storage, save user in CTX
       await loginCTX(data.login);
       setUsername('');

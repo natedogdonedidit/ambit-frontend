@@ -68,8 +68,9 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/graphql', // simulator
-    // ios: 'http://192.168.123.64:4000/graphql', // work
+    // ios: 'http://192.168.123.225:4000/', // work
     // ios: 'http://192.168.1.214:4000/graphql', // home
+    // ios: 'http://192.168.0.31:4000/graphql', // jmajor
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
@@ -83,8 +84,9 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/graphql', // simulator
-    // ios: 'ws://192.168.123.64:4000/graphql', // work
+    // ios: 'ws://192.168.123.225:4000/graphql', // work
     // ios: 'ws://192.168.1.214:4000/graphql', // home
+    // ios: 'ws://192.168.0.31:4000/graphql', // jmajor
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
@@ -121,8 +123,9 @@ const client = new ApolloClient({
             return existingData || toReference({ __typename: 'User', username: args.where.username });
           },
           post(existingData, { args, toReference, canRead }) {
-            const item = existingData || toReference({ __typename: 'Post', id: args.where.id });
-            return canRead(item) ? item : null;
+            // const item = existingData || toReference({ __typename: 'Post', id: args.where.id });
+            // return canRead(item) ? item : null;
+            return existingData || toReference({ __typename: 'Post', id: args.where.id });
           },
           // post: {
           //   read(existingData, { args, toReference, canRead }) {
@@ -160,7 +163,8 @@ const client = new ApolloClient({
               }
 
               // if it is a fetch more - put the messages last
-              return [...existing, ...incoming];
+              // return [...existing, ...incoming]; // if you do this, it duplicates the entire chat if you send a new message to a chat not in cache
+              return [...incoming];
             },
           },
           // for follow button opt response

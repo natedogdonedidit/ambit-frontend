@@ -336,6 +336,7 @@ function Story({
           isMyPost={isMyPost}
           navigation={navigation}
           handleMoreButton={handleMoreButton}
+          setPaused={setPaused}
           favoriteTopics={favoriteTopics}
           setDisableOutterScroll={setDisableOutterScroll}
         />

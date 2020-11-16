@@ -28,7 +28,7 @@ const RecommendedTopic = ({
   // if on newPostModal or newProject
   showAddButton = false,
   handleTopicSelect = () => null, // required if showAddButton
-  // activeTopicIDs = [], // required if showAddButton
+  activeTopicIDs = [], // required if showAddButton
 
   showTopBorder = true,
   showBottomBorder = false,
@@ -54,17 +54,17 @@ const RecommendedTopic = ({
     }
 
     if (showAddButton) {
-      // const isSelected = activeTopicIDs.includes(topicID);
+      const isSelected = activeTopicIDs.includes(topicID);
 
-      // if (isSelected) {
-      //   return (
-      //     <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
-      //       <View style={styles.addedButton}>
-      //         <Text style={defaultStyles.followButton}>Added</Text>
-      //       </View>
-      //     </TouchableOpacity>
-      //   );
-      // }
+      if (isSelected) {
+        return (
+          <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
+            <View style={styles.addedButton}>
+              <Text style={defaultStyles.followButton}>Added</Text>
+            </View>
+          </TouchableOpacity>
+        );
+      }
       return (
         <TouchableOpacity activeOpacity={0.7} onPress={() => handleTopicSelect(topicID, name)}>
           <View style={styles.addButton}>

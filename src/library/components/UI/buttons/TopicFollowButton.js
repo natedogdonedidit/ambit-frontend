@@ -92,7 +92,7 @@ const TopicFollowButton = ({ topicID, onRow = false }) => {
     return (
       <TouchableOpacity onPress={() => onPressFollow()} activeOpacity={0.7}>
         <View style={isFollowing ? styles.buttonActiveSmall : styles.buttonSmall}>
-          <Text style={{ ...defaultStyles.followButton, color: isFollowing ? colors.black : colors.white }}>
+          <Text style={{ ...defaultStyles.followButton, color: isFollowing ? colors.white : colors.black }}>
             {isFollowing ? 'Following' : 'Follow'}
           </Text>
         </View>
@@ -103,7 +103,7 @@ const TopicFollowButton = ({ topicID, onRow = false }) => {
   return (
     <TouchableOpacity onPress={() => onPressFollow()} activeOpacity={0.7}>
       <View style={isFollowing ? styles.buttonActive : styles.button}>
-        <Text style={{ ...defaultStyles.defaultMedium, color: isFollowing ? colors.black : colors.white }}>
+        <Text style={{ ...defaultStyles.defaultMedium, color: isFollowing ? colors.white : colors.black }}>
           {isFollowing ? 'Following' : 'Follow'}
         </Text>
       </View>
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.purp,
+    backgroundColor: colors.grayButton,
     borderRadius: 17,
     height: 34,
     width: 100,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.grayButton,
+    backgroundColor: colors.purp,
     borderRadius: 17,
     height: 34,
     width: 100,
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     height: 34,
     width: 82,
     borderRadius: 17,
-    backgroundColor: colors.purp,
+    backgroundColor: colors.grayButton,
     justifyContent: 'center',
     alignItems: 'center',
     // ...defaultStyles.shadowButton,
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     height: 34,
     width: 82,
     borderRadius: 17,
-    backgroundColor: colors.grayButton,
+    backgroundColor: colors.purp,
     justifyContent: 'center',
     alignItems: 'center',
     // ...defaultStyles.shadowButton,

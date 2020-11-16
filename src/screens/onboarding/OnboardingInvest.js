@@ -74,7 +74,7 @@ const OnboardingInvest = ({ navigation, route }) => {
           </Text>
         </View>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 10 }}>
-          <InvestList activeTopicIDs={activeTopicsIDonly} handleTopicSelect={handleTopicSelect} />
+          <InvestList handleTopicSelect={handleTopicSelect} />
         </ScrollView>
 
         <View style={styles.bottom}>

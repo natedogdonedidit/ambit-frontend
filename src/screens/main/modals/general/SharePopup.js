@@ -1,15 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Alert, Share } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useMutation } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-
-import REPOST_POST_MUTATION from 'library/mutations/REPOST_POST_MUTATION';
-import { UserContext } from 'library/utils/UserContext';
 
 const SharePopup = ({ navigation, route }) => {
   const insets = useSafeAreaInsets();

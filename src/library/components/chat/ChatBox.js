@@ -13,6 +13,7 @@ import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSA
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import SharedPost from 'library/components/chat/SharedPost';
+import SharedStory from 'library/components/chat/SharedStory';
 
 const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
   const client = useApolloClient();
@@ -71,32 +72,32 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
     onError: (e) => {
       console.log(e);
     },
-    onCompleted: () => {
-      // grab latest data from cache
-      const messagesDataInCache = client.readQuery({
-        query: MESSAGES_CONNECTION,
-        variables: {
-          where: { to: { id: { equals: convo.id } } },
-        },
-      });
+    // onCompleted: () => {
+    //   // grab latest data from cache
+    //   const messagesDataInCache = client.readQuery({
+    //     query: MESSAGES_CONNECTION,
+    //     variables: {
+    //       where: { to: { id: { equals: convo.id } } },
+    //     },
+    //   });
 
-      const messagesDataInCacheUpdated = [...messagesDataInCache.messages].map((m) => {
-        return {
-          ...m,
-          unread: false,
-        };
-      });
+    //   const messagesDataInCacheUpdated = [...messagesDataInCache.messages].map((m) => {
+    //     return {
+    //       ...m,
+    //       unread: false,
+    //     };
+    //   });
 
-      // update cache to set all unread to false in this convo
-      if (messagesDataInCache && messagesDataInCache.messages && messagesDataInCache.messages.length > 0) {
-        client.writeQuery({
-          query: MESSAGES_CONNECTION,
-          data: {
-            messages: [...messagesDataInCacheUpdated],
-          },
-        });
-      }
-    },
+    //   // update cache to set all unread to false in this convo
+    //   if (messagesDataInCache && messagesDataInCache.messages && messagesDataInCache.messages.length > 0) {
+    //     client.writeQuery({
+    //       query: MESSAGES_CONNECTION,
+    //       data: {
+    //         messages: [...messagesDataInCacheUpdated],
+    //       },
+    //     });
+    //   }
+    // },
   });
 
   // THIS EFFECT CLEARS THE UNREAD MESSAGES WHENEVER THE PAGE IS FOCUSED
@@ -140,7 +141,22 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
     if (props && props.currentMessage && props.currentMessage.isShare) {
       const { currentMessage } = props;
 
-      return <SharedPost navigation={navigation} message={currentMessage} />;
+      const { text } = currentMessage;
+
+      // separate TYPE and ID from text
+      const textSplit = text.split(':');
+      const type = textSplit[0];
+      const id = textSplit[1];
+
+      // if is a post
+      if (type === 'Post') {
+        return <SharedPost navigation={navigation} message={currentMessage} />;
+      }
+      if (type === 'Story' || type === 'StoryItem') {
+        return <SharedStory navigation={navigation} storyId={id} />;
+      }
+
+      // if is a story or storyitem
     }
 
     return (

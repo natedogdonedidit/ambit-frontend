@@ -23,6 +23,7 @@ const SharedPost = ({ message, navigation }) => {
   if (loading || error || !data) return null;
 
   const { post } = data;
+  if (!post) return null;
   const { owner, content } = post;
 
   return (

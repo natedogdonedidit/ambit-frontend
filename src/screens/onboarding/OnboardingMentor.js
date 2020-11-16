@@ -89,10 +89,12 @@ const OnboardingMentor = ({ navigation, route }) => {
         </View>
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 10 }}>
           <TopicsList
+            topicType="mentor"
+            showFollowButton
             activeTopicIDs={activeTopicsIDonly}
-            selectedCategories={selectedCategories}
+            // selectedCategories={selectedCategories}
             handleTopicSelect={handleTopicSelect}
-            handleCategorySelect={handleCategorySelect}
+            // handleCategorySelect={handleCategorySelect}
           />
         </ScrollView>
 

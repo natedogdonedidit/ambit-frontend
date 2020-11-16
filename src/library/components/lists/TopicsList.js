@@ -43,7 +43,7 @@ const TopicsList = ({ activeTopicIDs = [], handleTopicSelect, showFollowButton =
           key={topicID}
           showPic={false}
           topicID={topicID}
-          // activeTopicIDs={activeTopicIDs}
+          activeTopicIDs={activeTopicIDs}
           handleTopicSelect={handleTopicSelect}
           showAddButton={!showFollowButton}
           showFollowButton={showFollowButton}
@@ -64,7 +64,7 @@ const TopicsList = ({ activeTopicIDs = [], handleTopicSelect, showFollowButton =
             key={topicID}
             showPic={false}
             topicID={topicID}
-            // activeTopicIDs={activeTopicIDs}
+            activeTopicIDs={activeTopicIDs}
             handleTopicSelect={handleTopicSelect}
             showBottomBorder={i === matchingTopics.length - 1}
             showAddButton={!showFollowButton}
