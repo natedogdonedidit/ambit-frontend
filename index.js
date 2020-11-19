@@ -54,6 +54,7 @@ const errorLink = onError(({ graphQLErrors }) => {
 const authLink = setContext(async (req, { headers }) => {
   // grab token from AsyncStorage
   const token = await getToken();
+  // console.log(token);
 
   // put token in authorization header
   return {
@@ -68,7 +69,7 @@ const authLink = setContext(async (req, { headers }) => {
 const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/graphql', // simulator
-    // ios: 'http://192.168.123.225:4000/', // work
+    // ios: 'http://192.168.123.117:4000/graphql', // work
     // ios: 'http://192.168.1.214:4000/graphql', // home
     // ios: 'http://192.168.0.31:4000/graphql', // jmajor
     // ios: 'http://192.168.1.147:4000', // condo
@@ -84,7 +85,7 @@ const httpLink = new HttpLink({
 const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/graphql', // simulator
-    // ios: 'ws://192.168.123.225:4000/graphql', // work
+    // ios: 'ws://192.168.123.117:4000/graphql', // work
     // ios: 'ws://192.168.1.214:4000/graphql', // home
     // ios: 'ws://192.168.0.31:4000/graphql', // jmajor
     // ios: 'ws://192.168.1.147:4000', // condo

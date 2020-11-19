@@ -118,7 +118,7 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
           borderBottom={false}
           subText={
             section.title === 'Following' ? (
-              <Text style={{ ...defaultStyles.smallMute, paddingTop: 2 }}>
+              <Text style={{ ...defaultStyles.smallMute, paddingTop: 3 }}>
                 Topics will appear in <Text style={{ ...defaultStyles.smallBold, color: colors.purp }}>For You</Text> timeline
               </Text>
             ) : null

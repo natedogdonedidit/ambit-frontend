@@ -99,7 +99,7 @@ const PostToModal = ({ navigation, route }) => {
         navigation={navigation}
         // rightComponent={<Icon name="question-circle" size={22} color={colors.iconDark} />}
       />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 12, paddingBottom: 20 }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 14, paddingBottom: 20 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -116,7 +116,7 @@ const PostToModal = ({ navigation, route }) => {
         </Text>
         <TouchableOpacity
           style={styles.projectRow}
-          activeOpacity={1}
+          activeOpacity={0.8}
           onPress={() => navigation.navigate('StoryCameraModal', { isNewProject: true })}
         >
           <View style={styles.leftSide}>
@@ -128,11 +128,11 @@ const PostToModal = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
         {renderProjects()}
-        <View style={{ paddingTop: 30, paddingBottom: 20 }}>
+        {/* <View style={{ paddingTop: 30, paddingBottom: 20 }}>
           <TextButton textStyle={{ fontSize: 17 }} onPress={() => null}>
             See an example
           </TextButton>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 8,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    // borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderBlack,
   },
   topicRow: {

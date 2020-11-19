@@ -134,7 +134,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'NEW_FOLLOWER') {
       if (from && from.id) {
-        return navigation.navigate('Profile', { profileId: from.id });
+        return navigation.navigate('Profile', { username: from.username });
       }
       // if user is missing from cache
       Alert.alert('Oh no!', `We could not find that user`, [

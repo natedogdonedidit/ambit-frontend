@@ -122,10 +122,10 @@ export const MinimalUser = gql`
       ...StoryWithOwner
       # ...StoryNoOwner
     }
-    myStory {
-      ...StoryWithOwner
-      # ...StoryNoOwner
-    }
+    # myStory {
+    # ...StoryWithOwner
+    # ...StoryNoOwner
+    # }
     # latestProject {
     #   ...StoryNoOwner
     # }

@@ -320,9 +320,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   sideButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: colors.storyButtonBackground,
     justifyContent: 'center',
     alignItems: 'center',
