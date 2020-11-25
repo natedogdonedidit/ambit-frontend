@@ -18,12 +18,18 @@ const ProfileTabs = ({ tabState, setTabState }) => {
         onPress={() => setTabState(0)}
       >
         <Icon name="user" solid size={18} color={colors.blueGray} />
+        {/* <Text style={[{ ...defaultStyles.largeBold }, tabState === 0 ? { color: colors.purp } : { color: colors.gray30 }]}>
+          Bio
+        </Text> */}
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.8}
         style={tabState === 1 ? styles.tabSelected : styles.tab}
         onPress={() => setTabState(1)}
       >
+        {/* <Text style={[{ ...defaultStyles.largeBold }, tabState === 1 ? { color: colors.purp } : { color: colors.gray30 }]}>
+          Projects
+        </Text> */}
         <Lines />
       </TouchableOpacity>
       <TouchableOpacity
@@ -31,6 +37,9 @@ const ProfileTabs = ({ tabState, setTabState }) => {
         style={tabState === 2 ? styles.tabSelected : styles.tab}
         onPress={() => setTabState(2)}
       >
+        {/* <Text style={[{ ...defaultStyles.largeBold }, tabState === 2 ? { color: colors.purp } : { color: colors.gray30 }]}>
+          Posts
+        </Text> */}
         <Icon name="bars" solid size={18} color={colors.blueGray} />
       </TouchableOpacity>
     </View>

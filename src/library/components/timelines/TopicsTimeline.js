@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -24,6 +24,7 @@ import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import { UserContext } from 'library/utils/UserContext';
 import TopicFollowButton from 'library/components/UI/buttons/TopicFollowButton';
+import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 
 const picExample =
   'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
@@ -48,6 +49,21 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
     },
     notifyOnNetworkStatusChange: true,
   });
+
+  // GETS STORIES FOR YOUR FAV TOPICS
+  const { error: errorStories, data: dataStories, loading: loadingStories } = useQuery(STORIES_TOPIC_QUERY, {
+    variables: {
+      where: {
+        AND: [
+          {
+            topic: { startsWith: topicID },
+          },
+        ],
+      },
+    },
+  });
+
+  const hasStories = !loadingStories && !errorStories && dataStories && dataStories.stories && dataStories.stories.length > 0;
 
   // GET MY TOPICS
   // const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
@@ -133,7 +149,7 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
         contentContainerStyle={{ paddingBottom: 20 }}
         style={styles.timeline}
         ListHeaderComponent={
-          <View style={{}}>
+          <View>
             <View
               style={{
                 paddingTop: 50,
@@ -144,15 +160,70 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
                 borderBottomWidth: StyleSheet.hairlineWidth,
               }}
             >
-              <View style={{ width: 94, height: 94, borderRadius: 47, ...defaultStyles.shadow6 }}>
-                <Image
-                  style={styles.pic}
-                  resizeMode="cover"
-                  source={{
-                    uri: image || picExample,
+              {hasStories ? (
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('StoryModal', {
+                      moreType: 'Topic',
+                      topicIDtoSearch: topicID,
+                    })
+                  }
+                  style={{
+                    width: 104,
+                    height: 104,
+                    borderRadius: 53,
+                    backgroundColor: colors.purp,
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
-                />
-              </View>
+                >
+                  <View
+                    style={{
+                      width: 98,
+                      height: 98,
+                      borderRadius: 49,
+                      backgroundColor: 'white',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 94,
+                        height: 94,
+                        borderRadius: 47,
+                        // ...defaultStyles.shadow6,
+                      }}
+                    >
+                      <Image
+                        style={styles.pic}
+                        resizeMode="cover"
+                        source={{
+                          uri: image || picExample,
+                        }}
+                      />
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <View
+                  style={{
+                    width: 94,
+                    height: 94,
+                    borderRadius: 47,
+                    // ...defaultStyles.shadow6,
+                  }}
+                >
+                  <Image
+                    style={styles.pic}
+                    resizeMode="cover"
+                    source={{
+                      uri: image || picExample,
+                    }}
+                  />
+                </View>
+              )}
+
               <Text style={{ ...defaultStyles.headerTopic, paddingVertical: 12 }}>{name}</Text>
               <TopicFollowButton topicID={topicID} />
               {/* {isFollowing ? (
@@ -176,7 +247,7 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
               <Text style={{ ...defaultStyles.smallMute, paddingTop: 12 }}>1,724 Followers</Text>
             </View>
 
-            <StoriesTopic topicID={activeTopicID} navigation={navigation} refetching={refetching} />
+            {/* <StoriesTopic topicID={activeTopicID} navigation={navigation} refetching={refetching} /> */}
           </View>
         }
         ListEmptyComponent={

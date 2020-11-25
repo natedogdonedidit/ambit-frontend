@@ -54,10 +54,10 @@ const ConvosScreen = ({ navigation }) => {
         <Loader loading={loading} full={false} size="small" backgroundColor={colors.lightGray} />
       </View>
     );
-  const { userLoggedIn } = dataUser;
 
+  const { userLoggedIn } = dataUser;
   const convos = [...userLoggedIn.convos] || [];
-  // convos.sort(sortChats); // sort convos by date
+  // convos.sort(sortChats); // sort convos by date, do this in query fragment
 
   return (
     <View style={{ ...styles.container, paddingTop: top }}>

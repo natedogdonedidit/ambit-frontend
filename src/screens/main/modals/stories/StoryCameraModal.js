@@ -30,7 +30,7 @@ const StoryCameraModal = ({ navigation, route }) => {
   const client = useApolloClient();
 
   // params
-  const { isIntro = false, isNewProject = false, project = {} } = route.params;
+  const { isIntro = false, isNewProject = false, projectPassedIn = {} } = route.params;
 
   // STATE
   const [flashMode, setFlashMode] = useState('auto');
@@ -138,7 +138,7 @@ const StoryCameraModal = ({ navigation, route }) => {
           isIntro
           intro={intro}
           isNewProject={false}
-          project={project}
+          projectPassedIn={projectPassedIn}
           capturedImage={capturedImage}
           capturedVideo={capturedVideo}
           setCapturedVideo={setCapturedVideo}
@@ -153,7 +153,7 @@ const StoryCameraModal = ({ navigation, route }) => {
         isIntro={false}
         intro={null}
         isNewProject={isNewProject}
-        project={project}
+        projectPassedIn={projectPassedIn}
         capturedImage={capturedImage}
         capturedVideo={capturedVideo}
         setCapturedVideo={setCapturedVideo}
@@ -182,23 +182,24 @@ const StoryCameraModal = ({ navigation, route }) => {
         );
       }
       if (isNewProject) {
-        return (
-          <View
-            style={{
-              position: 'absolute',
-              top: insets.top + 10,
-              left: 0,
-              width: '100%',
-              paddingHorizontal: 100,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,0.9)' }}>New Project</Text>
-          </View>
-        );
+        return null;
+        // return (
+        //   <View
+        //     style={{
+        //       position: 'absolute',
+        //       top: insets.top + 10,
+        //       left: 0,
+        //       width: '100%',
+        //       paddingHorizontal: 100,
+        //       justifyContent: 'center',
+        //       alignItems: 'center',
+        //     }}
+        //   >
+        //     <Text style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,0.9)' }}>New Project</Text>
+        //   </View>
+        // );
       }
-      if (project && project.title) {
+      if (projectPassedIn && projectPassedIn.title) {
         return (
           <View
             style={{
@@ -215,7 +216,7 @@ const StoryCameraModal = ({ navigation, route }) => {
               Adding to project:
             </Text>
 
-            <Text style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,0.9)' }}>{project.title}</Text>
+            <Text style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,0.9)' }}>{projectPassedIn.title}</Text>
           </View>
         );
       }

@@ -180,6 +180,18 @@ const styles = StyleSheet.create({
     // fontFamily: 'SFProText-Regular',
     fontWeight: '400',
   },
+  largeLightMute: {
+    color: colors.blueGray,
+    fontSize: large,
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '300',
+  },
+  largeMediumMute: {
+    color: colors.gray60,
+    fontSize: large,
+    // fontFamily: 'SFProText-Regular',
+    fontWeight: '500',
+  },
   largeMuteItalic: {
     color: colors.blueGray,
     fontSize: large,
@@ -211,13 +223,13 @@ const styles = StyleSheet.create({
     // fontFamily: 'SFProText-Medium',
     fontWeight: '500',
   },
-  largeMediumMute: {
-    color: colors.blueGray,
-    fontSize: large,
-    // fontFamily: 'SFProText-Regular',
-    fontWeight: '500',
-    opacity: 0.6,
-  },
+  // largeMediumMute: {
+  //   color: colors.blueGray,
+  //   fontSize: large,
+  //   // fontFamily: 'SFProText-Regular',
+  //   fontWeight: '500',
+  //   opacity: 0.6,
+  // },
   largeSemibold: {
     color: colors.black,
     fontSize: large,

@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import StoryBox from 'library/components/stories/StoryBox';
-import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
+import ExploreTopicButton from 'library/components/stories/ExploreTopicButton2';
 import { UserContext } from 'library/utils/UserContext';
 import { combineFavoriteTopics } from 'library/utils';
 import NewProjectButton from './NewProjectButton';
@@ -19,8 +19,9 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
   const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
 
   const favoriteTopics = useMemo(() => {
-    if (dataTopics && dataTopics.myTopics) {
-      return combineFavoriteTopics(dataTopics.myTopics);
+    if (dataTopics && dataTopics.topicsFocus) {
+      // return combineFavoriteTopics(dataTopics.myTopics);
+      return dataTopics.topicsFocus || [];
     }
 
     return [];
@@ -171,19 +172,11 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
 
     return userAndTopicStoriesSorted.map((story) => {
       // check if topic story
-      const isTopicStory = !!story.topicID && !story.type;
+      const isTopicStory = !story.type;
 
       // if topic story
       if (isTopicStory) {
-        return (
-          <ExploreTopicButton
-            key={story.topicID}
-            navigation={navigation}
-            story={null}
-            topicID={story.topicID}
-            refetching={refetching}
-          />
-        );
+        return <ExploreTopicButton key={story.id} navigation={navigation} topicID={story.topicID} refetching={refetching} />;
       }
 
       // if user story

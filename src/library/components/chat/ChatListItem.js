@@ -25,6 +25,7 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
   //   });
   // }, []);
 
+  // GET THE FULL CONVERSATION
   const { error: errorMessages, data, fetchMore, networkStatus, loading } = useQuery(MESSAGES_CONNECTION, {
     variables: {
       where: { to: { id: { equals: convo.id } } },
@@ -34,9 +35,8 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
     notifyOnNetworkStatusChange: true,
   });
 
-  // grab users from convo
+  // grab OTHER users from convo
   const users = convo.users.filter((user) => user.id !== userLoggedIn.id);
-
   const otherUser = users[0];
 
   const renderRightSide = () => {

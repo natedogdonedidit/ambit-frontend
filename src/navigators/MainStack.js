@@ -16,6 +16,7 @@ import IntroModal from 'screens/main/modals/stories/IntroModal';
 // import CameraModal from 'screens/main/modals/stories/CameraModal';
 import StoryCameraModal from 'screens/main/modals/stories/StoryCameraModal';
 import PostToModal from 'screens/main/modals/stories/PostToModal2';
+import SelectProjectPopup from 'screens/main/modals/general/SelectProjectPopup';
 import PostClipModal from 'screens/main/modals/stories/PostClipModal';
 import NewProjectTitleModal from 'screens/main/modals/stories/NewProjectTitleModal';
 import NewProjectTopicsModal from 'screens/main/modals/stories/NewProjectTopicsModal';
@@ -131,6 +132,8 @@ const MainStack = ({ navigation }) => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
+      <Stack.Screen name="SelectProjectPopup" component={SelectProjectPopup} options={halfModalOptions} />
+
       <Stack.Screen
         name="PostClipModal"
         component={PostClipModal}

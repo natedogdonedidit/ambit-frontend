@@ -13,7 +13,7 @@ import Loader from 'library/components/UI/Loader';
 import Section from 'library/components/UI/Section';
 import HomeTimelineHeader from 'library/components/UI/HomeTimelineHeader';
 import SeeMoreButton from 'library/components/UI/buttons/SeeMoreButton';
-import StoriesHome from 'library/components/stories/StoriesHome';
+import StoriesHome from 'library/components/stories/StoriesHome2';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';

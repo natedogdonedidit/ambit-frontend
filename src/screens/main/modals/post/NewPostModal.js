@@ -497,7 +497,7 @@ const NewPostModal = ({ navigation, route }) => {
           <View style={styles.leftSide}>
             <Ionicons name="ios-rocket" size={22} color={colors.iconGray} />
           </View>
-          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>Add a goal</Text>
+          <Text style={{ ...defaultStyles.largeMediumMute, opacity: 0.6, flex: 1 }}>Add a goal</Text>
           <TouchableOpacity
             style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={handleGoalRowSelect}
@@ -569,7 +569,7 @@ const NewPostModal = ({ navigation, route }) => {
             <Ionicons name="ios-chatbubbles" size={22} color={colors.iconGray} />
           </View>
 
-          <Text style={{ ...defaultStyles.largeMediumMute, flex: 1 }}>Add a topic</Text>
+          <Text style={{ ...defaultStyles.largeMediumMute, opacity: 0.6, flex: 1 }}>Add a topic</Text>
           <TouchableOpacity
             style={{ paddingLeft: 10, paddingRight: 10, justifyContent: 'center', alignItems: 'center' }}
             onPress={handleTopicRowSelect}

@@ -32,7 +32,7 @@ const CapturedStoryItem = ({
   isIntro,
   intro,
   isNewProject,
-  project,
+  projectPassedIn,
   capturedImage,
   capturedVideo,
   setCapturedVideo,
@@ -77,7 +77,7 @@ const CapturedStoryItem = ({
 
   const handleNext = () => {
     setMuted(true);
-    navigation.navigate('PostClipModal', { capturedImage, capturedVideo, textInput, isNewProject, project });
+    navigation.navigate('PostClipModal', { capturedImage, capturedVideo, textInput, isNewProject, projectPassedIn });
   };
 
   const handleSaveIntro = async () => {

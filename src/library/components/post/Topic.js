@@ -5,7 +5,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { getTopicFromID } from 'library/utils';
 
-const Topic = ({ navigation, topicToShow }) => {
+const Topic = ({ navigation, topicToShow, isPostToModal = false }) => {
   // get the full topic
   const { name, parentTopic, topicID } = useMemo(() => getTopicFromID(topicToShow), [topicToShow]);
 
@@ -13,6 +13,14 @@ const Topic = ({ navigation, topicToShow }) => {
 
   const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;
   const subTopic = isSubTopic ? topicID : null;
+
+  if (isPostToModal) {
+    return (
+      <View style={styles.topicLarge}>
+        <Text style={defaultStyles.largeMedium}>{name}</Text>
+      </View>
+    );
+  }
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate('Topic', { topicID: topicToShow })} activeOpacity={0.3}>
@@ -35,5 +43,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.systemGray6,
     marginRight: 6,
     marginBottom: 6,
+  },
+  topicLarge: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 30,
+    borderRadius: 15,
+    paddingHorizontal: 12,
+    backgroundColor: colors.systemGray6,
   },
 });

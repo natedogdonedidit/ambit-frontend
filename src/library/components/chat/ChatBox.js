@@ -16,7 +16,7 @@ import SharedPost from 'library/components/chat/SharedPost';
 import SharedStory from 'library/components/chat/SharedStory';
 
 const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
-  const client = useApolloClient();
+  // const client = useApolloClient();
 
   // MUTATIONS
   const [createOneMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
@@ -41,6 +41,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
     },
   });
 
+  // GET ALL MESSAGES - THIS SHOULD HAVE ALREADY PRELOADED ON CONVOSSCREEN
   const { error: errorMessages, data, fetchMore, networkStatus } = useQuery(MESSAGES_CONNECTION, {
     variables: {
       where: { to: { id: { equals: convo.id } } },
@@ -103,7 +104,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
   // THIS EFFECT CLEARS THE UNREAD MESSAGES WHENEVER THE PAGE IS FOCUSED
   useEffect(() => {
     navigation.addListener('focus', () => {
-      if (data && data.messages && !clearingUnreadMessages) {
+      if (convo && convo.id && data && data.messages && data.messages.length > 0 && !clearingUnreadMessages) {
         // clear unread messages
         updateManyMessage();
       }
@@ -112,7 +113,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
 
   // THIS EFFECT CLEARS THE UNREAD MESSAGES WHENEVER NEW DATA COMES IN
   useEffect(() => {
-    if (data && data.messages && !clearingUnreadMessages) {
+    if (convo && convo.id && data && data.messages && data.messages.length > 0 && !clearingUnreadMessages) {
       // clear unread messages
       updateManyMessage();
     }

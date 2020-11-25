@@ -13,10 +13,10 @@ import { combineFavoriteTopics } from 'library/utils';
 // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
 // option 2: pass in an intro. Intro will play, then modal will close.
 // option 3: pass in firstStory, with a topicIDtoSearch. First story will play followed by more stories from that topic
-// option 4: pass in firstStory, with type = 'Home'. First story will play followed by more from your followers
+// option 4: pass in firstStory, with type = 'ForYou'. First story will play followed by more from your followers
 // option 5: pass in firstStory, with type = 'Profile'. First story will play followed by more from this user
 
-// moreType: 'Home', 'Topic', 'User', null means only show a single story
+// moreType: 'ForYou', 'Topic', 'User', 'ForYou', null means only show a single story
 
 const StoryModal = ({ navigation, route }) => {
   const { story = null, moreType = null, topicIDtoSearch } = route.params;
@@ -26,7 +26,7 @@ const StoryModal = ({ navigation, route }) => {
   const [disableOutterScroll, setDisableOutterScroll] = useState(false);
 
   // STATE
-  const [storyQ, setStoryQ] = useState([story]);
+  const [storyQ, setStoryQ] = useState(story ? [story] : []);
   const [activeStoryIndex, setActiveStoryIndex] = useState(0);
 
   useFocusEffect(
@@ -43,7 +43,7 @@ const StoryModal = ({ navigation, route }) => {
   );
 
   // QUERY TO GET USERS TOPICS
-  const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
+  // const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
 
   // const favoriteTopics = useMemo(() => {
   //   const initialFavs = topicIDtoSearch ? [topicIDtoSearch] : [];
@@ -76,12 +76,10 @@ const StoryModal = ({ navigation, route }) => {
           {
             topic: { startsWith: topicIDtoSearch },
           },
-          {
-            items: { some: { id: { gt: 'a' } } },
-          },
         ],
       },
     },
+    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
 
@@ -99,6 +97,7 @@ const StoryModal = ({ navigation, route }) => {
       networkStatus: networkStatusStoriesHome,
     },
   ] = useLazyQuery(STORIES_HOME_QUERY, {
+    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
 
@@ -108,7 +107,7 @@ const StoryModal = ({ navigation, route }) => {
 
   // EFFECTS
   useEffect(() => {
-    if (moreType === 'Home') {
+    if (moreType === 'ForYou') {
       getStoriesHome();
     }
 
@@ -126,11 +125,12 @@ const StoryModal = ({ navigation, route }) => {
 
   // used to add home stories to Q
   useEffect(() => {
-    if (moreType === 'Home' && !loadingStoriesHome && dataStoriesHome) {
+    if (moreType === 'ForYou' && !loadingStoriesHome && dataStoriesHome) {
       if (dataStoriesHome.storiesHome) {
         // remove the story passed in from the query results
-        const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id && s.items.length > 0);
-        setStoryQ([story, ...storiesToAdd]);
+        // const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id && s.items.length > 0);
+        // setStoryQ([story, ...storiesToAdd]);
+        setStoryQ([...dataStoriesHome.storiesHome]);
       }
     }
   }, [loadingStoriesHome, dataStoriesHome]);
@@ -140,9 +140,11 @@ const StoryModal = ({ navigation, route }) => {
     // used to add home stories to Q
     if (moreType === 'Topic' && !loadingStoriesTopic && dataStoriesTopic) {
       if (dataStoriesTopic.stories) {
+        // console.log('yo', dataStoriesTopic);
         // remove the story passed in from the query results
-        const storiesToAdd = dataStoriesTopic.stories.filter((s) => s.id !== story.id && s.items.length > 0);
-        setStoryQ([story, ...storiesToAdd]);
+        // const storiesToAdd = dataStoriesTopic.stories.filter((s) => s.id !== story.id && s.items.length > 0);
+        // setStoryQ([story, ...storiesToAdd]);
+        setStoryQ([...dataStoriesTopic.stories]);
       }
     }
   }, [loadingStoriesTopic, dataStoriesTopic]);
@@ -197,8 +199,8 @@ const StoryModal = ({ navigation, route }) => {
     );
   }
 
-  // console.log(storyQ);
-  // console.log(storyQ.length);
+  console.log(storyQ);
+  console.log(storyQ.length);
 
   return (
     <View style={styles.container}>
@@ -223,7 +225,7 @@ const StoryModal = ({ navigation, route }) => {
         scrollEnabled={!disableOutterScroll}
         getItemLayout={(data, index) => ({ length: width, offset: width * index, index })}
         renderItem={({ item, index }) => {
-          // console.log(index, item.id);
+          console.log(index, item.id);
           const storyIsActive = index === activeStoryIndex;
 
           return (
@@ -270,7 +272,7 @@ export default StoryModal;
 //   // first, check if we need to add some stories
 //   if (numStoriesDesireToAdd > 0) {
 //     // for HOME stories
-//     if (moreType === 'Home' && dataStoriesHome && dataStoriesHome.storiesHome) {
+//     if (moreType === 'ForYou' && dataStoriesHome && dataStoriesHome.storiesHome) {
 //       // filter the Query results to only stories not alraedy in the Q
 //       const storiesAvailableToAdd = dataStoriesHome.storiesHome.filter((s) => {
 //         const alreadyInQ = storyQ.findIndex((st) => st.id === s.id) >= 0; // if this returns >= 0 it's already in Q

@@ -5,6 +5,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderBackBlank from 'library/components/headers/HeaderBackBlank';
 import TopicsList from 'library/components/lists/TopicsList';
+import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
+import TextButton from 'library/components/UI/buttons/TextButton';
 
 const NewProjectTopicsModal = ({ navigation, route }) => {
   const { setTopic } = route.params;
@@ -25,7 +27,22 @@ const NewProjectTopicsModal = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBackBlank navigation={navigation} />
+      <HeaderBackBlank
+        navigation={navigation}
+        rightComponent={
+          <View style={{ paddingRight: 4 }}>
+            <TextButton
+              onPress={() => {
+                setTopic(null);
+                navigation.goBack();
+              }}
+            >
+              Clear
+            </TextButton>
+          </View>
+        }
+      />
+
       <ScrollView style contentContainerStyle={styles.scrollView}>
         <View style={{ width: '100%', paddingHorizontal: 5 }}>
           <View style={styles.mainTitle}>

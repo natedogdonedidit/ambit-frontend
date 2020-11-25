@@ -75,7 +75,7 @@ const TabsNavigator = () => {
   useSubscription(MESSAGE_SUBSCRIPTION, {
     variables: { userId: currentUserId },
     onSubscriptionData: async ({ subscriptionData }) => {
-      // console.log('subscriptionData', subscriptionData);
+      console.log('subscriptionData', subscriptionData);
       const { newMessageSub } = subscriptionData.data;
       try {
         // GET THE CONVERSATION FROM CACHE

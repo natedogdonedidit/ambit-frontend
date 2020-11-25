@@ -283,7 +283,7 @@ export const UserProfileFragment = gql`
     followingCount
     followersCount
     ...AllTopicsFragment
-    stories {
+    stories(orderBy: [{ lastUpdated: desc }]) {
       ...StoryWithOwner
     }
     skills {
