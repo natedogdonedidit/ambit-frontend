@@ -14,6 +14,9 @@ import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 import MESSAGE_SUBSCRIPTION from 'library/subscriptions/MESSAGE_SUBSCRIPTION';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Feather from 'react-native-vector-icons/Feather';
+import Entypo from 'react-native-vector-icons/Entypo';
+
 import BellDot from 'library/components/UI/icons/BellDot';
 import EnvelopeDot from 'library/components/UI/icons/EnvelopeDot';
 import colors from 'styles/colors';
@@ -126,11 +129,14 @@ const TabsNavigator = () => {
         name="HomeStack"
         component={HomeStack}
         options={{ tabBarIcon: ({ focused, color, size }) => <Icon name="home" size={22} color={color} solid /> }}
+        // options={{ tabBarIcon: ({ focused, color, size }) => <Feather name="home" size={24} color={color} solid /> }}
+        // options={{ tabBarIcon: ({ focused, color, size }) => <Entypo name="home" size={24} color={color} /> }}
       />
       <Tabs.Screen
         name="PeopleStack"
         component={PeopleStack}
         options={{ tabBarIcon: ({ focused, color, size }) => <Icon name="user-friends" size={22} color={color} solid /> }}
+        // options={{ tabBarIcon: ({ focused, color, size }) => <Feather name="users" size={24} color={color} /> }}
       />
       <Tabs.Screen
         name="NotificationsStack"
@@ -138,6 +144,7 @@ const TabsNavigator = () => {
         options={{
           tabBarIcon: ({ focused, color, size }) => <BellDot color={color} unReadNotifications={unReadNotificationsCount || 0} />,
         }}
+        // options={{ tabBarIcon: ({ focused, color, size }) => <Feather name="bell" size={24} color={color} /> }}
       />
       <Tabs.Screen
         name="InboxStack"
@@ -145,6 +152,7 @@ const TabsNavigator = () => {
         options={{
           tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} unReadMessages={unReadMessagesCount || 0} />,
         }}
+        // options={{ tabBarIcon: ({ focused, color, size }) => <Feather name="mail" size={24} color={color} /> }}
       />
     </Tabs.Navigator>
   );

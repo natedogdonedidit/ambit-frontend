@@ -35,7 +35,7 @@ const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
     },
   });
 
-  console.log(topicID, data);
+  // console.log(topicID, data);
 
   if (loading || error || !data) {
     return null;

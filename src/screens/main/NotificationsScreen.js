@@ -1,8 +1,11 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { StyleSheet, View, FlatList, Text, ActivityIndicator, RefreshControl, Animated, StatusBar } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery, useMutation } from '@apollo/client';
+// import isAfter from 'date-fns/isAfter';
+// import addDays from 'date-fns/addDays';
+import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -13,6 +16,8 @@ import CLEAR_NOTIFICATIONS_MUTATION from 'library/mutations/CLEAR_NOTIFICATIONS_
 import Loader from 'library/components/UI/Loader';
 import NotificationListItem from 'library/components/lists/NotificationListItem';
 import { UserContext } from 'library/utils/UserContext';
+import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
+import { DAYS_TILL_INACTIVE, DAYS_TILL_INACTIVE_NOTIFY } from 'styles/constants';
 
 const NotificationsScreen = ({ navigation }) => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -20,6 +25,70 @@ const NotificationsScreen = ({ navigation }) => {
 
   const insets = useSafeAreaInsets();
   const [top, setTop] = useState(insets.top); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+
+  // GET "MY GOALS"
+  const {
+    error: errorPostsMyGoals,
+    data: dataPostsMyGoals,
+    refetch: refetchPostsMyGoals,
+    fetchMore: fetchMorePostsMyGoals,
+    networkStatus: networkStatusPostsMyGoals,
+  } = useQuery(MYGOALS_POSTS_QUERY, {
+    variables: {
+      // first: 10,
+      orderBy: [
+        {
+          lastUpdated: 'desc',
+        },
+      ],
+      where: {
+        AND: [
+          {
+            owner: {
+              id: { equals: currentUserId },
+            },
+          },
+          {
+            isGoal: { equals: true },
+          },
+        ],
+      },
+    },
+    onError: (e) => console.log('error loading my goals posts', e),
+    notifyOnNetworkStatusChange: true,
+    // fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI (but it ruins opt response of Likes)
+  });
+  const createGoalNotifications = () => {
+    if (dataPostsMyGoals && dataPostsMyGoals.posts) {
+      // map over goals and create a notifcation for each (if about to expire)
+      // setting the goal to inactive and creating the "your goal expired" notification happens on server
+
+      return dataPostsMyGoals.posts.map((post) => {
+        if (post.goal && post.goalStatus === 'Active') {
+          const today = new Date();
+          const daysSinceUpdated = differenceInCalendarDays(today, new Date(post.lastUpdated));
+          const daysRemainingTillInactive = DAYS_TILL_INACTIVE - daysSinceUpdated;
+          const isAlmostInactive = daysRemainingTillInactive < DAYS_TILL_INACTIVE_NOTIFY;
+
+          // if today is after dateToNotify, create notifcation
+          if (isAlmostInactive) {
+            return {
+              id: post.id,
+              createdAt: new Date(),
+              style: 'GOAL_ALMOST_EXPIRE',
+              post,
+              seen: false,
+            };
+          }
+        }
+        return null;
+      });
+    }
+
+    return [];
+  };
+
+  const almostInactiveGoals = useMemo(createGoalNotifications, [dataPostsMyGoals]);
 
   useEffect(() => {
     if (insets.top > 0) {
@@ -97,7 +166,10 @@ const NotificationsScreen = ({ navigation }) => {
 
   // PREPARE DATE FOR GIFTED CHAT
   const { notifications } = data;
-  // console.log(notifications);
+
+  const notificationsWithInactiveGoals = [...almostInactiveGoals, ...notifications];
+  // console.log('inactive goals:', almostInactiveGoals);
+
   if (!data || !notifications) {
     return (
       <View style={{ ...styles.container, paddingTop: top, backgroundColor: colors.white }}>
@@ -192,11 +264,13 @@ const NotificationsScreen = ({ navigation }) => {
         ListEmptyComponent={
           <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>No notifications</Text>
         }
-        data={notifications}
+        data={notificationsWithInactiveGoals}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
-          // console.log(item);
-          return <NotificationListItem navigation={navigation} notification={item} />;
+          if (item && item.id) {
+            return <NotificationListItem navigation={navigation} notification={item} />;
+          }
+          return null;
         }}
       />
       {/* Gives a solid background to the StatusBar */}

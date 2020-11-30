@@ -31,6 +31,7 @@ const StoryCameraModal = ({ navigation, route }) => {
 
   // params
   const { isIntro = false, isNewProject = false, projectPassedIn = {} } = route.params;
+  console.log(projectPassedIn);
 
   // STATE
   const [flashMode, setFlashMode] = useState('auto');
@@ -199,7 +200,7 @@ const StoryCameraModal = ({ navigation, route }) => {
         //   </View>
         // );
       }
-      if (projectPassedIn && projectPassedIn.title) {
+      if (projectPassedIn && projectPassedIn.id) {
         return (
           <View
             style={{
@@ -213,10 +214,12 @@ const StoryCameraModal = ({ navigation, route }) => {
             }}
           >
             <Text style={{ ...defaultStyles.smallMedium, color: 'rgba(255,255,255,0.6)', paddingBottom: 4 }}>
-              Adding to project:
+              Adding to project
             </Text>
 
-            <Text style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,0.9)' }}>{projectPassedIn.title}</Text>
+            <Text style={{ ...defaultStyles.hugeBold, color: 'rgba(255,255,255,0.9)', textAlign: 'center' }}>
+              {projectPassedIn.title || ''}
+            </Text>
           </View>
         );
       }

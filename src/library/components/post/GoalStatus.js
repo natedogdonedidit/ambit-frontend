@@ -41,10 +41,12 @@ const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
       return [
         {
           text: 'Mark goal Complete',
+          color: colors.purp,
           onPress: () => updateGoalStatus('Complete'),
         },
         {
           text: 'Mark goal Active',
+          color: colors.green,
           onPress: () => updateGoalStatus('Active'),
         },
       ];
@@ -53,10 +55,12 @@ const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
       return [
         {
           text: 'Mark goal Complete',
+          color: colors.purp,
           onPress: () => updateGoalStatus('Complete'),
         },
         {
           text: 'Mark goal Inactive',
+          color: colors.orange,
           onPress: () => updateGoalStatus('Inactive'),
         },
       ];
@@ -65,6 +69,7 @@ const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
       return [
         {
           text: 'Mark goal Active',
+          color: colors.green,
           onPress: () => updateGoalStatus('Active'),
         },
       ];

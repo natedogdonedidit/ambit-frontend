@@ -24,6 +24,8 @@ const NotificationListItem = ({ navigation, notification }) => {
   if (style === 'MENTIONED_IN_POST' && !post) return null;
   if (style === 'MENTIONED_IN_COMMENT' && !comment) return null;
   if (style === 'MENTIONED_IN_UPDATE' && !post) return null;
+  if (style === 'GOAL_EXPIRE' && !post) return null;
+  if (style === 'GOAL_ALMOST_EXPIRE' && !post) return null;
 
   // CONSTANTS for dates
   const currentTime = new Date();
@@ -188,6 +190,20 @@ const NotificationListItem = ({ navigation, notification }) => {
         },
       ]);
     }
+    if (style === 'GOAL_EXPIRE' || style === 'GOAL_ALMOST_EXPIRE') {
+      if (post) {
+        return navigation.navigate('Post', { post });
+      }
+      // if post is missing from cache
+      Alert.alert('Oh no!', `We could not find that post`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
+    }
 
     return null;
   };
@@ -277,6 +293,22 @@ const NotificationListItem = ({ navigation, notification }) => {
         </Text>
       );
     }
+    if (style === 'GOAL_ALMOST_EXPIRE') {
+      return (
+        <Text style={defaultStyles.defaultLight}>
+          Your goal to <Text style={defaultStyles.defaultSemibold}>{post.goal}</Text> is about to expire due to inactivity
+        </Text>
+      );
+    }
+    if (style === 'GOAL_EXPIRE') {
+      return (
+        <Text style={defaultStyles.defaultLight}>
+          Your goal to <Text style={defaultStyles.defaultSemibold}>{post.goal}</Text> was marked{' '}
+          <Text style={{ ...defaultStyles.defaultSemibold, color: colors.orange }}>Inactive</Text>. If you're still working on
+          this goal add an update or change the status!
+        </Text>
+      );
+    }
 
     return '';
   };
@@ -301,13 +333,28 @@ const NotificationListItem = ({ navigation, notification }) => {
     return '';
   };
 
+  const getIcon = () => {
+    if (style === 'GOAL_ALMOST_EXPIRE') {
+      return <Icon name="history" size={30} color={colors.orange} style={{ paddingTop: 1 }} />;
+    }
+    if (style === 'GOAL_EXPIRE') {
+      return <Icon name="history" size={30} color={colors.orange} style={{ paddingTop: 1 }} />;
+    }
+
+    // if from user
+    if (from && from.id) {
+      return <ProfilePic size="medium" navigation={navigation} user={from} />;
+    }
+
+    // else
+    return <Icon name="star" solid size={30} color={colors.yellow} style={{ paddingTop: 1 }} />;
+  };
+
   // RETURN STATEMENT PULLS DATA FROM ABOVE FUNCTIONS
   return (
     <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={getNotificationOnPress}>
       <View style={styles.connection}>
-        <View style={styles.profilePicView}>
-          <ProfilePic size="medium" navigation={navigation} user={from} />
-        </View>
+        <View style={styles.profilePicView}>{getIcon()}</View>
         <View style={styles.rightSide}>
           <View style={styles.headlineRow}>
             <View style={{ flex: 1 }}>{getNotificationTitle()}</View>

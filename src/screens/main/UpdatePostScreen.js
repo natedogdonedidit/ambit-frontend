@@ -176,7 +176,7 @@ const UpdatePostScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} handleRight={handleSubmit} textRight="Update" title="Update Post" solidRight />
+      <HeaderBack navigation={navigation} handleRight={handleSubmit} textRight="Add" title="Update Goal" solidRight />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <View style={{ flex: 1 }}>
           <ScrollView style={{ flex: 1 }}>

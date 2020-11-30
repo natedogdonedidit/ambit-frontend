@@ -16,14 +16,14 @@ const SnapButton = ({ recording, mode, takePicture, takeVideo, stopVideo, videoD
     // videoDuration.addListener((val) => console.log(val));
 
     return (
-      <TouchableOpacity onPress={recording ? stopVideo : takeVideo} style={{ position: 'relative' }}>
+      <TouchableOpacity activeOpacity={0.7} onPress={recording ? stopVideo : takeVideo} style={{ position: 'relative' }}>
         {videoDur > 0 ? (
-          <Progress.Pie progress={videoDur} size={80} color={colors.red} unfilledColor="rgba(255,255,255,0.4)" borderWidth={0} />
+          <Progress.Pie progress={videoDur} size={80} color={colors.red} unfilledColor="rgba(255,255,255,0.6)" borderWidth={0} />
         ) : (
-          <Progress.Pie progress={0} size={80} color={colors.red} unfilledColor="rgba(255,255,255,0.4)" borderWidth={0} />
+          <Progress.Pie progress={0} size={80} color={colors.red} unfilledColor="rgba(255,255,255,0.6)" borderWidth={0} />
         )}
         <View
-          style={{ position: 'absolute', top: 9, left: 9, width: 62, height: 62, borderRadius: 36, backgroundColor: 'white' }}
+          style={{ position: 'absolute', top: 8, left: 8, width: 64, height: 64, borderRadius: 37, backgroundColor: 'white' }}
         />
         <View
           style={{ position: 'absolute', top: 32, left: 32, width: 16, height: 16, borderRadius: 8, backgroundColor: 'red' }}
@@ -32,7 +32,20 @@ const SnapButton = ({ recording, mode, takePicture, takeVideo, stopVideo, videoD
     );
   }
 
-  return <TouchableOpacity onPress={takePicture} style={styles.snapButton} />;
+  return (
+    <TouchableOpacity onPress={takePicture} style={styles.snapButton}>
+      <View
+        style={{
+          height: 64,
+          width: 64,
+          justifyContent: 'center',
+          alignItems: 'center',
+          borderRadius: 32,
+          backgroundColor: 'white',
+        }}
+      />
+    </TouchableOpacity>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -42,10 +55,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 40,
-    backgroundColor: colors.white,
-    // backgroundColor: 'rgba(0,0,0,0.1)',
-    borderWidth: 6,
-    borderColor: 'rgba(0,0,0,0.1)',
+    // backgroundColor: colors.white,
+    backgroundColor: 'rgba(255,255,255,0.6)',
+    // borderWidth: 10,
+    // borderColor: 'rgba(255,255,255,0.6)',
   },
 });
 

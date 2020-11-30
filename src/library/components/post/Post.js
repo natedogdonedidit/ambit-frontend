@@ -279,10 +279,12 @@ function Post({
         },
         {
           text: 'Mark goal Complete',
+          color: colors.purp,
           onPress: () => updateGoalStatus('Complete'),
         },
         {
           text: 'Mark goal Inactive',
+          color: colors.orange,
           onPress: () => updateGoalStatus('Inactive'),
         },
         {
@@ -302,10 +304,12 @@ function Post({
         },
         {
           text: 'Mark goal Active',
+          color: colors.green,
           onPress: () => updateGoalStatus('Active'),
         },
         {
           text: 'Mark goal Complete',
+          color: colors.purp,
           onPress: () => updateGoalStatus('Complete'),
         },
         {
@@ -320,6 +324,7 @@ function Post({
       return [
         {
           text: 'Mark goal Active',
+          color: colors.green,
           onPress: () => updateGoalStatus('Active'),
         },
         {

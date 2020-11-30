@@ -5,7 +5,9 @@ import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import USERS_QUERY from 'library/queries/USERS_QUERY';
+// import USERS_QUERY from 'library/queries/USERS_QUERY';
+import SUGGESTED_FOLLOWS from 'library/queries/SUGGESTED_FOLLOWS';
+
 import SuggestedConnection from 'library/components/lists/SuggestedConnection';
 import Section from 'library/components/UI/Section';
 import Loader from 'library/components/UI/Loader';
@@ -14,12 +16,7 @@ import { UserContext } from 'library/utils/UserContext';
 const MatchesForYou = ({ navigation, title, triggerRefresh }) => {
   const { currentUserId } = useContext(UserContext);
 
-  const { loading, error, data, refetch } = useQuery(USERS_QUERY, {
-    variables: {
-      where: {
-        id: { notIn: [currentUserId] },
-      },
-    },
+  const { loading, error, data, refetch } = useQuery(SUGGESTED_FOLLOWS, {
     fetchPolicy: 'cache-and-network',
   });
 
@@ -28,9 +25,12 @@ const MatchesForYou = ({ navigation, title, triggerRefresh }) => {
   }, [triggerRefresh]);
 
   const renderRows = () => {
-    if (error) return null;
+    if (error) {
+      console.log(error);
+      return <Text>{error.message}</Text>;
+    }
 
-    if (loading) {
+    if (!data && loading) {
       return (
         <View style={{ height: 70, width: '100%' }}>
           <Loader active size="small" full={false} backgroundColor={colors.white} />
@@ -38,12 +38,18 @@ const MatchesForYou = ({ navigation, title, triggerRefresh }) => {
       );
     }
 
-    if (data && data.users) {
-      return data.users.map((match) => <SuggestedConnection key={match.id} navigation={navigation} user={match} />);
+    if (data.suggestedFollows && data.suggestedFollows.length > 0) {
+      return data.suggestedFollows.map((match) => (
+        <SuggestedConnection key={match.id} navigation={navigation} user={match} showFollow />
+      ));
     }
-  };
 
-  if (error) return null;
+    return (
+      <View style={{ paddingVertical: 20, backgroundColor: 'white' }}>
+        <Text style={{ ...defaultStyles.largeMute, textAlign: 'center' }}>No suggested connections at this time</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>

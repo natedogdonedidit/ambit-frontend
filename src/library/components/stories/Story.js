@@ -254,7 +254,7 @@ function Story({
   // functions for "More" modal
   const removeFromProject = () => {
     // setPaused(true); // doesnt work
-    Alert.alert(`Are you sure you want to delete this ${activeItem.type.toLowerCase()} from your project?`, '', [
+    Alert.alert(`Are you sure you want to delete this ${activeItem.type.toLowerCase()}?`, '', [
       {
         text: `Delete`,
         onPress: () => {
@@ -282,11 +282,13 @@ function Story({
     ]);
   };
 
-  const removeFromIntro = () => {};
-
   const determineOptions = () => {
-    if (story.type === 'PROJECT') {
+    if (story.type === 'PROJECT' && story.items.length > 1) {
       return [
+        {
+          text: `Add another bit`,
+          onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
+        },
         {
           text: `Delete this ${activeItem.type.toLowerCase()}`,
           color: colors.peach,
@@ -299,12 +301,25 @@ function Story({
         },
       ];
     }
+    if (story.type === 'PROJECT') {
+      return [
+        {
+          text: `Add another bit`,
+          onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
+        },
+        {
+          text: `Delete this ${activeItem.type.toLowerCase()}`,
+          color: colors.peach,
+          onPress: removeFromProject,
+        },
+      ];
+    }
     if (story.type === 'INTRO') {
       return [
         {
           text: 'Delete Intro',
           color: colors.peach,
-          onPress: removeFromIntro,
+          onPress: removeFromProject,
         },
       ];
     }

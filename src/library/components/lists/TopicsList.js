@@ -10,10 +10,29 @@ import defaultStyles from 'styles/defaultStyles';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import RecommendedTopic from 'library/components/topics/RecommendedTopic';
+import { useQuery } from '@apollo/client';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 
 const TopicsList = ({ activeTopicIDs = [], handleTopicSelect, showFollowButton = false, topicType }) => {
   const [selectedCategories, setSelectedCategories] = useState('');
   const [searchText, setSearchText] = useState('');
+
+  const { data: dataTopics, loading: loadingTopics, error: errorTopics } = useQuery(CURRENT_USER_TOPICS);
+
+  const myTopics = useMemo(() => {
+    if (dataTopics && dataTopics.userLoggedIn && dataTopics.userLoggedIn.topicsFocus) {
+      // return combineFavoriteTopics(dataTopics.myTopics);
+      return dataTopics.userLoggedIn.topicsFocus.map((topic) => {
+        return {
+          topicID: topic.id,
+        };
+      });
+    }
+
+    return [];
+  }, [dataTopics]);
+
+  console.log(myTopics);
 
   const matchingTopics = useMemo(() => {
     // if search text changes - find matching topics
@@ -75,44 +94,76 @@ const TopicsList = ({ activeTopicIDs = [], handleTopicSelect, showFollowButton =
     }
 
     // IF NO SEARCH TEXT - RENDER THE FULL TOPICS LIST
-    return topicsList.map((mainTopic) => {
-      const { name, topicID, children, icon, color } = mainTopic;
+    const myTopicsExpanded = selectedCategories.includes('following');
+    const hasTopicsFollowing = myTopics && myTopics.length > 0;
 
-      const isExpanded = selectedCategories.includes(topicID);
-      const countSelected = activeTopicIDs.reduce((acc, val) => {
-        if (val.startsWith(topicID)) {
-          return acc + 1;
-        }
-        return acc;
-      }, 0);
-
-      return (
-        <View key={topicID}>
-          <TouchableOpacity activeOpacity={0.8} onPress={() => handleCategorySelect(topicID)}>
-            <View style={styles.mainRow}>
-              <View style={styles.iconView}>
-                <Icon name={icon} solid size={20} color={colors[color] || colors.blueGray} />
-              </View>
-              <Text style={styles.mainRowText}>{name}</Text>
-              <View style={{ flex: 1 }} />
-              {countSelected > 0 && (
-                <View style={styles.countCircle}>
-                  <Text style={{ ...defaultStyles.smallMedium, textAlign: 'center', color: colors.white }}>{countSelected}</Text>
+    return (
+      <View>
+        {/* My Topics Section */}
+        {hasTopicsFollowing && (
+          <View>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => handleCategorySelect('following')}>
+              <View style={styles.mainRow}>
+                <View style={styles.iconView}>
+                  <Icon name="star" solid size={20} color={colors.yellow} />
                 </View>
-              )}
+                <Text style={styles.mainRowText}>Following</Text>
+                <View style={{ flex: 1 }} />
+                <Ionicons
+                  name={myTopicsExpanded ? 'ios-chevron-down' : 'ios-chevron-forward'}
+                  size={22}
+                  color={colors.iconGray}
+                  style={{ paddingTop: 2 }}
+                />
+              </View>
+            </TouchableOpacity>
+            {myTopicsExpanded && myTopics.length > 0 && <View style={styles.subRowView}>{renderSubtopics(myTopics)}</View>}
+          </View>
+        )}
 
-              <Ionicons
-                name={isExpanded ? 'ios-chevron-down' : 'ios-chevron-forward'}
-                size={22}
-                color={colors.iconGray}
-                style={{ paddingTop: 2 }}
-              />
+        {/* All Topics Sections */}
+        {topicsList.map((mainTopic) => {
+          const { name, topicID, children, icon, color } = mainTopic;
+
+          const isExpanded = selectedCategories.includes(topicID);
+          const countSelected = activeTopicIDs.reduce((acc, val) => {
+            if (val.startsWith(topicID)) {
+              return acc + 1;
+            }
+            return acc;
+          }, 0);
+
+          return (
+            <View key={topicID}>
+              <TouchableOpacity activeOpacity={0.8} onPress={() => handleCategorySelect(topicID)}>
+                <View style={styles.mainRow}>
+                  <View style={styles.iconView}>
+                    <Icon name={icon} solid size={20} color={colors[color] || colors.blueGray} />
+                  </View>
+                  <Text style={styles.mainRowText}>{name}</Text>
+                  <View style={{ flex: 1 }} />
+                  {countSelected > 0 && (
+                    <View style={styles.countCircle}>
+                      <Text style={{ ...defaultStyles.smallMedium, textAlign: 'center', color: colors.white }}>
+                        {countSelected}
+                      </Text>
+                    </View>
+                  )}
+
+                  <Ionicons
+                    name={isExpanded ? 'ios-chevron-down' : 'ios-chevron-forward'}
+                    size={22}
+                    color={colors.iconGray}
+                    style={{ paddingTop: 2 }}
+                  />
+                </View>
+              </TouchableOpacity>
+              {isExpanded && children.length > 0 && <View style={styles.subRowView}>{renderSubtopics(children)}</View>}
             </View>
-          </TouchableOpacity>
-          {isExpanded && children.length > 0 && <View style={styles.subRowView}>{renderSubtopics(children)}</View>}
-        </View>
-      );
-    });
+          );
+        })}
+      </View>
+    );
   };
 
   return (

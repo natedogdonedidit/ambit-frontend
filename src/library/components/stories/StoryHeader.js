@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Feather from 'react-native-vector-icons/Feather';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -32,6 +33,9 @@ function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
   }, [activeItem]);
 
   if (!owner) return null;
+
+  // if is my post
+  const showAddToProjectButton = isMyPost;
 
   return (
     <View style={{ ...styles.absoluteTop, top: 18 }}>
@@ -71,6 +75,22 @@ function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
           <FollowButton userToFollowID={owner.id} username={owner.username} small onStory />
         </View>
       )}
+      {/* {isMyPost && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 4,
+            right: 12,
+          }}
+        >
+          <TouchableOpacity onPress={() => null} activeOpacity={0.5}>
+            <View style={styles.addButton}>
+              <Feather name="camera" size={12} color={colors.white} style={{ alignSelf: 'center', paddingRight: 5 }} />
+              <Text style={{ ...defaultStyles.smallSemibold, color: colors.white }}>Add</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )} */}
     </View>
   );
 }
@@ -87,6 +107,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
+  },
+  addButton: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...defaultStyles.shadowButton,
   },
 });
 

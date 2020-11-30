@@ -46,7 +46,7 @@ const PostClipModal = ({ navigation, route }) => {
   const [isNewProject, setIsNewProject] = useState(false); // false
 
   // if we are adding to a project { id, title, topic } - show title box (non-editable)
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(projectPassedIn && projectPassedIn.id ? projectPassedIn : null);
 
   const [isDescFocused, setIsDescFocused] = useState(false);
   const [isTitleFocused, setIsTitleFocused] = useState(false);
@@ -331,7 +331,7 @@ const PostClipModal = ({ navigation, route }) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     height: 32,
-                    borderRadius: 15,
+                    borderRadius: 10,
                     paddingHorizontal: 14,
                     backgroundColor: colors.systemGray6,
                   }}
@@ -341,7 +341,7 @@ const PostClipModal = ({ navigation, route }) => {
               )}
             </TouchableOpacity>
           </View>
-          <View style={{ width: 100, height: 160, borderRadius: 15, backgroundColor: colors.gray12, overflow: 'hidden' }}>
+          <View style={{ width: 100, height: 160, borderRadius: 10, backgroundColor: colors.gray12, overflow: 'hidden' }}>
             {capturedImage ? (
               <Image source={{ uri: capturedImage.uri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
             ) : (

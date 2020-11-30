@@ -199,8 +199,8 @@ const StoryModal = ({ navigation, route }) => {
     );
   }
 
-  console.log(storyQ);
-  console.log(storyQ.length);
+  // console.log(storyQ);
+  // console.log(storyQ.length);
 
   return (
     <View style={styles.container}>
@@ -225,7 +225,7 @@ const StoryModal = ({ navigation, route }) => {
         scrollEnabled={!disableOutterScroll}
         getItemLayout={(data, index) => ({ length: width, offset: width * index, index })}
         renderItem={({ item, index }) => {
-          console.log(index, item.id);
+          // console.log(index, item.id);
           const storyIsActive = index === activeStoryIndex;
 
           return (

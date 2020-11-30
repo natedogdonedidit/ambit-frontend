@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { StyleSheet, View, Text, Animated, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, Animated, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import { RNCamera } from 'react-native-camera';
@@ -31,6 +31,26 @@ const CameraControls = ({
   MAX_DURATION,
 }) => {
   const insets = useSafeAreaInsets();
+  const scrollRef = useRef(null);
+
+  // functions for Video/Photo mode scroll
+  const handleOnScroll = (event) => {
+    const scrollX = event.nativeEvent.contentOffset.x;
+    if (scrollX < 40 && mode === 'photo') {
+      setMode('video');
+    }
+    if (scrollX >= 40 && mode === 'video') {
+      setMode('photo');
+    }
+  };
+
+  const handlePressPhoto = () => {
+    scrollRef.current.scrollToEnd();
+  };
+
+  const handlePressVideo = () => {
+    scrollRef.current.scrollTo({ x: 0 });
+  };
 
   // CUSTOM FUNCTIONS
   const takePicture = async () => {
@@ -101,76 +121,102 @@ const CameraControls = ({
 
   // RENDER FUNCTIONS
   return (
-    <View style={{ ...styles.controls, bottom: insets.bottom + 40 }}>
-      <View style={styles.controlsLeft}>
-        <TouchableOpacity onPress={handleCameraRollButton} style={{ paddingRight: 40 }} activeOpacity={0.7}>
-          <View
-            style={{
-              width: 26,
-              height: 34,
-              borderWidth: 1.8,
-              borderColor: 'white',
-              borderRadius: 5,
-              overflow: 'hidden',
-            }}
-          >
-            {firstImage && <Image style={{ width: 24, height: 32 }} source={{ uri: firstImage }} />}
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={toggleFlash} activeOpacity={0.7}>
-          <View>
-            <Feather
-              name={flashMode === 'off' ? 'zap-off' : 'zap'}
-              size={26}
-              color={colors.white}
-              solid
-              style={{ textAlign: 'center', paddingTop: 1 }}
-            />
-            {flashMode === 'auto' && (
-              <View style={styles.autoText}>
-                <Text style={{ ...defaultStyles.smallBold, color: colors.white }}>A</Text>
-              </View>
-            )}
-          </View>
-        </TouchableOpacity>
+    <View style={{ ...styles.container, bottom: insets.bottom + 10 }}>
+      {/* top row - buttons */}
+      <View style={styles.controls}>
+        <View style={styles.controlsLeft}>
+          <TouchableOpacity onPress={handleCameraRollButton} style={{ paddingRight: 30 }} activeOpacity={0.7}>
+            <View
+              style={{
+                width: 26,
+                height: 34,
+                borderWidth: 1.8,
+                borderColor: 'white',
+                borderRadius: 5,
+                overflow: 'hidden',
+              }}
+            >
+              {firstImage && <Image style={{ width: 24, height: 32 }} source={{ uri: firstImage }} />}
+            </View>
+          </TouchableOpacity>
+        </View>
+        <SnapButton
+          // videoDuration={videoDuration}
+          videoDur={videoDur}
+          mode={mode}
+          recording={recording}
+          takePicture={takePicture}
+          takeVideo={takeVideo}
+          stopVideo={stopVideo}
+        />
+        <View style={styles.controlsRight}>
+          <TouchableOpacity onPress={toggleDirection} style={{ paddingLeft: 30, paddingRight: 40 }} activeOpacity={0.7}>
+            <Feather name="refresh-cw" size={26} color={colors.white} style={{ textAlign: 'center', paddingTop: 1 }} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={toggleFlash} activeOpacity={0.7}>
+            <View>
+              <Feather
+                name={flashMode === 'off' ? 'zap-off' : 'zap'}
+                size={26}
+                color={colors.white}
+                solid
+                style={{ textAlign: 'center', paddingTop: 1 }}
+              />
+              {flashMode === 'auto' && (
+                <View style={styles.autoText}>
+                  <Text style={{ ...defaultStyles.smallBold, color: colors.white }}>A</Text>
+                </View>
+              )}
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
-      {/* {renderSnapButton()} */}
-      <SnapButton
-        // videoDuration={videoDuration}
-        videoDur={videoDur}
-        mode={mode}
-        recording={recording}
-        takePicture={takePicture}
-        takeVideo={takeVideo}
-        stopVideo={stopVideo}
-      />
-      <View style={styles.controlsRight}>
-        <TouchableOpacity onPress={toggleDirection} style={{ paddingRight: 40 }} activeOpacity={0.7}>
-          <Feather name="refresh-cw" size={26} color={colors.white} style={{ textAlign: 'center', paddingTop: 1 }} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={toggleMode} activeOpacity={0.7}>
-          <Feather
-            name={mode === 'photo' ? 'video' : 'camera'}
-            size={26}
-            color={colors.white}
-            solid
-            style={{ textAlign: 'center', paddingTop: 1 }}
-          />
-        </TouchableOpacity>
+      {/* bottom row - scroll */}
+      <View style={{ flexDirection: 'row' }}>
+        <View style={{ flex: 1 }} />
+        <View style={{ width: 80 * 3 }}>
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            snapToInterval={80}
+            snapToAlignment="center"
+            decelerationRate={0}
+            disableIntervalMomentum
+            // overScrollMode="never"
+            // alwaysBounceHorizontal={false}
+            // scrollToOverflowEnabled
+            // pagingEnabled
+            // centerContent
+            style={{ flex: 1, paddingTop: 12 }}
+            onScroll={handleOnScroll}
+          >
+            <View style={{ width: 80 }} />
+            <TouchableOpacity activeOpacity={1} onPress={handlePressVideo} style={{ width: 80 }}>
+              <Text style={mode === 'video' ? styles.modeOnText : styles.modeOffText}>Video</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={1} onPress={handlePressPhoto} style={{ width: 80 }}>
+              <Text style={mode === 'photo' ? styles.modeOnText : styles.modeOffText}>Photo</Text>
+            </TouchableOpacity>
+            <View style={{ width: 80 }} />
+          </ScrollView>
+        </View>
+
+        <View style={{ flex: 1 }} />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  controls: {
-    flexDirection: 'row',
+  container: {
     width: '100%',
     position: 'absolute',
     bottom: 40,
     left: 0,
-    // backgroundColor: 'rgba(0,0,0,0.1)',
-    // paddingBottom: 40,
+  },
+  controls: {
+    flexDirection: 'row',
   },
   snapButton: {
     height: 80,
@@ -186,19 +232,32 @@ const styles = StyleSheet.create({
   controlsLeft: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   controlsRight: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
   },
   autoText: {
     position: 'absolute',
     bottom: -2,
     right: -1,
+  },
+  modeOnText: {
+    ...defaultStyles.hugeSemibold,
+    fontSize: 18,
+    textAlign: 'center',
+    color: 'white',
+  },
+  modeOffText: {
+    ...defaultStyles.hugeMedium,
+    fontSize: 18,
+    textAlign: 'center',
+    color: 'white',
+    opacity: 0.6,
   },
 });
 

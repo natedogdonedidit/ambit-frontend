@@ -7,6 +7,7 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 
 import Post from 'library/components/post/Post';
 import Update from 'library/components/post/Update';
+import ShowUpdatesButton from './ShowUpdatesButton';
 
 function PostGroupTL({
   navigation,
@@ -98,7 +99,7 @@ function PostGroupTL({
     );
   }
 
-  // if there are no updates
+  // if there are no updates - just show the post
   if (!hasUpdates) {
     return (
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
@@ -116,7 +117,40 @@ function PostGroupTL({
     );
   }
 
-  // if there are updates, show latest one
+  // if there are updates
+
+  // if there is only one update - show it
+  if (post.updates.length === 1) {
+    return (
+      <View style={{ borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }}>
+        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+          <Post
+            post={post}
+            navigation={navigation}
+            showLine
+            hideButtons={hideButtons}
+            showDetails={showDetails}
+            disableVideo={disableVideo}
+            showTopBorder={showTopBorder}
+            showRepost={showRepost}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+          <Update
+            post={post}
+            update={post.updates[0]}
+            updateInd={0}
+            navigation={navigation}
+            hideButtons={hideButtons}
+            hideTopLine
+            disableVideo
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  // if there is multiple updates - show latest one w/ "show more" button
   return (
     <View style={{ borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }}>
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
@@ -131,6 +165,7 @@ function PostGroupTL({
           showRepost={showRepost}
         />
       </TouchableOpacity>
+      <ShowUpdatesButton navigation={navigation} post={post} />
       <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
         <Update
           post={post}

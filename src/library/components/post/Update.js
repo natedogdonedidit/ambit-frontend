@@ -208,7 +208,7 @@ function Update({
           />
           {showLine && <View style={styles.threadLine} />}
         </View>
-        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 20 }]}>
+        <View style={[{ ...styles.rightColumn }, showLine && { paddingBottom: 25 }]}>
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}

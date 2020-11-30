@@ -13,6 +13,9 @@ const PostUpdates = ({ navigation, post, currentTime }) => {
   return (
     <Section text="Updates">
       {post.updates.map((update, i) => {
+        const showLine = post.updates.length > 1 && i < post.updates.length - 1;
+        const hideTopLine = post.updates.length > 1 && i > 0;
+
         return (
           <TouchableOpacity
             key={update.id}
@@ -21,7 +24,15 @@ const PostUpdates = ({ navigation, post, currentTime }) => {
               navigation.navigate('Update', { updatePassedIn: update });
             }}
           >
-            <Update post={post} update={update} updateInd={i} currentTime={currentTime} navigation={navigation} />
+            <Update
+              post={post}
+              update={update}
+              updateInd={i}
+              currentTime={currentTime}
+              navigation={navigation}
+              showLine={showLine}
+              hideTopLine={hideTopLine}
+            />
           </TouchableOpacity>
         );
       })}
