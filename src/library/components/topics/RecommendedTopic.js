@@ -86,7 +86,7 @@ const RecommendedTopic = ({
       ]}
       activeOpacity={0.7}
       disabled={!allowNavigation}
-      onPress={() => navigation.navigate('Topic', { topicID })}
+      onPress={() => navigation.navigate({ name: 'Topic', key: `Topic:${topicID}`, params: { topicID } })}
     >
       {showPic && (
         <View style={{ paddingRight: 15 }}>

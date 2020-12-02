@@ -28,7 +28,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const [showRefreshing, setShowRefreshing] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
   const [refetchingStories, setRefetchingStories] = useState(false);
-  const [activeTimeline, setActiveTimeline] = useState(0);
+  const [activeTimeline, setActiveTimeline] = useState(1);
 
   // QUERIES
   const { data: dataFollowing } = useQuery(CURRENT_USER_FOLLOWING);

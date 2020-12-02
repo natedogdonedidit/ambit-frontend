@@ -12,6 +12,7 @@ import UPDATE_STORY_ITEM_MUTATION from 'library/mutations/UPDATE_STORY_ITEM_MUTA
 import { StoryItemFragment } from 'library/queries/_fragments';
 import { UserContext } from 'library/utils/UserContext';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import StoryTapRegions from 'library/components/stories/StoryTapRegions';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
 function areEqual(prevProps, nextProps) {
@@ -36,18 +37,17 @@ function StoryFooter({
   isMyPost,
   handleMoreButton,
   setPaused,
-  favoriteTopics,
-  setDisableOutterScroll,
+
+  decrementIndex,
+  incrementIndex,
+  // favoriteTopics,
+  // setDisableOutterScroll,
 }) {
   const { currentUserId } = useContext(UserContext);
-  // console.log(item.likedByMe, item.text);
 
-  // const [topicsSorted, setTopicsSorted] = useState([]);
   const [isLiked, setIsLiked] = useState(item.likedByMe);
   const [likesCount, setLikesCount] = useState(item.likesCount);
   const [sentMutation, setSentMutation] = useState(false);
-
-  // console.log(isLiked, item.text);
 
   const { owner, title, type, topic } = story;
   const { intro } = owner;
@@ -61,36 +61,6 @@ function StoryFooter({
   const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UPDATE_STORY_ITEM_MUTATION, {
     onError: () => null,
   });
-
-  // useEffect(() => {
-  //   if (type === 'PROJECT' && topics && topics.length > 0) {
-  //     // sort the topics based on favoriteTopics array passed in
-  //     const sortTopics = (a, b) => {
-  //       const indexOfA = favoriteTopics.indexOf(a.topicID);
-  //       const indexOfB = favoriteTopics.indexOf(b.topicID);
-
-  //       // if a is a favorite but not b
-  //       if (indexOfA >= 0 && indexOfB === -1) {
-  //         return -1;
-  //       }
-  //       // if b is a favorite but not a
-  //       if (indexOfB >= 0 && indexOfA === -1) {
-  //         return 1;
-  //       }
-  //       // if both are favorites
-  //       if (indexOfA >= 0 && indexOfB >= 0) {
-  //         if (indexOfA < indexOfB) {
-  //           return -1;
-  //         }
-  //         return 1;
-  //       }
-  //       // if neither are favorites
-  //       return -1;
-  //     };
-  //     const topicsSortedNew = [...topics].sort(sortTopics);
-  //     setTopicsSorted(topicsSortedNew);
-  //   }
-  // }, [topics, favoriteTopics]);
 
   // if the item isn't active...don't render anything. But this will allow us to keep our state (isLiked, likeCount)
   if (!itemIsActive) {
@@ -126,7 +96,8 @@ function StoryFooter({
           },
         });
       });
-    } else if (!isLiked && !sentMutation) {
+      // } else if (!isLiked && !sentMutation) { // did this to prevent liking then unlinking right away race condition
+    } else if (!isLiked) {
       setSentMutation(true);
       setIsLiked(true);
       setLikesCount(likesCount + 1);
@@ -431,11 +402,19 @@ function StoryFooter({
   };
 
   return (
-    <View style={{ ...styles.container, bottom: 5 }}>
-      <View style={styles.textAndTopics}>{renderTextAndTopics()}</View>
-      <View style={styles.bottomRow}>{renderBottomRow()}</View>
-      <View style={styles.sideButtonContainer}>{renderActions()}</View>
-    </View>
+    <>
+      <StoryTapRegions
+        decrementIndex={decrementIndex}
+        incrementIndex={incrementIndex}
+        handleLike={handleLike}
+        setPaused={setPaused}
+      />
+      <View style={{ ...styles.container, bottom: 5 }}>
+        <View style={styles.textAndTopics}>{renderTextAndTopics()}</View>
+        <View style={styles.bottomRow}>{renderBottomRow()}</View>
+        <View style={styles.sideButtonContainer}>{renderActions()}</View>
+      </View>
+    </>
   );
 }
 

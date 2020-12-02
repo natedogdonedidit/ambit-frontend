@@ -41,7 +41,7 @@ import SubComment from 'library/components/post/SubComment';
 import CoolText from 'library/components/UI/CoolText';
 import MentionsSelect from 'library/components/MentionsSelect';
 
-const CommentScreen = ({ navigation, route }) => {
+const AddCommentModal = ({ navigation, route }) => {
   const scrollViewRef = useRef(null);
   // const inputRef = useRef(null);
 
@@ -158,20 +158,20 @@ const CommentScreen = ({ navigation, route }) => {
     }
 
     try {
+      navigation.goBack();
       const uploadedImage = await uploadImage();
-      // navigation.navigate('Post', { post: parentPost });
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [
-            { name: 'Home' },
-            {
-              name: 'Post',
-              params: { post: parentPost },
-            },
-          ],
-        })
-      );
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 1,
+      //     routes: [
+      //       { name: 'Home' },
+      //       {
+      //         name: 'Post',
+      //         params: { post: parentPost },
+      //       },
+      //     ],
+      //   })
+      // );
 
       if (!loadingMutation) {
         createOneComment({
@@ -279,7 +279,10 @@ const CommentScreen = ({ navigation, route }) => {
     // if its just a stand-alone Post
     if (!isUpdate) {
       return (
-        <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        >
           <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons showLine />
         </TouchableOpacity>
       );
@@ -521,4 +524,4 @@ const styles = StyleSheet.create({
   // },
 });
 
-export default CommentScreen;
+export default AddCommentModal;

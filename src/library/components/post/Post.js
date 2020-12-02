@@ -274,8 +274,8 @@ function Post({
       return [
         {
           text: 'Add an update',
-          onPress: () => navigation.navigate('UpdatePost', { post }),
-          closeModal: false,
+          onPress: () => navigation.navigate('AddUpdateModal', { post }),
+          // closeModal: false,
         },
         {
           text: 'Mark goal Complete',
@@ -299,8 +299,8 @@ function Post({
       return [
         {
           text: 'Add an update',
-          onPress: () => navigation.navigate('UpdatePost', { post }),
-          closeModal: false,
+          onPress: () => navigation.navigate('AddUpdateModal', { post }),
+          // closeModal: false,
         },
         {
           text: 'Mark goal Active',
@@ -329,8 +329,8 @@ function Post({
         },
         {
           text: 'Add an update',
-          onPress: () => navigation.navigate('UpdatePost', { post }),
-          closeModal: false,
+          onPress: () => navigation.navigate('AddUpdateModal', { post }),
+          // closeModal: false,
         },
         {
           text: 'Delete post',
@@ -515,7 +515,13 @@ function Post({
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('Profile', { username: post.owner.username })}
+              onPress={() =>
+                navigation.navigate({
+                  name: 'Profile',
+                  key: `Profile:${post.owner.username}`,
+                  params: { username: post.owner.username },
+                })
+              }
               hitSlop={{ top: 5, left: 0, bottom: 20, right: 20 }}
               style={{ flexDirection: 'row', alignItems: 'center' }}
             >
@@ -608,7 +614,7 @@ function Post({
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <View style={{ paddingLeft: 30 }}>
-                    <Comment onPress={() => navigation.navigate('Comment', { post })} />
+                    <Comment onPress={() => navigation.navigate('AddCommentModal', { post })} />
                   </View>
                   <View style={{ paddingLeft: 30 }}>
                     <Heart liked={post.likedByMe} onPress={() => handleLike()} />
@@ -628,7 +634,7 @@ function Post({
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={styles.buttons}>
                   <View style={styles.button}>
-                    <Comment onPress={() => navigation.navigate('Comment', { post })} />
+                    <Comment onPress={() => navigation.navigate('AddCommentModal', { post })} />
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>
                       {post.commentsCount <= 0 ? null : post.commentsCount}
                     </Text>

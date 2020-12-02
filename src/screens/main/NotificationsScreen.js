@@ -63,7 +63,7 @@ const NotificationsScreen = ({ navigation }) => {
       // map over goals and create a notifcation for each (if about to expire)
       // setting the goal to inactive and creating the "your goal expired" notification happens on server
 
-      return dataPostsMyGoals.posts.map((post) => {
+      return dataPostsMyGoals.posts.reduce((acc, post) => {
         if (post.goal && post.goalStatus === 'Active') {
           const today = new Date();
           const daysSinceUpdated = differenceInCalendarDays(today, new Date(post.lastUpdated));
@@ -72,17 +72,19 @@ const NotificationsScreen = ({ navigation }) => {
 
           // if today is after dateToNotify, create notifcation
           if (isAlmostInactive) {
-            return {
+            const newNotif = {
               id: post.id,
               createdAt: new Date(),
               style: 'GOAL_ALMOST_EXPIRE',
               post,
               seen: false,
             };
+
+            return [...acc, newNotif];
           }
         }
-        return null;
-      });
+        return acc;
+      }, []);
     }
 
     return [];
@@ -168,7 +170,7 @@ const NotificationsScreen = ({ navigation }) => {
   const { notifications } = data;
 
   const notificationsWithInactiveGoals = [...almostInactiveGoals, ...notifications];
-  // console.log('inactive goals:', almostInactiveGoals);
+  // console.log('chad:', notificationsWithInactiveGoals);
 
   if (!data || !notifications) {
     return (
@@ -267,10 +269,7 @@ const NotificationsScreen = ({ navigation }) => {
         data={notificationsWithInactiveGoals}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
-          if (item && item.id) {
-            return <NotificationListItem navigation={navigation} notification={item} />;
-          }
-          return null;
+          return <NotificationListItem navigation={navigation} notification={item} />;
         }}
       />
       {/* Gives a solid background to the StatusBar */}

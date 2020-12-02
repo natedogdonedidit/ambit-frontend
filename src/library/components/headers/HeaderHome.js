@@ -9,10 +9,13 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import { HEADER_HEIGHT } from 'styles/constants';
+import { useNavigation } from '@react-navigation/native';
 
-const HeaderHome = ({ navigation, handleMiddle, handleTopicsButton, homePosition }) => {
+const HeaderHome = ({ handleMiddle, handleTopicsButton, homePosition }) => {
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
   const { userLoggedIn } = data;
+
+  const navigation = useNavigation();
 
   return (
     <View style={{ ...styles.container }}>

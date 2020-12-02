@@ -46,7 +46,7 @@ function StoriesHome2({ navigation, refetching, setLoadingStories, setRefetching
       return null;
     }
 
-    console.log(favoriteTopics);
+    // console.log(favoriteTopics);
 
     return favoriteTopics.map((topic) => {
       return <ExploreTopicButton key={topic.id} navigation={navigation} topicID={topic.id} refetching={refetching} />;

@@ -21,7 +21,11 @@ const PostUpdates = ({ navigation, post, currentTime }) => {
             key={update.id}
             activeOpacity={1}
             onPress={() => {
-              navigation.navigate('Update', { updatePassedIn: update });
+              navigation.navigate({
+                name: 'Update',
+                key: `Update:${update.id}`,
+                params: { updatePassedIn: update },
+              });
             }}
           >
             <Update

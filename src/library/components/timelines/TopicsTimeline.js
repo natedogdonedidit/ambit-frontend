@@ -158,6 +158,8 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
                 backgroundColor: 'white',
                 borderBottomColor: colors.borderBlack,
                 borderBottomWidth: StyleSheet.hairlineWidth,
+                borderTopColor: colors.borderBlack,
+                borderTopWidth: StyleSheet.hairlineWidth,
               }}
             >
               {hasStories ? (
@@ -246,7 +248,7 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
               )} */}
               <Text style={{ ...defaultStyles.smallMute, paddingTop: 12 }}>1,724 Followers</Text>
             </View>
-
+            <View style={{ height: 10 }} />
             {/* <StoriesTopic topicID={activeTopicID} navigation={navigation} refetching={refetching} /> */}
           </View>
         }
@@ -269,8 +271,9 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
         )}
         data={posts}
         keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => {
-          return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} />;
+        renderItem={({ item, index }) => {
+          console.log(index);
+          return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} showTopBorder={index === 0} />;
         }}
         // onEndReachedThreshold={1.2}
         // onEndReached={(info) => {

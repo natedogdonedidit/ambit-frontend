@@ -41,6 +41,12 @@ import SelectTopicsInterestModal from 'screens/main/modals/profile/SelectTopicsI
 import SelectTopicsFreelanceModal from 'screens/main/modals/profile/SelectTopicsFreelanceModal';
 import SelectTopicsInvestModal from 'screens/main/modals/profile/SelectTopicsInvestModal';
 import SelectTopicsMentorModal from 'screens/main/modals/profile/SelectTopicsMentorModal';
+import MyMentorScreen from 'screens/main/MyMentorScreen';
+import MyFreelanceScreen from 'screens/main/MyFreelanceScreen';
+import MyInvestScreen from 'screens/main/MyInvestScreen';
+import MyNetworkScreen from 'screens/main/MyNetworkScreen';
+import AddUpdateModal from 'screens/main/modals/post/AddUpdateModal';
+import AddCommentModal from 'screens/main/modals/post/AddCommentModal';
 
 // popups
 import SelectorModal from 'screens/main/modals/general/SelectorModal';
@@ -163,6 +169,34 @@ const MainStack = ({ navigation }) => {
         }}
       />
       <Stack.Screen name="NewPostModal" component={NewPostModal} />
+      <Stack.Screen
+        name="MyFreelance"
+        component={MyFreelanceScreen}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="MyInvest"
+        component={MyInvestScreen}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="MyMentor"
+        component={MyMentorScreen}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="MyNetwork"
+        component={MyNetworkScreen}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
       <Stack.Screen name="ImageViewerModal" component={ImageViewerModal} />
       <Stack.Screen
         name="CustomGoalModal"
@@ -262,6 +296,21 @@ const MainStack = ({ navigation }) => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
+      <Stack.Screen
+        name="AddUpdateModal"
+        component={AddUpdateModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      <Stack.Screen
+        name="AddCommentModal"
+        component={AddCommentModal}
+        options={{
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+      />
+      
       <Stack.Screen name="YearModal" component={YearModal} options={halfModalOptions} />
       <Stack.Screen name="MonthModal" component={MonthModal} options={halfModalOptions} />
     </Stack.Navigator>

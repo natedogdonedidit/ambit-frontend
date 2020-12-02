@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { sub, isBefore } from 'date-fns';
@@ -6,6 +6,7 @@ import { sub, isBefore } from 'date-fns';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { enableScreens } from 'react-native-screens';
+import { UserContext } from 'library/utils/UserContext';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
@@ -21,6 +22,8 @@ const ProfilePic = ({
   extraBorder = 0, // adds a white ring around outside
   extraColorBorder = 0.4,
 }) => {
+  const { activeTab } = useContext(UserContext);
+
   // set the size of the profile pic
   let sizePX = 46;
   if (size === 'small') {
@@ -291,7 +294,19 @@ const ProfilePic = ({
         style={border ? styles.whiteBorder : styles.noBorder}
         disabled={!enableClick}
         activeOpacity={0.9}
-        onPress={() => navigation.navigate('Profile', { profileId: user.id, username: user.username })}
+        onPress={() => {
+          // console.log(activeTab);
+          // navigation.navigate({
+          //   name: 'Profile',
+          //   key: `Profile:${user.username}`,
+          //   params: { username: user.username },
+          // })
+          navigation.navigate(activeTab || 'HomeStack', {
+            screen: 'Profile',
+            key: `Profile:${user.username}`,
+            params: { username: user.username },
+          });
+        }}
       >
         <Image
           style={{ ...styles.profilePic }}

@@ -16,6 +16,7 @@ const UserContextProvider = (props) => {
   const [currentUsername, setCurrentUsername] = useState('');
   const [homePosition, setHomePosition] = useState(0);
   const [goToTopics, setGoToTopics] = useState(false);
+  const [activeTab, setActiveTab] = useState('HomeStack');
 
   const client = useApolloClient();
 
@@ -96,6 +97,8 @@ const UserContextProvider = (props) => {
         setCreatingStory,
         goToTopics,
         setGoToTopics,
+        activeTab,
+        setActiveTab,
       }}
     >
       {props.children}

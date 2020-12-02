@@ -132,7 +132,7 @@ const ActiveGoalMatchesItem = ({ navigation, post, triggerRefresh }) => {
       activeOpacity={0.7}
       style={styles.container}
       onPress={() => {
-        navigation.navigate('PostMatches', { post });
+        navigation.navigate({ name: 'PostMatches', key: `PostMatches:${post.id}`, params: { post } });
       }}
     >
       <View style={styles.iconView}>{renderIcon()}</View>

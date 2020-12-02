@@ -17,7 +17,9 @@ const UserListItem = ({ navigation, user }) => {
     <TouchableOpacity
       activeOpacity={0.7}
       style={styles.container}
-      onPress={() => navigation.navigate('Profile', { username: user.username })}
+      onPress={() =>
+        navigation.navigate({ name: 'Profile', key: `Profile:${user.username}`, params: { username: user.username } })
+      }
     >
       <View style={styles.connection}>
         <View style={styles.profilePicView}>

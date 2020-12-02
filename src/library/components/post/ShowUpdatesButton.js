@@ -9,7 +9,7 @@ const ShowUpdatesButton = ({ navigation, post }) => {
   return (
     <TouchableOpacity
       activeOpacity={1}
-      onPress={() => navigation.navigate('Post', { post })}
+      onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
       style={{ flexDirection: 'row', backgroundColor: 'white' }}
     >
       <View style={styles.leftColumn}>
@@ -21,7 +21,7 @@ const ShowUpdatesButton = ({ navigation, post }) => {
       </View>
       <TouchableOpacity
         activeOpacity={0.6}
-        onPress={() => navigation.navigate('Post', { post })}
+        onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
         style={{ justifyContent: 'center', paddingBottom: 15 }}
       >
         <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>Show previous updates</Text>

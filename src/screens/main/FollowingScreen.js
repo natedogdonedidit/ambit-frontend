@@ -11,9 +11,11 @@ import SINGLE_USER_FOLLOW_LIST from 'library/queries/SINGLE_USER_FOLLOW_LIST';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import UserListItem from 'library/components/lists/UserListItem';
+import { useNavigation } from '@react-navigation/native';
 
-const FollowingScreen = ({ navigation, route }) => {
+const FollowingScreen = ({ route }) => {
   const { username, followingCount } = route.params;
+  const navigation = useNavigation();
 
   // QUERIES
   const { error, data, refetch, networkStatus } = useQuery(SINGLE_USER_FOLLOW_LIST, {

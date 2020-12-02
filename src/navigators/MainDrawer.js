@@ -3,17 +3,13 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import TabsNavigator from 'navigators/TabsNavigator';
 import CustomDrawer from 'library/components/CustomDrawer';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 
 const MainDrawer = () => {
   return (
-    <Drawer.Navigator
-      initialRouteName="Tabs"
-      headerMode="none"
-      drawerType="slide"
-      drawerContent={({ navigation }) => <CustomDrawer navigation={navigation} />}
-    >
+    <Drawer.Navigator initialRouteName="Tabs" headerMode="none" drawerType="slide" drawerContent={() => <CustomDrawer />}>
       <Drawer.Screen name="Tabs" component={TabsNavigator} />
     </Drawer.Navigator>
   );

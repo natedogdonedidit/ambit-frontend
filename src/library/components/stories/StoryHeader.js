@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
@@ -8,6 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import { timeDifference } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import FollowButton from 'library/components/UI/buttons/FollowButton';
+import { UserContext } from 'library/utils/UserContext';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
 function areEqual(prevProps, nextProps) {
@@ -32,6 +33,8 @@ function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
     return timeDifference(timeOfDay, createdAt);
   }, [activeItem]);
 
+  const { activeTab } = useContext(UserContext);
+
   if (!owner) return null;
 
   // if is my post
@@ -50,7 +53,11 @@ function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
         />
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('Profile', { username: owner.username });
+            navigation.navigate(activeTab || 'HomeStack', {
+              screen: 'Profile',
+              key: `Profile:${owner.username}`,
+              params: { username: owner.username },
+            });
           }}
         >
           <View>

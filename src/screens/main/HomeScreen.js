@@ -74,7 +74,7 @@ const HomeScreen = ({ navigation }) => {
 
   // if press top button --> auto scroll
   const handleTopicsButton = () => {
-    console.log(homePosition);
+    // console.log(homePosition);
     if (homePosition === 0) {
       horizontalScrollRef.current.scrollToEnd();
     } else {

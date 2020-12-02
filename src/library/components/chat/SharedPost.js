@@ -27,7 +27,11 @@ const SharedPost = ({ message, navigation }) => {
   const { owner, content } = post;
 
   return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.container} onPress={() => navigation.navigate('Post', { post })}>
+    <TouchableOpacity
+      activeOpacity={0.8}
+      style={styles.container}
+      onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+    >
       <View style={styles.top}>
         <ProfilePic user={owner} size="small" navigation={navigation} enableIntro={false} enableStory={false} />
         <View style={{ paddingLeft: 12 }}>

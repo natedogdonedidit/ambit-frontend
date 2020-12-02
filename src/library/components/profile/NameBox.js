@@ -37,7 +37,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
         ) : (
           <>
             <MessageButton
-              onPress={() => navigation.navigate('Chat', { otherUserPassedIn: user })}
+              onPress={() => navigation.navigate({ name: 'Chat', key: `Chat:${user.id}`, params: { otherUserPassedIn: user } })}
               buttonStyle={{ marginRight: 6 }}
             />
             {/* <ConnectButton onPress={() => null} buttonStyle={{ marginRight: 10 }} /> */}

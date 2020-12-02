@@ -2,24 +2,18 @@ import React, { useEffect, useContext } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import analytics from '@segment/analytics-react-native';
 
+import { UserContext } from 'library/utils/UserContext';
+
 import HomeScreen from 'screens/main/HomeScreen';
 import ChatScreen from 'screens/main/ChatScreen';
 import ProfileScreen from 'screens/main/ProfileScreen';
 import PostScreen from 'screens/main/PostScreen';
 import PostMatchesScreen from 'screens/main/PostMatchesScreen';
 import UpdateScreen from 'screens/main/UpdateScreen';
-import CommentScreen from 'screens/main/CommentScreen';
-import UpdatePostScreen from 'screens/main/UpdatePostScreen';
 import TopicScreen from 'screens/main/TopicScreen2';
 import SearchScreen from 'screens/main/SearchScreen';
-import MyTopicsScreen from 'screens/main/MyTopicsScreen';
-import MyMentorScreen from 'screens/main/MyMentorScreen';
 import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';
-import { UserContext } from 'library/utils/UserContext';
-import MyFreelanceScreen from '../screens/main/MyFreelanceScreen';
-import MyInvestScreen from '../screens/main/MyInvestScreen';
-import MyNetworkScreen from '../screens/main/MyNetworkScreen';
 
 const Stack = createStackNavigator();
 
@@ -56,30 +50,10 @@ const HomeStack = ({ navigation, route }) => {
           },
         }}
       />
-      <Stack.Screen
-        name="Profile"
-        component={ProfileScreen}
-        listeners={{
-          focus: () => {
-            // console.log('User opened Profile Screen');
-            // analytics.screen('Profile Screen');
-          },
-        }}
-      />
-      <Stack.Screen
-        name="Post"
-        component={PostScreen}
-        listeners={{
-          focus: () => {
-            // console.log('User opened Post Screen');
-            // analytics.screen('Post Screen');
-          },
-        }}
-      />
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Post" component={PostScreen} />
       <Stack.Screen name="PostMatches" component={PostMatchesScreen} />
       <Stack.Screen name="Update" component={UpdateScreen} />
-      <Stack.Screen name="UpdatePost" component={UpdatePostScreen} />
-      <Stack.Screen name="Comment" component={CommentScreen} />
       <Stack.Screen name="Topic" component={TopicScreen} />
       <Stack.Screen name="Followers" component={FollowersScreen} />
       <Stack.Screen name="Following" component={FollowingScreen} />
@@ -94,12 +68,6 @@ const HomeStack = ({ navigation, route }) => {
           locationLonToSearch: null,
         }}
       />
-      <Stack.Screen name="MyTopics" component={MyTopicsScreen} />
-      <Stack.Screen name="MyFreelance" component={MyFreelanceScreen} />
-      <Stack.Screen name="MyInvest" component={MyInvestScreen} />
-      <Stack.Screen name="MyMentor" component={MyMentorScreen} />
-      <Stack.Screen name="MyNetwork" component={MyNetworkScreen} />
-
       <Stack.Screen name="Chat" component={ChatScreen} />
     </Stack.Navigator>
   );

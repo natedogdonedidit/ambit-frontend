@@ -9,10 +9,12 @@ import { HEADER_HEIGHT } from 'styles/constants';
 
 import TextButton from 'library/components/UI/buttons/TextButton';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
+import { useNavigation } from '@react-navigation/native';
 
-const HeaderBack = ({ navigation, handleRight, textRight, title, solidRight, pressed }) => {
+const HeaderBack = ({ handleRight, textRight, title, solidRight, pressed }) => {
   const insets = useSafeAreaInsets();
   const [top, setTop] = useState(insets.top); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (insets.top > 0) {

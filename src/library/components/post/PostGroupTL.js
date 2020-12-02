@@ -30,7 +30,11 @@ function PostGroupTL({
       if (i !== post.updates.length - 1) showLine = true;
       if (i === post.updates.length - 1 && showLastLine) showLine = true;
       return (
-        <TouchableOpacity key={update.id} activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity
+          key={update.id}
+          activeOpacity={1}
+          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        >
           <Update
             post={post}
             update={update}
@@ -50,7 +54,10 @@ function PostGroupTL({
   if (showAll) {
     return (
       <>
-        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        >
           <Post
             post={post}
             navigation={navigation}
@@ -71,7 +78,10 @@ function PostGroupTL({
   if (updateInd === 0 || updateInd) {
     return (
       <>
-        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        >
           <Post
             post={post}
             navigation={navigation}
@@ -83,7 +93,10 @@ function PostGroupTL({
             showRepost={showRepost}
           />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        >
           <Update
             post={post}
             update={post.updates[updateInd]}
@@ -102,7 +115,10 @@ function PostGroupTL({
   // if there are no updates - just show the post
   if (!hasUpdates) {
     return (
-      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+      >
         <Post
           post={post}
           navigation={navigation}
@@ -123,7 +139,10 @@ function PostGroupTL({
   if (post.updates.length === 1) {
     return (
       <View style={{ borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }}>
-        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        >
           <Post
             post={post}
             navigation={navigation}
@@ -135,7 +154,10 @@ function PostGroupTL({
             showRepost={showRepost}
           />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        >
           <Update
             post={post}
             update={post.updates[0]}
@@ -153,7 +175,10 @@ function PostGroupTL({
   // if there is multiple updates - show latest one w/ "show more" button
   return (
     <View style={{ borderBottomColor: colors.borderBlack, borderBottomWidth: StyleSheet.hairlineWidth }}>
-      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+      >
         <Post
           post={post}
           navigation={navigation}
@@ -166,7 +191,10 @@ function PostGroupTL({
         />
       </TouchableOpacity>
       <ShowUpdatesButton navigation={navigation} post={post} />
-      <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+      >
         <Update
           post={post}
           update={post.updates[post.updates.length - 1]}
@@ -182,7 +210,7 @@ function PostGroupTL({
 
   // return (
   //   <>
-  //     <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+  //     <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate({name: 'Post', key: `Post:${post.id}`, params: { post } })}>
   //       <Post
   //         post={post}
   //         navigation={navigation}
@@ -195,7 +223,7 @@ function PostGroupTL({
   //         <View style={styles.leftColumn}>
   //           <ProfilePic size="small" user={post.owner} navigation={navigation} enableIntro={false} enableStory={false} />
   //         </View>
-  //         <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate('Post', { post })} style={styles.rightColumn}>
+  //         <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate({name: 'Post', key: `Post:${post.id}`, params: { post } })} style={styles.rightColumn}>
   //           <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>
   //             Show {post.updates.length > 1 ? `${post.updates.length} ` : ''}update{post.updates.length > 1 ? 's' : ''}
   //           </Text>

@@ -218,7 +218,13 @@ const SubComment = ({
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('Profile', { username: comment.owner.username })}
+              onPress={() =>
+                navigation.navigate({
+                  name: 'Profile',
+                  key: `Profile:${comment.owner.username}`,
+                  params: { username: comment.owner.username },
+                })
+              }
               hitSlop={{ top: 5, left: 0, bottom: 20, right: 20 }}
               style={{ flexDirection: 'row', alignItems: 'center' }}
             >
@@ -260,7 +266,7 @@ const SubComment = ({
                 <View style={styles.button}>
                   <CommentIcon
                     onPress={() =>
-                      navigation.navigate('Comment', {
+                      navigation.navigate('AddCommentModal', {
                         post: comment.parentPost,
                         update: comment.parentUpdate,
                         comment,

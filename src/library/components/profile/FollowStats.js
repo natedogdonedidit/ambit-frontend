@@ -34,7 +34,10 @@ const FollowStats = ({ username, navigation }) => {
     <View style={styles.stats}>
       <TouchableOpacity
         style={{ flexDirection: 'row' }}
-        onPress={() => navigation.navigate('Followers', { username, followersCount })}
+        // onPress={() => navigation.navigate('Followers', { username, followersCount })}
+        onPress={() =>
+          navigation.navigate({ name: 'Followers', key: `Followers:${username}`, params: { username, followingCount } })
+        }
       >
         <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
           {followersCount}
@@ -43,7 +46,10 @@ const FollowStats = ({ username, navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={{ flexDirection: 'row' }}
-        onPress={() => navigation.navigate('Following', { username, followingCount })}
+        // onPress={() => navigation.navigate('Following', { username, followingCount })}
+        onPress={() =>
+          navigation.navigate({ name: 'Following', key: `Following:${username}`, params: { username, followingCount } })
+        }
       >
         <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
           {followingCount}

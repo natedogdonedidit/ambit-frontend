@@ -6,11 +6,14 @@ import defaultStyles from 'styles/defaultStyles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import { useQuery } from '@apollo/client';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
 
 // user is from SINGLE_USER_BASIC
-const FollowStatsDrawer = ({ username, navigation }) => {
+const FollowStatsDrawer = ({ username, activeTab }) => {
   // const [followingCount, setFollowingCount] = useState(user.followingCount);
   // const [followersCount, setFollowersCount] = useState(user.followersCount);
+
+  const navigation = useNavigation();
 
   // QUERIES
   const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
@@ -34,7 +37,10 @@ const FollowStatsDrawer = ({ username, navigation }) => {
     <View style={styles.stats}>
       <TouchableOpacity
         style={{ flexDirection: 'row' }}
-        onPress={() => navigation.navigate('Followers', { username, followersCount })}
+        onPress={() => {
+          navigation.dispatch(DrawerActions.closeDrawer());
+          navigation.navigate(activeTab || 'HomeStack', { screen: 'Followers', params: { username, followingCount } });
+        }}
       >
         <Text style={{ ...defaultStyles.largeSemibold, marginRight: 7, marginLeft: 0, color: colors.iosBlue }}>
           {followersCount}
@@ -43,7 +49,10 @@ const FollowStatsDrawer = ({ username, navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity
         style={{ flexDirection: 'row' }}
-        onPress={() => navigation.navigate('Following', { username, followingCount })}
+        onPress={() => {
+          navigation.dispatch(DrawerActions.closeDrawer());
+          navigation.navigate(activeTab || 'HomeStack', { screen: 'Following', params: { username, followingCount } });
+        }}
       >
         <Text style={{ ...defaultStyles.largeSemibold, marginRight: 7, marginLeft: 0, color: colors.iosBlue }}>
           {followingCount}

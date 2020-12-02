@@ -22,7 +22,13 @@ const SuggestedConnection = ({ navigation, user, showMessage, showFollow, showHi
     <TouchableOpacity
       activeOpacity={0.7}
       style={styles.container}
-      onPress={() => navigation.navigate('Profile', { profileId: user.id, username: user.username })}
+      onPress={() =>
+        navigation.navigate({
+          name: 'Profile',
+          key: `Profile:${user.username}`,
+          params: { username: user.username },
+        })
+      }
     >
       <View style={styles.connection}>
         <View style={styles.profilePicView}>
@@ -45,7 +51,7 @@ const SuggestedConnection = ({ navigation, user, showMessage, showFollow, showHi
               />
             )}
             {/* <MessageButton
-              onPress={() => navigation.navigate('Chat', { otherUserPassedIn: user })}
+              onPress={() => navigation.navigate({ name: 'Chat', key: `Chat:${user.id}`, params: { otherUserPassedIn: user } })}
               buttonStyle={{ marginLeft: 6 }}
               small
             /> */}

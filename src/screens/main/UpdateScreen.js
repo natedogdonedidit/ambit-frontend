@@ -62,7 +62,10 @@ const UpdateScreen = ({ navigation, route }) => {
           borderBottomColor: colors.borderBlack,
         }}
       >
-        <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        >
           <Post post={post} currentTime={currentTime} navigation={navigation} showLine hideButtons />
         </TouchableOpacity>
         <Update

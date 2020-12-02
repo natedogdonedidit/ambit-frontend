@@ -36,7 +36,7 @@ const NotificationListItem = ({ navigation, notification }) => {
   const getNotificationOnPress = () => {
     if (style === 'LIKE_POST') {
       if (post) {
-        return navigation.navigate('Post', { post });
+        return navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } });
       }
       // if post is missing from cache
       Alert.alert('Oh no!', `We could not find that post`, [
@@ -50,7 +50,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'LIKE_UPDATE') {
       if (update) {
-        return navigation.navigate('Update', { updatePassedIn: update });
+        return navigation.navigate({ name: 'Update', key: `Update:${update.id}`, params: { updatePassedIn: update } });
       }
       // if update is missing from cache
       Alert.alert('Oh no!', `We could not find that update`, [
@@ -66,8 +66,18 @@ const NotificationListItem = ({ navigation, notification }) => {
       const isOnPost = !!comment && !!comment.parentPost;
       const isOnUpdate = !!comment && !!comment.parentUpdate;
 
-      if (isOnPost) return navigation.navigate('Post', { post: comment.parentPost });
-      if (isOnUpdate) return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
+      if (isOnPost)
+        return navigation.navigate({
+          name: 'Post',
+          key: `Post:${comment.parentPost.id}`,
+          params: { post: comment.parentPost },
+        });
+      if (isOnUpdate)
+        return navigation.navigate({
+          name: 'Update',
+          key: `Update:${comment.parentUpdate.id}`,
+          params: { updatePassedIn: comment.parentUpdate },
+        });
 
       // if update is missing from cache
       Alert.alert('Oh no!', `We could not find that comment or post`, [
@@ -81,7 +91,11 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'COMMENT_POST') {
       if (!!comment && !!comment.parentPost) {
-        return navigation.navigate('Post', { post: comment.parentPost });
+        return navigation.navigate({
+          name: 'Post',
+          key: `Post:${comment.parentPost.id}`,
+          params: { post: comment.parentPost },
+        });
       }
       // if parentPost is missing from cache
       if (!comment.parentPost) {
@@ -108,7 +122,11 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'COMMENT_UPDATE') {
       if (!!comment && !!comment.parentUpdate) {
-        return navigation.navigate('Update', { updatePassedIn: comment.parentUpdate });
+        return navigation.navigate({
+          name: 'Update',
+          key: `Update:${comment.parentUpdate.id}`,
+          params: { updatePassedIn: comment.parentUpdate },
+        });
       }
       // if comment is missing from cache
       Alert.alert('Oh no!', `We could not find that comment or update`, [
@@ -122,7 +140,11 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'COMMENT_COMMENT') {
       if (!!comment && !!comment.parentPost) {
-        return navigation.navigate('Post', { post: comment.parentPost });
+        return navigation.navigate({
+          name: 'Post',
+          key: `Post:${comment.parentPost.id}`,
+          params: { post: comment.parentPost },
+        });
       }
       // if comment is missing from cache
       Alert.alert('Oh no!', `We could not find that comment or post`, [
@@ -136,7 +158,11 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'NEW_FOLLOWER') {
       if (from && from.id) {
-        return navigation.navigate('Profile', { username: from.username });
+        return navigation.navigate({
+          name: 'Profile',
+          key: `Profile:${from.username}`,
+          params: { username: from.username },
+        });
       }
       // if user is missing from cache
       Alert.alert('Oh no!', `We could not find that user`, [
@@ -150,7 +176,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'MENTIONED_IN_POST') {
       if (post) {
-        return navigation.navigate('Post', { post });
+        return navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } });
       }
       // if post is missing from cache
       Alert.alert('Oh no!', `We could not find that post`, [
@@ -164,7 +190,11 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'MENTIONED_IN_COMMENT') {
       if (!!comment && !!comment.parentPost) {
-        return navigation.navigate('Post', { post: comment.parentPost });
+        return navigation.navigate({
+          name: 'Post',
+          key: `Post:${comment.parentPost.id}`,
+          params: { post: comment.parentPost },
+        });
       }
       // if post is missing from cache
       Alert.alert('Oh no!', `We could not find that comment or post`, [
@@ -178,7 +208,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'MENTIONED_IN_UPDATE') {
       if (post) {
-        return navigation.navigate('Post', { post });
+        return navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } });
       }
       // if post is missing from cache
       Alert.alert('Oh no!', `We could not find that update or post`, [
@@ -192,7 +222,7 @@ const NotificationListItem = ({ navigation, notification }) => {
     }
     if (style === 'GOAL_EXPIRE' || style === 'GOAL_ALMOST_EXPIRE') {
       if (post) {
-        return navigation.navigate('Post', { post });
+        return navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } });
       }
       // if post is missing from cache
       Alert.alert('Oh no!', `We could not find that post`, [
@@ -349,6 +379,8 @@ const NotificationListItem = ({ navigation, notification }) => {
     // else
     return <Icon name="star" solid size={30} color={colors.yellow} style={{ paddingTop: 1 }} />;
   };
+
+  if (!notification) return null;
 
   // RETURN STATEMENT PULLS DATA FROM ABOVE FUNCTIONS
   return (

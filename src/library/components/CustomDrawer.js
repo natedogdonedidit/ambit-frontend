@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import { CommonActions } from '@react-navigation/native';
+import { CommonActions, useNavigation, DrawerActions, StackActions } from '@react-navigation/native';
 
 import { UserContext } from 'library/utils/UserContext';
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -16,12 +16,14 @@ import { VERSION } from 'styles/constants';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import FollowStatsDrawer from './profile/FollowStatsDrawer';
 
-const CustomDrawer = ({ navigation }) => {
+const CustomDrawer = (payload) => {
   // const client = useApolloClient();
-  const { logoutCTX, setHomePosition, setGoToTopics } = useContext(UserContext);
+  const { logoutCTX, setHomePosition, setGoToTopics, activeTab } = useContext(UserContext);
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
     onError: () => handleLogout(),
   });
+
+  const navigation = useNavigation();
 
   if (loading) return null;
   if (error) return <Text>{`Error! ${error}`}</Text>;
@@ -55,7 +57,9 @@ const CustomDrawer = ({ navigation }) => {
       <View style={{ flex: 1 }}>
         <TouchableOpacity
           style={styles.header}
-          onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}
+          onPress={() => {
+            navigation.navigate(activeTab || 'HomeStack', { screen: 'Profile', params: { username: userLoggedIn.username } });
+          }}
           activeOpacity={0.6}
         >
           <ProfilePic user={userLoggedIn} size="drawer" navigation={navigation} enableIntro={false} enableStory={false} />
@@ -67,9 +71,14 @@ const CustomDrawer = ({ navigation }) => {
           </View>
         </TouchableOpacity>
         <View style={{ paddingLeft: 21, paddingTop: 0 }}>
-          <FollowStatsDrawer username={userLoggedIn.username} navigation={navigation} />
+          <FollowStatsDrawer username={userLoggedIn.username} activeTab={activeTab} />
         </View>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('Profile', { username: userLoggedIn.username })}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            navigation.navigate(activeTab || 'HomeStack', { screen: 'Profile', params: { username: userLoggedIn.username } });
+          }}
+        >
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
               <Feather name="user" size={22} color={colors.blueGray} />
@@ -82,7 +91,7 @@ const CustomDrawer = ({ navigation }) => {
           onPress={() => {
             // navigation.navigate('CreateIntroModal', { userLoggedIn });
             navigation.navigate('StoryCameraModal', { isIntro: true });
-            navigation.closeDrawer();
+            navigation.dispatch(DrawerActions.closeDrawer());
           }}
         >
           <View style={styles.button}>
@@ -114,7 +123,13 @@ const CustomDrawer = ({ navigation }) => {
             marginBottom: 10,
           }}
         />
-        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyInvest')}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            navigation.dispatch(DrawerActions.closeDrawer());
+            navigation.navigate('MyInvest');
+          }}
+        >
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
               <Feather name="trending-up" size={22} color={colors.green} />
@@ -122,7 +137,13 @@ const CustomDrawer = ({ navigation }) => {
             <Text style={styles.buttonText}>Invest</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyFreelance')}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            navigation.dispatch(DrawerActions.closeDrawer());
+            navigation.navigate('MyFreelance');
+          }}
+        >
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
               <Feather name="briefcase" size={22} color={colors.peach} />
@@ -130,7 +151,13 @@ const CustomDrawer = ({ navigation }) => {
             <Text style={styles.buttonText}>Freelance</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyMentor')}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            navigation.dispatch(DrawerActions.closeDrawer());
+            navigation.navigate('MyMentor');
+          }}
+        >
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
               <Feather name="users" size={22} color={colors.purp} />
@@ -138,7 +165,13 @@ const CustomDrawer = ({ navigation }) => {
             <Text style={styles.buttonText}>Mentor</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyNetwork')}>
+        <TouchableOpacity
+          activeOpacity={0.6}
+          onPress={() => {
+            navigation.dispatch(DrawerActions.closeDrawer());
+            navigation.navigate('MyNetwork');
+          }}
+        >
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
               <Feather name="coffee" size={22} color={colors.orange} />

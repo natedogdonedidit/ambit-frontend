@@ -94,7 +94,7 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
     <TouchableOpacity
       activeOpacity={0.7}
       style={styles.container}
-      onPress={() => navigation.navigate('Chat', { otherUserPassedIn: otherUser })}
+      onPress={() => navigation.navigate({ name: 'Chat', key: `Chat:${otherUser.id}`, params: { otherUserPassedIn: otherUser } })}
     >
       <View style={styles.convo}>
         <View style={styles.leftSide}>

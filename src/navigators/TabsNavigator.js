@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useContext } from 'react';
+import React, { useEffect, useMemo, useContext, useLayoutEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useLazyQuery, useSubscription, useApolloClient } from '@apollo/client';
 
@@ -23,9 +23,17 @@ import colors from 'styles/colors';
 
 const Tabs = createBottomTabNavigator();
 
-const TabsNavigator = () => {
+const TabsNavigator = ({ navigation, route }) => {
   const client = useApolloClient();
-  const { currentUserId } = useContext(UserContext);
+  const { currentUserId, setActiveTab } = useContext(UserContext);
+
+  useEffect(() => {
+    // whenever tab changes. save route to context
+    if (route && route.state && route.state.index >= 0 && route.state.routeNames) {
+      // console.log('setting tab to:', route.state.routeNames[route.state.index]);
+      setActiveTab(route.state.routeNames[route.state.index] || 'HomeStack');
+    }
+  }, [route]);
 
   // MESSAGES QUERY
   const [getMessages, { data: userData, refetch: refetchMessages }] = useLazyQuery(CURRENT_USER_MESSAGES, {

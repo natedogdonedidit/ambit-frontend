@@ -48,7 +48,10 @@ const PostMatchesScreen = ({ navigation, route }) => {
           <View style={{ height: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.borderBlack }} />
         )}
         {post && (
-          <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Post', { post })}>
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+          >
             <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons />
           </TouchableOpacity>
         )}

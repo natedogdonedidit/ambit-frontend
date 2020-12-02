@@ -7,14 +7,10 @@ import ProfileScreen from 'screens/main/ProfileScreen';
 import PostScreen from 'screens/main/PostScreen';
 import PostMatchesScreen from 'screens/main/PostMatchesScreen';
 import UpdateScreen from 'screens/main/UpdateScreen';
+import TopicScreen from 'screens/main/TopicScreen2';
 import SearchScreen from 'screens/main/SearchScreen';
-import CommentScreen from 'screens/main/CommentScreen';
-import UpdatePostScreen from 'screens/main/UpdatePostScreen';
-import TopicScreen from 'screens/main/TopicScreen';
 import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';
-import MyTopicsScreen from 'screens/main/MyTopicsScreen';
-// import MyHatsScreen from 'screens/main/MyHatsScreen';
 
 const Stack = createStackNavigator();
 
@@ -29,13 +25,11 @@ const PeopleStack = ({ navigation, route }) => {
   return (
     <Stack.Navigator initialRouteName="Connections" headerMode="none">
       <Stack.Screen name="Connections" component={ConnectionsScreen} />
+
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Post" component={PostScreen} />
       <Stack.Screen name="PostMatches" component={PostMatchesScreen} />
       <Stack.Screen name="Update" component={UpdateScreen} />
-      <Stack.Screen name="UpdatePost" component={UpdatePostScreen} />
-      <Stack.Screen name="Chat" component={ChatScreen} />
-      <Stack.Screen name="Comment" component={CommentScreen} />
       <Stack.Screen name="Topic" component={TopicScreen} />
       <Stack.Screen name="Followers" component={FollowersScreen} />
       <Stack.Screen name="Following" component={FollowingScreen} />
@@ -50,8 +44,8 @@ const PeopleStack = ({ navigation, route }) => {
           locationLonToSearch: null,
         }}
       />
-      <Stack.Screen name="MyTopics" component={MyTopicsScreen} />
-      {/* <Stack.Screen name="MyHats" component={MyHatsScreen} /> */}
+
+      <Stack.Screen name="Chat" component={ChatScreen} />
     </Stack.Navigator>
   );
 };

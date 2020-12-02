@@ -143,7 +143,7 @@ const DMPostPopup = ({ navigation, route }) => {
       },
     });
 
-    navigation.navigate('Chat', { otherUserPassedIn: userSelected });
+    navigation.navigate({ name: 'Chat', key: `Chat:${userSelected.id}`, params: { otherUserPassedIn: userSelected } });
   };
 
   const renderSearchResults = () => {

@@ -28,7 +28,7 @@ import { postPicUpload } from 'library/utils';
 import Loader from 'library/components/UI/Loader';
 import MentionsSelect from 'library/components/MentionsSelect';
 
-const UpdatePostScreen = ({ navigation, route }) => {
+const AddUpdateModal = ({ navigation, route }) => {
   // params
   const { post } = route.params;
 
@@ -80,19 +80,20 @@ const UpdatePostScreen = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     try {
+      navigation.goBack();
       const uploadedImage = await uploadImage();
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 1,
-          routes: [
-            { name: 'Home' },
-            {
-              name: 'Post',
-              params: { post },
-            },
-          ],
-        })
-      );
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 1,
+      //     routes: [
+      //       { name: 'Home' },
+      //       {
+      //         name: 'Post',
+      //         params: { post },
+      //       },
+      //     ],
+      //   })
+      // );
 
       if (!loadingMutation) {
         updateOnePost({
@@ -326,4 +327,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default UpdatePostScreen;
+export default AddUpdateModal;

@@ -17,7 +17,12 @@ const CoolText = ({ children }) => {
   const handleUsernamePress = (username) => {
     console.log('username pressed:', username);
     const usernameNoSymbol = username.substr(1);
-    navigation.navigate('Profile', { username: usernameNoSymbol });
+
+    navigation.navigate({
+      name: 'Profile',
+      key: `Profile:${usernameNoSymbol}`,
+      params: { username: usernameNoSymbol },
+    });
   };
 
   return (

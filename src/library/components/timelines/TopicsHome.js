@@ -102,7 +102,7 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
           data: favoriteTopics,
         },
         {
-          title: 'Recommended',
+          title: 'Recommended Topics',
           data: recommendedTopics,
         },
       ]}
@@ -129,7 +129,7 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
         />
       )}
       renderSectionFooter={({ section }) => {
-        if (section.title === 'Recommended') {
+        if (section.title === 'Recommended Topics') {
           return (
             <View style={{ alignSelf: 'center', paddingTop: 30, paddingBottom: 30 }}>
               <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>More Topics</ButtonDefault>
@@ -144,7 +144,7 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
             <RecommendedTopic key={item} topicID={item} showBottomBorder={index === section.data.length - 1} allowNavigation />
           );
         }
-        if (section.title === 'Recommended') {
+        if (section.title === 'Recommended Topics') {
           const { topicID } = item;
 
           return (

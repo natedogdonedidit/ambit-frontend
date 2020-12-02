@@ -95,7 +95,7 @@ function Update({
       deleteOneUpdate: { __typename: 'Update', id: update.id },
     },
     update(cache, { data: deleteOneUpdate }) {
-      navigation.navigate('Post', { post });
+      navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } });
       // remove from cache
       cache.evict({ id: cache.identify({ __typename: 'Update', id: update.id }) });
       cache.gc();
@@ -212,7 +212,13 @@ function Update({
           <View style={styles.topRow}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('Profile', { username: post.owner.username })}
+              onPress={() =>
+                navigation.navigate({
+                  name: 'Profile',
+                  key: `Profile:${post.owner.username}`,
+                  params: { username: post.owner.username },
+                })
+              }
               hitSlop={{ top: 20, left: 0, bottom: 20, right: 20 }}
               style={{ flexDirection: 'row', alignItems: 'center' }}
             >
@@ -266,7 +272,7 @@ function Update({
                 </View>
                 <View style={{ flexDirection: 'row' }}>
                   <View style={{ paddingLeft: 25 }}>
-                    <Comment onPress={() => navigation.navigate('Comment', { post, update, isUpdate: true })} />
+                    <Comment onPress={() => navigation.navigate('AddCommentModal', { post, update, isUpdate: true })} />
                   </View>
                   <View style={{ paddingLeft: 25 }}>
                     <Heart liked={update.likedByMe} onPress={handleLike} />
@@ -282,7 +288,7 @@ function Update({
               <View style={styles.buttons}>
                 <View style={styles.buttonGroup}>
                   <View style={styles.button}>
-                    <Comment onPress={() => navigation.navigate('Comment', { post, update, isUpdate: true })} />
+                    <Comment onPress={() => navigation.navigate('AddCommentModal', { post, update, isUpdate: true })} />
                     <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.commentsCount || ''}</Text>
                   </View>
                   <View style={styles.button}>

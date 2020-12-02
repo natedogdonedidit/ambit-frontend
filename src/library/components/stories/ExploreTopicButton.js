@@ -31,7 +31,7 @@ const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })}
+      // onPress={() => navigation.navigate('Topic', { topicID: mainTopicID, subTopic })}
       style={styles.storyBox}
       activeOpacity={0.8}
     >

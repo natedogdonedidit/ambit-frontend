@@ -32,7 +32,7 @@ const TopicsList = ({ activeTopicIDs = [], handleTopicSelect, showFollowButton =
     return [];
   }, [dataTopics]);
 
-  console.log(myTopics);
+  // console.log(myTopics);
 
   const matchingTopics = useMemo(() => {
     // if search text changes - find matching topics

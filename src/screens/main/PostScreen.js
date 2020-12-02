@@ -110,8 +110,8 @@ const PostScreen = ({ navigation, route }) => {
     const options = [
       {
         text: 'Add an Update',
-        onPress: () => navigation.navigate('UpdatePost', { post }),
-        closeModal: false,
+        onPress: () => navigation.navigate('AddUpdateModal', { post }),
+        // closeModal: false,
       },
       {
         text: 'Keep Active',
@@ -168,7 +168,9 @@ const PostScreen = ({ navigation, route }) => {
         title={post.goal ? 'Goal' : 'Post'}
         loading={showMatchesLoader}
         handleRight={
-          loadingMatches || !isMyPost || !post.goal || isCustomGoal ? null : () => navigation.navigate('PostMatches', { post })
+          loadingMatches || !isMyPost || !post.goal || isCustomGoal
+            ? null
+            : () => navigation.navigate({ name: 'PostMatches', key: `PostMatches:${post.id}`, params: { post } })
         }
         textRight={loadingMatches || !isMyPost || !post.goal || isCustomGoal ? '' : `${matches.length || ''} Matches`}
       />

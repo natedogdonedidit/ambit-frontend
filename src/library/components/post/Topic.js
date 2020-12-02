@@ -23,7 +23,10 @@ const Topic = ({ navigation, topicToShow, isPostToModal = false }) => {
   }
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('Topic', { topicID: topicToShow })} activeOpacity={0.3}>
+    <TouchableOpacity
+      onPress={() => navigation.navigate({ name: 'Topic', key: `Topic:${topicToShow}`, params: { topicID: topicToShow } })}
+      activeOpacity={0.3}
+    >
       <View style={styles.topic}>
         <Text style={defaultStyles.smallMute}>{name}</Text>
       </View>

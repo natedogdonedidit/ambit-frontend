@@ -249,7 +249,10 @@ function Story({
   // }
   // }
 
-  const handleDoubleTap = () => {};
+  const handleDoubleTap = () => {
+    console.log('double tapped');
+    // handleLike();
+  };
 
   // functions for "More" modal
   const removeFromProject = () => {
@@ -354,6 +357,8 @@ function Story({
           setPaused={setPaused}
           favoriteTopics={favoriteTopics}
           setDisableOutterScroll={setDisableOutterScroll}
+          incrementIndex={incrementIndex}
+          decrementIndex={decrementIndex}
         />
       );
     });
@@ -386,12 +391,12 @@ function Story({
         />
         <TopLinearFade />
         <BottomLinearFade />
-        <StoryTapRegions
+        {/* <StoryTapRegions
           decrementIndex={decrementIndex}
           incrementIndex={incrementIndex}
           handleDoubleTap={handleDoubleTap}
           setPaused={setPaused}
-        />
+        /> */}
         <StoryProgressBars
           items={items}
           activeItemIndex={activeItemIndex}
@@ -400,8 +405,8 @@ function Story({
           incrementIndex={incrementIndex}
           videoStarted={videoStarted}
         />
-        <StoryHeader owner={owner} type={type} activeItem={activeItem} navigation={navigation} isMyPost={isMyPost} />
         {renderAllFooters()}
+        <StoryHeader owner={owner} type={type} activeItem={activeItem} navigation={navigation} isMyPost={isMyPost} />
       </View>
     </SafeAreaView>
   );

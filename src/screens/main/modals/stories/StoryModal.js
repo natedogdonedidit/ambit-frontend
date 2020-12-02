@@ -127,10 +127,10 @@ const StoryModal = ({ navigation, route }) => {
   useEffect(() => {
     if (moreType === 'ForYou' && !loadingStoriesHome && dataStoriesHome) {
       if (dataStoriesHome.storiesHome) {
-        // remove the story passed in from the query results
-        // const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.id !== story.id && s.items.length > 0);
+        // remove the story passed in from the query results, and items > 0
+        const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.items.length > 0);
         // setStoryQ([story, ...storiesToAdd]);
-        setStoryQ([...dataStoriesHome.storiesHome]);
+        setStoryQ([...storiesToAdd]);
       }
     }
   }, [loadingStoriesHome, dataStoriesHome]);
@@ -142,9 +142,9 @@ const StoryModal = ({ navigation, route }) => {
       if (dataStoriesTopic.stories) {
         // console.log('yo', dataStoriesTopic);
         // remove the story passed in from the query results
-        // const storiesToAdd = dataStoriesTopic.stories.filter((s) => s.id !== story.id && s.items.length > 0);
+        const storiesToAdd = dataStoriesTopic.stories.filter((s) => s.items.length > 0);
         // setStoryQ([story, ...storiesToAdd]);
-        setStoryQ([...dataStoriesTopic.stories]);
+        setStoryQ([...storiesToAdd]);
       }
     }
   }, [loadingStoriesTopic, dataStoriesTopic]);
