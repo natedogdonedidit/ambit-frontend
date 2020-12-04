@@ -4,15 +4,18 @@ import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { getTopicFromID } from 'library/utils';
+import { useNavigation } from '@react-navigation/native';
 
-const Topic = ({ navigation, topicToShow, isPostToModal = false }) => {
+const Topic = ({ topicToShow, isPostToModal = false, touchable = true }) => {
+  const navigation = useNavigation();
+
   // get the full topic
-  const { name, parentTopic, topicID } = useMemo(() => getTopicFromID(topicToShow), [topicToShow]);
+  const { name } = useMemo(() => getTopicFromID(topicToShow), [topicToShow]);
 
-  const isSubTopic = !!parentTopic;
+  // const isSubTopic = !!parentTopic;
 
-  const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;
-  const subTopic = isSubTopic ? topicID : null;
+  // const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;
+  // const subTopic = isSubTopic ? topicID : null;
 
   if (isPostToModal) {
     return (
@@ -26,6 +29,7 @@ const Topic = ({ navigation, topicToShow, isPostToModal = false }) => {
     <TouchableOpacity
       onPress={() => navigation.navigate({ name: 'Topic', key: `Topic:${topicToShow}`, params: { topicID: topicToShow } })}
       activeOpacity={0.3}
+      disabled={!touchable}
     >
       <View style={styles.topic}>
         <Text style={defaultStyles.smallMute}>{name}</Text>

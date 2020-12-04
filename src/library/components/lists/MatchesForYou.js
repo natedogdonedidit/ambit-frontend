@@ -16,9 +16,12 @@ import { UserContext } from 'library/utils/UserContext';
 const MatchesForYou = ({ navigation, title, triggerRefresh }) => {
   const { currentUserId } = useContext(UserContext);
 
-  const { loading, error, data, refetch } = useQuery(SUGGESTED_FOLLOWS, {
+  const { loading, error, data, refetch, networkStatus } = useQuery(SUGGESTED_FOLLOWS, {
     fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
   });
+
+  const refetching = networkStatus === 4;
 
   useEffect(() => {
     refetch();
@@ -56,6 +59,7 @@ const MatchesForYou = ({ navigation, title, triggerRefresh }) => {
       <Section
         text={title}
         marginTop
+        loading={refetching}
         // rightComponent={<TextButton onPress={() => navigation.navigate('MyHats')}>Edit</TextButton>}
       />
       {renderRows()}

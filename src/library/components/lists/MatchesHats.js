@@ -20,8 +20,11 @@ import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 
 const MatchesHats = ({ navigation, title, triggerRefresh }) => {
   // GET "MY TOPICS" (THIS SHOULD HAVE ALREADY BEEN CALLED ON HOMESCREEN - SO JUST PIGGY BACKING OFF THE INITIAL QUERY)
-  const { loading: loadingTopics, error, data, refetch } = useQuery(CURRENT_USER_TOPICS);
+  const { loading: loadingTopics, error, data, refetch, networkStatus } = useQuery(CURRENT_USER_TOPICS, {
+    notifyOnNetworkStatusChange: true,
+  });
 
+  const refetching = networkStatus === 4;
   // RENDER FUNCTIONS
 
   useEffect(() => {
@@ -30,7 +33,7 @@ const MatchesHats = ({ navigation, title, triggerRefresh }) => {
 
   const renderRows = () => {
     // if loading my topics - render skeleton
-    if (loadingTopics) {
+    if (!data) {
       return (
         <View style={{ height: 70, width: '100%' }}>
           <Loader active size="small" full={false} backgroundColor={colors.white} />
@@ -94,7 +97,8 @@ const MatchesHats = ({ navigation, title, triggerRefresh }) => {
     <View style={styles.container}>
       <Section
         text={title}
-        marginTop
+        marginTop={false}
+        loading={refetching}
         // rightComponent={<TextButton onPress={() => navigation.navigate('MyHats')}>Edit</TextButton>}
       />
       {renderRows()}

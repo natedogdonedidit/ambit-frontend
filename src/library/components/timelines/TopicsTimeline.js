@@ -25,6 +25,7 @@ import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import { UserContext } from 'library/utils/UserContext';
 import TopicFollowButton from 'library/components/UI/buttons/TopicFollowButton';
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
+import SINGLE_TOPIC from 'library/queries/SINGLE_TOPIC';
 
 const picExample =
   'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
@@ -33,6 +34,14 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
   const currentTime = new Date();
   const { name, topicID, image } = getTopicFromID(activeTopicID);
   const { currentUserId } = useContext(UserContext);
+
+  const { loading: loadingTopic, data: dataTopic, refetch: refetchTopic } = useQuery(SINGLE_TOPIC, {
+    variables: {
+      where: {
+        id: activeTopicID,
+      },
+    },
+  });
 
   // QUERIES
   const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
@@ -137,7 +146,10 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
     refetch();
+    refetchTopic();
   };
+
+  const followersCount = dataTopic && dataTopic.topic && dataTopic.topic.followersCount ? dataTopic.topic.followersCount : null;
 
   // RENDER
   return (
@@ -246,7 +258,9 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
                   </View>
                 </TouchableOpacity>
               )} */}
-              <Text style={{ ...defaultStyles.smallMute, paddingTop: 12 }}>1,724 Followers</Text>
+              {followersCount > 1 && (
+                <Text style={{ ...defaultStyles.smallMute, paddingTop: 12 }}>{followersCount} Followers</Text>
+              )}
             </View>
             <View style={{ height: 10 }} />
             {/* <StoriesTopic topicID={activeTopicID} navigation={navigation} refetching={refetching} /> */}
@@ -272,7 +286,7 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
         data={posts}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item, index }) => {
-          console.log(index);
+          // console.log(index);
           return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} showTopBorder={index === 0} />;
         }}
         // onEndReachedThreshold={1.2}

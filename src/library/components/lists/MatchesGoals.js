@@ -78,17 +78,15 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
 
     // if we have data
     if (posts.length > 0) {
-      return (
-        <>
-          {posts.map((post, i) => {
-            const isCustomGoal = isCustomGoalTest(post.goal);
-            if (!isCustomGoal) {
-              return <ActiveGoalMatchesItem key={post.id} triggerRefresh={triggerRefresh} navigation={navigation} post={post} />;
-            }
-            return null;
-          })}
-        </>
-      );
+      // compile a lits of only non-custom goals
+      const nonCustomGoals = posts.filter((post) => !isCustomGoalTest(post.goal));
+
+      // if we have non-custom goals
+      if (nonCustomGoals.length > 0) {
+        return nonCustomGoals.map((post) => {
+          return <ActiveGoalMatchesItem key={post.id} triggerRefresh={triggerRefresh} navigation={navigation} post={post} />;
+        });
+      }
     }
 
     // if we have no goals
@@ -106,20 +104,22 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
 
   return (
     <View style={styles.container}>
-      <Section text={title} marginTop={false} />
+      <Section text={title} marginTop={false} loading={refetchingPostsMyGoals} />
       {renderRows()}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    marginBottom: 15,
+  },
   createGoalMessage: {
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 20,
     backgroundColor: 'white',
-    marginBottom: 15,
+    // marginBottom: 15,
     // borderTopWidth: StyleSheet.hairlineWidth,
     // borderTopColor: colors.borderBlack,
     borderBottomWidth: StyleSheet.hairlineWidth,

@@ -60,7 +60,7 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
     }
   }, [data]);
 
-  const foundMatches = !loadingQuery && matchingPosts.length > 0;
+  const foundMatches = data && data.posts && matchingPosts.length > 0;
 
   const renderIcon = () => {
     if (type === 'freelance') {
@@ -75,7 +75,7 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
   };
 
   const renderTitle = () => {
-    if (loadingQuery) {
+    if (!data) {
       if (type === 'invest') {
         return (
           <Text style={{ paddingRight: 12 }}>

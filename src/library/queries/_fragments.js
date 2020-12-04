@@ -20,6 +20,9 @@ export const AllTopicsFragment = gql`
     topicsMentor {
       id
     }
+    investDesc
+    freelanceDesc
+    mentorDesc
   }
 `;
 

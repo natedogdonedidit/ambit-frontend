@@ -422,6 +422,43 @@ export const storyVideoUpload = async (userId, uri, isIntro = false) => {
   }
 };
 
+export const postVideoUpload = async (userId, uri) => {
+  // create tags
+  const tags = `${userId}, post, video`;
+
+  // create file object (all fields required)
+  const video = {
+    uri,
+    type: 'video',
+    name: uri,
+  };
+  // create body
+  const uploadData = new FormData();
+  uploadData.append('file', video);
+  uploadData.append('tags', tags);
+  uploadData.append('upload_preset', 'ambit-post-video-preset');
+  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
+
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: uploadData,
+    });
+    const resJson = await res.json();
+    // console.log('resJson', resJson);
+
+    // return the image url and duration
+    return { url: resJson.url, duration: resJson.duration };
+  } catch (error) {
+    console.log('an error occured trying to upload your video for this post');
+    // console.error(error);
+    throw new Error('Video upload fail');
+  }
+};
+
 export const createThumbnail = (url) => {
   const regex = /upload/;
   const urlSplit = url.split(regex);

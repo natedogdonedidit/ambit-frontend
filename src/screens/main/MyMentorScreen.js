@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import React, { useRef } from 'react';
+import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useQuery } from '@apollo/client';
 
 import HeaderBack from 'library/components/headers/HeaderBack';
@@ -10,8 +10,11 @@ import Loader from 'library/components/UI/Loader';
 import TopicsOfMentor from 'library/components/settings/TopicsOfMentor';
 
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
+import TopicsOfMentorDesc from 'library/components/settings/TopicsOfMentorDesc';
 
 const MyNetworkScreen = ({ navigation }) => {
+  const scrollRef = useRef(null);
+
   // ////////////////////////////////////////
   // QUERIES
   // this is the single source of truth
@@ -29,9 +32,12 @@ const MyNetworkScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <HeaderBack navigation={navigation} title="Mentor" />
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
-        <TopicsOfMentor navigation={navigation} myTopics={myTopics} />
-      </ScrollView>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+        <ScrollView ref={scrollRef} style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
+          <TopicsOfMentor navigation={navigation} myTopics={myTopics} />
+          <TopicsOfMentorDesc myTopics={myTopics} scrollRef={scrollRef} />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };

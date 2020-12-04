@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useMutation, useApolloClient } from '@apollo/client';
 import { format } from 'date-fns';
 import { useRoute } from '@react-navigation/native';
+import Video from 'react-native-video';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -35,6 +36,7 @@ import GoalStatus from 'library/components/post/GoalStatus';
 import { UserContext } from 'library/utils/UserContext';
 import CoolText from 'library/components/UI/CoolText';
 import RepostedBy from 'library/components/post/RepostedBy';
+import PostVideo from 'library/components/post/PostVideo';
 
 function Post({
   post,
@@ -365,6 +367,13 @@ function Post({
   };
 
   const renderMedia = () => {
+    if (post.video) {
+      return (
+        <View style={{ width: '100%' }}>
+          <PostVideo url={post.video} />
+        </View>
+      );
+    }
     if (post.images.length === 1) {
       return (
         <View style={{ width: '100%', height: 160 }}>

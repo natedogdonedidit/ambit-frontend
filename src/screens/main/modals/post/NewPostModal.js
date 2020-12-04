@@ -13,6 +13,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useMutation, useQuery } from '@apollo/client';
+import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -28,7 +29,15 @@ import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
 
 import { UserContext } from 'library/utils/UserContext';
-import { postPicUpload, getTopicID, addMainTopics, getNetworkIDsUser, getTopicFromID, isCustomGoalTest } from 'library/utils';
+import {
+  postPicUpload,
+  postVideoUpload,
+  getTopicID,
+  addMainTopics,
+  getNetworkIDsUser,
+  getTopicFromID,
+  isCustomGoalTest,
+} from 'library/utils';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -148,9 +157,10 @@ const NewPostModal = ({ navigation, route }) => {
     }
 
     try {
-      const uploadedImages = await uploadImages();
       navigation.goBack();
-      // console.log('saving', uploadedImages);
+      const uploadedImages = await uploadImages();
+      const uploadedVideo = await uploadVideo();
+      console.log('video upload', uploadedVideo);
 
       if (!loadingCreate) {
         createOnePost({
@@ -168,7 +178,7 @@ const NewPostModal = ({ navigation, route }) => {
               locationLat,
               locationLon,
               content,
-              video,
+              video: uploadedVideo && uploadedVideo.url ? uploadedVideo.url : '',
               images: { set: uploadedImages },
               lastUpdated: new Date(),
               owner: {
@@ -347,6 +357,17 @@ const NewPostModal = ({ navigation, route }) => {
     return [];
   };
 
+  const uploadVideo = async () => {
+    if (video) {
+      setUploading(true);
+      const uploadedVideo = await postVideoUpload(data.userLoggedIn.id, video.uri);
+      setUploading(false);
+      // console.log('uploaded', uploadedImages);
+      return uploadedVideo;
+    }
+    return null;
+  };
+
   const validateInputs = () => {
     if (!content) return 'Post';
     return null;
@@ -358,21 +379,40 @@ const NewPostModal = ({ navigation, route }) => {
     // navigation.navigate('CameraModal', { isIntro: false });
 
     ImagePicker.openPicker({
-      multiple: true,
-      maxFiles: 4,
+      multiple: false,
+      // maxFiles: 4,
       waitAnimationEnd: false,
       includeExif: true,
       loadingLabelText: 'Uploading files',
     })
-      .then((imgs) => {
-        const newArray = imgs.map((img) => {
-          // console.log('received image', img);
-          // return { uri: img.path, width: img.width, height: img.height };
-          // console.log(img.path);
-          return img.path;
-        });
+      .then((item) => {
+        // const newArray = imgs.map((img) => {
+        //   // console.log('received image', img);
+        //   // return { uri: img.path, width: img.width, height: img.height };
+        //   // console.log(img.path);
+        //   return img.path;
+        // });
 
-        setImages([...newArray]);
+        // if video
+        if (item.mime && item.mime.startsWith('video')) {
+          if (item.duration < 61000) {
+            // set video to state
+            setVideo({ uri: item.path, width: item.width, height: item.height });
+          } else {
+            Alert.alert('Oh no!', 'Please select a video 60 seconds or less!', [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+          }
+        } else {
+          setImages([item.path]);
+        }
+
+        // else (if photo)
+        // set image to state
+
+        // console.log('lol', item);
+
+        // setImages([...newArray]);
       })
       .catch((e) => console.log(e));
   };
@@ -405,6 +445,42 @@ const NewPostModal = ({ navigation, route }) => {
     });
   };
 
+  const renderVideo = () => {
+    if (video && video.width && video.height && video.uri) {
+      const ratio = video.width / video.height;
+
+      return (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'flex-start',
+            marginTop: 15,
+            paddingLeft: 48,
+            marginBottom: 20,
+          }}
+        >
+          <Video
+            source={{ uri: video.uri }}
+            // ref={videoRef}
+            style={{
+              width: 260,
+              height: 260 / ratio,
+              borderRadius: 10,
+            }}
+            resizeMode="contain"
+            // paused
+            repeat
+          />
+          <TouchableOpacity style={styles.removeImageButton} activeOpacity={0.7} onPress={() => setVideo(null)}>
+            <Icon name="times" solid size={15} color="white" />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return null;
+  };
+
   const renderImages = () => {
     if (images.length < 1 || !!mentionText) return null;
     if (images.length === 1) {
@@ -424,7 +500,7 @@ const NewPostModal = ({ navigation, route }) => {
       return (
         <ScrollView
           horizontal
-          keyboardShouldPersistTaps="always"
+          // keyboardShouldPersistTaps="always"
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ flexDirection: 'row', paddingTop: 10, alignItems: 'flex-start', paddingLeft: 48 }}
         >
@@ -464,7 +540,7 @@ const NewPostModal = ({ navigation, route }) => {
     return (
       <ScrollView
         horizontal
-        keyboardShouldPersistTaps="always"
+        // keyboardShouldPersistTaps="always"
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ flexDirection: 'row', paddingTop: 10, alignItems: 'flex-start', paddingLeft: 48 }}
       >
@@ -725,11 +801,14 @@ const NewPostModal = ({ navigation, route }) => {
         textLeft="Cancel"
         textRight="Post"
         solidRight
-        title={`Create a ${goal ? 'Goal' : 'Bit'}`}
+        title={`Create a ${goal ? 'Goal' : 'Post'}`}
       />
       <KeyboardAvoidingView behavior="padding" enabled>
         <View style={styles.container}>
-          <ScrollView contentContainerStyle={styles.scrollView} keyboardShouldPersistTaps="always">
+          <ScrollView
+            contentContainerStyle={styles.scrollView}
+            // keyboardShouldPersistTaps="always"
+          >
             {renderTop()}
 
             <View style={styles.postInputView}>
@@ -764,6 +843,7 @@ const NewPostModal = ({ navigation, route }) => {
               </View>
             </View>
             {renderImages()}
+            {renderVideo()}
           </ScrollView>
         </View>
         <InputAccessoryView nativeID="1">

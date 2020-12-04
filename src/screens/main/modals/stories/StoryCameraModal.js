@@ -31,7 +31,7 @@ const StoryCameraModal = ({ navigation, route }) => {
 
   // params
   const { isIntro = false, isNewProject = false, projectPassedIn = {} } = route.params;
-  console.log(projectPassedIn);
+  // console.log(projectPassedIn);
 
   // STATE
   const [flashMode, setFlashMode] = useState('auto');
@@ -89,10 +89,10 @@ const StoryCameraModal = ({ navigation, route }) => {
         if (isImage) {
           setCapturedImage({ uri: mediaSelected.path });
         } else if (isVideo) {
-          if (mediaSelected.duration < 31000) {
+          if (mediaSelected.duration < 61000) {
             setCapturedVideo({ uri: mediaSelected.path });
           } else {
-            Alert.alert('Oh no!', 'Please select a video 30 seconds or less!', [
+            Alert.alert('Oh no!', 'Please select a video 60 seconds or less!', [
               { text: 'OK', onPress: () => console.log('OK Pressed') },
             ]);
           }

@@ -139,6 +139,13 @@ const NotificationListItem = ({ navigation, notification }) => {
       ]);
     }
     if (style === 'COMMENT_COMMENT') {
+      if (!!comment && !!comment.parentUpdate) {
+        return navigation.navigate({
+          name: 'Update',
+          key: `Update:${comment.parentUpdate.id}`,
+          params: { updatePassedIn: comment.parentUpdate },
+        });
+      }
       if (!!comment && !!comment.parentPost) {
         return navigation.navigate({
           name: 'Post',
@@ -189,6 +196,13 @@ const NotificationListItem = ({ navigation, notification }) => {
       ]);
     }
     if (style === 'MENTIONED_IN_COMMENT') {
+      if (!!comment && !!comment.parentUpdate) {
+        return navigation.navigate({
+          name: 'Update',
+          key: `Update:${comment.parentUpdate.id}`,
+          params: { updatePassedIn: comment.parentUpdate },
+        });
+      }
       if (!!comment && !!comment.parentPost) {
         return navigation.navigate({
           name: 'Post',
