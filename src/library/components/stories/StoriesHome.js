@@ -53,7 +53,7 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
 
   useEffect(() => {
     if (networkStatusStories === 7 && refetching) {
-      // console.log('refetching stories Home')
+      console.log('refetching stories Home');
       refetchStories();
     }
   }, [refetching]);

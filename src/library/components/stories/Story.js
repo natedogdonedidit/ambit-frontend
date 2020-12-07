@@ -249,11 +249,6 @@ function Story({
   // }
   // }
 
-  const handleDoubleTap = () => {
-    console.log('double tapped');
-    // handleLike();
-  };
-
   // functions for "More" modal
   const removeFromProject = () => {
     // setPaused(true); // doesnt work
@@ -378,6 +373,7 @@ function Story({
       <View style={{ flex: 1 }}>
         {/* absolute positioned stuff */}
         <StoryImage
+          key={activeItem.id}
           activeItem={activeItem}
           videoRef={videoRef}
           isBuffering={isBuffering}

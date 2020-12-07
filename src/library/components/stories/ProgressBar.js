@@ -19,7 +19,7 @@ function ProgressBar({ duration, storyLength, paused, incrementIndex, videoStart
   // interpolate the animated value
   const barLengthAnim = progressBar.interpolate({
     inputRange: [0, 1],
-    outputRange: [-itemWidth, 0], // used with tranform
+    outputRange: [-itemWidth, 0], // used with tranform, the -1 is bc at the very beginning of animation a sliver of white shows on bar
     // outputRange: [0, itemWidth], // used with width animation (useNativeDriver = false)
   });
 

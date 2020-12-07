@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useApolloClient } from '@apollo/client';
+// import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 // import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import colors from 'styles/colors';
@@ -33,6 +34,7 @@ const HomeScreen = ({ navigation }) => {
 
   // OTHER HOOKS
   const insets = useSafeAreaInsets();
+
   const [top, setTop] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
 
   useEffect(() => {

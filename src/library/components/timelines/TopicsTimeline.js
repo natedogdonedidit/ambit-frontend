@@ -62,17 +62,12 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
   // GETS STORIES FOR YOUR FAV TOPICS
   const { error: errorStories, data: dataStories, loading: loadingStories } = useQuery(STORIES_TOPIC_QUERY, {
     variables: {
-      where: {
-        AND: [
-          {
-            topic: { startsWith: topicID },
-          },
-        ],
-      },
+      topic: topicID,
     },
   });
 
-  const hasStories = !loadingStories && !errorStories && dataStories && dataStories.stories && dataStories.stories.length > 0;
+  const hasStories =
+    !loadingStories && !errorStories && dataStories && dataStories.storiesTopic && dataStories.storiesTopic.length > 0;
 
   // GET MY TOPICS
   // const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);

@@ -71,15 +71,9 @@ const StoryModal = ({ navigation, route }) => {
     },
   ] = useLazyQuery(STORIES_TOPIC_QUERY, {
     variables: {
-      where: {
-        AND: [
-          {
-            topic: { startsWith: topicIDtoSearch },
-          },
-        ],
-      },
+      topic: topicIDtoSearch,
     },
-    fetchPolicy: 'cache-and-network',
+    // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
 
@@ -97,7 +91,7 @@ const StoryModal = ({ navigation, route }) => {
       networkStatus: networkStatusStoriesHome,
     },
   ] = useLazyQuery(STORIES_HOME_QUERY, {
-    fetchPolicy: 'cache-and-network',
+    // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
 
@@ -139,10 +133,10 @@ const StoryModal = ({ navigation, route }) => {
   useEffect(() => {
     // used to add home stories to Q
     if (moreType === 'Topic' && !loadingStoriesTopic && dataStoriesTopic) {
-      if (dataStoriesTopic.stories) {
+      if (dataStoriesTopic.storiesTopic) {
         // console.log('yo', dataStoriesTopic);
         // remove the story passed in from the query results
-        const storiesToAdd = dataStoriesTopic.stories.filter((s) => s.items.length > 0);
+        const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.items.length > 0);
         // setStoryQ([story, ...storiesToAdd]);
         setStoryQ([...storiesToAdd]);
       }

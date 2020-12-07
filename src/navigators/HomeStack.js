@@ -1,6 +1,7 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useLayoutEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import analytics from '@segment/analytics-react-native';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import { UserContext } from 'library/utils/UserContext';
 
@@ -21,11 +22,14 @@ const HomeStack = ({ navigation, route }) => {
   const { homePosition, setHomePosition } = useContext(UserContext);
 
   // hides the tabs in Chat screen
-  if (route.state) {
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route) || 'HomeStack';
+    // console.log(routeName);
+
     navigation.setOptions({
-      tabBarVisible: route.state.routes ? !(route.state.routes[route.state.routes.length - 1].name === 'Chat') : null,
+      tabBarVisible: routeName !== 'Chat',
     });
-  }
+  }, [navigation, route]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('tabPress', (e) => {

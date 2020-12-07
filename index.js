@@ -156,7 +156,7 @@ const client = new ApolloClient({
           },
           messages: {
             merge(existing = [], incoming = [], options) {
-              console.log(options);
+              // console.log(options);
 
               // if it is a subscription - put message first
               if (!options.args.orderBy && !options.args.first && !options.args.after) {

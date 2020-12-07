@@ -16,24 +16,32 @@ function StoryImage({
   setVideoStarted,
   storyIsActive,
 }) {
+  // console.log(activeItem.url);
   // useEffect(() => {
-
-  // }, [isBuffering])
+  // console.log(activeItem.url);
+  // }, [activeItem]);
 
   function onProgress(data) {
+    // console.log('onProgress', activeItem.id);
     // sometimes this will not fire when video starts...so i must set progressUpdateInterval low so the function will call again quickly
-    if (data.currentTime >= 0 && !videoStarted) {
+    // if (data.currentTime >= 0 && !videoStarted) {
+    // console.log('onProgress', data.currentTime);
+    // setVideoStarted(true);
+    // }
+    if (!videoStarted) {
+      // console.log('onProgress', activeItem.id, data.currentTime);
       setVideoStarted(true);
     }
   }
 
   function onBuffer(data) {
+    // console.log(data);
     if (data.isBuffering && !isBuffering) {
       setIsBuffering(data.isBuffering);
-      // setPaused(true);
+      setPaused(true);
     } else if (!data.isBuffering && isBuffering) {
       setIsBuffering(data.isBuffering);
-      // setPaused(false);
+      setPaused(false);
     }
   }
 
@@ -41,16 +49,17 @@ function StoryImage({
     incrementIndex();
   }
 
-  function onPlaybackRateChange({ playbackRate }) {
-    // had to add videoStarted to logic. Otherwise, this will pause the video before it even starts
-    if (playbackRate === 0 && !paused && videoStarted) {
-      // console.log('playback pause');
-      setPaused(true);
-    } else if (playbackRate > 0 && paused) {
-      console.log('playback unpause');
-      // setPaused(false);
-    }
-  }
+  // // I think i was using this to pause the video upon mid-video buffer
+  // function onPlaybackRateChange({ playbackRate }) {
+  //   // had to add videoStarted to logic. Otherwise, this will pause the video before it even starts
+  //   if (playbackRate === 0 && !paused && videoStarted) {
+  //     // console.log('playback pause');
+  //     setPaused(true);
+  //   } else if (playbackRate > 0 && paused) {
+  //     console.log('playback unpause');
+  //     // setPaused(false);
+  //   }
+  // }
 
   function renderMedia() {
     const { type, url } = activeItem;
@@ -71,11 +80,18 @@ function StoryImage({
           style={styles.fill}
           resizeMode="cover"
           progressUpdateInterval={300}
-          onPlaybackRateChange={onPlaybackRateChange}
+          // onPlaybackRateChange={onPlaybackRateChange}
           onProgress={onProgress}
           onBuffer={onBuffer}
           onEnd={onEnd}
           paused={paused}
+          // automaticallyWaitsToMinimizeStalling={false}
+          bufferConfig={{
+            minBufferMs: 15000, // 15000 default
+            maxBufferMs: 50000, // 50000 default
+            bufferForPlaybackMs: 2500, // 2500 default
+            bufferForPlaybackAfterRebufferMs: 5000, // 5000 default
+          }}
         />
       );
     }

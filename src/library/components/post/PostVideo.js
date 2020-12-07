@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -10,6 +11,7 @@ const windowWidth = Dimensions.get('window').width;
 
 const PostVideo = ({ url }) => {
   const videoRef = useRef();
+  const navigation = useNavigation();
 
   const [naturalSize, setNaturalSize] = useState(null);
   const [duration, setDuration] = useState('');
@@ -25,7 +27,15 @@ const PostVideo = ({ url }) => {
   const ratio = naturalSize && naturalSize.width && naturalSize.height ? naturalSize.width / naturalSize.height : 0;
 
   // calculate the Video height based on fixed width of View & Ratio
-  const height = width && ratio ? Math.floor(width / ratio) : 160;
+  // const height = width && ratio ? Math.floor(width / ratio) : 160;
+  let height = 160;
+  if (width && ratio && naturalSize.orientation) {
+    if (naturalSize.orientation === 'portrait') {
+      height = Math.floor(width * ratio); // if portrait the width/height from cloudinary is opposite of what you would think
+    } else {
+      height = Math.floor(width / ratio);
+    }
+  }
 
   // console.log(naturalSize, ratio, viewWidth, height);
 
@@ -54,8 +64,16 @@ const PostVideo = ({ url }) => {
             borderRadius: 10,
           }}
           resizeMode="cover"
-          onLoad={onLoad}
+          allowsExternalPlayback={false}
+          ignoreSilentSwitch="ignore"
+          onLoad={onLoad} // get duration and dimensions
+          onFullscreenPlayerDidPresent={() => setPaused(false)}
+          onFullscreenPlayerWillDismiss={() => {
+            setPaused(true);
+          }}
+          fullscreenOrientation="portrait"
           paused={paused}
+          controls={false}
         />
         <View
           style={{
@@ -70,15 +88,15 @@ const PostVideo = ({ url }) => {
         >
           <View
             style={{
-              height: 50,
-              width: 50,
-              borderRadius: 25,
+              height: 46,
+              width: 46,
+              borderRadius: 23,
               backgroundColor: 'rgba(0,0,0,0.6)',
               justifyContent: 'center',
               alignItems: 'center',
             }}
           >
-            <Icon name="play" solid size={20} color={colors.white} style={{ paddingLeft: 4 }} />
+            <Icon name="play" solid size={18} color={colors.white} style={{ paddingLeft: 3 }} />
           </View>
         </View>
         {duration > 0 && (

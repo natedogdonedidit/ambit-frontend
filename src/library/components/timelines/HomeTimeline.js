@@ -217,7 +217,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
-    console.log('refetching');
+    // console.log('refetching');
     setShowRefreshing(true);
     setTimeout(() => {
       setShowRefreshing(false);

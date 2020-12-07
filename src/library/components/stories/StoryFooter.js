@@ -68,9 +68,9 @@ function StoryFooter({
   }
 
   // FUNCTIONS
-  const handleLike = async () => {
+  const handleLike = async ({ isLikeOnly = false }) => {
     // sent mutation makes it so you can only send 1 mutation per mount
-    if (isLiked && !sentMutation) {
+    if (isLiked && !sentMutation && !isLikeOnly) {
       setSentMutation(true);
       setIsLiked(false);
       setLikesCount(likesCount - 1);

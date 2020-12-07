@@ -29,16 +29,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
     networkStatus: networkStatusStories,
   } = useQuery(STORIES_TOPIC_QUERY, {
     variables: {
-      where: {
-        AND: [
-          {
-            topic: { startsWith: topicID },
-          },
-          {
-            items: { some: { id: { gt: 'a' } } },
-          },
-        ],
-      },
+      topic: topicID,
     },
     notifyOnNetworkStatusChange: true,
   });
@@ -57,7 +48,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
     return <View style={{ height: 10 }} />;
   }
 
-  const { stories } = dataStories;
+  const { storiesTopic } = dataStories;
 
   const sortStoriesTopic = (a, b) => {
     // if user story - check if viewed entire story (used in logic below)
@@ -101,7 +92,7 @@ const StoriesTopic = ({ navigation, refetching, topicID }) => {
     return 1;
   };
 
-  const storiesSorted = [...stories].sort(sortStoriesTopic) || [];
+  const storiesSorted = [...storiesTopic].sort(sortStoriesTopic) || [];
 
   if (storiesSorted.length <= 0) {
     // return null;

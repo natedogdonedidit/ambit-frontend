@@ -247,8 +247,8 @@ PODS:
     - React
   - react-native-cameraroll (4.0.0):
     - React
-  - react-native-safe-area-context (3.0.7):
-    - React
+  - react-native-safe-area-context (3.1.9):
+    - React-Core
   - react-native-video (4.4.5):
     - React
     - react-native-video/Video (= 4.4.5)
@@ -329,8 +329,8 @@ PODS:
     - React
   - RNCMaskedView (0.1.10):
     - React
-  - RNGestureHandler (1.6.1):
-    - React
+  - RNGestureHandler (1.9.0):
+    - React-Core
   - RNImageCropPicker (0.32.2):
     - React-Core
     - React-RCTImage
@@ -340,10 +340,10 @@ PODS:
     - React-Core
     - React-RCTImage
     - TOCropViewController
-  - RNReanimated (1.9.0):
-    - React
-  - RNScreens (2.9.0):
-    - React
+  - RNReanimated (1.13.2):
+    - React-Core
+  - RNScreens (2.15.0):
+    - React-Core
   - RNSentry (1.7.2):
     - React
     - Sentry (~> 5.2.0)
@@ -568,7 +568,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 512e560d0e985d0e8c479a54a4e5c147a9c83493
   react-native-camera: 679479bfe0f59103aca704e8dc39b0cedf5e2f65
   react-native-cameraroll: 7c2e22b5a8e8f30fc6d5566c942b225ca7129752
-  react-native-safe-area-context: c39fc20a20cd66ebf1d56c6f8b8711142fbfee98
+  react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
   react-native-video: aa527b0acb37f94c4491e70df0274cb26979405d
   react-native-viewpager: 0dbb6df18e3d56a0eee2908c5401fadf9a6b57f8
   React-RCTActionSheet: f41ea8a811aac770e0cc6e0ad6b270c644ea8b7c
@@ -586,10 +586,10 @@ SPEC CHECKSUMS:
   RNAnalyticsIntegration-Mixpanel: 0e25d9849351e78ce9aa88ad5c5ce1ffad3f6f12
   RNCAsyncStorage: db711e29e5e0500d9bd21aa0c2e397efa45302b1
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
-  RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
+  RNGestureHandler: 9b7e605a741412e20e13c512738a31bd1611759b
   RNImageCropPicker: f0557a908758c4a3f83978894ec7227651529b45
-  RNReanimated: b5ccb50650ba06f6e749c7c329a1bc3ae0c88b43
-  RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
+  RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
+  RNScreens: 2ad555d4d9fa10b91bb765ca07fe9b29d59573f0
   RNSentry: 2d4a0e18c6dfe93b647c360e0d15c9391d24e9d1
   RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
   Segment-Mixpanel: b5d949a7eda1018a8d5afbb2cfcb59c870ecce34

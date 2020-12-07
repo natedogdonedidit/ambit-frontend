@@ -6,6 +6,7 @@ import HomeStack from 'navigators/HomeStack';
 import PeopleStack from 'navigators/PeopleStack';
 import NotificationsStack from 'navigators/NotificationsStack';
 import InboxStack from 'navigators/InboxStack';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import { UserContext } from 'library/utils/UserContext';
 import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
@@ -27,12 +28,12 @@ const TabsNavigator = ({ navigation, route }) => {
   const client = useApolloClient();
   const { currentUserId, setActiveTab } = useContext(UserContext);
 
+  // const tabBarHeight = useBottomTabBarHeight();
+  // console.log(tabBarHeight);
+
   useEffect(() => {
-    // whenever tab changes. save route to context
-    if (route && route.state && route.state.index >= 0 && route.state.routeNames) {
-      // console.log('setting tab to:', route.state.routeNames[route.state.index]);
-      setActiveTab(route.state.routeNames[route.state.index] || 'HomeStack');
-    }
+    const routeName = getFocusedRouteNameFromRoute(route) || 'HomeStack';
+    setActiveTab(routeName);
   }, [route]);
 
   // MESSAGES QUERY

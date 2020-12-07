@@ -18,7 +18,7 @@ function StoryTapRegions({ decrementIndex, incrementIndex, handleLike, setPaused
     const now = Date.now();
 
     if (lastTap && now - lastTap < DOUBLE_TAP_DELAY) {
-      handleLike();
+      handleLike({ isLikeOnly: true });
     } else {
       lastTap = now;
     }

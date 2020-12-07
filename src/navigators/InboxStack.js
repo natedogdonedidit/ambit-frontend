@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 import ConvosScreen from 'screens/main/ConvosScreen';
 import ChatScreen from 'screens/main/ChatScreen';
@@ -16,13 +17,14 @@ const Stack = createStackNavigator();
 
 const InboxStack = ({ navigation, route }) => {
   // hides the tabs in Chat screen
-  useEffect(() => {
-    if (route.state) {
-      navigation.setOptions({
-        tabBarVisible: route.state.routes ? !(route.state.routes[route.state.routes.length - 1].name === 'Chat') : null,
-      });
-    }
-  }, [route]);
+  useLayoutEffect(() => {
+    const routeName = getFocusedRouteNameFromRoute(route) || 'HomeStack';
+    // console.log(routeName);
+
+    navigation.setOptions({
+      tabBarVisible: routeName !== 'Chat',
+    });
+  }, [navigation, route]);
 
   return (
     <Stack.Navigator initialRouteName="Convos" headerMode="none">

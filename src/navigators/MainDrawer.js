@@ -3,7 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import TabsNavigator from 'navigators/TabsNavigator';
 import CustomDrawer from 'library/components/CustomDrawer';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+// import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
 const Drawer = createDrawerNavigator();
 

@@ -81,7 +81,7 @@ const CameraControls = ({
         orientation: 'portrait',
         maxDuration: MAX_DURATION,
         maxFileSize: 100 * 1024 * 1024,
-        quality: RNCamera.Constants.VideoQuality['1080p'], // 288p, 480p, 720p, 1080p, 2160p
+        quality: RNCamera.Constants.VideoQuality['720p'], // 288p, 480p, 720p, 1080p, 2160p
       };
 
       try {

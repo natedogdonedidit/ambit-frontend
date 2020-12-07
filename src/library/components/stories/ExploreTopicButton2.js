@@ -25,13 +25,7 @@ const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
   // GETS STORIES FOR YOUR FAV TOPICS
   const { error, data, loading } = useQuery(STORIES_TOPIC_QUERY, {
     variables: {
-      where: {
-        AND: [
-          {
-            topic: { startsWith: topicID },
-          },
-        ],
-      },
+      topic: topicID,
     },
   });
 
@@ -41,9 +35,9 @@ const ExploreTopicButton = ({ navigation, topicID, refetching }) => {
     return null;
   }
 
-  const { stories } = data;
+  const { storiesTopic } = data;
 
-  if (stories.length <= 0) {
+  if (storiesTopic.length <= 0) {
     return null;
   }
 
