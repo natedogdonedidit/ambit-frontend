@@ -111,28 +111,35 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
           <Text>hey</Text>
         </View>
       }
-      renderSectionHeader={({ section }) => (
-        <Section
-          text={section.title}
-          marginTop={false}
-          borderBottom={false}
-          subText={
-            section.title === 'Following' ? (
-              <Text style={{ ...defaultStyles.smallMute, paddingTop: 3 }}>
-                Topics will appear in <Text style={{ ...defaultStyles.smallBold, color: colors.purp }}>For You</Text> timeline
-              </Text>
-            ) : null
-          }
-          // rightComponent={
-          //   section.title === 'Following' ? <TextButton onPress={() => navigation.navigate('MyTopics')}>Edit</TextButton> : null
-          // }
-        />
-      )}
+      renderSectionHeader={({ section }) => {
+        if (section.title === 'Following' && favoriteTopics.length <= 0) {
+          return null;
+        }
+        return (
+          <Section
+            text={section.title}
+            marginTop={false}
+            borderBottom={false}
+            subText={
+              section.title === 'Following' ? (
+                <Text style={{ ...defaultStyles.smallMute, paddingTop: 3 }}>
+                  Topics will appear in <Text style={{ ...defaultStyles.smallBold, color: colors.purp }}>For You</Text> timeline
+                </Text>
+              ) : null
+            }
+            // rightComponent={
+            //   section.title === 'Following' ? <TextButton onPress={() => navigation.navigate('MyTopics')}>Edit</TextButton> : null
+            // }
+          />
+        );
+      }}
       renderSectionFooter={({ section }) => {
         if (section.title === 'Recommended Topics') {
           return (
-            <View style={{ alignSelf: 'center', paddingTop: 30, paddingBottom: 30 }}>
-              <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>More Topics</ButtonDefault>
+            <View style={{ backgroundColor: 'white' }}>
+              <View style={{ alignSelf: 'center', paddingTop: 20, paddingBottom: 20 }}>
+                <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>More Topics</ButtonDefault>
+              </View>
             </View>
           );
         }

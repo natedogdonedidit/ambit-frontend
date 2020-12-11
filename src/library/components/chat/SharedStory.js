@@ -30,7 +30,7 @@ const SharedStory = ({ navigation, storyId }) => {
     return (
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('StoryModal', {
+          navigation.navigate('StoryModalUser', {
             story,
           })
         }

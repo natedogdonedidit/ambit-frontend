@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserContext } from 'library/utils/UserContext';
+import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 
 import colors from 'styles/colors';
 import DELETE_STORYITEM_MUTATION from 'library/mutations/DELETE_STORYITEM_MUTATION';
@@ -51,8 +52,6 @@ function Story({
   storyIsActive,
   tryGoToPrevStory,
   tryGoToNextStory,
-  favoriteTopics = [],
-  setDisableOutterScroll,
 }) {
   const { width } = Dimensions.get('window');
   // const client = useApolloClient();
@@ -200,54 +199,36 @@ function Story({
     // reset state everytime story becomes active
     if (storyIsActive) {
       resetState();
+
+      // add view to local storage (if its not already in there)
+      const previouslyViewed = viewedStories();
+      if (!previouslyViewed.includes(story.id)) {
+        viewedStories([...previouslyViewed, story.id]);
+        // console.log('viewed stories in local storage:', [...previouslyViewed, story.id]);
+      }
     }
-  }, [storyIsActive]);
-
-  // this is so story unpauses when you close Intro or the "More" modal
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {
-  //     setPaused(false);
-  //   });
-
-  //   return unsubscribe;
-  // }, [navigation]);
-
-  // this is so when you open the "Intro" modal, the story pauses when un-focused
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('blur', () => {
-  //     setPaused(true);
-  //   });
-
-  //   return unsubscribe;
-  // }, [navigation]);
+  }, [story, storyIsActive]);
 
   // anytime the story item changes, add the user to viewed list
   useEffect(() => {
     if (storyIsActive) {
+      // add view to local storage (if its not already in there)
+      const previouslyViewed = viewedStoryItems();
+      if (!previouslyViewed.includes(activeItem.id)) {
+        viewedStoryItems([...previouslyViewed, activeItem.id]);
+        // console.log('viewed story items in local storage:', [...previouslyViewed, activeItem.id]);
+      }
+
+      // add view to the database
       InteractionManager.runAfterInteractions(() => {
         viewedStoryItem({
           variables: { storyItemID: activeItem.id },
         });
       });
     }
-  }, [activeItemIndex]);
+  }, [activeItem, storyIsActive]);
 
   // CUSTOM FUNCTIONS
-  // function engagePause() {
-  // console.log('engage Pause');
-  // if (!paused) {
-  // console.log('setting pause to true');
-  // setPaused(true);
-  // }
-  // }
-
-  // function disengagePause() {
-  // console.log('disengage Pause');
-  // if (paused) {
-  // console.log('setting pause to false');
-  // setPaused(false);
-  // }
-  // }
 
   // functions for "More" modal
   const removeFromProject = () => {
@@ -350,8 +331,6 @@ function Story({
           navigation={navigation}
           handleMoreButton={handleMoreButton}
           setPaused={setPaused}
-          favoriteTopics={favoriteTopics}
-          setDisableOutterScroll={setDisableOutterScroll}
           incrementIndex={incrementIndex}
           decrementIndex={decrementIndex}
         />

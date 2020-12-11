@@ -23,10 +23,10 @@ const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDt
     return (
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('StoryModal', {
+          navigation.navigate('StoryModalUser', {
             story,
-            moreType,
-            topicIDtoSearch,
+            // moreType,
+            // topicIDtoSearch,
           })
         }
         style={viewedEntireStory ? { ...styles.storyBox, opacity: 0.5 } : styles.storyBox}

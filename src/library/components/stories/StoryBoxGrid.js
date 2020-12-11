@@ -20,7 +20,7 @@ const StoryBoxGrid = ({ navigation, story, showProfilePic = true }) => {
     return (
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('StoryModal', {
+          navigation.navigate('StoryModalUser', {
             story,
           })
         }

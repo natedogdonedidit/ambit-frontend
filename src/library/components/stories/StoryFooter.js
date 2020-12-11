@@ -40,7 +40,6 @@ function StoryFooter({
 
   decrementIndex,
   incrementIndex,
-  // favoriteTopics,
   // setDisableOutterScroll,
 }) {
   const { currentUserId } = useContext(UserContext);
@@ -225,8 +224,8 @@ function StoryFooter({
         {showIntroButton ? (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('IntroModal', {
-                intro: {
+              navigation.navigate('StoryModalUser', {
+                story: {
                   ...intro,
                   owner: { ...owner },
                 },

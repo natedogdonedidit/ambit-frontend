@@ -172,8 +172,7 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
               {hasStories ? (
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('StoryModal', {
-                      moreType: 'Topic',
+                    navigation.navigate('StoryModalTopic', {
                       topicIDtoSearch: topicID,
                     })
                   }

@@ -8,68 +8,26 @@ import defaultStyles from 'styles/defaultStyles';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import StoryBox from 'library/components/stories/StoryBox';
-import ExploreTopicButton from 'library/components/stories/ExploreTopicButton2';
+import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
 import { UserContext } from 'library/utils/UserContext';
 import { combineFavoriteTopics } from 'library/utils';
 import NewProjectButton from './NewProjectButton';
+import ForYouButton from './ForYouButton';
 
 function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingStories, network }) {
-  const { currentUserId } = useContext(UserContext);
-
-  const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
+  const { data: dataTopics, loading: loadingTopics, error: errorTopics } = useQuery(CURRENT_USER_TOPICS);
 
   const favoriteTopics = useMemo(() => {
-    if (dataTopics && dataTopics.topicsFocus) {
+    if (dataTopics && dataTopics.userLoggedIn && dataTopics.userLoggedIn.topicsFocus) {
       // return combineFavoriteTopics(dataTopics.myTopics);
-      return dataTopics.topicsFocus || [];
+      return dataTopics.userLoggedIn.topicsFocus || [];
     }
 
     return [];
   }, [dataTopics]);
 
-  // GETS STORIES FROM YOUR NETWORK
-  const {
-    error: errorStories,
-    data: dataStories,
-    refetch: refetchStories,
-    fetchMore: fetchMoreStories,
-    networkStatus: networkStatusStories,
-  } = useQuery(STORIES_HOME_QUERY, {
-    // variables: {
-    //   // first: 10,
-    //   where: {
-    //     owner: {
-    //       id: { in: [...network, currentUserId] },
-    //     },
-    //   },
-    // },
-    onError: (e) => console.log('error loading home stories', e),
-    notifyOnNetworkStatusChange: true,
-  });
-
-  const refetchingStories = networkStatusStories === 4;
-  const fetchingMoreStories = networkStatusStories === 3;
-  const loadingStories = networkStatusStories === 1;
-
-  useEffect(() => {
-    if (networkStatusStories === 7 && refetching) {
-      console.log('refetching stories Home');
-      refetchStories();
-    }
-  }, [refetching]);
-
-  // pass loading state to HomeTimeline
-  useEffect(() => {
-    setLoadingStories(loadingStories);
-  }, [loadingStories]);
-
-  // pass refetching state to HomeTimeline
-  useEffect(() => {
-    setRefetchingStories(refetchingStories);
-  }, [refetchingStories]);
-
   const renderStories = () => {
-    if (loadingStories) {
+    if (loadingTopics) {
       // return null;
       return (
         <>
@@ -81,123 +39,15 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
       );
     }
 
-    if (errorStories) {
-      console.log(errorStories);
+    if (errorTopics) {
+      // console.log(errorStories);
       return null;
     }
 
-    const userStories = dataStories.storiesHome;
-    const userStoriesNoIntro = userStories.filter((st) => st.type !== 'INTRO');
+    // console.log(favoriteTopics);
 
-    // combine user and topic stories
-    const userAndTopicStories = [...userStoriesNoIntro, ...favoriteTopics];
-
-    // sort them
-    const sortStoriesHome = (a, b) => {
-      const isTopicStoryA = !a.type;
-      const isTopicStoryB = !b.type;
-
-      // if user story - check if viewed entire story (used in logic below)
-      const newestUnseenA = isTopicStoryA
-        ? 0
-        : a.items.findIndex(({ viewedByMe }) => {
-            // return true if you have NOT viewed the story - this will set newestUnseen to that index
-            return !viewedByMe;
-          });
-      const viewedEntireStoryA = newestUnseenA === -1;
-
-      // if user story - check if viewed entire story (used in logic below)
-      const newestUnseenB = isTopicStoryB
-        ? 0
-        : b.items.findIndex(({ viewedByMe }) => {
-            // return true if you have NOT viewed the story - this will set newestUnseen to that index
-            return !viewedByMe;
-          });
-      const viewedEntireStoryB = newestUnseenB === -1;
-
-      // if both are user stories
-      if (!isTopicStoryA && !isTopicStoryB) {
-        // if both stories have been viewed entirely
-        if (viewedEntireStoryA && viewedEntireStoryB) {
-          return -1;
-        }
-
-        // if only A has been viewed entirely
-        if (viewedEntireStoryA) {
-          return 1;
-        }
-
-        // if only B has been viewed entirely
-        if (viewedEntireStoryB) {
-          return -1;
-        }
-      }
-
-      // if both are topic stories
-      if (isTopicStoryA && isTopicStoryB) {
-        return -1;
-      }
-
-      // if only A is user story
-      if (!isTopicStoryA) {
-        // check if A has been viewed
-        if (viewedEntireStoryA) {
-          // if viewed already move A back
-          return 1;
-        }
-
-        return -1;
-      }
-
-      // if only B is user story
-      if (!isTopicStoryB) {
-        // check if B has been viewed
-        if (viewedEntireStoryB) {
-          // if viewed already move B back
-          return -1;
-        }
-
-        return 1;
-      }
-
-      // grab the last item of each story, compare
-      if (a.items[a.items.length - 1].createdAt > b.items[b.items.length - 1].createdAt) {
-        return -1;
-      }
-
-      return 1;
-    };
-
-    const userAndTopicStoriesSorted = userAndTopicStories.sort(sortStoriesHome) || [];
-
-    return userAndTopicStoriesSorted.map((story) => {
-      // check if topic story
-      const isTopicStory = !story.type;
-
-      // if topic story
-      if (isTopicStory) {
-        return <ExploreTopicButton key={story.id} navigation={navigation} topicID={story.topicID} refetching={refetching} />;
-      }
-
-      // if user story
-      if (story.items.length > 0) {
-        const newestUnseen = story.items.findIndex(({ viewedByMe }) => {
-          // return true if you have NOT viewed the story - this will set newestUnseen to that index
-          return !viewedByMe;
-        });
-
-        return (
-          <StoryBox
-            key={`${story.id}-${newestUnseen}`}
-            navigation={navigation}
-            story={story}
-            moreType="Home"
-            newestUnseen={newestUnseen}
-          />
-        );
-      }
-
-      return null;
+    return favoriteTopics.map((topic) => {
+      return <ExploreTopicButton key={topic.id} navigation={navigation} topicID={topic.id} refetching={refetching} />;
     });
   };
 
@@ -210,6 +60,7 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
         showsHorizontalScrollIndicator={false}
       >
         <NewProjectButton navigation={navigation} />
+        <ForYouButton navigation={navigation} />
         {renderStories()}
       </ScrollView>
       <View style={{ height: 10, backgroundColor: colors.lightGray }} />

@@ -1,14 +1,14 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { StyleSheet, View, StatusBar, Dimensions, FlatList, InteractionManager } from 'react-native';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, View, StatusBar, Dimensions, FlatList, InteractionManager, Alert } from 'react-native';
+import { useLazyQuery } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
+import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 
 import STORIES_TOPIC_QUERY from 'library/queries/STORIES_TOPIC_QUERY';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import Story from 'library/components/stories/Story';
 import Loader from 'library/components/UI/Loader';
-import { combineFavoriteTopics } from 'library/utils';
+import NoMoreStories from 'library/components/stories/NoMoreStories';
 
 // option 1: pass in a singleStory. Story will play, followed by intro, then modal will close
 // option 2: pass in an intro. Intro will play, then modal will close.
@@ -16,18 +16,23 @@ import { combineFavoriteTopics } from 'library/utils';
 // option 4: pass in firstStory, with type = 'ForYou'. First story will play followed by more from your followers
 // option 5: pass in firstStory, with type = 'Profile'. First story will play followed by more from this user
 
-// moreType: 'ForYou', 'Topic', 'User', 'ForYou', null means only show a single story
+// step 1: pass in moreType = 'ForYou'
+// step 2: query for stories based on moreType
+// step 3: load viewedStories and viewedStoryItems
+
+// moreType: 'ForYou', 'Topic', 'User', null means only show a single story
 
 const StoryModal = ({ navigation, route }) => {
   const { story = null, moreType = null, topicIDtoSearch } = route.params;
   const { width } = Dimensions.get('window');
   const storyFlatlist = useRef();
 
-  const [disableOutterScroll, setDisableOutterScroll] = useState(false);
-
   // STATE
   const [storyQ, setStoryQ] = useState(story ? [story] : []);
   const [activeStoryIndex, setActiveStoryIndex] = useState(0);
+  const [moreAvailable, setMoreAvailable] = useState(true); // set this false if the query comes back with less than 6 stories
+
+  const [disableOutterScroll, setDisableOutterScroll] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -42,73 +47,186 @@ const StoryModal = ({ navigation, route }) => {
     }, [])
   );
 
-  // QUERY TO GET USERS TOPICS
-  // const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
-
-  // const favoriteTopics = useMemo(() => {
-  //   const initialFavs = topicIDtoSearch ? [topicIDtoSearch] : [];
-
-  //   if (dataTopics && dataTopics.myTopics) {
-  //     const myFavs = combineFavoriteTopics(dataTopics.myTopics);
-  //     const myFavIDs = myFavs.map((fav) => fav.id);
-
-  //     return [...initialFavs, ...myFavIDs];
-  //   }
-
-  //   return initialFavs;
-  // }, [dataTopics, topicIDtoSearch]);
-  const favoriteTopics = [];
-
   // QUERIES - to get next stories
   const [
-    getStoriesTopic,
-    {
-      error: errorStoriesTopic,
-      data: dataStoriesTopic,
-      refetch: refetchStoriesTopic,
-      fetchMore: fetchMoreStoriesTopic,
-      networkStatus: networkStatusStoriesTopic,
-    },
-  ] = useLazyQuery(STORIES_TOPIC_QUERY, {
-    variables: {
-      topic: topicIDtoSearch,
-    },
-    // fetchPolicy: 'cache-and-network',
-    notifyOnNetworkStatusChange: true,
-  });
-
-  const refetchingStoriesTopic = networkStatusStoriesTopic === 4;
-  const fetchingMoreStoriesTopic = networkStatusStoriesTopic === 3;
-  const loadingStoriesTopic = networkStatusStoriesTopic === 1;
-
-  const [
     getStoriesHome,
-    {
-      error: errorStoriesHome,
-      data: dataStoriesHome,
-      refetch: refetchStoriesHome,
-      fetchMore: fetchMoreStoriesHome,
-      networkStatus: networkStatusStoriesHome,
-    },
+    { error: errorStoriesHome, data: dataStoriesHome, networkStatus: networkStatusStoriesHome },
   ] = useLazyQuery(STORIES_HOME_QUERY, {
-    // fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-first',
+    // nextFetchPolicy: 'network-only',
     notifyOnNetworkStatusChange: true,
   });
 
-  const refetchingStoriesHome = networkStatusStoriesHome === 4;
-  const fetchingMoreStoriesHome = networkStatusStoriesHome === 3;
   const loadingStoriesHome = networkStatusStoriesHome === 1;
 
+  const [
+    getStoriesTopic,
+    { error: errorStoriesTopic, data: dataStoriesTopic, networkStatus: networkStatusStoriesTopic },
+  ] = useLazyQuery(STORIES_TOPIC_QUERY, {
+    // variables: {
+    //   topic: topicIDtoSearch,
+    // },
+    // fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
+  });
+
+  const loadingStoriesTopic = networkStatusStoriesTopic === 1;
+
   // EFFECTS
+  // load initial query upon opening modal
   useEffect(() => {
     if (moreType === 'ForYou') {
-      getStoriesHome();
+      getStoriesHome({
+        variables: {
+          feed: 'foryou',
+          viewedStories: viewedStories(),
+          viewedStoryItems: viewedStoryItems(),
+        },
+        // fetchPolicy: 'cache-first', // this will only run if nothing in cache, the variables dont trigger refetch
+      });
     }
 
     if (moreType === 'Topic') {
-      getStoriesTopic();
+      getStoriesTopic({
+        variables: {
+          topic: topicIDtoSearch,
+          viewedStories: viewedStories(),
+          viewedStoryItems: viewedStoryItems(),
+        },
+      });
     }
   }, [moreType]);
+
+  // load more if we are near the end of the storyQ && moreAvailable = true && not currently loading the query
+  useEffect(() => {
+    if (moreType === 'ForYou' && moreAvailable && !loadingStoriesHome) {
+      // load more if less than 3 remaining in Q
+      if (activeStoryIndex >= storyQ.length - 4) {
+        console.log(`near end of Q - getting more stories...`);
+        console.log(`${activeStoryIndex} / ${storyQ.length}`);
+
+        // so we dont refetch stories curretnly in the Q
+        const storyQIDs = storyQ.map((s) => s.id);
+
+        getStoriesHome({
+          variables: {
+            feed: 'foryou',
+            viewedStories: [...viewedStories(), ...storyQIDs],
+            viewedStoryItems: viewedStoryItems(),
+          },
+          // fetchPolicy: 'network-only',
+        });
+
+        // client.query({
+        //   query: MESSAGES_CONNECTION,
+        //   variables: {
+        //     where: { to: { id: { equals: newMessageSub.to.id } } },
+        //     first: 10,
+        //     orderBy: [{ createdAt: 'desc' }],
+        //   },
+        // });
+      }
+    }
+
+    if (moreType === 'Topic' && moreAvailable && !loadingStoriesTopic) {
+      // load more if less than 3 remaining in Q
+      if (activeStoryIndex >= storyQ.length - 4) {
+        console.log(`near end of Q - getting more stories...`);
+        console.log(`${activeStoryIndex} / ${storyQ.length}`);
+
+        // so we dont refetch stories curretnly in the Q
+        const storyQIDs = storyQ.map((s) => s.id);
+
+        getStoriesTopic({
+          variables: {
+            topic: topicIDtoSearch,
+            viewedStories: [...viewedStories(), ...storyQIDs],
+            viewedStoryItems: viewedStoryItems(),
+          },
+        });
+      }
+    }
+
+    // DELETE ME - debug only
+    if (activeStoryIndex >= storyQ.length - 4 && !moreAvailable) {
+      console.log('not getting more stories because moreAvailable = FALSE');
+    }
+  }, [activeStoryIndex]);
+
+  // used to add new stories to Q
+  useEffect(() => {
+    console.log('new data received', dataStoriesHome);
+    if (moreType === 'ForYou' && !loadingStoriesHome && dataStoriesHome) {
+      if (dataStoriesHome.storiesHome) {
+        const isFirstLoad = activeStoryIndex === 0;
+        const viewedStoriesLocal = viewedStories();
+
+        // remove stories with ZERO items (can eliminate this step later) or stories already in the Q
+        // also, if first load, remove stories we've already viewed in this session
+        const storyQIDs = storyQ.map((s) => s.id);
+        const storiesToAdd = dataStoriesHome.storiesHome.filter(
+          (s) => s.items.length > 0 && !storyQIDs.includes(s.id) && !(isFirstLoad && viewedStoriesLocal.includes(s.id))
+        );
+
+        setStoryQ([...storyQ, ...storiesToAdd]);
+
+        // if we received less than 6, set moreAvailalbe to false, and add blank story to end
+        if (dataStoriesHome.storiesHome.length < 6) {
+          console.log('setting more available = FALSE');
+          setMoreAvailable(false);
+        }
+
+        // if we just opened the modal for first time, and data comes in
+        // need to move activeStoryIndex to most recently not-viewed story
+        // if (activeStoryIndex === 0) {
+        //   const viewedStoriesLocal = viewedStories();
+
+        //   // returns index of first not-viewed story
+        //   const firstUnViewedStory = dataStoriesHome.storiesHome.findIndex((s) => !viewedStoriesLocal.includes(s.id));
+
+        //   if (firstUnViewedStory > 0) {
+        //     console.log('setting index to first un-viewed story: ', firstUnViewedStory);
+        //     setActiveStoryIndex(firstUnViewedStory);
+        //   }
+        // }
+
+        // DELETE THIS STUFF - DEBUG ONLY
+        const storyQTitles = storyQ.map((s) => s.title);
+        const storiesToAddTitles = storiesToAdd.map((s) => s.title);
+
+        console.log('current Q:', storyQTitles);
+        console.log(`adding ${storiesToAddTitles.length} stories: `, storiesToAddTitles);
+      }
+    }
+  }, [dataStoriesHome]);
+
+  // used to add topic stories to Q
+  useEffect(() => {
+    // used to add home stories to Q
+    if (moreType === 'Topic' && !loadingStoriesTopic && dataStoriesTopic) {
+      if (dataStoriesTopic.storiesTopic) {
+        // remove stories with ZERO items or stories already in the Q. should not need to do this in the future
+        const storyQIDs = storyQ.map((s) => s.id);
+        const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.items.length > 0 && !storyQIDs.includes(s.id));
+
+        // if we received less than 6, set moreAvailalbe to false, and add blank story to end
+        if (dataStoriesTopic.storiesTopic.length < 6) {
+          setStoryQ([...storyQ, ...storiesToAdd, 'blank']);
+          setMoreAvailable(false);
+          console.log('setting more available = FALSE');
+        } else {
+          setStoryQ([...storyQ, ...storiesToAdd]);
+        }
+
+        // DELETE THIS STUFF - DEBUG ONLY
+        const storyTitles = storiesToAdd.map((s) => s.title);
+        const storyQTitles = storyQ.map((s) => s.title);
+
+        console.log('current Q:', storyQTitles);
+        console.log(`adding ${storyTitles.length} stories: `, storyTitles);
+      }
+    }
+  }, [dataStoriesTopic]);
 
   // scrolls to index when story index changes
   useEffect(() => {
@@ -116,32 +234,6 @@ const StoryModal = ({ navigation, route }) => {
       storyFlatlist.current.scrollToIndex({ index: activeStoryIndex, viewPosition: 0.5 });
     }
   }, [activeStoryIndex]);
-
-  // used to add home stories to Q
-  useEffect(() => {
-    if (moreType === 'ForYou' && !loadingStoriesHome && dataStoriesHome) {
-      if (dataStoriesHome.storiesHome) {
-        // remove the story passed in from the query results, and items > 0
-        const storiesToAdd = dataStoriesHome.storiesHome.filter((s) => s.items.length > 0);
-        // setStoryQ([story, ...storiesToAdd]);
-        setStoryQ([...storiesToAdd]);
-      }
-    }
-  }, [loadingStoriesHome, dataStoriesHome]);
-
-  // used to add topic stories to Q
-  useEffect(() => {
-    // used to add home stories to Q
-    if (moreType === 'Topic' && !loadingStoriesTopic && dataStoriesTopic) {
-      if (dataStoriesTopic.storiesTopic) {
-        // console.log('yo', dataStoriesTopic);
-        // remove the story passed in from the query results
-        const storiesToAdd = dataStoriesTopic.storiesTopic.filter((s) => s.items.length > 0);
-        // setStoryQ([story, ...storiesToAdd]);
-        setStoryQ([...storiesToAdd]);
-      }
-    }
-  }, [loadingStoriesTopic, dataStoriesTopic]);
 
   // CUSTOM FUNCTIONS
   function goToPrevStory() {
@@ -157,7 +249,6 @@ const StoryModal = ({ navigation, route }) => {
     if (activeStoryIndex < storyQ.length - 1) {
       goToNextStory();
     } else {
-      // if there are no more stories in the Q, and there is no intro to play...then close the modal
       navigation.goBack();
     }
   }
@@ -222,6 +313,10 @@ const StoryModal = ({ navigation, route }) => {
           // console.log(index, item.id);
           const storyIsActive = index === activeStoryIndex;
 
+          if (item === 'blank') {
+            return <NoMoreStories key="12341241" tryGoToPrevStory={tryGoToPrevStory} />;
+          }
+
           return (
             <Story
               key={item.id}
@@ -230,7 +325,6 @@ const StoryModal = ({ navigation, route }) => {
               storyIsActive={storyIsActive}
               tryGoToPrevStory={tryGoToPrevStory}
               tryGoToNextStory={tryGoToNextStory}
-              favoriteTopics={favoriteTopics}
               setDisableOutterScroll={setDisableOutterScroll}
             />
           );

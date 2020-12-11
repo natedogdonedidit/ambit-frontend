@@ -1,50 +1,83 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import LinearGradient from 'react-native-linear-gradient';
+import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import { getIconFromID, getTopicFromID } from 'library/utils';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-import { useQuery } from '@apollo/client';
-import StoryBox from 'library/components/stories/StoryBox';
+import { useQuery, useApolloClient, useReactiveVar } from '@apollo/client';
+import { UserContext } from 'library/utils/UserContext';
 
 const placeholderImage =
   'https://images.unsplash.com/photo-1516967124798-10656f7dca28?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80';
 
-const ForYouButton = ({ navigation }) => {
-  // const { icon, color, image, name } = getTopicFromID(topicID);
-  // const { color, icon, name, image } = getTopicFromID(topicID);
+/// ////////////////////////////////////////////////////////////////////////////////////////////////////////
+// the purpose of this is to pre-fetch upon initial render
+// and dim if we have no more stories to watch
+/// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // const isSubTopic = !!parentTopic;
-  // const mainTopicID = isSubTopic ? parentTopic.topicID : topicID;
-  // const subTopic = isSubTopic ? topicID : null;
+const ForYouButton = ({ navigation }) => {
+  const { refreshHomeScreen } = useContext(UserContext);
+  const [hasNew, setHasNew] = useState(false);
+  const client = useApolloClient();
+  const viewedStoriesLocal = useReactiveVar(viewedStories);
 
   // GETS STORIES FOR YOUR FAV TOPICS
-  const { error, data, loading } = useQuery(STORIES_HOME_QUERY);
+  const { error, data, loading } = useQuery(STORIES_HOME_QUERY, {
+    variables: {
+      feed: 'foryou',
+      viewedStories: viewedStories(),
+      viewedStoryItems: viewedStoryItems(),
+    },
+    fetchPolicy: 'cache-first', // this will only run if nothing in cache, the variables dont trigger refetch
+  });
 
-  if (loading || error || !data) {
-    return null;
-  }
+  // determine if there are any new stories to view
+  useEffect(() => {
+    if (data && data.storiesHome && !loading) {
+      const noStories = data.storiesHome.length === 0;
 
-  const { storiesHome } = data;
+      // will be TRUE if all stories are viewed
+      const allStoriesViewed = data.storiesHome.findIndex((s) => !viewedStoriesLocal.includes(s.id)) === -1;
 
-  if (storiesHome.length <= 0) {
+      if (noStories || allStoriesViewed) {
+        setHasNew(false);
+      } else {
+        setHasNew(true);
+      }
+    }
+  }, [loading, data, viewedStoriesLocal]);
+
+  // upon pull to refresh - fetch new stories
+  useEffect(() => {
+    if (refreshHomeScreen) {
+      console.log('refetching home stories');
+
+      // cant use refetch because we need to send new variables
+      const getNewStories = async () => {
+        await client.query({
+          query: STORIES_HOME_QUERY,
+          variables: {
+            feed: 'foryou',
+            viewedStories: [...viewedStories()],
+            viewedStoryItems: viewedStoryItems(),
+          },
+          fetchPolicy: 'network-only',
+        });
+      };
+
+      getNewStories();
+    }
+  }, [refreshHomeScreen]);
+
+  if (error) {
     return null;
   }
 
   return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('StoryModal', {
-          moreType: 'ForYou',
-        })
-      }
-      style={styles.storyBox}
-      activeOpacity={0.8}
-    >
+    <TouchableOpacity onPress={() => navigation.navigate('StoryModalForYou')} style={styles.storyBox} activeOpacity={0.8}>
       <Image
         style={{ position: 'absolute', top: 0, left: 0, width: 100, height: 160 }}
         source={{ uri: placeholderImage }}
@@ -68,6 +101,9 @@ const ForYouButton = ({ navigation }) => {
           For You
         </Text>
       </View>
+      {!hasNew && (
+        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255,255,255,0.7)' }} />
+      )}
     </TouchableOpacity>
   );
 };
@@ -78,8 +114,6 @@ const styles = StyleSheet.create({
     height: 136,
     width: 85,
     borderRadius: 12,
-    // borderWidth: StyleSheet.hairlineWidth,
-    // borderColor: colors.borderBlack,
     overflow: 'hidden',
     marginLeft: 6,
   },

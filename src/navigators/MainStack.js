@@ -4,15 +4,18 @@ import { useQuery, useApolloClient } from '@apollo/client';
 // import analytics from '@segment/analytics-react-native';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
-import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+// import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
+// import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
+// import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 
 import SplashScreen from 'library/components/UI/SplashScreen';
 import MainDrawer from 'navigators/MainDrawer';
 // modals
-import StoryModal from 'screens/main/modals/stories/StoryModal';
-import IntroModal from 'screens/main/modals/stories/IntroModal';
+// import StoryModal from 'screens/main/modals/stories/StoryModal';
+import StoryModalForYou from 'screens/main/modals/stories/StoryModalForYou';
+import StoryModalTopic from 'screens/main/modals/stories/StoryModalTopic';
+import StoryModalUser from 'screens/main/modals/stories/StoryModalUser';
+
 // import CameraModal from 'screens/main/modals/stories/CameraModal';
 import StoryCameraModal from 'screens/main/modals/stories/StoryCameraModal';
 import PostToModal from 'screens/main/modals/stories/PostToModal2';
@@ -127,8 +130,10 @@ const MainStack = ({ navigation }) => {
       <Stack.Screen name="MainDrawer" component={MainDrawer} />
 
       {/* modals */}
-      <Stack.Screen name="StoryModal" component={StoryModal} />
-      <Stack.Screen name="IntroModal" component={IntroModal} />
+      <Stack.Screen name="StoryModalForYou" component={StoryModalForYou} />
+      <Stack.Screen name="StoryModalTopic" component={StoryModalTopic} />
+      <Stack.Screen name="StoryModalUser" component={StoryModalUser} />
+
       {/* <Stack.Screen name="CameraModal" component={CameraModal} /> */}
       <Stack.Screen name="StoryCameraModal" component={StoryCameraModal} />
       <Stack.Screen
@@ -310,7 +315,7 @@ const MainStack = ({ navigation }) => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
-      
+
       <Stack.Screen name="YearModal" component={YearModal} options={halfModalOptions} />
       <Stack.Screen name="MonthModal" component={MonthModal} options={halfModalOptions} />
     </Stack.Navigator>

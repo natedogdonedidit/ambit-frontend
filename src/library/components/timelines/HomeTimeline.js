@@ -13,7 +13,7 @@ import Loader from 'library/components/UI/Loader';
 import Section from 'library/components/UI/Section';
 import HomeTimelineHeader from 'library/components/UI/HomeTimelineHeader';
 import SeeMoreButton from 'library/components/UI/buttons/SeeMoreButton';
-import StoriesHome from 'library/components/stories/StoriesHome2';
+import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';
@@ -23,7 +23,7 @@ import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // const currentTime = new Date();
   const homeTimelineRef = useRef();
-  const { currentUserId } = useContext(UserContext);
+  const { currentUserId, setRefreshHomeScreen } = useContext(UserContext);
 
   const [showRefreshing, setShowRefreshing] = useState(false);
   const [loadingStories, setLoadingStories] = useState(false);
@@ -217,10 +217,16 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
-    // console.log('refetching');
+    console.log('refreshing home screen queries');
+    // refetch for you posts
+
+    // refetch my topic stories
+
     setShowRefreshing(true);
+    setRefreshHomeScreen(true);
     setTimeout(() => {
       setShowRefreshing(false);
+      setRefreshHomeScreen(false);
     }, 1500);
     refetchPostsNetwork();
     refetchPostsForYou();

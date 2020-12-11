@@ -174,6 +174,18 @@ const client = new ApolloClient({
               return [...incoming];
             },
           },
+          storiesHome: {
+            keyArgs: ['feed'],
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          storiesTopic: {
+            keyArgs: ['topic'],
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
           // updateOneUser: {
           //   merge(existing = [], incoming = [], options) {
           //     return { ...existing, ...incoming };

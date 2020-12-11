@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { StoryWithOwner } from 'library/queries/_fragments';
 
 export default STORIES_HOME_QUERY = gql`
-  query STORIES_HOME_QUERY {
-    storiesHome {
+  query STORIES_HOME_QUERY($feed: String!, $viewedStories: [String], $viewedStoryItems: [String]) {
+    storiesHome(feed: $feed, viewedStories: $viewedStories, viewedStoryItems: $viewedStoryItems) {
       ...StoryWithOwner
     }
   }

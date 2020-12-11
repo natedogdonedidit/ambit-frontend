@@ -108,8 +108,8 @@ const StoryCameraModal = ({ navigation, route }) => {
           <View style={{ position: 'absolute', top: insets.top + 15, right: 10, width: 45, height: 70, borderRadius: 10 }}>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('IntroModal', {
-                  intro,
+                navigation.navigate('StoryModalUser', {
+                  story: intro,
                 })
               }
             >

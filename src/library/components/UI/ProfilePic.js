@@ -203,8 +203,8 @@ const ProfilePic = ({
           <TouchableOpacity
             activeOpacity={0.9}
             onPress={() => {
-              navigation.navigate('IntroModal', {
-                intro: {
+              navigation.navigate('StoryModalUser', {
+                story: {
                   ...user.intro,
                   owner: { ...user },
                 },
@@ -256,14 +256,14 @@ const ProfilePic = ({
           disabled={!enableClick}
           onPress={() => {
             if (showIntro) {
-              navigation.navigate('IntroModal', {
-                intro: {
+              navigation.navigate('StoryModalUser', {
+                story: {
                   ...user.intro,
                   owner: { ...user },
                 },
               });
             } else {
-              navigation.navigate('StoryModal', {
+              navigation.navigate('StoryModalUser', {
                 story: {
                   ...storyToShow,
                   owner: { ...user },
