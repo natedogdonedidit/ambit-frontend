@@ -11,7 +11,7 @@ import ProfileScreen from 'screens/main/ProfileScreen';
 import PostScreen from 'screens/main/PostScreen';
 import PostMatchesScreen from 'screens/main/PostMatchesScreen';
 import UpdateScreen from 'screens/main/UpdateScreen';
-import TopicScreen from 'screens/main/TopicScreen2';
+import TopicScreen from 'screens/main/TopicScreen';
 import SearchScreen from 'screens/main/SearchScreen';
 import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';

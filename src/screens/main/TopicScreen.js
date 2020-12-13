@@ -1,76 +1,100 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { StyleSheet, View, StatusBar, TouchableOpacity, RefreshControl, Animated, Dimensions } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useQuery } from '@apollo/client';
-
-import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import colors from 'styles/colors';
-import defaultStyles from 'styles/defaultStyles';
+import React, { useState, useContext } from 'react';
+import { StyleSheet, View, Text, Image, Animated, TouchableOpacity, RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-import HeaderTopic from 'library/components/headers/HeaderTopic';
-import Error from 'library/components/UI/Error';
-
+import { UserContext } from 'library/utils/UserContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import colors from 'styles/colors';
+import defaultStyles from 'styles/defaultStyles';
+import Loader from 'library/components/UI/Loader';
+import { getTopicFromID } from 'library/utils';
 import TopicsTimeline from 'library/components/timelines/TopicsTimeline';
-import SubTopicsSelector from 'library/components/timelines/SubTopicsSelector';
-import { getFullTopicFromID } from 'library/utils';
 
+// SET THESE
 const HEADER_HEIGHT = 44;
-const BANNER_HEIGHT = 0;
 
 const TopicScreen = ({ navigation, route }) => {
   // PARAMS
-  const { topicID, subTopic } = route.params;
-
-  const activeTopic = getFullTopicFromID(topicID);
+  const { topicID } = route.params;
+  const { name } = getTopicFromID(topicID);
 
   // STATE
-  const [activeSubTopic, setActiveSubTopic] = useState(subTopic || activeTopic.topicID);
   const [scrollY] = useState(new Animated.Value(0));
 
   // REFS & CONTEXT
   const insets = useSafeAreaInsets();
   const [top] = useState(insets.top || 20); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
 
-  // const { height, width } = Dimensions.get('window');
-
-  // CONSTANTS
-  const tabsHeight = 46;
-  const SLIDE_HEIGHT = HEADER_HEIGHT + BANNER_HEIGHT;
-
-  // ///////////////////////////
-  // QUERIES
-  // ///////////////////////////
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_QUERY);
-  if (errorUser) return <Error error={errorUser} />;
-  const { userLoggedIn } = dataUser;
-
-  // ///////////////////////////
-  // CUSTOM FUNCTIONS
-  // ///////////////////////////
-
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <View style={{ flex: 1 }}>
-        <TopicsTimeline
-          activeTopic={activeTopic}
-          activeSubTopic={activeSubTopic}
-          userLoggedIn={userLoggedIn}
-          navigation={navigation}
-          scrollY={scrollY}
-          paddingTop={SLIDE_HEIGHT + tabsHeight + top}
-        />
+      <TopicsTimeline activeTopicID={topicID} navigation={navigation} scrollY={scrollY} paddingTop={top} />
+
+      {/* Hidden Header */}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          top: 0,
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          height: HEADER_HEIGHT + top,
+          backgroundColor: colors.purpO,
+          paddingTop: top,
+          opacity: scrollY.interpolate({
+            inputRange: [90, 120],
+            outputRange: [0, 1],
+            extrapolate: 'clamp',
+          }),
+        }}
+      >
+        <Text style={{ ...defaultStyles.hugeHeavy, color: 'white' }}>{name}</Text>
+      </Animated.View>
+
+      {/* Back Button */}
+      <View
+        style={{
+          position: 'absolute',
+          top: 8 + top,
+          left: 15,
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
+          <Icon name="chevron-left" size={15} color="white" />
+        </TouchableOpacity>
       </View>
 
-      {/* Absolute positioned stoff */}
+      {/* Share Button */}
+      <View
+        style={{
+          position: 'absolute',
+          top: 8 + top,
+          right: 15,
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <TouchableOpacity onPress={() => null} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
+          <Icon name="share" size={15} color="white" />
+        </TouchableOpacity>
+      </View>
+
+      {/* New Post Button */}
       <View style={styles.newPostButtonAbsolute}>
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
             navigation.navigate('NewPostModal', {
-              userLoggedIn,
-              topicsPassedIn: [{ topicID: activeSubTopic || activeTopic.topicID }],
+              topicPassedIn: topicID,
             });
           }}
         >
@@ -79,75 +103,6 @@ const TopicScreen = ({ navigation, route }) => {
           </View>
         </TouchableOpacity>
       </View>
-
-      <Animated.View
-        // this contains the Header, Banner, and Tabs. They all slide up together clamped at SLIDE_HEIGHT
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          width: '100%',
-          overflow: 'hidden',
-          transform: [
-            {
-              translateY: scrollY.interpolate({
-                inputRange: [0, SLIDE_HEIGHT],
-                outputRange: [0, -SLIDE_HEIGHT],
-                extrapolate: 'clamp',
-              }),
-            },
-          ],
-        }}
-      >
-        <Animated.View
-          style={{
-            paddingTop: top,
-          }}
-        >
-          <HeaderTopic
-            user={userLoggedIn}
-            handleMiddle={() => null}
-            handleRight={() => navigation.navigate('Search', { topicIDsToSearch: [activeSubTopic || activeTopic.topicID] })}
-            navigation={navigation}
-            height={HEADER_HEIGHT}
-            topicName={activeTopic.name}
-          />
-          <View
-            // custom banner (optional)
-            style={{ width: '100%', height: BANNER_HEIGHT, backgroundColor: 'tomato' }}
-          />
-        </Animated.View>
-        <View
-          style={{
-            // backgroundColor: colors.lightLightGray,
-            backgroundColor: 'white',
-            borderBottomColor: colors.borderBlack,
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
-        >
-          <SubTopicsSelector
-            activeTopic={activeTopic}
-            activeSubTopic={activeSubTopic}
-            setActiveSubTopic={setActiveSubTopic}
-            height={tabsHeight}
-          />
-        </View>
-      </Animated.View>
-
-      {/* Gives a solid background to the StatusBar */}
-      <View
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          width: '100%',
-          height: top,
-          // backgroundColor: colors.lightLightGray,
-          backgroundColor: 'white',
-        }}
-      />
     </View>
   );
 };
@@ -156,29 +111,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.lightGray,
-    overflow: 'hidden',
   },
   scrollView: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: colors.lightGray,
+    ...StyleSheet.absoluteFill,
+    // backgroundColor: colors.lightGray,
   },
   newPostButtonAbsolute: {
     position: 'absolute',
     bottom: 15,
     right: 15,
     backgroundColor: 'white',
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   newPostButton: {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: colors.purp,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
 });
 

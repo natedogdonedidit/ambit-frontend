@@ -12,7 +12,7 @@ import TopicsOfFreelance from 'library/components/settings/TopicsOfFreelance';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import TopicsOfFreelanceDesc from 'library/components/settings/TopicsOfFreelanceDesc';
 
-const MyFreelanceScreen = ({ navigation }) => {
+const MyFreelanceModal = ({ navigation }) => {
   const scrollRef = useRef(null);
 
   // ////////////////////////////////////////
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyFreelanceScreen;
+export default MyFreelanceModal;

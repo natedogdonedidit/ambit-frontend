@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/client';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import StoryBox from 'library/components/stories/StoryBox';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';

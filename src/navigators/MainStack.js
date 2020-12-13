@@ -4,63 +4,56 @@ import { useQuery, useApolloClient } from '@apollo/client';
 // import analytics from '@segment/analytics-react-native';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-// import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
-// import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
-// import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
-
 import SplashScreen from 'library/components/UI/SplashScreen';
 import MainDrawer from 'navigators/MainDrawer';
-// modals
-// import StoryModal from 'screens/main/modals/stories/StoryModal';
-import StoryModalForYou from 'screens/main/modals/stories/StoryModalForYou';
-import StoryModalTopic from 'screens/main/modals/stories/StoryModalTopic';
-import StoryModalUser from 'screens/main/modals/stories/StoryModalUser';
 
-// import CameraModal from 'screens/main/modals/stories/CameraModal';
-import StoryCameraModal from 'screens/main/modals/stories/StoryCameraModal';
-import PostToModal from 'screens/main/modals/stories/PostToModal2';
-import SelectProjectPopup from 'screens/main/modals/general/SelectProjectPopup';
-import PostClipModal from 'screens/main/modals/stories/PostClipModal';
-import NewProjectTitleModal from 'screens/main/modals/stories/NewProjectTitleModal';
-import NewProjectTopicsModal from 'screens/main/modals/stories/NewProjectTopicsModal';
-import SelectStoryTopicsModal from 'screens/main/modals/stories/SelectStoryTopicsModal';
-import NewPostModal from 'screens/main/modals/post/NewPostModal';
-import CustomGoalModal from 'screens/main/modals/post/CustomGoalModal';
-import SelectGoalModal from 'screens/main/modals/post/SelectGoalModal';
-import SelectGoalModalSearch from 'screens/main/modals/search/SelectGoalModalSearch';
-import SelectGoalFieldModal from 'screens/main/modals/post/SelectGoalFieldModal';
-import SelectPostTopicsModal from 'screens/main/modals/post/SelectPostTopicsModal';
-import SelectSearchTopicsModal from 'screens/main/modals/search/SelectSearchTopicsModal';
-import EditLocationModal from 'screens/main/modals/general/EditLocationModal';
-import EditLocationRadiusModal from 'screens/main/modals/general/EditLocationRadiusModal';
-import ImageViewerModal from 'screens/main/modals/general/ImageViewerModal';
-import EditProfileModal from 'screens/main/modals/profile/EditProfileModal';
-import EditAboutModal from 'screens/main/modals/profile/EditAboutModal';
-import EditExperienceModal from 'screens/main/modals/profile/EditExperienceModal';
-import EditEducationModal from 'screens/main/modals/profile/EditEducationModal';
-import EditSkillsModal from 'screens/main/modals/profile/EditSkillsModal';
-import SelectTopicsFocusModal from 'screens/main/modals/profile/SelectTopicsFocusModal';
-import SelectTopicsInterestModal from 'screens/main/modals/profile/SelectTopicsInterestModal';
-import SelectTopicsFreelanceModal from 'screens/main/modals/profile/SelectTopicsFreelanceModal';
-import SelectTopicsInvestModal from 'screens/main/modals/profile/SelectTopicsInvestModal';
-import SelectTopicsMentorModal from 'screens/main/modals/profile/SelectTopicsMentorModal';
-import MyMentorScreen from 'screens/main/MyMentorScreen';
-import MyFreelanceScreen from 'screens/main/MyFreelanceScreen';
-import MyInvestScreen from 'screens/main/MyInvestScreen';
-import MyNetworkScreen from 'screens/main/MyNetworkScreen';
-import AddUpdateModal from 'screens/main/modals/post/AddUpdateModal';
-import AddCommentModal from 'screens/main/modals/post/AddCommentModal';
+// modals
+import StoryModalForYou from 'modals/stories/StoryModalForYou';
+import StoryModalTopic from 'modals/stories/StoryModalTopic';
+import StoryModalUser from 'modals/stories/StoryModalUser';
+
+import StoryCameraModal from 'modals/stories/StoryCameraModal';
+import SelectProjectPopup from 'modals/general/SelectProjectPopup';
+import PostClipModal from 'modals/stories/PostClipModal';
+import NewProjectTopicsModal from 'modals/stories/NewProjectTopicsModal';
+import SelectStoryTopicsModal from 'modals/stories/SelectStoryTopicsModal';
+import NewPostModal from 'modals/post/NewPostModal';
+import CustomGoalModal from 'modals/post/CustomGoalModal';
+import SelectGoalModal from 'modals/post/SelectGoalModal';
+import SelectGoalModalSearch from 'modals/search/SelectGoalModalSearch';
+import SelectGoalFieldModal from 'modals/post/SelectGoalFieldModal';
+import SelectPostTopicsModal from 'modals/post/SelectPostTopicsModal';
+import SelectSearchTopicsModal from 'modals/search/SelectSearchTopicsModal';
+import EditLocationModal from 'modals/general/EditLocationModal';
+import EditLocationRadiusModal from 'modals/general/EditLocationRadiusModal';
+import ImageViewerModal from 'modals/general/ImageViewerModal';
+import EditProfileModal from 'modals/profile/EditProfileModal';
+import EditAboutModal from 'modals/profile/EditAboutModal';
+import EditExperienceModal from 'modals/profile/EditExperienceModal';
+import EditEducationModal from 'modals/profile/EditEducationModal';
+import EditSkillsModal from 'modals/profile/EditSkillsModal';
+import SelectTopicsFocusModal from 'modals/profile/SelectTopicsFocusModal';
+import SelectTopicsInterestModal from 'modals/profile/SelectTopicsInterestModal';
+import SelectTopicsFreelanceModal from 'modals/profile/SelectTopicsFreelanceModal';
+import SelectTopicsInvestModal from 'modals/profile/SelectTopicsInvestModal';
+import SelectTopicsMentorModal from 'modals/profile/SelectTopicsMentorModal';
+import MyMentorModal from 'modals/general/MyMentorModal';
+import MyFreelanceModal from 'modals/general/MyFreelanceModal';
+import MyInvestModal from 'modals/general/MyInvestModal';
+import MyNetworkModal from 'modals/general/MyNetworkModal';
+import AddUpdateModal from 'modals/post/AddUpdateModal';
+import AddCommentModal from 'modals/post/AddCommentModal';
 
 // popups
-import SelectorModal from 'screens/main/modals/general/SelectorModal';
-import SharePopup from 'screens/main/modals/general/SharePopup';
-import DMPostPopup from 'screens/main/modals/general/DMPostPopup';
-import EditSkillsPopup from 'screens/main/modals/profile/EditSkillsPopup';
-import YearModal from 'screens/main/modals/general/YearModal';
-import MonthModal from 'screens/main/modals/general/MonthModal';
-import ForYouSettingsPopup from 'screens/main/modals/general/ForYouSettingsPopup';
-import EditStoryItemPopup from 'screens/main/modals/stories/EditStoryItemPopup';
-import IntroInfoPopup from 'screens/main/modals/stories/IntroInfoPopup';
+import SelectorModal from 'modals/general/SelectorModal';
+import SharePopup from 'modals/general/SharePopup';
+import DMPostPopup from 'modals/general/DMPostPopup';
+import EditSkillsPopup from 'modals/profile/EditSkillsPopup';
+import YearModal from 'modals/general/YearModal';
+import MonthModal from 'modals/general/MonthModal';
+import ForYouSettingsPopup from 'modals/general/ForYouSettingsPopup';
+import EditStoryItemPopup from 'modals/stories/EditStoryItemPopup';
+import IntroInfoPopup from 'modals/stories/IntroInfoPopup';
 import { UserContext } from 'library/utils/UserContext';
 
 const Stack = createStackNavigator();
@@ -76,7 +69,7 @@ const MainStack = ({ navigation }) => {
   // useEffect(() => {
   //   // pre-fetch stories home
   //   client.query({
-  //     query: STORIES_HOME_QUERY,
+  //     query: STORIES_FORYOU_QUERY,
   //   });
 
   //   // pre-fetch my topics
@@ -134,27 +127,12 @@ const MainStack = ({ navigation }) => {
       <Stack.Screen name="StoryModalTopic" component={StoryModalTopic} />
       <Stack.Screen name="StoryModalUser" component={StoryModalUser} />
 
-      {/* <Stack.Screen name="CameraModal" component={CameraModal} /> */}
       <Stack.Screen name="StoryCameraModal" component={StoryCameraModal} />
-      <Stack.Screen
-        name="PostToModal"
-        component={PostToModal}
-        options={{
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        }}
-      />
       <Stack.Screen name="SelectProjectPopup" component={SelectProjectPopup} options={halfModalOptions} />
 
       <Stack.Screen
         name="PostClipModal"
         component={PostClipModal}
-        options={{
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        }}
-      />
-      <Stack.Screen
-        name="NewProjectTitleModal"
-        component={NewProjectTitleModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
@@ -176,28 +154,28 @@ const MainStack = ({ navigation }) => {
       <Stack.Screen name="NewPostModal" component={NewPostModal} />
       <Stack.Screen
         name="MyFreelance"
-        component={MyFreelanceScreen}
+        component={MyFreelanceModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
       <Stack.Screen
         name="MyInvest"
-        component={MyInvestScreen}
+        component={MyInvestModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
       <Stack.Screen
         name="MyMentor"
-        component={MyMentorScreen}
+        component={MyMentorModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
       <Stack.Screen
         name="MyNetwork"
-        component={MyNetworkScreen}
+        component={MyNetworkModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}

@@ -26,7 +26,6 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
   }
 
   return (
-    // <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('PostToModal')} style={styles.storyBox}>
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={() => navigation.navigate('StoryCameraModal', { isNewProject: true })}

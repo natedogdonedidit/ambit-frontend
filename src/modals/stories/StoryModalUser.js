@@ -4,7 +4,7 @@ import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
 import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
 import Story from 'library/components/stories/Story';
 import Loader from 'library/components/UI/Loader';
 import NoMoreStories from 'library/components/stories/NoMoreStories';

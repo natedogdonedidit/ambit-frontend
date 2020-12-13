@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { StyleSheet, View, Text, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -7,12 +7,12 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Loader from 'library/components/UI/Loader';
 
-import TopicsOfInvest from 'library/components/settings/TopicsOfInvest';
+import TopicsOfMentor from 'library/components/settings/TopicsOfMentor';
 
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
-import TopicsOfInvestDesc from 'library/components/settings/TopicsOfInvestDesc';
+import TopicsOfMentorDesc from 'library/components/settings/TopicsOfMentorDesc';
 
-const MyInvestScreen = ({ navigation }) => {
+const MyNetworkModal = ({ navigation }) => {
   const scrollRef = useRef(null);
 
   // ////////////////////////////////////////
@@ -22,7 +22,7 @@ const MyInvestScreen = ({ navigation }) => {
   if (loading)
     return (
       <View style={styles.container}>
-        <HeaderBack navigation={navigation} title="Invest" />
+        <HeaderBack navigation={navigation} title="Mentor" />
         <Loader loading={loading} />
       </View>
     );
@@ -31,11 +31,11 @@ const MyInvestScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} title="Invest" />
+      <HeaderBack navigation={navigation} title="Mentor" />
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
         <ScrollView ref={scrollRef} style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 40 }}>
-          <TopicsOfInvest navigation={navigation} myTopics={myTopics} showX />
-          <TopicsOfInvestDesc myTopics={myTopics} scrollRef={scrollRef} />
+          <TopicsOfMentor navigation={navigation} myTopics={myTopics} />
+          <TopicsOfMentorDesc myTopics={myTopics} scrollRef={scrollRef} />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyInvestScreen;
+export default MyNetworkModal;

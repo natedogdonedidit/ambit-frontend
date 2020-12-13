@@ -25,7 +25,7 @@ import { storyPicUpload, storyVideoUpload, createThumbnail, sortStoriesNewestFir
 import HeaderPostToModal from 'library/components/headers/HeaderPostToModal';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
 import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
@@ -77,7 +77,7 @@ const PostClipModal = ({ navigation, route }) => {
   const [updateOneStory] = useMutation(UPDATE_STORY_MUTATION, {
     refetchQueries: [
       { query: SINGLE_USER_BIO, variables: { where: { username: currentUsername } } },
-      { query: STORIES_HOME_QUERY },
+      { query: STORIES_FORYOU_QUERY },
     ],
     // onCompleted: () => {},
     onError: (error) => {

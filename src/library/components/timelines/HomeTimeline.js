@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo, useRef, useContext } from 'react';
-import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList, TouchableOpacity } from 'react-native';
-import { useQuery, useMutation, NetworkStatus } from '@apollo/client';
-import Feather from 'react-native-vector-icons/Feather';
+import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, SectionList } from 'react-native';
+import { useQuery, useMutation } from '@apollo/client';
 
+import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
@@ -10,14 +10,10 @@ import FORYOU_POSTS_QUERY from 'library/queries/FORYOU_POSTS_QUERY';
 import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
 import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import Loader from 'library/components/UI/Loader';
-import Section from 'library/components/UI/Section';
 import HomeTimelineHeader from 'library/components/UI/HomeTimelineHeader';
-import SeeMoreButton from 'library/components/UI/buttons/SeeMoreButton';
 import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
 import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';
-import { UserContext } from 'library/utils/UserContext';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
@@ -39,8 +35,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
     return [];
   }, [dataFollowing]);
-
-  // console.log(network);
 
   // GET POSTS "FOR YOU"
   const {
@@ -143,7 +137,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // VIEWED POST MUTATION
   const [viewedPost] = useMutation(VIEWED_POST_MUTATION);
 
-  // useQuery(STORIES_HOME_QUERY);
+  // useQuery(STORIES_FORYOU_QUERY);
 
   // networkStatus states:
   // 1: loading

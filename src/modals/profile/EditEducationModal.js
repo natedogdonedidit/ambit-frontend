@@ -15,7 +15,6 @@ import { useMutation } from '@apollo/client';
 import { UserContext } from 'library/utils/UserContext';
 
 import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
-import DELETE_EDUCATION_MUTATION from 'library/mutations/DELETE_EDUCATION_MUTATION';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
 import colors from 'styles/colors';

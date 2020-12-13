@@ -6,7 +6,7 @@ import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
 import { useQuery, useApolloClient, useReactiveVar } from '@apollo/client';
 import { UserContext } from 'library/utils/UserContext';
 
@@ -25,7 +25,7 @@ const ForYouButton = ({ navigation }) => {
   const viewedStoriesLocal = useReactiveVar(viewedStories);
 
   // GETS STORIES FOR YOUR FAV TOPICS
-  const { error, data, loading } = useQuery(STORIES_HOME_QUERY, {
+  const { error, data, loading } = useQuery(STORIES_FORYOU_QUERY, {
     variables: {
       feed: 'foryou',
       viewedStories: viewedStories(),
@@ -36,11 +36,11 @@ const ForYouButton = ({ navigation }) => {
 
   // determine if there are any new stories to view
   useEffect(() => {
-    if (data && data.storiesHome && !loading) {
-      const noStories = data.storiesHome.length === 0;
+    if (data && data.storiesForYou && !loading) {
+      const noStories = data.storiesForYou.length === 0;
 
       // will be TRUE if all stories are viewed
-      const allStoriesViewed = data.storiesHome.findIndex((s) => !viewedStoriesLocal.includes(s.id)) === -1;
+      const allStoriesViewed = data.storiesForYou.findIndex((s) => !viewedStoriesLocal.includes(s.id)) === -1;
 
       if (noStories || allStoriesViewed) {
         setHasNew(false);
@@ -58,7 +58,7 @@ const ForYouButton = ({ navigation }) => {
       // cant use refetch because we need to send new variables
       const getNewStories = async () => {
         await client.query({
-          query: STORIES_HOME_QUERY,
+          query: STORIES_FORYOU_QUERY,
           variables: {
             feed: 'foryou',
             viewedStories: [...viewedStories()],

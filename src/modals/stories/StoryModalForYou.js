@@ -4,7 +4,7 @@ import { useQuery, useApolloClient } from '@apollo/client';
 import { useFocusEffect } from '@react-navigation/native';
 import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 
-import STORIES_HOME_QUERY from 'library/queries/STORIES_HOME_QUERY';
+import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
 import Story from 'library/components/stories/Story';
 import Loader from 'library/components/UI/Loader';
 import NoMoreStories from 'library/components/stories/NoMoreStories';
@@ -33,7 +33,7 @@ const StoryModalForYou = ({ navigation }) => {
   );
 
   // QUERIES - to get next stories
-  const { error, data, networkStatus } = useQuery(STORIES_HOME_QUERY, {
+  const { error, data, networkStatus } = useQuery(STORIES_FORYOU_QUERY, {
     variables: {
       feed: 'foryou',
       viewedStories: viewedStories(),
@@ -62,7 +62,7 @@ const StoryModalForYou = ({ navigation }) => {
         // manually send network request for more stories w/ updated variables
         const getNewStories = async () => {
           await client.query({
-            query: STORIES_HOME_QUERY,
+            query: STORIES_FORYOU_QUERY,
             variables: {
               feed: 'foryou',
               viewedStories: [...viewedStories(), ...storyQIDs],
@@ -86,21 +86,21 @@ const StoryModalForYou = ({ navigation }) => {
   useEffect(() => {
     if (!loadingStoriesHome && data) {
       // console.log('new data received', data);
-      if (data.storiesHome) {
+      if (data.storiesForYou) {
         const isFirstLoad = activeStoryIndex === 0;
         const viewedStoriesLocal = viewedStories();
 
         // remove stories with ZERO items (can eliminate this step later) or stories already in the Q
         // also, if first load, remove stories we've already viewed in this session
         const storyQIDs = storyQ.map((s) => s.id);
-        const storiesToAdd = data.storiesHome.filter(
+        const storiesToAdd = data.storiesForYou.filter(
           (s) => s.items.length > 0 && !storyQIDs.includes(s.id) && !(isFirstLoad && viewedStoriesLocal.includes(s.id))
         );
 
         setStoryQ([...storyQ, ...storiesToAdd]);
 
         // if we received less than 6, set moreAvailalbe to false
-        if (data.storiesHome.length < 6) {
+        if (data.storiesForYou.length < 6) {
           setMoreAvailable(false);
         }
 
@@ -111,7 +111,7 @@ const StoryModalForYou = ({ navigation }) => {
           // manually send network request for more stories w/ updated variables
           const getNewStories = async () => {
             await client.query({
-              query: STORIES_HOME_QUERY,
+              query: STORIES_FORYOU_QUERY,
               variables: {
                 feed: 'foryou',
                 viewedStories: [...viewedStories(), ...storyQIDs],

@@ -3,7 +3,6 @@ import { YellowBox } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-// import { useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react-native';
 
 import SplashScreen from 'library/components/UI/SplashScreen';
@@ -20,7 +19,7 @@ import OnboardingMentor from 'screens/onboarding/OnboardingMentor';
 import OnboardingFreelance1 from 'screens/onboarding/OnboardingFreelance1';
 import OnboardingInvest1 from 'screens/onboarding/OnboardingInvest1';
 import OnboardingMentor1 from 'screens/onboarding/OnboardingMentor1';
-import EditLocationModal from 'screens/main/modals/general/EditLocationModal';
+import EditLocationModal from 'modals/general/EditLocationModal';
 
 import { UserContext } from 'library/utils/UserContext';
 
@@ -133,7 +132,6 @@ const AppNavigator = () => {
   // if it is not the first launch & not logged in
   return (
     <NavigationContainer>
-      {/* <Stack.Navigator initialRouteName="Login" headerMode="none"> */}
       <Stack.Navigator initialRouteName="Benefits1" headerMode="none">
         {/* onboarding / login */}
         <Stack.Screen name="Benefits1" component={BenefitsScreen1} />

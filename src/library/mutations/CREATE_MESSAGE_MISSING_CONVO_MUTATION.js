@@ -17,13 +17,4 @@ const CREATE_MESSAGE_MISSING_CONVO_MUTATION = gql`
   ${MessageFragment}
 `;
 
-// const CREATE_MESSAGE_MUTATION = gql`
-//   mutation CREATE_MESSAGE_MUTATION($data: MessageCreateInput!) {
-//     createOneMessage(data: $data) {
-//       ...MessageFragment
-//     }
-//   }
-//   ${MessageFragment}
-// `;
-
 export default CREATE_MESSAGE_MISSING_CONVO_MUTATION;
