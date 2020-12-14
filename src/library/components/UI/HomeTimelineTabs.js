@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const HomeTimelineHeader = ({ navigation, borderBottom = true, activeTimeline, setActiveTimeline }) => {
+const HomeTimelineTabs = ({ borderBottom = true, activeTimeline, setActiveTimeline }) => {
   return (
     <View
       style={[
@@ -91,4 +91,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeTimelineHeader;
+export default HomeTimelineTabs;

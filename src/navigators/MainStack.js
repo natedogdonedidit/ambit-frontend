@@ -4,6 +4,10 @@ import { useQuery, useApolloClient } from '@apollo/client';
 // import analytics from '@segment/analytics-react-native';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
+import POSTS_FORYOU_QUERY from 'library/queries/POSTS_FORYOU_QUERY';
+import POSTS_FOLLOWING_QUERY from 'library/queries/POSTS_FOLLOWING_QUERY';
+
 import SplashScreen from 'library/components/UI/SplashScreen';
 import MainDrawer from 'navigators/MainDrawer';
 
@@ -58,57 +62,51 @@ import { UserContext } from 'library/utils/UserContext';
 
 const Stack = createStackNavigator();
 
+// config for "popups"
+const halfModalOptions = {
+  cardStyle: { backgroundColor: 'transparent' },
+  cardOverlayEnabled: true,
+  cardStyleInterpolator: ({ current: { progress } }) => ({
+    cardStyle: {
+      opacity: progress.interpolate({
+        inputRange: [0, 0.5, 0.9, 1],
+        outputRange: [0, 0.7, 0.9, 1],
+      }),
+    },
+    overlayStyle: {
+      opacity: progress.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 0.5],
+        extrapolate: 'clamp',
+      }),
+    },
+  }),
+};
+
 const MainStack = ({ navigation }) => {
-  const client = useApolloClient();
-
-  const { logoutCTX } = useContext(UserContext);
+  // const client = useApolloClient();
+  // const { logoutCTX } = useContext(UserContext);
 
   // ////////////////////////////////////////
-  // LOAD INITIAL QUERIES HERE
+  // PRE-FETCH INITIAL QUERIES HERE
   // ////////////////////////////////////////
-  // useEffect(() => {
-  //   // pre-fetch stories home
-  //   client.query({
-  //     query: STORIES_FORYOU_QUERY,
-  //   });
+  const { data: userData, loading: loadingUser } = useQuery(CURRENT_USER_QUERY);
+  const { data: storyData, loading: loadingStories } = useQuery(STORIES_FORYOU_QUERY, {
+    variables: { feed: 'foryou' },
+  });
+  const { data: postsData, loading: loadingPosts } = useQuery(POSTS_FOLLOWING_QUERY, {
+    variables: {
+      feed: 'following',
+      take: 10,
+      // cursor: null,
+    },
+  });
 
-  //   // pre-fetch my topics
-  //   client.query({
-  //     query: CURRENT_USER_TOPICS,
-  //   });
-
-  //   // pre-fetch people I follow
-  //   client.query({
-  //     query: CURRENT_USER_FOLLOWING,
-  //   });
-  // }, []);
-
-  // CURRENT USER QUERY
-  const { data: userData } = useQuery(CURRENT_USER_QUERY);
-
-  const halfModalOptions = {
-    cardStyle: { backgroundColor: 'transparent' },
-    cardOverlayEnabled: true,
-    cardStyleInterpolator: ({ current: { progress } }) => ({
-      cardStyle: {
-        opacity: progress.interpolate({
-          inputRange: [0, 0.5, 0.9, 1],
-          outputRange: [0, 0.7, 0.9, 1],
-        }),
-      },
-      overlayStyle: {
-        opacity: progress.interpolate({
-          inputRange: [0, 1],
-          outputRange: [0, 0.5],
-          extrapolate: 'clamp',
-        }),
-      },
-    }),
-  };
+  const readyToDisplay = userData && storyData && postsData;
 
   // this might cause the splash screen to render every time current_user_query runs
   // this should only render upon the first time we are loading the CURRENT_USER_QUERY
-  if (!userData) {
+  if (!readyToDisplay) {
     // logoutCTX(); // cant do this!!
     return <SplashScreen />;
   }
@@ -301,3 +299,23 @@ const MainStack = ({ navigation }) => {
 };
 
 export default MainStack;
+
+// ////////////////////////////////////////
+// LOAD INITIAL QUERIES HERE
+// ////////////////////////////////////////
+// useEffect(() => {
+//   // pre-fetch stories home
+//   client.query({
+//     query: STORIES_FORYOU_QUERY,
+//   });
+
+//   // pre-fetch my topics
+//   client.query({
+//     query: CURRENT_USER_TOPICS,
+//   });
+
+//   // pre-fetch people I follow
+//   client.query({
+//     query: CURRENT_USER_FOLLOWING,
+//   });
+// }, []);

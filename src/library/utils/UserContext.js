@@ -17,7 +17,7 @@ const UserContextProvider = (props) => {
   const [homePosition, setHomePosition] = useState(0);
   const [goToTopics, setGoToTopics] = useState(false);
   const [activeTab, setActiveTab] = useState('HomeStack');
-  const [refreshHomeScreen, setRefreshHomeScreen] = useState('HomeStack');
+  const [refreshHomeScreen, setRefreshHomeScreen] = useState(false);
 
   const client = useApolloClient();
 

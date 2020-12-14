@@ -123,9 +123,9 @@ const ActiveGoalMatchesItem = ({ navigation, post, triggerRefresh }) => {
     return null;
   }
 
-  if (matches.length <= 0) {
-    return null;
-  }
+  // if (matches.length <= 0) {
+  //   return null;
+  // }
 
   return (
     <TouchableOpacity
@@ -139,13 +139,15 @@ const ActiveGoalMatchesItem = ({ navigation, post, triggerRefresh }) => {
 
       <View style={styles.rightSide}>
         {renderTitle()}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ flexDirection: 'row', paddingVertical: 10, minHeight: 70 }}
-        >
-          {renderProfilePics()}
-        </ScrollView>
+        {matches && matches.length > 0 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ flexDirection: 'row', paddingVertical: 10, minHeight: 70 }}
+          >
+            {renderProfilePics()}
+          </ScrollView>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -156,7 +158,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // paddingRight: 15,
     paddingTop: 12,
-    paddingBottom: 8,
+    paddingBottom: 12,
     backgroundColor: 'white',
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: colors.borderBlack,

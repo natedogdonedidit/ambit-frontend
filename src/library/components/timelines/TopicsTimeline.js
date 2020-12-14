@@ -18,7 +18,7 @@ import Loader from 'library/components/UI/Loader';
 import StoriesTopic from 'library/components/stories/StoriesTopic';
 
 import PostGroupTL from 'library/components/post/PostGroupTL';
-import POSTS_QUERY from 'library/queries/POSTS_QUERY';
+import POSTS_WHERE_QUERY from 'library/queries/POSTS_WHERE_QUERY';
 import { getTopicFromID } from 'library/utils/';
 import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
@@ -44,14 +44,9 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
   });
 
   // QUERIES
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
+  const { error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_WHERE_QUERY, {
     variables: {
-      // first: 10,
-      orderBy: [
-        {
-          lastUpdated: 'desc',
-        },
-      ],
+      take: 10, // FIXME, need to add "See more" button. onEndReached does not work bc nested scroll (i think)
       where: {
         topic: { contains: activeTopicID },
       },
@@ -121,6 +116,7 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
   // LOADING STATES
   const refetching = networkStatus === 4;
   const loading = networkStatus === 1;
+  const fetchingMore = networkStatus === 3;
   const ok = networkStatus === 7;
 
   if (error) {
@@ -136,7 +132,7 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
   //   return <Loader backgroundColor={colors.lightGray} size="small" />;
   // }
 
-  const posts = data ? data.posts || [] : [];
+  const posts = data && data.postsWhere && data.postsWhere.posts ? data.postsWhere.posts : [];
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
@@ -260,11 +256,28 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
             {/* <StoriesTopic topicID={activeTopicID} navigation={navigation} refetching={refetching} /> */}
           </View>
         }
-        ListEmptyComponent={
-          <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
-            Sorry, no posts yet for this topic
-          </Text>
-        }
+        ListEmptyComponent={() => {
+          return (
+            <View style={{ width: '100%', height: 200 }}>
+              {loading ? (
+                <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
+              ) : (
+                <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>No posts were found</Text>
+              )}
+            </View>
+          );
+        }}
+        renderSectionFooter={() => {
+          // SHOW LOADER IF FETCHING MORE
+          if (fetchingMore) {
+            return (
+              <View style={{ height: 80 }}>
+                <Loader backgroundColor="transparent" size="small" full={false} active />
+              </View>
+            );
+          }
+          return null;
+        }}
         onScroll={Animated.event(
           [
             {
@@ -283,33 +296,23 @@ const TopicsTimeline = ({ activeTopicID, navigation, scrollY, paddingTop }) => {
           // console.log(index);
           return <PostGroupTL post={item} currentTime={currentTime} navigation={navigation} showTopBorder={index === 0} />;
         }}
-        // onEndReachedThreshold={1.2}
-        // onEndReached={(info) => {
-        //   // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
-        //   if (data.postsTopic.pageInfo.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
-        //     fetchMore({
-        //       query: activeQuery,
-        //       variables: {
-        //         cursor: data.postsTopic.pageInfo.endCursor,
-        //         topic: activeTopic,
-        //       },
-        //       updateQuery: (previousResult, { fetchMoreResult }) => {
-        //         const newEdges = fetchMoreResult.postsTopic.edges;
-        //         const { pageInfo } = fetchMoreResult.postsTopic;
+        onEndReachedThreshold={1.2}
+        onEndReached={(info) => {
+          // console.log('onEndReached triggered', info);
+          // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
 
-        //         return newEdges.length
-        //           ? {
-        //               postsTopic: {
-        //                 __typename: previousResult.postsTopic.__typename,
-        //                 edges: [...previousResult.postsTopic.edges, ...newEdges],
-        //                 pageInfo,
-        //               },
-        //             }
-        //           : previousResult;
-        //       },
-        //     });
-        //   }
-        // }}
+          if (data && data.postsWhere && data.postsWhere.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
+            const lastPost = data.postsWhere.posts[data.postsWhere.posts.length - 1].id;
+            // console.log('fetching more topic posts:', lastPost);
+
+            fetchMore({
+              variables: {
+                cursor: lastPost,
+                take: 10,
+              },
+            });
+          }
+        }}
       />
       {/* This is the loading animation */}
       <Animated.View

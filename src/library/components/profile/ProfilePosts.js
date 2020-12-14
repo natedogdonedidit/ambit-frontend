@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import POSTS_QUERY from 'library/queries/POSTS_QUERY';
+import POSTS_WHERE_QUERY from 'library/queries/POSTS_WHERE_QUERY';
 
 import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
@@ -13,14 +13,9 @@ import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
 const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId, username }) => {
   // QUERIES
-  const { loading, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
+  const { loading, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_WHERE_QUERY, {
     variables: {
-      // first: 10,
-      orderBy: [
-        {
-          lastUpdated: 'desc',
-        },
-      ],
+      take: 50, // FIXME, need to add "See more" button. onEndReached does not work bc nested scroll (i think)
       where: {
         owner: { username: { equals: username } },
       },
@@ -29,14 +24,6 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
   });
 
   const currentTime = new Date();
-
-  // if (loading) {
-  //   return (
-  //     <View style={styles.timeline}>
-  //       <Loader loading={loading} full={false} />
-  //     </View>
-  //   );
-  // }
 
   if (error) {
     console.log('ERROR LOADING POSTS:', error.message);
@@ -58,8 +45,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
     );
   }
 
-  const posts = data ? data.posts || [] : [];
-  // const posts = [];
+  const posts = data && data.postsWhere && data.postsWhere.posts ? data.postsWhere.posts : [];
 
   if (posts.length < 1) {
     if (isMyProfile) {
@@ -95,6 +81,22 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
           />
         );
       }}
+      // onEndReachedThreshold={0.5}
+      // onEndReached={(info) => {
+      //   console.log('onEndReached triggered', info);
+      //   // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
+
+      //   if (data && data.postsWhere && data.postsWhere.hasNextPage && networkStatus === 7 && info.distanceFromEnd > -300) {
+      //     const lastPost = data.postsWhere.posts[data.postsWhere.posts.length - 1].id;
+      //     console.log('fetching more profile posts:', lastPost);
+
+      //     fetchMore({
+      //       variables: {
+      //         cursor: lastPost,
+      //       },
+      //     });
+      //   }
+      // }}
     />
   );
 };

@@ -9,7 +9,7 @@ import defaultStyles from 'styles/defaultStyles';
 
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { getGoalInfo, buildSearchWhere } from 'library/utils';
-import POSTS_QUERY from 'library/queries/POSTS_QUERY';
+import POSTS_WHERE_QUERY from 'library/queries/POSTS_WHERE_QUERY';
 
 const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
   const [matchingPosts, setMatchingPosts] = useState([]);
@@ -27,14 +27,9 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
 
   const where = buildSearchWhere({ goal, topicIDs });
 
-  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_QUERY, {
+  const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_WHERE_QUERY, {
     variables: {
-      // first: 10,
-      orderBy: [
-        {
-          lastUpdated: 'desc',
-        },
-      ],
+      take: 50,
       where,
     },
     notifyOnNetworkStatusChange: true,
@@ -55,12 +50,12 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
   // }, [hats]);
 
   useEffect(() => {
-    if (data && data.posts && data.posts.length > 0) {
-      setMatchingPosts(data.posts);
+    if (data && data.postsWhere && data.postsWhere.posts.length > 0) {
+      setMatchingPosts(data.postsWhere.posts);
     }
   }, [data]);
 
-  const foundMatches = data && data.posts && matchingPosts.length > 0;
+  const foundMatches = data && data.postsWhere && matchingPosts.length > 0;
 
   const renderIcon = () => {
     if (type === 'freelance') {

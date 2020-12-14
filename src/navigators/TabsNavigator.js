@@ -84,50 +84,50 @@ const TabsNavigator = ({ navigation, route }) => {
   }, [notificationsData]);
 
   // SUBSCRIBE TO NEW MESSAGES IN GROUPS WITH MY ID (IF THE CHAT DOESNT EXIST WHEN A NEW MESSAGE COMES IN THEN IGNORE IT)
-  useSubscription(MESSAGE_SUBSCRIPTION, {
-    variables: { userId: currentUserId },
-    onSubscriptionData: async ({ subscriptionData }) => {
-      console.log('subscriptionData', subscriptionData);
-      const { newMessageSub } = subscriptionData.data;
-      try {
-        // GET THE CONVERSATION FROM CACHE
-        const previousData = await client.readQuery({
-          query: MESSAGES_CONNECTION,
-          variables: {
-            where: { to: { id: { equals: newMessageSub.to.id } } },
-          },
-        });
+  // useSubscription(MESSAGE_SUBSCRIPTION, {
+  //   variables: { userId: currentUserId },
+  //   onSubscriptionData: async ({ subscriptionData }) => {
+  //     console.log('subscriptionData', subscriptionData);
+  //     const { newMessageSub } = subscriptionData.data;
+  //     try {
+  //       // GET THE CONVERSATION FROM CACHE
+  //       const previousData = await client.readQuery({
+  //         query: MESSAGES_CONNECTION,
+  //         variables: {
+  //           where: { to: { id: { equals: newMessageSub.to.id } } },
+  //         },
+  //       });
 
-        // IF MESSAGE CONNECTION DOES NOT EXIST YET WE WILL ENTER CATCH STATEMENT
-        if (previousData && newMessageSub) {
-          // console.log('newMessage', newMessageSub);
-          // console.log('previousData', previousData.messages);
-          client.writeQuery({
-            query: MESSAGES_CONNECTION,
-            variables: {
-              where: { to: { id: { equals: newMessageSub.to.id } } },
-            },
-            data: {
-              messages: [{ ...newMessageSub, __typename: 'Message' }],
-            },
-          });
-        }
-      } catch (e) {
-        console.log('new message from a chat that was not fetched yet - fetching chat now');
-        client.query({
-          query: MESSAGES_CONNECTION,
-          variables: {
-            where: { to: { id: { equals: newMessageSub.to.id } } },
-            first: 10,
-            orderBy: [{ createdAt: 'desc' }],
-          },
-        });
-      }
+  //       // IF MESSAGE CONNECTION DOES NOT EXIST YET WE WILL ENTER CATCH STATEMENT
+  //       if (previousData && newMessageSub) {
+  //         // console.log('newMessage', newMessageSub);
+  //         // console.log('previousData', previousData.messages);
+  //         client.writeQuery({
+  //           query: MESSAGES_CONNECTION,
+  //           variables: {
+  //             where: { to: { id: { equals: newMessageSub.to.id } } },
+  //           },
+  //           data: {
+  //             messages: [{ ...newMessageSub, __typename: 'Message' }],
+  //           },
+  //         });
+  //       }
+  //     } catch (e) {
+  //       console.log('new message from a chat that was not fetched yet - fetching chat now');
+  //       client.query({
+  //         query: MESSAGES_CONNECTION,
+  //         variables: {
+  //           where: { to: { id: { equals: newMessageSub.to.id } } },
+  //           first: 10,
+  //           orderBy: [{ createdAt: 'desc' }],
+  //         },
+  //       });
+  //     }
 
-      // ADD THE MESSAGE TO UNREAD MESSAGES
-      refetchMessages();
-    },
-  });
+  //     // ADD THE MESSAGE TO UNREAD MESSAGES
+  //     refetchMessages();
+  //   },
+  // });
 
   return (
     <Tabs.Navigator

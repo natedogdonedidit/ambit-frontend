@@ -22,11 +22,11 @@ import Image from 'react-native-scalable-image';
 import FitImage from 'react-native-fit-image';
 import AllIcons from 'react-native-vector-icons/glyphmaps/FontAwesome5Free.json';
 
-import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
+import POSTS_FOLLOWING_QUERY from 'library/queries/POSTS_FOLLOWING_QUERY';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
-import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
+import POSTS_MYGOALS_QUERY from 'library/queries/POSTS_MYGOALS_QUERY';
 
 import { UserContext } from 'library/utils/UserContext';
 import {
@@ -114,18 +114,10 @@ const NewPostModal = ({ navigation, route }) => {
   const [createOnePost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
     refetchQueries: () => [
       {
-        query: NETWORK_POSTS_QUERY,
+        query: POSTS_FOLLOWING_QUERY,
         variables: {
-          orderBy: [
-            {
-              lastUpdated: 'desc',
-            },
-          ],
-          where: {
-            owner: {
-              id: { in: [...network, currentUserId] },
-            },
-          },
+          feed: 'following',
+          take: 10,
         },
       },
     ],
@@ -160,7 +152,6 @@ const NewPostModal = ({ navigation, route }) => {
       navigation.goBack();
       const uploadedImages = await uploadImages();
       const uploadedVideo = await uploadVideo();
-      console.log('video upload', uploadedVideo);
 
       if (!loadingCreate) {
         createOnePost({
@@ -260,13 +251,13 @@ const NewPostModal = ({ navigation, route }) => {
       //   },
       //   update: (proxy, { data: dataReturned }) => {
       //     const networkPostsCache = proxy.readQuery({
-      //       query: NETWORK_POSTS_QUERY,
+      //       query: POSTS_FOLLOWING_QUERY,
       //     });
       //     // console.log(networkPostsCache);
       //     // console.log(dataReturned);
 
       //     proxy.writeQuery({
-      //       query: NETWORK_POSTS_QUERY,
+      //       query: POSTS_FOLLOWING_QUERY,
       //       data: {
       //         postsNetwork: {
       //           __typename: 'PostConnection',
@@ -281,7 +272,7 @@ const NewPostModal = ({ navigation, route }) => {
       //       },
       //     });
       //   },
-      //   refetchQueries: goal && [{ query: MYGOALS_POSTS_QUERY }],
+      //   refetchQueries: goal && [{ query: POSTS_MYGOALS_QUERY }],
       // });
     } catch (e) {
       setUploading(false);

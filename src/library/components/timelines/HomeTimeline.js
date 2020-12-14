@@ -5,12 +5,11 @@ import { useQuery, useMutation } from '@apollo/client';
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import NETWORK_POSTS_QUERY from 'library/queries/NETWORK_POSTS_QUERY';
-import FORYOU_POSTS_QUERY from 'library/queries/FORYOU_POSTS_QUERY';
-import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
-import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
+import POSTS_FOLLOWING_QUERY from 'library/queries/POSTS_FOLLOWING_QUERY';
+import POSTS_FORYOU_QUERY from 'library/queries/POSTS_FORYOU_QUERY';
+import POSTS_MYGOALS_QUERY from 'library/queries/POSTS_MYGOALS_QUERY';
 import Loader from 'library/components/UI/Loader';
-import HomeTimelineHeader from 'library/components/UI/HomeTimelineHeader';
+import HomeTimelineTabs from 'library/components/UI/HomeTimelineTabs';
 import StoriesHome from 'library/components/stories/StoriesHome';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';
@@ -32,16 +31,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const [refetchingStories, setRefetchingStories] = useState(false);
   const [activeTimeline, setActiveTimeline] = useState(1);
 
-  // QUERIES
-  const { data: dataFollowing } = useQuery(CURRENT_USER_FOLLOWING);
-  const network = useMemo(() => {
-    if (dataFollowing && dataFollowing.iFollow) {
-      return [...dataFollowing.iFollow];
-    }
-
-    return [];
-  }, [dataFollowing]);
-
   // GET POSTS "FOR YOU"
   const {
     error: errorPostsForYou,
@@ -49,19 +38,11 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     refetch: refetchPostsForYou,
     fetchMore: fetchMorePostsForYou,
     networkStatus: networkStatusPostsForYou,
-  } = useQuery(FORYOU_POSTS_QUERY, {
+  } = useQuery(POSTS_FORYOU_QUERY, {
     variables: {
-      // first: 10,
-      orderBy: [
-        {
-          lastUpdated: 'desc',
-        },
-      ],
-      where: {
-        owner: {
-          id: { notIn: [...network, currentUserId] },
-        },
-      },
+      feed: 'foryou',
+      take: 10,
+      // no cursor on initial query or refetch
     },
     onError: (e) => console.log('error loading for you posts', e),
     notifyOnNetworkStatusChange: true,
@@ -70,35 +51,16 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   // GET POSTS FROM "FOLLOWING"
   const {
-    error: errorPostsNetwork,
-    data: dataPostsNetwork,
-    refetch: refetchPostsNetwork,
-    fetchMore: fetchMorePostsNetwork,
-    networkStatus: networkStatusPostsNetwork,
-  } = useQuery(NETWORK_POSTS_QUERY, {
+    error: errorPostsFollowing,
+    data: dataPostsFollowing,
+    refetch: refetchPostsFollowing,
+    fetchMore: fetchMorePostsFollowing,
+    networkStatus: networkStatusPostsFollowing,
+  } = useQuery(POSTS_FOLLOWING_QUERY, {
     variables: {
-      // first: 10,
-      orderBy: [
-        {
-          lastUpdated: 'desc',
-        },
-      ],
-      where: {
-        OR: [
-          {
-            owner: {
-              id: { in: [...network, currentUserId] },
-            },
-          },
-          {
-            reposts: {
-              some: {
-                id: { in: [...network, currentUserId] },
-              },
-            },
-          },
-        ],
-      },
+      feed: 'following',
+      take: 10,
+      // no cursor on initial query or refetch,
     },
     onError: (e) => console.log('error loading network posts', e),
     notifyOnNetworkStatusChange: true,
@@ -112,26 +74,11 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     refetch: refetchPostsMyGoals,
     fetchMore: fetchMorePostsMyGoals,
     networkStatus: networkStatusPostsMyGoals,
-  } = useQuery(MYGOALS_POSTS_QUERY, {
+  } = useQuery(POSTS_MYGOALS_QUERY, {
     variables: {
-      // first: 10,
-      orderBy: [
-        {
-          lastUpdated: 'desc',
-        },
-      ],
-      where: {
-        AND: [
-          {
-            owner: {
-              id: { equals: currentUserId },
-            },
-          },
-          {
-            isGoal: { equals: true },
-          },
-        ],
-      },
+      feed: 'mygoals',
+      take: 10,
+      // no cursor on initial query or refetch,
     },
     onError: (e) => console.log('error loading my goals posts', e),
     notifyOnNetworkStatusChange: true,
@@ -144,9 +91,9 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // useQuery(STORIES_FORYOU_QUERY);
 
   // LOADING STATES
-  const fetchingMorePostsNetwork = networkStatusPostsNetwork === 3;
-  const loadingPostsNetwork = networkStatusPostsNetwork === 1;
-  const refetchingPostsNetwork = loadingPostsNetwork && dataPostsNetwork; // if loading, but already have data
+  const fetchingMorePostsFollowing = networkStatusPostsFollowing === 3;
+  const loadingPostsNetwork = networkStatusPostsFollowing === 1;
+  const refetchingPostsNetwork = loadingPostsNetwork && dataPostsFollowing; // if loading, but already have data
 
   // for you
   const fetchingMorePostsForYou = networkStatusPostsForYou === 3;
@@ -158,11 +105,11 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   const loadingPostsMyGoals = networkStatusPostsMyGoals === 1;
   const refetchingPostsMyGoals = loadingPostsMyGoals && dataPostsMyGoals; // if loading, but already have data
 
-  // const refetching = refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals;
+  const refetching = refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals;
   const loading = loadingPostsNetwork || loadingPostsForYou || loadingPostsMyGoals;
 
-  if (errorPostsNetwork) {
-    console.log('ERROR LOADING POSTS:', errorPostsNetwork.message);
+  if (errorPostsForYou || errorPostsFollowing || errorPostsMyGoals) {
+    console.log('ERROR LOADING POSTS:', errorPostsForYou, errorPostsFollowing, errorPostsMyGoals);
     return (
       <View style={styles.timeline}>
         <Text style={{ textAlign: 'center', width: '100%', color: 'red' }}>Error loading posts</Text>
@@ -170,14 +117,14 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     );
   }
 
-  const postsForYou = dataPostsForYou ? dataPostsForYou.posts : [];
-  const postsNetwork = dataPostsNetwork ? dataPostsNetwork.posts : [];
-  const postsMyGoals = dataPostsMyGoals ? dataPostsMyGoals.posts : [];
+  const postsForYou = dataPostsForYou ? dataPostsForYou.postsForYou.posts : [];
+  const postsFollowing = dataPostsFollowing ? dataPostsFollowing.postsFollowing.posts : [];
+  const postsMyGoals = dataPostsMyGoals ? dataPostsMyGoals.postsMyGoals.posts : [];
 
   // decide which posts to show based on the timeline selected
   let postsToShow = [];
   if (activeTimeline === 0) postsToShow = [...postsForYou];
-  if (activeTimeline === 1) postsToShow = [...postsNetwork];
+  if (activeTimeline === 1) postsToShow = [...postsFollowing];
   if (activeTimeline === 2) postsToShow = [...postsMyGoals];
 
   // CUSTOM FUNCTIONS
@@ -191,7 +138,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
       setShowRefreshing(false);
       setRefreshHomeScreen(false);
     }, 1500);
-    refetchPostsNetwork();
+    refetchPostsFollowing();
     refetchPostsForYou();
     refetchPostsMyGoals();
   };
@@ -249,18 +196,13 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             refetching={showRefreshing}
             setLoadingStories={setLoadingStories}
             setRefetchingStories={setRefetchingStories}
-            network={network}
           />
         }
         ListEmptyComponent={() => {
           if (activeTimeline === 2) {
             return (
               <>
-                <HomeTimelineHeader
-                  navigation={navigation}
-                  activeTimeline={activeTimeline}
-                  setActiveTimeline={setActiveTimeline}
-                />
+                <HomeTimelineTabs activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
                 <View style={{ width: '100%', height: 400 }}>
                   {loading ? (
                     <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
@@ -278,7 +220,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
           }
           return (
             <>
-              <HomeTimelineHeader navigation={navigation} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
+              <HomeTimelineTabs activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
               <View style={{ width: '100%', height: 400 }}>
                 {loading ? (
                   <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
@@ -314,33 +256,46 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
             : []
         }
         renderSectionHeader={({ section }) => (
-          <HomeTimelineHeader navigation={navigation} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
+          <HomeTimelineTabs activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
         )}
-        // renderSectionFooter={({ section }) => {
-        //   if (activeTimeline === 0 && dataPostsForYou.postsForYou.pageInfo.hasNextPage) {
-        //     return <SeeMoreButton onPress={fetchMorePostsForYou} loading={fetchingMorePostsForYou} />;
-        //   }
-        //   if (activeTimeline === 1 && dataPostsNetwork.postsNetwork.pageInfo.hasNextPage) {
-        //     return <SeeMoreButton onPress={fetchMorePostsNetwork} loading={fetchingMorePostsNetwork} />;
-        //   }
-        //   if (activeTimeline === 2 && dataPostsMyGoals.postsMyGoals.pageInfo.hasNextPage) {
-        //     return <SeeMoreButton onPress={fetchMorePostsMyGoals} loading={fetchingMorePostsMyGoals} />;
-        //   }
+        renderSectionFooter={({ section }) => {
+          // SHOW LOADER IF FETCHING MORE
+          if (activeTimeline === 0 && fetchingMorePostsForYou) {
+            return (
+              <View style={{ height: 80 }}>
+                <Loader backgroundColor="transparent" size="small" full={false} active />
+              </View>
+            );
+          }
+          if (activeTimeline === 1 && fetchingMorePostsFollowing) {
+            return (
+              <View style={{ height: 80 }}>
+                <Loader backgroundColor="transparent" size="small" full={false} active />
+              </View>
+            );
+          }
+          if (activeTimeline === 2 && fetchingMorePostsMyGoals) {
+            return (
+              <View style={{ height: 80 }}>
+                <Loader backgroundColor="transparent" size="small" full={false} active />
+              </View>
+            );
+          }
 
-        //   return <View style={{ height: 15 }} />;
-        // }}
+          return <View style={{ height: 30 }} />;
+        }}
         renderItem={({ item }) => {
           // if it is the "Following" timeline - check to see if post is a re-post
-          if (activeTimeline === 1) {
-            // check if the post owner is from your network
-            let showRepost = false;
-            if (item && item.owner && network && network.length > 0) {
-              if (!network.includes(item.owner.id) && item.owner.id !== currentUserId) {
-                showRepost = true;
-              }
-            }
-            return <PostGroupTL post={item} navigation={navigation} showRepost={showRepost} />;
-          }
+          // if (activeTimeline === 1) {
+          // check if the post owner is from your network
+          // let showRepost = false;
+          // if (item && item.owner && network && network.length > 0) {
+          //   if (!network.includes(item.owner.id) && item.owner.id !== currentUserId) {
+          //     showRepost = true;
+          //   }
+          // }
+          // return <PostGroupTL post={item} navigation={navigation} showRepost={false} />;
+          // }
 
           return <PostGroupTL post={item} navigation={navigation} />;
         }}
@@ -361,95 +316,62 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
         //     });
         //   }
         // }}
-        // onEndReachedThreshold={1.2}
-        // onEndReached={(info) => {
-        //   // console.log('onEndReached triggered', info);
-        //   // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
+        onEndReachedThreshold={1.2}
+        onEndReached={(info) => {
+          // console.log('onEndReached triggered', info);
+          // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
 
-        //   if (activeTimeline === 0 && dataPostsForYou) {
-        //     if (dataPostsForYou.posts && networkStatusPostsForYou === 7 && info.distanceFromEnd > -300) {
-        //       console.log('fetching more For You after:', dataPostsForYou.posts[dataPostsForYou.posts.length - 1].id);
-        //       fetchMorePostsForYou({
-        //         // query: FORYOU_POSTS_QUERY,
-        //         variables: {
-        //           first: 5,
-        //           orderBy: [
-        //             {
-        //               lastUpdated: 'desc',
-        //             },
-        //           ],
-        //           after: {
-        //             id: dataPostsForYou.posts[dataPostsForYou.posts.length - 1].id,
-        //           },
-        //         },
-        //         updateQuery: (prev, { fetchMoreResult }) => {
-        //           console.log('prev', prev);
-        //           console.log('fetch more result', fetchMoreResult);
-        //           if (!fetchMoreResult) return prev;
-        //           return { posts: [...prev.posts, ...fetchMoreResult.posts] };
-        //         },
-        //       });
-        //     }
-        //   } else if (activeTimeline === 1 && dataPostsNetwork) {
-        //     if (
-        //       dataPostsNetwork.postsNetwork.pageInfo.hasNextPage &&
-        //       networkStatusPostsNetwork === 7 &&
-        //       info.distanceFromEnd > -300
-        //     ) {
-        //       console.log('fetching more Network posts');
-        //       fetchMorePostsNetwork({
-        //         // query: NETWORK_POSTS_QUERY,
-        //         variables: {
-        //           cursor: dataPostsNetwork.postsNetwork.pageInfo.endCursor,
-        //           first: 10,
-        //         },
-        //         // updateQuery: (previousResult, { fetchMoreResult }) => {
-        //         //   const newEdges = fetchMoreResult.postsNetwork.edges;
-        //         //   const { pageInfo } = fetchMoreResult.postsNetwork;
+          if (activeTimeline === 0 && dataPostsForYou && dataPostsForYou.postsForYou && dataPostsForYou.postsForYou.hasNextPage) {
+            if (postsForYou && networkStatusPostsForYou === 7 && info.distanceFromEnd > -300) {
+              const lastPost = postsForYou[postsForYou.length - 1].id;
+              // console.log('fetching more For You after:', lastPost);
 
-        //         //   return newEdges.length
-        //         //     ? {
-        //         //         postsNetwork: {
-        //         //           __typename: previousResult.postsNetwork.__typename,
-        //         //           edges: [...previousResult.postsNetwork.edges, ...newEdges],
-        //         //           pageInfo,
-        //         //         },
-        //         //       }
-        //         //     : previousResult;
-        //         // },
-        //       });
-        //     }
-        //   } else if (activeTimeline === 2 && dataPostsMyGoals) {
-        //     if (
-        //       dataPostsMyGoals.postsMyGoals.pageInfo.hasNextPage &&
-        //       networkStatusPostsMyGoals === 7 &&
-        //       info.distanceFromEnd > -300
-        //     ) {
-        //       console.log('fetching more My Goals');
-        //       fetchMorePostsMyGoals({
-        //         // query: MYGOALS_POSTS_QUERY,
-        //         variables: {
-        //           cursor: dataPostsMyGoals.postsMyGoals.pageInfo.endCursor,
-        //           first: 10,
-        //         },
-        //         // updateQuery: (previousResult, { fetchMoreResult }) => {
-        //         //   const newEdges = fetchMoreResult.postsMyGoals.edges;
-        //         //   const { pageInfo } = fetchMoreResult.postsMyGoals;
+              fetchMorePostsForYou({
+                variables: {
+                  feed: 'foryou',
+                  cursor: lastPost,
+                  take: 10,
+                },
+              });
+            }
+          } else if (
+            activeTimeline === 1 &&
+            dataPostsFollowing &&
+            dataPostsFollowing.postsFollowing &&
+            dataPostsFollowing.postsFollowing.hasNextPage
+          ) {
+            if (postsFollowing && networkStatusPostsFollowing === 7 && info.distanceFromEnd > -300) {
+              const lastPost = postsFollowing[postsFollowing.length - 1].id;
+              // console.log('fetching more Following posts after:', lastPost);
 
-        //         //   return newEdges.length
-        //         //     ? {
-        //         //         postsMyGoals: {
-        //         //           __typename: previousResult.postsMyGoals.__typename,
-        //         //           edges: [...previousResult.postsMyGoals.edges, ...newEdges],
-        //         //           pageInfo,
-        //         //         },
-        //         //       }
-        //         //     : previousResult;
-        //         // },
-        //       });
-        //     }
-        //   }
-        // }}
+              fetchMorePostsFollowing({
+                variables: {
+                  feed: 'following',
+                  cursor: lastPost,
+                  take: 10,
+                },
+              });
+            }
+          } else if (
+            activeTimeline === 2 &&
+            dataPostsMyGoals &&
+            dataPostsMyGoals.postsMyGoals &&
+            dataPostsMyGoals.postsMyGoals.hasNextPage
+          ) {
+            if (postsMyGoals && networkStatusPostsMyGoals === 7 && info.distanceFromEnd > -300) {
+              const lastPost = postsMyGoals[postsMyGoals.length - 1].id;
+              // console.log('fetching more My Goals posts after:', lastPost);
+
+              fetchMorePostsMyGoals({
+                variables: {
+                  feed: 'mygoals',
+                  cursor: lastPost,
+                  take: 10,
+                },
+              });
+            }
+          }
+        }}
       />
     </View>
   );

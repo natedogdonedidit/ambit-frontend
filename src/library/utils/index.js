@@ -17,7 +17,13 @@ export const buildSearchWhere = ({ text, goal, topicIDs, lat, lon }) => {
     if (!haveInputs) return blankSearch;
     if (!text) return allSearch;
 
-    return { OR: [{ content: { contains: text } }, { goal: { contains: text } }, { owner: { username: { contains: text } } }] };
+    return {
+      OR: [
+        { content: { contains: text, mode: 'insensitive' } },
+        { goal: { contains: text, mode: 'insensitive' } },
+        { owner: { username: { contains: text, mode: 'insensitive' } } },
+      ],
+    };
   };
 
   // goal stuff - must return a PostWhereInput
@@ -25,7 +31,7 @@ export const buildSearchWhere = ({ text, goal, topicIDs, lat, lon }) => {
     if (!haveInputs) return blankSearch;
     if (!goal) return allSearch;
 
-    return { goal: { contains: goal } };
+    return { goal: { contains: goal, mode: 'insensitive' } };
   };
 
   // topic stuff - must return a PostWhereInput

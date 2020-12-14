@@ -14,7 +14,7 @@ import { combineFavoriteTopics } from 'library/utils';
 import NewProjectButton from './NewProjectButton';
 import ForYouButton from './ForYouButton';
 
-function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingStories, network }) {
+function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingStories }) {
   const { data: dataTopics, loading: loadingTopics, error: errorTopics } = useQuery(CURRENT_USER_TOPICS);
 
   const favoriteTopics = useMemo(() => {

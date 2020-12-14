@@ -16,7 +16,7 @@ import CLEAR_NOTIFICATIONS_MUTATION from 'library/mutations/CLEAR_NOTIFICATIONS_
 import Loader from 'library/components/UI/Loader';
 import NotificationListItem from 'library/components/lists/NotificationListItem';
 import { UserContext } from 'library/utils/UserContext';
-import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
+import POSTS_MYGOALS_QUERY from 'library/queries/POSTS_MYGOALS_QUERY';
 import { DAYS_TILL_INACTIVE, DAYS_TILL_INACTIVE_NOTIFY } from 'styles/constants';
 
 const NotificationsScreen = ({ navigation }) => {
@@ -33,37 +33,22 @@ const NotificationsScreen = ({ navigation }) => {
     refetch: refetchPostsMyGoals,
     fetchMore: fetchMorePostsMyGoals,
     networkStatus: networkStatusPostsMyGoals,
-  } = useQuery(MYGOALS_POSTS_QUERY, {
+  } = useQuery(POSTS_MYGOALS_QUERY, {
     variables: {
-      // first: 10,
-      orderBy: [
-        {
-          lastUpdated: 'desc',
-        },
-      ],
-      where: {
-        AND: [
-          {
-            owner: {
-              id: { equals: currentUserId },
-            },
-          },
-          {
-            isGoal: { equals: true },
-          },
-        ],
-      },
+      feed: 'mygoals',
+      take: 10,
     },
     onError: (e) => console.log('error loading my goals posts', e),
     notifyOnNetworkStatusChange: true,
     // fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI (but it ruins opt response of Likes)
   });
   const createGoalNotifications = () => {
-    if (dataPostsMyGoals && dataPostsMyGoals.posts) {
+    if (dataPostsMyGoals && dataPostsMyGoals.postsMyGoals && dataPostsMyGoals.postsMyGoals.posts) {
       // map over goals and create a notifcation for each (if about to expire)
       // setting the goal to inactive and creating the "your goal expired" notification happens on server
+      const { posts } = dataPostsMyGoals.postsMyGoals;
 
-      return dataPostsMyGoals.posts.reduce((acc, post) => {
+      return posts.reduce((acc, post) => {
         if (post.goal && post.goalStatus === 'Active') {
           const today = new Date();
           const daysSinceUpdated = differenceInCalendarDays(today, new Date(post.lastUpdated));

@@ -6,7 +6,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Section from 'library/components/UI/Section';
 
-import MYGOALS_POSTS_QUERY from 'library/queries/MYGOALS_POSTS_QUERY';
+import POSTS_MYGOALS_QUERY from 'library/queries/POSTS_MYGOALS_QUERY';
 import { isCustomGoalTest } from 'library/utils';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import { UserContext } from 'library/utils/UserContext';
@@ -19,7 +19,7 @@ import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 // 3. INSIDE THE COMPONENT - QUERY MATCHES (WHILE LOADING - SHOW SKELETON PROFILE PICS)
 
 const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
-  const { currentUserId } = useContext(UserContext);
+  // const { currentUserId } = useContext(UserContext);
 
   // GET "MY GOALS" (THIS SHOULD HAVE ALREADY BEEN CALLED ON HOMESCREEN - SO JUST PIGGY BACKING OFF THE INITIAL QUERY)
   const {
@@ -28,26 +28,10 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
     refetch: refetchPostsMyGoals,
     fetchMore: fetchMorePostsMyGoals,
     networkStatus: networkStatusPostsMyGoals,
-  } = useQuery(MYGOALS_POSTS_QUERY, {
+  } = useQuery(POSTS_MYGOALS_QUERY, {
     variables: {
-      first: 10,
-      orderBy: [
-        {
-          lastUpdated: 'desc',
-        },
-      ],
-      where: {
-        AND: [
-          {
-            owner: {
-              id: { equals: currentUserId },
-            },
-          },
-          {
-            isGoal: { equals: true },
-          },
-        ],
-      },
+      feed: 'mygoals',
+      take: 10,
     },
     onError: (e) => console.log('error loading my goals posts', e),
     notifyOnNetworkStatusChange: true,
@@ -74,7 +58,8 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
       );
     }
 
-    const { posts } = dataPostsMyGoals;
+    const { postsMyGoals } = dataPostsMyGoals;
+    const { posts } = postsMyGoals;
 
     // if we have data
     if (posts.length > 0) {

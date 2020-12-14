@@ -128,18 +128,18 @@ const client = new ApolloClient({
             // return canRead(item) ? item : null;
             return existingData || toReference({ __typename: 'Post', id: args.where.id });
           },
-          // post: {
-          //   read(existingData, { args, toReference, canRead }) {
-          //     const item = existingData || toReference({ __typename: 'Post', id: args.where.id });
-          //     return canRead(item) ? item : null;
-          //   },
-          //   merge(existing = {}, incoming = {}, options) {
-          //     return { ...existing, ...incoming };
-          //   },
-          // },
-          postsNetwork: relayStylePagination(),
-          postsForYou: relayStylePagination(),
-          postsMyGoals: relayStylePagination(),
+          postsForYou: {
+            keyArgs: ['feed'],
+          },
+          postsFollowing: {
+            keyArgs: ['feed'],
+          },
+          postsMyGoals: {
+            keyArgs: ['feed'],
+          },
+          postsWhere: {
+            keyArgs: ['where'],
+          },
           // group(existingData, { args, toReference }) {
           //   return existingData || toReference({ __typename: 'Group', id: args.id });
           // },
@@ -241,6 +241,20 @@ const client = new ApolloClient({
           from(existing, { canRead, toReference }) {
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
+          },
+        },
+      },
+      PostConnection: {
+        fields: {
+          posts: {
+            merge(existing = [], incoming = [], options) {
+              // if a cursor was provided - add incoming to the end
+              if (options.variables && options.variables.cursor) {
+                return [...existing, ...incoming];
+              }
+
+              return incoming;
+            },
           },
         },
       },
