@@ -283,7 +283,7 @@ const AddCommentModal = ({ navigation, route }) => {
           activeOpacity={0.7}
           onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
         >
-          <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons showLine />
+          <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons showThread />
         </TouchableOpacity>
       );
     }
@@ -316,7 +316,7 @@ const AddCommentModal = ({ navigation, route }) => {
             comment={parentComment}
             navigation={navigation}
             currentTime={currentTime}
-            lessPadding
+            lessTopPadding
             hideButtons
             disableVideo
           />
@@ -328,10 +328,10 @@ const AddCommentModal = ({ navigation, route }) => {
                   comment={subComment}
                   navigation={navigation}
                   currentTime={currentTime}
-                  lessPadding
+                  lessTopPadding
                   hideButtons
                   disableVideo
-                  showLine
+                  showThread
                 />
               );
             }
@@ -347,8 +347,8 @@ const AddCommentModal = ({ navigation, route }) => {
         navigation={navigation}
         currentTime={currentTime}
         hideButtons
-        showLine={!isComment}
-        lessPadding
+        showThread={!isComment}
+        lessTopPadding
         disableVideo
       />
     );

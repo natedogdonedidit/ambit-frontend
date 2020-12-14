@@ -16,6 +16,12 @@ import PostGroupTL from 'library/components/post/PostGroupTL';
 import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 
+// networkStatus states:
+// 1: loading
+// 3: fetchMore
+// 4: refetch
+// 7: no loading, no refetch, everything OK!
+
 const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   // const currentTime = new Date();
   const homeTimelineRef = useRef();
@@ -61,8 +67,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     notifyOnNetworkStatusChange: true,
     // fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI (but it ruins opt response of Likes)
   });
-
-  // console.log(dataPostsForYou);
 
   // GET POSTS FROM "FOLLOWING"
   const {
@@ -139,43 +143,23 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
 
   // useQuery(STORIES_FORYOU_QUERY);
 
-  // networkStatus states:
-  // 1: loading
-  // 3: fetchMore
-  // 4: refetch
-  // 7: no loading, no refetch, everything OK!
-
   // LOADING STATES
-  // network
-  // console.log(networkStatusPostsForYou, networkStatusPostsNetwork, networkStatusPostsMyGoals);
-  // console.log('idk', NetworkStatus, NetworkStatus.refetch);
   const fetchingMorePostsNetwork = networkStatusPostsNetwork === 3;
   const loadingPostsNetwork = networkStatusPostsNetwork === 1;
-  // const refetchingPostsNetwork = loadingPostsNetwork && dataPostsNetwork; // if loading, but already have data
+  const refetchingPostsNetwork = loadingPostsNetwork && dataPostsNetwork; // if loading, but already have data
 
   // for you
   const fetchingMorePostsForYou = networkStatusPostsForYou === 3;
   const loadingPostsForYou = networkStatusPostsForYou === 1;
-  // const refetchingPostsForYou = loadingPostsForYou && dataPostsForYou; // if loading, but already have data
+  const refetchingPostsForYou = loadingPostsForYou && dataPostsForYou; // if loading, but already have data
 
   // my goals
   const fetchingMorePostsMyGoals = networkStatusPostsMyGoals === 3;
   const loadingPostsMyGoals = networkStatusPostsMyGoals === 1;
-  // const refetchingPostsMyGoals = loadingPostsMyGoals && dataPostsMyGoals; // if loading, but already have data
+  const refetchingPostsMyGoals = loadingPostsMyGoals && dataPostsMyGoals; // if loading, but already have data
 
   // const refetching = refetchingPostsNetwork || refetchingPostsForYou || refetchingPostsMyGoals;
   const loading = loadingPostsNetwork || loadingPostsForYou || loadingPostsMyGoals;
-
-  // UPDATE showRefreshing BASED ON QUERY LOADING STATES
-  // useEffect(() => {
-  //   if (refetching) {
-  //     console.log('setting true');
-  //     setShowRefreshing(true);
-  //   } else if (!refetching) {
-  //     console.log('setting false');
-  //     setShowRefreshing(false);
-  //   }
-  // }, [refetching]);
 
   if (errorPostsNetwork) {
     console.log('ERROR LOADING POSTS:', errorPostsNetwork.message);
@@ -186,17 +170,6 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
     );
   }
 
-  // IF DOING INITIAL LOAD, SHOW LOADER UNTIL DATA COMES IN
-  // if (activeTimeline === 0 && (!dataPostsForYou || loadingPostsForYou)) {
-  //   return <Loader backgroundColor={colors.lightGray} size="small" />;
-  // }
-  // if (activeTimeline === 1 && (!dataPostsNetwork || loadingPostsNetwork)) {
-  //   return <Loader backgroundColor={colors.lightGray} size="small" />;
-  // }
-  // if (activeTimeline === 2 && (!dataPostsMyGoals || loadingPostsMyGoals)) {
-  //   return <Loader backgroundColor={colors.lightGray} size="small" />;
-  // }
-
   const postsForYou = dataPostsForYou ? dataPostsForYou.posts : [];
   const postsNetwork = dataPostsNetwork ? dataPostsNetwork.posts : [];
   const postsMyGoals = dataPostsMyGoals ? dataPostsMyGoals.posts : [];
@@ -206,16 +179,12 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop }) => {
   if (activeTimeline === 0) postsToShow = [...postsForYou];
   if (activeTimeline === 1) postsToShow = [...postsNetwork];
   if (activeTimeline === 2) postsToShow = [...postsMyGoals];
-  // console.log('mygoals', postsMyGoals);
-  // console.log('poststoshow', postsToShow);
 
   // CUSTOM FUNCTIONS
   const onRefresh = () => {
     console.log('refreshing home screen queries');
     // refetch for you posts
-
     // refetch my topic stories
-
     setShowRefreshing(true);
     setRefreshHomeScreen(true);
     setTimeout(() => {

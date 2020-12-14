@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -14,7 +14,6 @@ function PostGroupTL({
   post,
   showLastLine = false,
   hideButtons = false,
-  hideTopLine = false,
   showDetails = false,
   updateInd = null,
   showAll = false,
@@ -26,9 +25,9 @@ function PostGroupTL({
 
   const renderAllUpdates = () => {
     return post.updates.map((update, i) => {
-      let showLine = false;
-      if (i !== post.updates.length - 1) showLine = true;
-      if (i === post.updates.length - 1 && showLastLine) showLine = true;
+      let showThread = false;
+      if (i !== post.updates.length - 1) showThread = true;
+      if (i === post.updates.length - 1 && showLastLine) showThread = true;
       return (
         <TouchableOpacity
           key={update.id}
@@ -41,9 +40,9 @@ function PostGroupTL({
             updateInd={i}
             navigation={navigation}
             hideButtons={hideButtons}
-            showLine={showLine}
-            hideTopLine={hideTopLine}
+            showThread={showThread}
             disableVideo={disableVideo}
+            lessTopPadding
           />
         </TouchableOpacity>
       );
@@ -61,7 +60,7 @@ function PostGroupTL({
           <Post
             post={post}
             navigation={navigation}
-            showLine
+            showThread
             hideButtons={hideButtons}
             showDetails={showDetails}
             disableVideo={disableVideo}
@@ -85,7 +84,7 @@ function PostGroupTL({
           <Post
             post={post}
             navigation={navigation}
-            showLine
+            showThread
             hideButtons={hideButtons}
             showDetails={showDetails}
             disableVideo={disableVideo}
@@ -103,9 +102,9 @@ function PostGroupTL({
             updateInd={updateInd}
             navigation={navigation}
             hideButtons={hideButtons}
-            hideTopLine={hideTopLine}
             disableVideo={disableVideo}
-            showLine
+            showThread
+            lessTopPadding
           />
         </TouchableOpacity>
       </>
@@ -122,7 +121,7 @@ function PostGroupTL({
         <Post
           post={post}
           navigation={navigation}
-          showLine={showLastLine}
+          showThread={showLastLine}
           hideButtons={hideButtons}
           showDetails={showDetails}
           disableVideo={disableVideo}
@@ -146,7 +145,7 @@ function PostGroupTL({
           <Post
             post={post}
             navigation={navigation}
-            showLine
+            showThread
             hideButtons={hideButtons}
             showDetails={showDetails}
             disableVideo={disableVideo}
@@ -164,8 +163,8 @@ function PostGroupTL({
             updateInd={0}
             navigation={navigation}
             hideButtons={hideButtons}
-            hideTopLine
             disableVideo
+            lessTopPadding
           />
         </TouchableOpacity>
       </View>
@@ -182,7 +181,7 @@ function PostGroupTL({
         <Post
           post={post}
           navigation={navigation}
-          showLine
+          showThread
           hideButtons={hideButtons}
           showDetails={showDetails}
           disableVideo={disableVideo}
@@ -201,62 +200,13 @@ function PostGroupTL({
           updateInd={post.updates.length - 1}
           navigation={navigation}
           hideButtons={hideButtons}
-          hideTopLine
           disableVideo
+          lessTopPadding
         />
       </TouchableOpacity>
     </View>
   );
-
-  // return (
-  //   <>
-  //     <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate({name: 'Post', key: `Post:${post.id}`, params: { post } })}>
-  //       <Post
-  //         post={post}
-  //         navigation={navigation}
-  //         showLine
-  //         hideButtons={hideButtons}
-  //         showDetails={showDetails}
-  //         disableVideo={disableVideo}
-  //       />
-  //       <View style={styles.showLatestButton}>
-  //         <View style={styles.leftColumn}>
-  //           <ProfilePic size="small" user={post.owner} navigation={navigation} enableIntro={false} enableStory={false} />
-  //         </View>
-  //         <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.navigate({name: 'Post', key: `Post:${post.id}`, params: { post } })} style={styles.rightColumn}>
-  //           <Text style={{ ...defaultStyles.largeRegular, color: colors.iosBlue }}>
-  //             Show {post.updates.length > 1 ? `${post.updates.length} ` : ''}update{post.updates.length > 1 ? 's' : ''}
-  //           </Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //     </TouchableOpacity>
-  //   </>
-  // );
 }
-
-const styles = StyleSheet.create({
-  showLatestButton: {
-    width: '100%',
-    flexDirection: 'row',
-    paddingTop: 5,
-    backgroundColor: 'white',
-    borderRadius: 3,
-    paddingBottom: 6,
-    paddingRight: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.borderBlack,
-  },
-  leftColumn: {
-    alignItems: 'center',
-    paddingLeft: 4,
-    width: 76,
-  },
-  rightColumn: {
-    flex: 1,
-    justifyContent: 'center',
-    // paddingLeft: 8,
-  },
-});
 
 function areEqual(prevProps, nextProps) {
   /*

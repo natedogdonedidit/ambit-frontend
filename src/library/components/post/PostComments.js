@@ -88,7 +88,8 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
                   navigation={navigation}
                   currentTime={currentTime}
                   isSubComment
-                  // showLine={comment.comments.length - 1 !== k}
+                  showThread={comment.comments.length - 1 !== k}
+                  lessTopPadding={k > 0}
                 />
               ))}
           </View>

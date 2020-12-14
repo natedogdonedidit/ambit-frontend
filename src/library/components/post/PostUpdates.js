@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -13,8 +13,7 @@ const PostUpdates = ({ navigation, post, currentTime }) => {
   return (
     <Section text="Updates">
       {post.updates.map((update, i) => {
-        const showLine = post.updates.length > 1 && i < post.updates.length - 1;
-        const hideTopLine = post.updates.length > 1 && i > 0;
+        const showThread = post.updates.length > 1 && i < post.updates.length - 1;
 
         return (
           <TouchableOpacity
@@ -34,8 +33,9 @@ const PostUpdates = ({ navigation, post, currentTime }) => {
               updateInd={i}
               currentTime={currentTime}
               navigation={navigation}
-              showLine={showLine}
-              hideTopLine={hideTopLine}
+              showThread={showThread}
+              showTopBorder={i === 0}
+              lessTopPadding={i !== 0}
             />
           </TouchableOpacity>
         );
@@ -45,5 +45,3 @@ const PostUpdates = ({ navigation, post, currentTime }) => {
 };
 
 export default PostUpdates;
-
-const styles = StyleSheet.create({});
