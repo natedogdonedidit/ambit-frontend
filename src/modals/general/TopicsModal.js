@@ -16,13 +16,14 @@ import Loader from 'library/components/UI/Loader';
 import { UserContext } from 'library/utils/UserContext';
 import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 import RecommendedTopic from 'library/components/topics/RecommendedTopic';
-import ButtonDefault from '../UI/buttons/ButtonDefault';
+import HeaderBack from 'library/components/headers/HeaderBack';
+import ButtonDefault from '../../library/components/UI/buttons/ButtonDefault';
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
+const TopicsModal = ({ navigation }) => {
   const { currentUserId } = useContext(UserContext);
   // QUERY TO GET USERS TOPICS
   const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
@@ -79,98 +80,101 @@ const TopicsHome = ({ navigation, scrollY, paddingTop }) => {
   if (error) return <Text>{`Error! ${error}`}</Text>;
 
   return (
-    <SectionList
-      contentContainerStyle={{ paddingTop: paddingTop + 10, paddingBottom: 20 }}
-      style={styles.timeline}
-      showsVerticalScrollIndicator={false}
-      onScroll={Animated.event(
-        [
+    <View style={{ flex: 1 }}>
+      <HeaderBack navigation={navigation} title="Topics" />
+      <SectionList
+        contentContainerStyle={{ paddingTop: 10, paddingBottom: 20 }}
+        style={styles.timeline}
+        showsVerticalScrollIndicator={false}
+        // onScroll={Animated.event(
+        //   [
+        //     {
+        //       nativeEvent: {
+        //         contentOffset: {
+        //           y: scrollY,
+        //         },
+        //       },
+        //     },
+        //   ],
+        //   { useNativeDriver: false }
+        // )}
+        keyExtractor={(item, index) => item + index}
+        sections={[
           {
-            nativeEvent: {
-              contentOffset: {
-                y: scrollY,
-              },
-            },
+            title: 'Following',
+            data: favoriteTopics,
           },
-        ],
-        { useNativeDriver: false }
-      )}
-      keyExtractor={(item, index) => item + index}
-      sections={[
-        {
-          title: 'Following',
-          data: favoriteTopics,
-        },
-        {
-          title: 'Recommended Topics',
-          data: recommendedTopics,
-        },
-      ]}
-      ListEmptyComponent={
-        <View>
-          <Text>hey</Text>
-        </View>
-      }
-      renderSectionHeader={({ section }) => {
-        if (section.title === 'Following' && favoriteTopics.length <= 0) {
-          return null;
+          {
+            title: 'Recommended Topics',
+            data: recommendedTopics,
+          },
+        ]}
+        ListEmptyComponent={
+          <View>
+            <Text>hey</Text>
+          </View>
         }
-        return (
-          <Section
-            text={section.title}
-            marginTop={false}
-            borderBottom={false}
-            subText={
-              section.title === 'Following' ? (
-                <Text style={{ ...defaultStyles.smallMute, paddingTop: 3 }}>
-                  Topics will appear in <Text style={{ ...defaultStyles.smallBold, color: colors.purp }}>For You</Text> timeline
-                </Text>
-              ) : null
-            }
-            // rightComponent={
-            //   section.title === 'Following' ? <TextButton onPress={() => navigation.navigate('MyTopics')}>Edit</TextButton> : null
-            // }
-          />
-        );
-      }}
-      renderSectionFooter={({ section }) => {
-        if (section.title === 'Recommended Topics') {
+        renderSectionHeader={({ section }) => {
+          if (section.title === 'Following' && favoriteTopics.length <= 0) {
+            return null;
+          }
           return (
-            <View style={{ backgroundColor: 'white' }}>
-              <View style={{ alignSelf: 'center', paddingTop: 20, paddingBottom: 20 }}>
-                <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>More Topics</ButtonDefault>
-              </View>
-            </View>
-          );
-        }
-        return null;
-      }}
-      renderItem={({ item, section, index }) => {
-        if (section.title === 'Following') {
-          return (
-            <RecommendedTopic key={item} topicID={item} showBottomBorder={index === section.data.length - 1} allowNavigation />
-          );
-        }
-        if (section.title === 'Recommended Topics') {
-          const { topicID } = item;
-
-          return (
-            <RecommendedTopic
-              key={topicID}
-              topicID={topicID}
-              showFollowButton
-              showBottomBorder={index === section.data.length - 1}
-              allowNavigation
+            <Section
+              text={section.title}
+              marginTop={false}
+              borderBottom={false}
+              subText={
+                section.title === 'Following' ? (
+                  <Text style={{ ...defaultStyles.smallMute, paddingTop: 3 }}>
+                    Topics will appear in <Text style={{ ...defaultStyles.smallBold, color: colors.purp }}>For You</Text> timeline
+                  </Text>
+                ) : null
+              }
+              // rightComponent={
+              //   section.title === 'Following' ? <TextButton onPress={() => navigation.navigate('MyTopics')}>Edit</TextButton> : null
+              // }
             />
           );
-        }
-        return null;
-      }}
-      SectionSeparatorComponent={({ trailingSection, trailingItem }) => {
-        if (trailingSection && !trailingItem) return <View style={{ height: 15 }} />;
-        return null;
-      }}
-    />
+        }}
+        renderSectionFooter={({ section }) => {
+          if (section.title === 'Recommended Topics') {
+            return (
+              <View style={{ backgroundColor: 'white' }}>
+                <View style={{ alignSelf: 'center', paddingTop: 20, paddingBottom: 20 }}>
+                  <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>More Topics</ButtonDefault>
+                </View>
+              </View>
+            );
+          }
+          return null;
+        }}
+        renderItem={({ item, section, index }) => {
+          if (section.title === 'Following') {
+            return (
+              <RecommendedTopic key={item} topicID={item} showBottomBorder={index === section.data.length - 1} allowNavigation />
+            );
+          }
+          if (section.title === 'Recommended Topics') {
+            const { topicID } = item;
+
+            return (
+              <RecommendedTopic
+                key={topicID}
+                topicID={topicID}
+                showFollowButton
+                showBottomBorder={index === section.data.length - 1}
+                allowNavigation
+              />
+            );
+          }
+          return null;
+        }}
+        SectionSeparatorComponent={({ trailingSection, trailingItem }) => {
+          if (trailingSection && !trailingItem) return <View style={{ height: 15 }} />;
+          return null;
+        }}
+      />
+    </View>
   );
 };
 
@@ -215,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopicsHome;
+export default TopicsModal;

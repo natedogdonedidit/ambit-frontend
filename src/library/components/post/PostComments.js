@@ -53,8 +53,10 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
   if (updateInd >= 0 && updateInd !== null) {
     // if comments on an update
     comments = data.post.updates[updateInd].comments;
+    // console.log('hehe', comments);
     comments = comments.filter((comment) => !comment.parentComment);
   } else {
+    // console.log('hi2', data.post.comments);
     // if comments on a post
     comments = data.post.comments;
     // filter out sub-comments

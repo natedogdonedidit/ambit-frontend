@@ -25,7 +25,7 @@ import { storyPicUpload, storyVideoUpload, createThumbnail, sortStoriesNewestFir
 import HeaderPostToModal from 'library/components/headers/HeaderPostToModal';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
-import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
+import STORIES_QUERY from 'library/queries/STORIES_QUERY';
 import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
 import CREATE_STORY_MUTATION from 'library/mutations/CREATE_STORY_MUTATION';
 import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
@@ -34,7 +34,7 @@ import CoolText from 'library/components/UI/CoolText';
 import Topic from 'library/components/post/Topic';
 
 const PostClipModal = ({ navigation, route }) => {
-  const { currentUserId, currentUsername, setCreatingStory } = useContext(UserContext);
+  const { currentUserId, currentUsername, setShowNetworkActivity } = useContext(UserContext);
   const { capturedImage, capturedVideo, projectPassedIn, textInput } = route.params; // from camera modal / CapturedStoryItem
 
   // source of truth for inputs - initialize with projectPassedIn, if it exists
@@ -76,8 +76,17 @@ const PostClipModal = ({ navigation, route }) => {
   // MUTATIONS
   const [updateOneStory] = useMutation(UPDATE_STORY_MUTATION, {
     refetchQueries: [
-      { query: SINGLE_USER_BIO, variables: { where: { username: currentUsername } } },
-      { query: STORIES_FORYOU_QUERY },
+      {
+        query: STORIES_QUERY,
+        variables: {
+          first: 18,
+          where: {
+            owner: { username: { equals: currentUsername } },
+            type: { equals: 'PROJECT' },
+          },
+          orderBy: [{ lastUpdated: 'desc' }],
+        },
+      },
     ],
     // onCompleted: () => {},
     onError: (error) => {
@@ -89,6 +98,19 @@ const PostClipModal = ({ navigation, route }) => {
   });
 
   const [createOneStory, { loading: loadingCreateStory }] = useMutation(CREATE_STORY_MUTATION, {
+    refetchQueries: [
+      {
+        query: STORIES_QUERY,
+        variables: {
+          first: 18,
+          where: {
+            owner: { username: { equals: currentUsername } },
+            type: { equals: 'PROJECT' },
+          },
+          orderBy: [{ lastUpdated: 'desc' }],
+        },
+      },
+    ],
     onError: () => {
       Alert.alert('Oh no!', 'An error occured when trying to create your project. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -118,7 +140,7 @@ const PostClipModal = ({ navigation, route }) => {
   // EFFECTS
   // useEffect(() => {
   //   console.log(loadingCreateStoryItem);
-  //   setCreatingStory(loadingCreateStoryItem);
+  //   setShowNetworkActivity(loadingCreateStoryItem);
   // }, [loadingCreateStoryItem]);
 
   // project methods
@@ -177,7 +199,7 @@ const PostClipModal = ({ navigation, route }) => {
   };
 
   const handleSend = async () => {
-    setCreatingStory(true);
+    setShowNetworkActivity(true);
     navigation.navigate('Home');
     // if image, upload image, then save item to state
 
@@ -246,12 +268,12 @@ const PostClipModal = ({ navigation, route }) => {
         }
       }
     } catch (e) {
-      setCreatingStory(false);
+      setShowNetworkActivity(false);
       Alert.alert('Oh no!', 'An error occured when creating your story. Try again later!', [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ]);
     }
-    setCreatingStory(false);
+    setShowNetworkActivity(false);
   };
 
   const getHeaderText = () => {

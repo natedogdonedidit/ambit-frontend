@@ -19,8 +19,6 @@ import FollowingScreen from 'screens/main/FollowingScreen';
 const Stack = createStackNavigator();
 
 const HomeStack = ({ navigation, route }) => {
-  const { homePosition, setHomePosition } = useContext(UserContext);
-
   // hides the tabs in Chat screen
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) || 'HomeStack';
@@ -30,17 +28,6 @@ const HomeStack = ({ navigation, route }) => {
       tabBarVisible: routeName !== 'Chat',
     });
   }, [navigation, route]);
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener('tabPress', (e) => {
-      // Prevent default behavior
-
-      // Do something manually
-      setHomePosition(0);
-    });
-
-    // return unsubscribe;
-  }, [navigation]);
 
   return (
     <Stack.Navigator initialRouteName="Home" headerMode="none">

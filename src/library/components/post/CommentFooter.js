@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@apollo/client';
@@ -17,6 +17,14 @@ import { UserContext } from 'library/utils/UserContext';
 const CommentFooter = ({ comment, parentComment, isSubComment, hideButtons }) => {
   const navigation = useNavigation();
   const { currentUserId } = useContext(UserContext);
+  const [likedByMe, setLikedByMe] = useState(comment.likedByMe);
+  const [likesCount, setLikesCount] = useState(comment.likesCount);
+
+  // when cache update comes in...update state!
+  useEffect(() => {
+    setLikedByMe(comment.likedByMe);
+    setLikesCount(comment.likesCount);
+  }, [comment.likedByMe, comment.likesCount]);
 
   // MUTATIONS
   const [likeComment] = useMutation(LIKE_COMMENT_MUTATION, {
@@ -62,13 +70,13 @@ const CommentFooter = ({ comment, parentComment, isSubComment, hideButtons }) =>
 
   const handleLike = async () => {
     requestAnimationFrame(() => {
-      if (comment.likedByMe) {
-        // setIsLiked(false);
-        // setLikesCount(likesCount - 1);
+      if (likedByMe) {
+        setLikedByMe(false);
+        setLikesCount(likesCount - 1);
         unlikeComment();
-      } else if (!comment.likedByMe) {
-        // setIsLiked(true);
-        // setLikesCount(likesCount + 1);
+      } else if (!likedByMe) {
+        setLikedByMe(true);
+        setLikesCount(likesCount + 1);
         likeComment();
       }
     });
@@ -97,8 +105,8 @@ const CommentFooter = ({ comment, parentComment, isSubComment, hideButtons }) =>
         </Text>
       </View>
       <View style={styles.button}>
-        <Heart liked={comment.likedByMe} onPress={() => handleLike()} />
-        <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{comment.likesCount <= 0 ? null : comment.likesCount}</Text>
+        <Heart liked={likedByMe} onPress={() => handleLike()} />
+        <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount <= 0 ? null : likesCount}</Text>
       </View>
     </View>
   );

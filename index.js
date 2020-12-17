@@ -4,6 +4,7 @@ import React from 'react';
 import { AppRegistry, Platform } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { relayStylePagination, getMainDefinition } from '@apollo/client/utilities';
+import unfetch from 'unfetch';
 
 // APOLLO SETUP AFTER SUBSCRIPTIONS
 import {
@@ -31,18 +32,18 @@ import AppNavigator from './App';
 import { name as appName } from './app.json';
 
 // setup analytics
-const setupAnalytics = async () => {
-  await analytics
-    .setup('zHxaKjU0CbDCYBLTEU1OsjIvU79jCbfc', {
-      using: [mixpanel],
-      // recordScreenViews: false,
-      trackAppLifecycleEvents: true,
-      trackAttributionData: true,
-    })
-    .then(() => console.log('Analytics is ready'))
-    .catch((err) => console.error('Something went wrong', err));
-};
-setupAnalytics();
+// const setupAnalytics = async () => {
+//   await analytics
+//     .setup('zHxaKjU0CbDCYBLTEU1OsjIvU79jCbfc', {
+//       using: [mixpanel],
+//       // recordScreenViews: false,
+//       trackAppLifecycleEvents: true,
+//       trackAttributionData: true,
+//     })
+//     .then(() => console.log('Analytics is ready'))
+//     .catch((err) => console.error('Something went wrong', err));
+// };
+// setupAnalytics();
 
 // eslint-disable-next-line no-undef
 // GLOBAL.Blob = null; // required so Network Inspect works on RNdebugger
@@ -70,15 +71,16 @@ const httpLink = new HttpLink({
   uri: Platform.select({
     // ios: 'http://localhost:4000/graphql', // simulator
     // ios: 'http://192.168.123.151:4000/graphql', // work
-    ios: 'http://192.168.1.214:4000/graphql', // home
+    // ios: 'http://192.168.1.214:4000/graphql', // home
     // ios: 'http://192.168.0.31:4000/graphql', // jmajor
     // ios: 'http://192.168.1.147:4000', // condo
     // ios: 'http://192.168.1.25:4000', // Pats
     // ios: 'http://172.16.227.28:4000', // starbucks
     // ios: 'http://192.168.0.16:4000', // Moms
     // ios: 'https://ambit-yoga-prod.herokuapp.com/',
-    // ios: 'https://ambit-backend-nexus.herokuapp.com/graphql',
+    ios: 'https://ambit-backend-nexus.herokuapp.com/graphql',
   }),
+  // fetch: unfetch, // required so Network Inspect works on RNdebugger
 });
 
 // Create a WebSocket link:
@@ -86,14 +88,14 @@ const wsLink = new WebSocketLink({
   uri: Platform.select({
     // ios: 'ws://localhost:4000/graphql', // simulator
     // ios: 'ws://192.168.123.151:4000/graphql', // work
-    ios: 'ws://192.168.1.214:4000/graphql', // home
+    // ios: 'ws://192.168.1.214:4000/graphql', // home
     // ios: 'ws://192.168.0.31:4000/graphql', // jmajor
     // ios: 'ws://192.168.1.147:4000', // condo
     // ios: 'ws://192.168.1.25:4000', // Pats
     // ios: 'ws://172.16.227.28:4000', // starbucks
     // ios: 'ws://192.168.0.16:4000', // Moms
     // ios: 'ws://ambit-yoga-prod.herokuapp.com/',
-    // ios: 'ws://ambit-backend-nexus.herokuapp.com/graphql',
+    ios: 'ws://ambit-backend-nexus.herokuapp.com/graphql',
   }),
   options: {
     reconnect: true,
@@ -186,6 +188,17 @@ const client = new ApolloClient({
               return [...incoming];
             },
           },
+          stories: {
+            keyArgs: ['where'],
+            merge(existing = [], incoming = [], options) {
+              // if fetching more, add stories to end
+              if (!!options.variables && !!options.variables.after) {
+                return [...existing, ...incoming];
+              }
+
+              return [...incoming];
+            },
+          },
           // updateOneUser: {
           //   merge(existing = [], incoming = [], options) {
           //     return { ...existing, ...incoming };
@@ -248,6 +261,9 @@ const client = new ApolloClient({
         fields: {
           posts: {
             merge(existing = [], incoming = [], options) {
+              // console.log('options', options);
+              // console.log('existing', existing);
+              // console.log('incoming', incoming);
               // if a cursor was provided - add incoming to the end
               if (options.variables && options.variables.cursor) {
                 return [...existing, ...incoming];
@@ -274,11 +290,11 @@ const client = new ApolloClient({
       },
       Update: {
         fields: {
-          comments: {
-            merge(existing = [], incoming = [], options) {
-              return [...incoming];
-            },
-          },
+          // comments: {
+          //   merge(existing = [], incoming = [], options) {
+          //     return [...incoming];
+          //   },
+          // },
         },
       },
       Story: {
@@ -305,11 +321,12 @@ const client = new ApolloClient({
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
           },
-          comments: {
-            merge(existing = [], incoming = [], options) {
-              return [...incoming];
-            },
-          },
+          // this caused a "cant spread non-iterable error"
+          // comments: {
+          //   merge(existing = [], incoming = [], options) {
+          //     return [...incoming];
+          //   },
+          // },
         },
       },
     },

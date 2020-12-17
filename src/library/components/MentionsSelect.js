@@ -37,7 +37,12 @@ const MentionsSelect = ({ mentionText, handleMentionSelect }) => {
     const renderMentions = () => {
       return searchResults.map((user) => {
         return (
-          <TouchableOpacity style={styles.mention} activeOpacity={0.7} onPress={() => handleMentionSelect(user.username)}>
+          <TouchableOpacity
+            key={user.id}
+            style={styles.mention}
+            activeOpacity={0.7}
+            onPress={() => handleMentionSelect(user.username)}
+          >
             <ProfilePic size="xsmall" user={user} enableIntro={false} enableStory={false} enableClick={false} />
             <Text style={{ ...defaultStyles.defaultMedium, paddingLeft: 10 }}>
               {user.name}

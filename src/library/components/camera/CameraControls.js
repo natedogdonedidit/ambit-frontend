@@ -190,6 +190,7 @@ const CameraControls = ({
             // centerContent
             style={{ flex: 1, paddingTop: 12 }}
             onScroll={handleOnScroll}
+            scrollEventThrottle={48}
           >
             <View style={{ width: 80 }} />
             <TouchableOpacity activeOpacity={1} onPress={handlePressVideo} style={{ width: 80 }}>

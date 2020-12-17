@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Alert, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Alert, Dimensions, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,7 +11,7 @@ import defaultStyles from 'styles/defaultStyles';
 
 import REPOST_POST_MUTATION from 'library/mutations/REPOST_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
-import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+import STORIES_QUERY from 'library/queries/STORIES_QUERY';
 import Loader from 'library/components/UI/Loader';
 import StoryBoxGridSmall from 'library/components/stories/StoryBoxGridSmall';
 
@@ -25,11 +25,20 @@ const SelectProjectPopup = ({ navigation, route }) => {
   const { handleProjectSelect } = route.params;
 
   // get current user stories
-  const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
-    variables: { where: { username: currentUsername } },
-    fetchPolicy: 'cache-and-network',
-    // notifyOnNetworkStatusChange: true,
+  const { loading, error, data, refetch, fetchMore, networkStatus } = useQuery(STORIES_QUERY, {
+    variables: {
+      first: 18, // FIXME, need to add "See more" button. onEndReached does not work bc nested scroll (i think)
+      where: {
+        owner: { username: { equals: currentUsername } },
+        type: { equals: 'PROJECT' },
+      },
+      orderBy: [{ lastUpdated: 'desc' }],
+    },
+    notifyOnNetworkStatusChange: true,
   });
+
+  const stories = data && data.stories ? data.stories : [];
+  const storiesWithItems = stories.filter((story) => story.items.length > 0);
 
   const renderGrid = () => {
     if (!error && !data) {
@@ -40,45 +49,36 @@ const SelectProjectPopup = ({ navigation, route }) => {
       );
     }
 
-    const { user } = data;
-
-    const storiesFromDB = user.stories || [];
-
-    // only display projects and saved solo stories
-    const storiess = storiesFromDB.filter((story) => story.type !== 'INTRO');
-    const stories = storiess.filter((story) => story.items.length > 0);
-    // const storiesSorted = storiesWithItems.sort(sortStoriesNewestFirst); // DO THIS IN THE QUERY INSTEAD
-
+    // CHAD - must be a FlatList to do Fetch More
     return (
-      <View
-        style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          paddingTop: 1,
-          backgroundColor: colors.lightGray,
-          minHeight: (width / 3) * 2,
-          maxHeight: width,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => handleProjectSelect('new')}
-          activeOpacity={1}
+      <ScrollView>
+        <View
           style={{
-            width: width / 3,
-            height: width / 3,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: colors.white,
-            borderBottomWidth: StyleSheet.hairlineWidth,
-            borderRightWidth: StyleSheet.hairlineWidth,
-            borderColor: colors.borderBlack,
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            paddingTop: 1,
+            backgroundColor: 'white',
           }}
         >
-          <Text style={defaultStyles.largeMediumMute}>New</Text>
-          <Text style={defaultStyles.largeMediumMute}>Project</Text>
-        </TouchableOpacity>
-        {stories.map((story) => {
-          if (story.items.length > 0) {
+          <TouchableOpacity
+            onPress={() => handleProjectSelect('new')}
+            activeOpacity={1}
+            style={{
+              width: width / 3,
+              height: width / 3,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: colors.white,
+              borderTopWidth: StyleSheet.hairlineWidth,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              borderRightWidth: StyleSheet.hairlineWidth,
+              borderColor: colors.borderBlack,
+            }}
+          >
+            <Text style={defaultStyles.largeMediumMute}>New</Text>
+            <Text style={defaultStyles.largeMediumMute}>Project</Text>
+          </TouchableOpacity>
+          {storiesWithItems.map((story) => {
             return (
               <View key={story.id} style={{ width: width / 3, height: width / 3 }}>
                 <StoryBoxGridSmall
@@ -89,10 +89,9 @@ const SelectProjectPopup = ({ navigation, route }) => {
                 />
               </View>
             );
-          }
-          return null;
-        })}
-      </View>
+          })}
+        </View>
+      </ScrollView>
     );
   };
 
@@ -119,7 +118,7 @@ const SelectProjectPopup = ({ navigation, route }) => {
             A project is a collection of bits
           </Text>
         </View>
-        {renderGrid()}
+        <View style={{ height: width }}>{renderGrid()}</View>
       </View>
     </View>
   );

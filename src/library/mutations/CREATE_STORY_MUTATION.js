@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
-import { StoryWithOwner } from 'library/queries/_fragments';
+import { StoryFragment } from 'library/queries/_fragments';
 
 const CREATE_STORY_MUTATION = gql`
   mutation CREATE_STORY_MUTATION($data: StoryCreateInput!) {
     createOneStory(data: $data) {
-      ...StoryWithOwner
+      ...StoryFragment
     }
   }
-  ${StoryWithOwner}
+  ${StoryFragment}
 `;
 
 export default CREATE_STORY_MUTATION;

@@ -12,7 +12,7 @@ import {
   InputAccessoryView,
   Dimensions,
 } from 'react-native';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -27,6 +27,7 @@ import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import CREATE_POST_MUTATION from 'library/mutations/CREATE_POST_MUTATION';
 import POSTS_MYGOALS_QUERY from 'library/queries/POSTS_MYGOALS_QUERY';
+import POSTS_WHERE_QUERY from 'library/queries/POSTS_WHERE_QUERY';
 
 import { UserContext } from 'library/utils/UserContext';
 import {
@@ -48,10 +49,12 @@ import CoolText from 'library/components/UI/CoolText';
 import MentionsSelect from 'library/components/MentionsSelect';
 import Goal from 'library/components/UI/Goal';
 import CustomGoal from 'library/components/UI/CustomGoal';
+import { BasicPost } from 'library/queries/_fragments';
 
 const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
   const { topicPassedIn } = route.params;
+  const client = useApolloClient();
 
   const { width } = Dimensions.get('window');
 
@@ -72,19 +75,9 @@ const NewPostModal = ({ navigation, route }) => {
   const [uploading, setUploading] = useState(false);
 
   // HOOKS
-  const { currentUserId } = useContext(UserContext);
+  const { currentUserId, currentUsername, setShowNetworkActivity } = useContext(UserContext);
 
   const { loading: loadingUser, error, data } = useQuery(CURRENT_USER_QUERY);
-
-  // only used to refetch NETWORK_POSTS upon creation
-  const { data: dataFollowing } = useQuery(CURRENT_USER_FOLLOWING);
-  const network = useMemo(() => {
-    if (dataFollowing && dataFollowing.iFollow) {
-      return [...dataFollowing.iFollow];
-    }
-
-    return [];
-  }, [dataFollowing]);
 
   // FOR MENTION SEARCH
   useEffect(() => {
@@ -112,15 +105,15 @@ const NewPostModal = ({ navigation, route }) => {
 
   // MUTATIONS
   const [createOnePost, { loading: loadingCreate }] = useMutation(CREATE_POST_MUTATION, {
-    refetchQueries: () => [
-      {
-        query: POSTS_FOLLOWING_QUERY,
-        variables: {
-          feed: 'following',
-          take: 10,
-        },
-      },
-    ],
+    // refetchQueries: () => [
+    //   {
+    //     query: POSTS_FOLLOWING_QUERY,
+    //     variables: {
+    //       feed: 'following',
+    //       take: 10,
+    //     },
+    //   },
+    // ],
     onError: (e) => {
       console.log('something went wrong either creating post or notifications', e);
       // Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
@@ -150,9 +143,11 @@ const NewPostModal = ({ navigation, route }) => {
 
     try {
       navigation.goBack();
+      setShowNetworkActivity(true);
       const uploadedImages = await uploadImages();
       const uploadedVideo = await uploadVideo();
 
+      // !loadingCreate prevents duplicate created posts
       if (!loadingCreate) {
         createOnePost({
           variables: {
@@ -177,105 +172,89 @@ const NewPostModal = ({ navigation, route }) => {
               },
             },
           },
+          // OPTIMISTIC OBJECT COMMENTED AT BOTTOM OF COMPONENT
+          // optimisticResponse: {
+          //   __typename: 'Mutation',
+          //   createOnePost: { ...newPostOptimisticObject },
+          // },
+          update: (proxy, { data: dataReturned }) => {
+            const newPost = dataReturned && dataReturned.createOnePost ? dataReturned.createOnePost : undefined;
+
+            if (newPost) {
+              // write the new post directly to the FOLLOWING timeline
+              const followingTimeline = client.readQuery({
+                query: POSTS_FOLLOWING_QUERY,
+                variables: { feed: 'following' },
+              });
+
+              if (followingTimeline && followingTimeline.postsFollowing) {
+                client.writeQuery({
+                  query: POSTS_FOLLOWING_QUERY,
+                  variables: { feed: 'following' }, // must provide variable for UI to update
+                  data: {
+                    postsFollowing: {
+                      __typename: 'PostConnection',
+                      hasNextPage: followingTimeline.postsFollowing.hasNextPage,
+                      posts: [newPost, ...followingTimeline.postsFollowing.posts],
+                    },
+                  },
+                });
+              }
+
+              if (followingTimeline && followingTimeline.postsFollowing) {
+                client.writeQuery({
+                  query: POSTS_FOLLOWING_QUERY,
+                  variables: { feed: 'following' }, // must provide variable for UI to update
+                  data: {
+                    postsFollowing: {
+                      __typename: 'PostConnection',
+                      hasNextPage: followingTimeline.postsFollowing.hasNextPage,
+                      posts: [newPost, ...followingTimeline.postsFollowing.posts],
+                    },
+                  },
+                });
+              }
+
+              // if it's a goal add to MYGOALS timeline
+              if (newPost.isGoal) {
+                const myGoalsTimeline = client.readQuery({
+                  query: POSTS_MYGOALS_QUERY,
+                  variables: { feed: 'mygoals' },
+                });
+
+                if (myGoalsTimeline && myGoalsTimeline.postsMyGoals) {
+                  client.writeQuery({
+                    query: POSTS_MYGOALS_QUERY,
+                    variables: { feed: 'mygoals' }, // must provide variable for UI to update
+                    data: {
+                      postsMyGoals: {
+                        __typename: 'PostConnection',
+                        hasNextPage: myGoalsTimeline.postsMyGoals.hasNextPage,
+                        posts: [newPost, ...myGoalsTimeline.postsMyGoals.posts],
+                      },
+                    },
+                  });
+                }
+              }
+            }
+          },
+          // refetchQueries: [
+          //   {
+          //     query: POSTS_WHERE_QUERY,
+          //     variables: {
+          //       take: 50,
+          //       where: {
+          //         owner: { username: { equals: currentUsername } },
+          //       },
+          //     },
+          //   },
+          // ],
         });
+        setShowNetworkActivity(false);
       }
-
-      // const topicsArrayForOptResp =
-      //   topics.length > 0
-      //     ? topics.map(({ topicID }, i) => {
-      //         const { name } = getTopicFromID(topicID);
-
-      //         return {
-      //           __typename: 'Topic',
-      //           id: i,
-      //           name,
-      //           topicID,
-      //           parentTopic: { __typename: 'Topic', id: i, name, topicID },
-      //         };
-      //       })
-      //     : null;
-
-      // const newPostOptimisticObject = {
-      //   __typename: 'Post',
-      //   id: 'newPost12345',
-      //   isGoal: !!goal,
-      //   goal: goal ? goal.name : null,
-      //   subField: subField ? { __typename: 'Topic', id: subField, name: getTopicFromID(subField).name, topicID: subField } : null,
-      //   goalStatus: goal ? 'Active' : null,
-      //   topics: topicsArrayForOptResp,
-      //   location,
-      //   locationID,
-      //   locationLat,
-      //   locationLon,
-      //   content,
-      //   video,
-      //   images: uploadedImages,
-      //   createdAt: new Date(),
-      //   lastUpdated: new Date(),
-      //   owner: { ...data.userLoggedIn },
-      //   likesCount: null,
-      //   likedByMe: false,
-      //   commentsCount: null,
-      //   sharesCount: null,
-      //   updates: [],
-      //   _deleted: false,
-      // };
-
-      // createPost({
-      //   variables: {
-      //     owner: currentUserId,
-      //     post: {
-      //       isGoal: !!goal,
-      //       goal: goal ? goal.name : null,
-      //       subField: subField ? { connect: { topicID: subField } } : null,
-      //       goalStatus: goal ? 'Active' : null,
-      //       topics: topics.length > 0 ? { connect: topics } : null,
-      //       location,
-      //       locationID,
-      //       locationLat,
-      //       locationLon,
-      //       content,
-      //       video,
-      //       images: { set: uploadedImages },
-      //       lastUpdated: new Date(),
-      //       owner: {
-      //         connect: { id: currentUserId },
-      //       },
-      //     },
-      //   },
-      //   optimisticResponse: {
-      //     __typename: 'Mutation',
-      //     createPost: {
-      //       ...newPostOptimisticObject,
-      //     },
-      //   },
-      //   update: (proxy, { data: dataReturned }) => {
-      //     const networkPostsCache = proxy.readQuery({
-      //       query: POSTS_FOLLOWING_QUERY,
-      //     });
-      //     // console.log(networkPostsCache);
-      //     // console.log(dataReturned);
-
-      //     proxy.writeQuery({
-      //       query: POSTS_FOLLOWING_QUERY,
-      //       data: {
-      //         postsNetwork: {
-      //           __typename: 'PostConnection',
-      //           pageInfo: {
-      //             ...networkPostsCache.postsNetwork.pageInfo,
-      //           },
-      //           edges: [
-      //             { __typename: 'PostEdge', node: { ...dataReturned.createPost } },
-      //             ...networkPostsCache.postsNetwork.edges,
-      //           ],
-      //         },
-      //       },
-      //     });
-      //   },
-      //   refetchQueries: goal && [{ query: POSTS_MYGOALS_QUERY }],
-      // });
     } catch (e) {
       setUploading(false);
+      setShowNetworkActivity(false);
       console.log(e);
       if (e.message === 'Image upload fail') {
         Alert.alert('Oh no!', 'An error occured when trying to upload your photo. Remove the photo or try again.', [
@@ -342,7 +321,6 @@ const NewPostModal = ({ navigation, route }) => {
       setUploading(true);
       const uploadedImages = await attemptUploads();
       setUploading(false);
-      // console.log('uploaded', uploadedImages);
       return uploadedImages;
     }
     return [];
@@ -353,7 +331,6 @@ const NewPostModal = ({ navigation, route }) => {
       setUploading(true);
       const uploadedVideo = await postVideoUpload(data.userLoggedIn.id, video.uri);
       setUploading(false);
-      // console.log('uploaded', uploadedImages);
       return uploadedVideo;
     }
     return null;
@@ -785,7 +762,6 @@ const NewPostModal = ({ navigation, route }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <StatusBar barStyle="dark-content" />
       <HeaderWhite
         handleLeft={handleBack}
         handleRight={handleSubmit}
@@ -864,25 +840,6 @@ const NewPostModal = ({ navigation, route }) => {
                   </View>
                 </TouchableOpacity>
               </View>
-              {/* <TouchableOpacity
-                onPress={handleCameraIconPress}
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: 64,
-                  height: 64,
-                  borderRadius: 32,
-                  backgroundColor: colors.purp,
-                  position: 'absolute',
-                  top: -32,
-                  right: width / 2 - 32,
-                  ...defaultStyles.shadowButton,
-                  borderWidth: StyleSheet.hairlineWidth,
-                  borderColor: colors.borderBlack,
-                }}
-              >
-                <Icon name="camera" size={32} color={colors.white} style={{}} onPress={handleCameraIconPress} />
-              </TouchableOpacity> */}
               <View style={styles.aboveKeyboardRight}>
                 <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
                   <Text style={{ ...defaultStyles.hugeBold, color: colors.purp, opacity: 0.7, paddingRight: 22 }}>GIF</Text>
@@ -900,7 +857,6 @@ const NewPostModal = ({ navigation, route }) => {
             </View>
           )}
         </InputAccessoryView>
-        <InputAccessoryView nativeID={2} />
       </KeyboardAvoidingView>
       {loading && <Loader active={loading} size="small" />}
     </View>
@@ -1001,3 +957,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
+// const newPostOptimisticObject = {
+//   __typename: 'Post',
+//   id: 'newPost12345',
+//   isGoal: !!goal,
+//   goal: goal ? goal.name : null,
+//   subField,
+//   goalStatus: goal ? 'Active' : null,
+//   topic,
+//   location,
+//   locationID,
+//   locationLat,
+//   locationLon,
+//   content,
+//   video: uploadedVideo && uploadedVideo.url ? uploadedVideo.url : '',
+//   images: uploadedImages,
+//   createdAt: new Date(),
+//   lastUpdated: new Date(),
+//   owner: { ...data.userLoggedIn },
+//   likesCount: null,
+//   likedByMe: false,
+//   commentsCount: null,
+//   sharesCount: null,
+//   updates: [],
+// };

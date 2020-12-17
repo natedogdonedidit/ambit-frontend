@@ -8,14 +8,22 @@ import { sortStoriesNewestFirst } from 'library/utils';
 
 import StoryBoxGrid from 'library/components/stories/StoryBoxGrid';
 import Loader from 'library/components/UI/Loader';
-import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
+import STORIES_QUERY from 'library/queries/STORIES_QUERY';
 
 const { width } = Dimensions.get('window');
 
 const ProfileGrid = ({ navigation, username }) => {
   // QUERIES
-  const { loading, error, data, refetch } = useQuery(SINGLE_USER_BIO, {
-    variables: { where: { username } },
+  const { loading, error, data, refetch, fetchMore, networkStatus } = useQuery(STORIES_QUERY, {
+    variables: {
+      first: 18, // FIXME, need to add "See more" button. onEndReached does not work bc nested scroll (i think)
+      where: {
+        owner: { username: { equals: username } },
+        type: { equals: 'PROJECT' },
+      },
+      orderBy: [{ lastUpdated: 'desc' }],
+    },
+    notifyOnNetworkStatusChange: true,
   });
 
   if (loading) {
@@ -26,14 +34,8 @@ const ProfileGrid = ({ navigation, username }) => {
     );
   }
 
-  const { user } = data;
-
-  const storiesFromDB = user.stories || [];
-
-  // only display projects and saved solo stories
-  const stories = storiesFromDB.filter((story) => story.type === 'PROJECT' || (story.type === 'SOLO' && story.save));
+  const stories = data.stories || [];
   const storiesWithItems = stories.filter((story) => story.items.length > 0);
-  const storiesSorted = storiesWithItems.sort(sortStoriesNewestFirst);
 
   const renderGrid = () => {
     if (stories.length < 1) {
@@ -46,7 +48,7 @@ const ProfileGrid = ({ navigation, username }) => {
 
     return (
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingTop: 1, backgroundColor: colors.lightGray }}>
-        {storiesSorted.map((story) => {
+        {storiesWithItems.map((story) => {
           if (story.items.length > 0) {
             return (
               <View key={story.id} style={{ width: width / 3, height: width / 2 }}>

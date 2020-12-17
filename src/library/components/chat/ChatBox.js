@@ -18,6 +18,18 @@ import SharedStory from 'library/components/chat/SharedStory';
 const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
   // const client = useApolloClient();
 
+  // GET ALL MESSAGES - THIS SHOULD HAVE ALREADY PRELOADED ON CONVOSSCREEN
+  const { error: errorMessages, data, fetchMore, networkStatus, refetch: refetchChat } = useQuery(MESSAGES_CONNECTION, {
+    variables: {
+      where: { to: { id: { equals: convo.id } } },
+      first: 20,
+      orderBy: [{ createdAt: 'desc' }],
+    },
+    // pollInterval: 10000, // 10 seconds
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+  });
+
   // MUTATIONS
   const [createOneMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
     refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
@@ -41,20 +53,13 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
     },
   });
 
-  // GET ALL MESSAGES - THIS SHOULD HAVE ALREADY PRELOADED ON CONVOSSCREEN
-  const { error: errorMessages, data, fetchMore, networkStatus } = useQuery(MESSAGES_CONNECTION, {
-    variables: {
-      where: { to: { id: { equals: convo.id } } },
-      // first: 10,
-      orderBy: [{ createdAt: 'desc' }],
-    },
-    notifyOnNetworkStatusChange: true,
-  });
-
   // console.log(networkStatus);
   const loadingMessages = networkStatus === 1 || networkStatus === 2;
   const fetchingMore = networkStatus === 3;
+  const refetchingChat = networkStatus === 4;
   const ok = networkStatus === 7;
+
+  // console.log('refetchingChat', refetchingChat);
 
   const [updateManyMessage, { loading: clearingUnreadMessages }] = useMutation(CLEAR_UNREAD_MESSAGES_MUTATION, {
     variables: {
@@ -183,6 +188,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
         from: userLoggedIn.id,
       },
     });
+    refetchChat();
   };
 
   // console.log(!convoExists, );
@@ -278,6 +284,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
       //   });
       // },
     });
+    refetchChat();
   };
 
   return (
@@ -305,6 +312,9 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
         //   }
         // }}
       />
+      <View style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 50 }}>
+        <Loader size="small" backgroundColor="transparent" active={loadingCreate || loadingCreate2 || refetchingChat} />
+      </View>
     </View>
   );
 };

@@ -35,7 +35,6 @@ export const UpdateFragment = gql`
     likesCount
     likedByMe
     commentsCount
-    sharesCount
     parentPost {
       id
       owner {
@@ -63,24 +62,9 @@ export const StoryItemFragment = gql`
   }
 `;
 
-// this is for places where the owner is already there...aka MinimalUser fragment
-export const StoryNoOwner = gql`
-  fragment StoryNoOwner on Story {
-    id
-    title
-    type
-    showcase
-    topic
-    items(orderBy: [{ createdAt: asc }]) {
-      ...StoryItemFragment
-    }
-  }
-  ${StoryItemFragment}
-`;
-
 // used for queries that only grab stories...StoriesHome / StoriesTopic
-export const StoryWithOwner = gql`
-  fragment StoryWithOwner on Story {
+export const StoryFragment = gql`
+  fragment StoryFragment on Story {
     id
     title
     owner {
@@ -89,14 +73,6 @@ export const StoryWithOwner = gql`
       name
       location
       profilePic
-      intro {
-        id
-        title
-        type
-        items(orderBy: [{ createdAt: asc }]) {
-          ...StoryItemFragment
-        }
-      }
     }
     type
     showcase
@@ -122,20 +98,10 @@ export const MinimalUser = gql`
     locationLat
     locationLon
     intro {
-      ...StoryWithOwner
-      # ...StoryNoOwner
+      ...StoryFragment
     }
-    # myStory {
-    # ...StoryWithOwner
-    # ...StoryNoOwner
-    # }
-    # latestProject {
-    #   ...StoryNoOwner
-    # }
-    # followingCount
-    # followersCount
   }
-  ${StoryWithOwner}
+  ${StoryFragment}
 `;
 
 export const MessageFragment = gql`
@@ -286,14 +252,6 @@ export const UserProfileFragment = gql`
     followingCount
     followersCount
     ...AllTopicsFragment
-    stories(orderBy: [{ lastUpdated: desc }]) {
-      ...StoryWithOwner
-    }
-    skills {
-      id
-      skill
-      isExpert
-    }
     experience {
       id
       name
@@ -325,7 +283,7 @@ export const UserProfileFragment = gql`
   }
   ${MinimalUser}
   ${AllTopicsFragment}
-  ${StoryWithOwner}
+  ${StoryFragment}
 `;
 
 export const UserFollowing = gql`

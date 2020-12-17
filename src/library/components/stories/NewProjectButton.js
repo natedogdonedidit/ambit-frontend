@@ -10,10 +10,12 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import Loader from 'library/components/UI/Loader';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import { useNavigation } from '@react-navigation/native';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
-const NewProjectButton = ({ navigation, loadingCreateStory }) => {
+const NewProjectButton = ({ loadingCreateStory }) => {
+  const navigation = useNavigation();
   const { data } = useQuery(CURRENT_USER_QUERY);
   if (!data) {
     return null;
@@ -31,7 +33,7 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
       onPress={() => navigation.navigate('StoryCameraModal', { isNewProject: true })}
       style={styles.storyBox}
     >
-      <View style={{ width: '100%', height: 80 }}>
+      <View style={{ width: '100%', height: 76 }}>
         <Image
           style={{ width: '100%', height: '100%' }}
           resizeMode="cover"
@@ -44,7 +46,7 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
         style={{
           width: '100%',
           height: 36,
-          top: 85 - 24,
+          top: 85 - 26,
           position: 'absolute',
           justifyContent: 'center',
           alignItems: 'center',
@@ -78,14 +80,12 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
       <View
         style={{
           flex: 1,
-          paddingTop: 17,
+          paddingTop: 20,
           paddingHorizontal: 8,
         }}
       >
-        <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>
-          Create a
-        </Text>
-        <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>Bit</Text>
+        <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>New</Text>
+        {/* <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>Bit</Text> */}
       </View>
       {loadingCreateStory && (
         <View
@@ -109,8 +109,8 @@ const NewProjectButton = ({ navigation, loadingCreateStory }) => {
 const styles = StyleSheet.create({
   storyBox: {
     // justifyContent: 'space-between',
-    height: 136,
-    width: 85,
+    height: 120,
+    width: 80,
     borderRadius: 10,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -21,15 +21,17 @@ import { UserContext } from 'library/utils/UserContext';
 const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost, formatedDate }) => {
   const navigation = useNavigation();
   const { currentUserId } = useContext(UserContext);
+  const [likedByMe, setLikedByMe] = useState(post.likedByMe);
+  const [likesCount, setLikesCount] = useState(post.likesCount);
 
   // when cache update comes in...update state!
-  // useEffect(() => {
-  //   setIsLiked(post.likedByMe);
-  //   setLikesCount(post.likesCount);
-  // }, [post.likedByMe, post.likesCount]);
+  useEffect(() => {
+    setLikedByMe(post.likedByMe);
+    setLikesCount(post.likesCount);
+  }, [post.likedByMe, post.likesCount]);
 
   // MUTATIONS
-  const [likePost] = useMutation(LIKE_POST_MUTATION, {
+  const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST_MUTATION, {
     variables: {
       where: {
         id: post.id,
@@ -51,7 +53,7 @@ const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost
     },
   });
 
-  const [unlikePost] = useMutation(UNLIKE_POST_MUTATION, {
+  const [unlikePost, { loading: loadingUnlike }] = useMutation(UNLIKE_POST_MUTATION, {
     variables: {
       where: {
         id: post.id,
@@ -114,13 +116,13 @@ const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost
 
   const handleLike = async () => {
     requestAnimationFrame(() => {
-      if (post.likedByMe) {
-        // setIsLiked(false);
-        // setLikesCount(likesCount - 1);
+      if (likedByMe) {
+        setLikedByMe(false);
+        setLikesCount(likesCount - 1);
         unlikePost();
-      } else if (!post.likedByMe) {
-        // setIsLiked(true);
-        // setLikesCount(likesCount + 1);
+      } else if (!likedByMe) {
+        setLikedByMe(true);
+        setLikesCount(likesCount + 1);
         likePost();
       }
     });
@@ -151,9 +153,9 @@ const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost
         </View>
         <View style={styles.likesRow}>
           <View style={{ flexDirection: 'row' }}>
-            {!!post.likesCount && (
+            {!!likesCount && (
               <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>
-                {post.likesCount === 0 ? null : `${post.likesCount} Like${post.likesCount > 1 ? 's' : ''}`}
+                {likesCount === 0 ? null : `${likesCount} Like${likesCount > 1 ? 's' : ''}`}
               </Text>
             )}
             {!!post.sharesCount && (
@@ -165,7 +167,7 @@ const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost
               <Comment onPress={() => navigation.navigate('AddCommentModal', { post })} />
             </View>
             <View style={{ paddingLeft: 30 }}>
-              <Heart liked={post.likedByMe} onPress={() => handleLike()} />
+              <Heart liked={likedByMe} onPress={() => handleLike()} />
             </View>
             <View style={{ paddingLeft: 30 }}>
               <ShareIcon
@@ -188,8 +190,8 @@ const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost
         <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.commentsCount <= 0 ? null : post.commentsCount}</Text>
       </View>
       <View style={styles.button}>
-        <Heart liked={post.likedByMe} onPress={() => handleLike()} />
-        <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.likesCount <= 0 ? null : post.likesCount}</Text>
+        <Heart liked={likedByMe} onPress={() => handleLike()} />
+        <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount <= 0 ? null : likesCount}</Text>
       </View>
       {/* <View style={styles.button}>
             <Repost onPress={() => navigation.navigate('SharePopup', { handleRepost, postId: post.id })} />

@@ -48,7 +48,7 @@ const TabsNavigator = ({ navigation, route }) => {
       first: 20,
       orderBy: [{ createdAt: 'desc' }],
     },
-    pollInterval: 60000, // 60 seconds
+    // pollInterval: 120000, // 120 seconds
   });
 
   // on first render - set a timer for 10s, then get initial batch of notifications & messages

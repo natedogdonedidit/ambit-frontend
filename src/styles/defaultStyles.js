@@ -162,6 +162,13 @@ const styles = StyleSheet.create({
     // fontFamily: 'SFProText-Semibold',
     fontWeight: '600',
   },
+  defaultStory: {
+    fontFamily: 'SFProDisplay-Semibold',
+    fontWeight: '600',
+    textAlign: 'center',
+    fontSize: 13,
+    color: colors.blueGray,
+  },
   defaultBold: {
     color: colors.black,
     fontSize: reg,

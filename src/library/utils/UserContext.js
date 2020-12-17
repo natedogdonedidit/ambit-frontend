@@ -11,10 +11,9 @@ const UserContext = createContext();
 
 const UserContextProvider = (props) => {
   const [loadingToken, setLoadingToken] = useState(true);
-  const [creatingStory, setCreatingStory] = useState(false);
+  const [showNetworkActivity, setShowNetworkActivity] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
-  const [homePosition, setHomePosition] = useState(0);
   const [goToTopics, setGoToTopics] = useState(false);
   const [activeTab, setActiveTab] = useState('HomeStack');
   const [refreshHomeScreen, setRefreshHomeScreen] = useState(false);
@@ -41,7 +40,6 @@ const UserContextProvider = (props) => {
     };
     fetchTokenAndUser();
   }, []);
-
 
   // LOGIN FUNCTION -> passed to context
   const loginCTX = async (loginData) => {
@@ -92,10 +90,8 @@ const UserContextProvider = (props) => {
         currentUsername,
         loginCTX,
         logoutCTX,
-        homePosition,
-        setHomePosition,
-        creatingStory,
-        setCreatingStory,
+        showNetworkActivity,
+        setShowNetworkActivity,
         goToTopics,
         setGoToTopics,
         activeTab,

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation } from '@apollo/client';
@@ -18,6 +18,14 @@ import { UserContext } from 'library/utils/UserContext';
 const UpdateFooter = ({ post, update, showDetails, hideButtons, formatedDate }) => {
   const navigation = useNavigation();
   const { currentUserId } = useContext(UserContext);
+  const [likedByMe, setLikedByMe] = useState(update.likedByMe);
+  const [likesCount, setLikesCount] = useState(update.likesCount);
+
+  // when cache update comes in...update state!
+  useEffect(() => {
+    setLikedByMe(update.likedByMe);
+    setLikesCount(update.likesCount);
+  }, [update.likedByMe, update.likesCount]);
 
   // MUTATIONS
   const [likeUpdate] = useMutation(LIKE_UPDATE_MUTATION, {
@@ -64,13 +72,13 @@ const UpdateFooter = ({ post, update, showDetails, hideButtons, formatedDate }) 
 
   const handleLike = async () => {
     requestAnimationFrame(() => {
-      if (update.likedByMe) {
-        // setIsLiked(false);
-        // setLikesCount(likesCount - 1);
+      if (likedByMe) {
+        setLikedByMe(false);
+        setLikesCount(likesCount - 1);
         unlikeUpdate();
-      } else if (!update.likedByMe) {
-        // setIsLiked(true);
-        // setLikesCount(likesCount + 1);
+      } else if (!likedByMe) {
+        setLikedByMe(true);
+        setLikesCount(likesCount + 1);
         likeUpdate();
       }
     });
@@ -84,9 +92,9 @@ const UpdateFooter = ({ post, update, showDetails, hideButtons, formatedDate }) 
         </View>
         <View style={styles.likesRow}>
           <View style={{ flexDirection: 'row' }}>
-            {!!update.likesCount && (
+            {!!likesCount && (
               <Text style={{ ...defaultStyles.smallMute, paddingRight: 15 }}>
-                {update.likesCount === 0 ? null : `${update.likesCount} Like${update.likesCount > 1 ? 's' : ''}`}
+                {likesCount === 0 ? null : `${likesCount} Like${likesCount > 1 ? 's' : ''}`}
               </Text>
             )}
             {!!update.sharesCount && (
@@ -98,7 +106,7 @@ const UpdateFooter = ({ post, update, showDetails, hideButtons, formatedDate }) 
               <Comment onPress={() => navigation.navigate('AddCommentModal', { post, update, isUpdate: true })} />
             </View>
             <View style={{ paddingLeft: 30 }}>
-              <Heart liked={update.likedByMe} onPress={() => handleLike()} />
+              <Heart liked={likedByMe} onPress={() => handleLike()} />
             </View>
             {/* <View style={{ paddingLeft: 30 }}>
               <ShareIcon
@@ -123,8 +131,8 @@ const UpdateFooter = ({ post, update, showDetails, hideButtons, formatedDate }) 
         </Text>
       </View>
       <View style={styles.button}>
-        <Heart liked={update.likedByMe} onPress={() => handleLike()} />
-        <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{update.likesCount <= 0 ? null : update.likesCount}</Text>
+        <Heart liked={likedByMe} onPress={() => handleLike()} />
+        <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{likesCount <= 0 ? null : likesCount}</Text>
       </View>
       {/* <View style={styles.button}>
             <Repost onPress={() => navigation.navigate('SharePopup', { handleRepost, postId: update.id })} />

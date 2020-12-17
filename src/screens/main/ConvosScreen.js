@@ -37,7 +37,6 @@ const ConvosScreen = ({ navigation }) => {
   const loading = networkStatus === 1;
 
   // HOOKS
-
   // updates the time on each focus
   useEffect(() => {
     navigation.addListener('focus', () => {

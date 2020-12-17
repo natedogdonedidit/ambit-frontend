@@ -10,13 +10,25 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import { getIconFromID } from 'library/utils';
 import { UserContext } from 'library/utils/UserContext';
 
-const StoryBox = ({ navigation, story, showProfilePic = true, moreType, topicIDtoSearch, loading, newestUnseen }) => {
+const StoryBox = ({
+  navigation,
+  story,
+  showProfilePic = true,
+  moreType,
+  topicIDtoSearch,
+  loading,
+  newestUnseen,
+  small = true,
+}) => {
   const { currentUserId } = useContext(UserContext);
   const isMyStory = story ? currentUserId === story.owner.id : false;
   const viewedEntireStory = newestUnseen === -1;
 
   if (loading) {
-    return <View style={styles.storyBoxBlank} />;
+    if (small) {
+      return <View style={styles.storyBoxBlank} />;
+    }
+    return <View style={styles.storyBoxBlankLarge} />;
   }
 
   if (story.type === 'PROJECT') {
@@ -105,6 +117,17 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   storyBoxBlank: {
+    justifyContent: 'space-between',
+    height: 120,
+    width: 80,
+    borderRadius: 12,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: colors.borderBlack,
+    overflow: 'hidden',
+    backgroundColor: colors.gray12,
+    marginLeft: 6,
+  },
+  storyBoxBlankLarge: {
     justifyContent: 'space-between',
     height: 136,
     width: 85,

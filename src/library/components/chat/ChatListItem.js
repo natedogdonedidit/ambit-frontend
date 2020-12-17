@@ -32,6 +32,7 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
       // first: 10,
       orderBy: [{ createdAt: 'desc' }],
     },
+    fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
 

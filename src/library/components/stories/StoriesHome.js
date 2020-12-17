@@ -1,20 +1,21 @@
-import React, { useEffect, useContext, useMemo } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import StoryBox from 'library/components/stories/StoryBox';
 import ExploreTopicButton from 'library/components/stories/ExploreTopicButton';
-import { UserContext } from 'library/utils/UserContext';
-import { combineFavoriteTopics } from 'library/utils';
+import { useNavigation } from '@react-navigation/native';
+import { STORIES_HEIGHT } from 'styles/constants';
 import NewProjectButton from './NewProjectButton';
 import ForYouButton from './ForYouButton';
 
-function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingStories }) {
+function StoriesHome() {
+  const navigation = useNavigation();
+
   const { data: dataTopics, loading: loadingTopics, error: errorTopics } = useQuery(CURRENT_USER_TOPICS);
 
   const favoriteTopics = useMemo(() => {
@@ -26,9 +27,8 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
     return [];
   }, [dataTopics]);
 
-  const renderStories = () => {
+  const renderTopicStories = () => {
     if (loadingTopics) {
-      // return null;
       return (
         <>
           <StoryBox loading />
@@ -40,42 +40,34 @@ function StoriesHome({ navigation, refetching, setLoadingStories, setRefetchingS
     }
 
     if (errorTopics) {
-      // console.log(errorStories);
       return null;
     }
 
-    // console.log(favoriteTopics);
-
     return favoriteTopics.map((topic) => {
-      return <ExploreTopicButton key={topic.id} navigation={navigation} topicID={topic.id} refetching={refetching} />;
+      return <ExploreTopicButton key={topic.id} topicID={topic.id} />;
     });
   };
 
   return (
-    <>
-      <ScrollView
-        horizontal
-        style={styles.stories}
-        contentContainerStyle={{ paddingVertical: 10, paddingRight: 15, paddingLeft: 5 }}
-        showsHorizontalScrollIndicator={false}
-      >
-        <NewProjectButton navigation={navigation} />
-        <ForYouButton navigation={navigation} />
-        {renderStories()}
-      </ScrollView>
-      <View style={{ height: 10, backgroundColor: colors.lightGray }} />
-    </>
+    <ScrollView
+      horizontal
+      style={{ backgroundColor: 'white' }}
+      contentContainerStyle={[styles.stories, { height: STORIES_HEIGHT }]}
+      showsHorizontalScrollIndicator={false}
+    >
+      <NewProjectButton />
+      <ForYouButton />
+      {renderTopicStories()}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   stories: {
-    // marginBottom: 10,
     backgroundColor: 'white',
-    borderBottomColor: colors.borderBlack,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.borderBlack,
-    borderTopWidth: StyleSheet.hairlineWidth,
+    alignItems: 'center',
+    paddingRight: 15,
+    paddingLeft: 6,
   },
 });
 

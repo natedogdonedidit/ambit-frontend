@@ -80,51 +80,25 @@ const ForYouButton = () => {
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate('StoryModalForYou')} style={styles.storyBox} activeOpacity={0.8}>
-      <Image
-        style={{ position: 'absolute', top: 0, left: 0, width: 100, height: 160 }}
-        source={{ uri: placeholderImage }}
-        resizeMode="cover"
-      />
-      <LinearGradient
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 1 }}
-        colors={['transparent', 'rgba(0,0,0,0.8)']}
-        style={styles.linearGradient}
-      />
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 10,
-          left: 0,
-          paddingHorizontal: 6,
-        }}
-      >
-        <Text numberOfLines={3} style={{ ...defaultStyles.defaultMedium, fontSize: 13, color: colors.white }}>
-          For You
-        </Text>
+      <View style={{ width: 60, height: 60, borderRadius: 30 }}>
+        <Image style={{ width: 60, height: 60, borderRadius: 30 }} resizeMode="cover" source={{ uri: placeholderImage }} />
       </View>
-      {!hasNew && (
-        <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(255,255,255,0.7)' }} />
-      )}
+      <View>
+        <Text style={{ ...defaultStyles.defaultStory }}>For You</Text>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   storyBox: {
-    justifyContent: 'space-between',
-    height: 120,
-    width: 80,
-    borderRadius: 12,
+    height: 80,
+    width: 70,
     overflow: 'hidden',
     marginLeft: 6,
-  },
-  linearGradient: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    height: '100%',
-    width: '100%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    position: 'relative',
   },
 });
 

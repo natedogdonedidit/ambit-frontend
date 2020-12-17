@@ -39,13 +39,13 @@ const ProfileBio = ({ navigation, isMyProfile, profileId, username }) => {
 
   const hasExperience = user.experience ? user.experience.length > 0 : false;
   const hasEducation = user.education ? user.education.length > 0 : false;
-  const hasSkills = user.skills ? user.skills.length > 0 : false;
+  // const hasSkills = user.skills ? user.skills.length > 0 : false;
   const hasStories = user.stories ? user.stories.length > 0 : false;
 
   const showAbout = isMyProfile || useOpenToBox || !!user.about;
   const showExperience = isMyProfile || hasExperience;
   const showEducation = isMyProfile || hasEducation;
-  const showSkills = isMyProfile || hasSkills;
+  // const showSkills = isMyProfile || hasSkills;
 
   const showcaseProjects = hasStories
     ? user.stories.filter((project) => project.items.length > 0 && (project.type === 'SOLO' || project.type === 'PROJECT'))
@@ -108,7 +108,7 @@ const ProfileBio = ({ navigation, isMyProfile, profileId, username }) => {
               </TextButton>
             )}
           </View>
-          <Showcase navigation={navigation} projects={user.stories} />
+          <Showcase username={username} />
         </View>
       )}
       {isInvestor && (

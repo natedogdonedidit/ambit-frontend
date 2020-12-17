@@ -19,7 +19,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const { profileId, username } = route.params;
 
   // QUERIES
-  const { loading, error, data, refetch } = useQuery(SINGLE_USER_BASIC, {
+  const { loading, error, data } = useQuery(SINGLE_USER_BASIC, {
     variables: { where: { username } },
     onError: () => {
       navigation.goBack();
@@ -65,7 +65,6 @@ const ProfileScreen = ({ navigation, route }) => {
         OUTSIDE_HEADER_SCROLL={OUTSIDE_HEADER_SCROLL}
         loading={loading}
         user={user}
-        refetch={refetch}
       />
     </View>
   );

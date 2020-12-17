@@ -49,8 +49,6 @@ function StoryFooter({
   const [sentMutation, setSentMutation] = useState(false);
 
   const { owner, title, type, topic } = story;
-  const { intro } = owner;
-  const showIntroButton = type !== 'INTRO' && intro.items.length > 0;
 
   const { id, plays, text, link } = item;
 

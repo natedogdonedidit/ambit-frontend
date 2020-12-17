@@ -10,51 +10,48 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import { HEADER_HEIGHT } from 'styles/constants';
 import { useNavigation } from '@react-navigation/native';
+import StoriesHome from 'library/components/stories/StoriesHome';
+import HomeTimelineTabs from 'library/components/UI/HomeTimelineTabs';
 
-const HeaderHome = ({ handleMiddle, handleTopicsButton, homePosition }) => {
+const HeaderHome = ({ handleMiddle, activeTimeline, setActiveTimeline }) => {
+  const navigation = useNavigation();
+
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY);
   const { userLoggedIn } = data;
 
-  const navigation = useNavigation();
-
   return (
-    <View style={{ ...styles.container }}>
-      <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
-        <ProfilePic user={userLoggedIn} size="small" enableIntro={false} enableStory={false} enableClick={false} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
-        {homePosition === 0 ? (
+    <View>
+      <View style={{ ...styles.header }}>
+        <TouchableOpacity style={styles.leftSide} onPress={() => navigation.openDrawer()}>
+          <ProfilePic user={userLoggedIn} size="small" enableIntro={false} enableStory={false} enableClick={false} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
           <Text style={{ ...defaultStyles.ambitLogo }}>ambit</Text>
-        ) : (
-          <Text style={{ ...defaultStyles.headerSmall, fontSize: 22 }}>Topics</Text>
-        )}
-      </TouchableOpacity>
-      <View style={styles.rightSide}>
-        <TouchableOpacity onPress={() => handleTopicsButton()} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
-          <View style={styles.iconCircle}>
-            {homePosition === 0 ? (
-              <Icon name="star" solid size={16} color={colors.black} />
-            ) : (
-              <Icon name="home" solid size={16} color={colors.black} />
-            )}
-          </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Search')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
-          <View style={styles.iconCircle}>
-            <Icon name="search" size={16} color={colors.black} style={{ paddingLeft: 1 }} />
-          </View>
-        </TouchableOpacity>
+        <View style={styles.rightSide}>
+          <TouchableOpacity onPress={() => navigation.navigate('TopicsModal')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
+            <View style={styles.iconCircle}>
+              <Icon name="star" solid size={16} color={colors.black} style={{ paddingLeft: 1 }} />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Search')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
+            <View style={styles.iconCircle}>
+              <Icon name="search" size={16} color={colors.black} style={{ paddingLeft: 1 }} />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
+      <StoriesHome />
+      <HomeTimelineTabs activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  header: {
     width: '100%',
     height: HEADER_HEIGHT,
     flexDirection: 'row',
-    // justifyContent: 'space-between',
     alignItems: 'center',
     paddingLeft: 12,
     paddingRight: 10,

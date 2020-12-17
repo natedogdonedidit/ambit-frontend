@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { viewedStories, viewedStoryItems } from 'library/utils/cache';
+import { useNavigation } from '@react-navigation/native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -14,13 +15,15 @@ import { UserContext } from 'library/utils/UserContext';
 const placeholderImage =
   'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80';
 
-const ExploreTopicButton = ({ navigation, topicID }) => {
+const ExploreTopicButton = ({ topicID }) => {
+  const navigation = useNavigation();
+  const client = useApolloClient();
   const { color, icon, name, image } = getTopicFromID(topicID);
 
   const { refreshHomeScreen } = useContext(UserContext);
 
   const [hasNew, setHasNew] = useState(false);
-  const client = useApolloClient();
+
   const viewedStoriesLocal = useReactiveVar(viewedStories);
 
   // GETS STORIES FOR YOUR FAV TOPICS
@@ -125,8 +128,8 @@ const ExploreTopicButton = ({ navigation, topicID }) => {
 const styles = StyleSheet.create({
   storyBox: {
     justifyContent: 'space-between',
-    height: 136,
-    width: 85,
+    height: 120,
+    width: 80,
     borderRadius: 12,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,
