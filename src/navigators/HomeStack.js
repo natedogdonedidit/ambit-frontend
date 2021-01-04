@@ -1,9 +1,7 @@
-import React, { useEffect, useContext, useLayoutEffect } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import analytics from '@segment/analytics-react-native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-
-import { UserContext } from 'library/utils/UserContext';
 
 import HomeScreen from 'screens/main/HomeScreen';
 import ChatScreen from 'screens/main/ChatScreen';
@@ -22,7 +20,6 @@ const HomeStack = ({ navigation, route }) => {
   // hides the tabs in Chat screen
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) || 'HomeStack';
-    // console.log(routeName);
 
     navigation.setOptions({
       tabBarVisible: routeName !== 'Chat',

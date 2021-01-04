@@ -264,6 +264,7 @@ const client = new ApolloClient({
               // console.log('options', options);
               // console.log('existing', existing);
               // console.log('incoming', incoming);
+
               // if a cursor was provided - add incoming to the end
               if (options.variables && options.variables.cursor) {
                 return [...existing, ...incoming];

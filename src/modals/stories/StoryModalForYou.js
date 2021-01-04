@@ -27,6 +27,7 @@ const StoryModalForYou = ({ navigation }) => {
       // this allows us to stack up mutations so they fun after the modal blurs
       const handle = InteractionManager.createInteractionHandle();
       return () => {
+        // if I add a delay here, does it allow modal to close smooth?
         InteractionManager.clearInteractionHandle(handle);
       };
     }, [])

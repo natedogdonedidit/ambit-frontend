@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import NOTIFICATIONS_QUERY from 'library/queries/NOTIFICATIONS_QUERY';
+import { useQuery } from '@apollo/client';
+import { UserContext } from 'library/utils/UserContext';
 
-const BellDot = ({ color, unReadNotifications }) => {
+const BellDot = ({ color }) => {
+  const { currentUserId } = useContext(UserContext);
+
+  // NOTIFICATIONS QUERY
+  const { data } = useQuery(NOTIFICATIONS_QUERY, {
+    variables: {
+      where: { targetId: { equals: currentUserId } },
+      first: 20,
+      orderBy: [{ createdAt: 'desc' }],
+    },
+    pollInterval: 120000, // 120 seconds
+  });
+
+  // UPDATE # OF UNSEEN NOTIFICATIONS EVERYTIME NEW NOTIFICATIONS DATA COMES IN
+  const unReadNotifications = useMemo(() => {
+    if (data && data.notifications) {
+      const numberUnread = [...data.notifications].reduce((num, notification) => {
+        if (!notification.seen) return num + 1;
+        return num;
+      }, 0);
+
+      return numberUnread;
+    }
+
+    return 0;
+  }, [data]);
+
   return (
     <View style={{ width: 32, justifyContent: 'center', alignItems: 'center' }}>
       <Icon name="bell" size={22} color={color} solid />

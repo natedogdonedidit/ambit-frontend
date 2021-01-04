@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, ScrollView, StatusBar, FlatList } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, FlatList } from 'react-native';
 import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
@@ -8,10 +8,12 @@ import POSTS_WHERE_QUERY from 'library/queries/POSTS_WHERE_QUERY';
 
 import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
-// import BigButton from 'library/components/UI/buttons/BigButton';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
+import { useNavigation } from '@react-navigation/native';
 
-const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMyProfile, profileId, username }) => {
+const ProfilePosts = ({ isMyProfile, username }) => {
+  const navigation = useNavigation();
+
   // QUERIES
   const { loading, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_WHERE_QUERY, {
     variables: {
@@ -69,17 +71,7 @@ const ProfilePosts = ({ setModalVisibleEditPost, setPostToEdit, navigation, isMy
       data={posts}
       keyExtractor={(item, index) => item + index}
       renderItem={({ item, index }) => {
-        return (
-          <PostGroupTL
-            post={item}
-            currentTime={currentTime}
-            navigation={navigation}
-            setModalVisibleEditPost={setModalVisibleEditPost}
-            setPostToEdit={setPostToEdit}
-            editable
-            showTopBorder={index === 0}
-          />
-        );
+        return <PostGroupTL post={item} navigation={navigation} showTopBorder={index === 0} />;
       }}
       // onEndReachedThreshold={0.5}
       // onEndReached={(info) => {

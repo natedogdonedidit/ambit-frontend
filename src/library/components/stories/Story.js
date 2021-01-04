@@ -128,35 +128,7 @@ function Story({
       ]),
   });
 
-  const [viewedStoryItem] = useMutation(VIEWED_STORY_ITEM_MUTATION, {
-    // variables: { storyItemID: activeItem.id },
-    // ignoreResults: true,
-    // update(cache, { data: dataReturned }) {
-    //   // We get a single item from cache.
-    //   const storyItemInCache = client.readFragment({
-    //     id: `StoryItem:${activeItem.id}`,
-    //     fragment: StoryItemFragment,
-    //     fragmentName: 'StoryItemFragment',
-    //   });
-    //   // console.log(`story item in cache ${storyItemInCache.plays}`);
-    //   // console.log(`Added a view!!!: ${activeItem.views.length} -> ${viewedStoryItem.views.length}`);
-    //   // console.log(`Added a play!!!: ${activeItem.plays} -> ${viewedStoryItem.plays}`);
-    //   // Then, we update it.
-    //   if (storyItemInCache) {
-    //     // console.log('gettinghere');
-    //     // the new view is ALWAYS the currentUser
-    //     client.writeFragment({
-    //       id: `StoryItem:${activeItem.id}`,
-    //       fragment: StoryItemFragment,
-    //       fragmentName: 'StoryItemFragment',
-    //       data: {
-    //         __typename: 'StoryItem',
-    //         ...dataReturned.viewedStoryItem,
-    //       },
-    //     });
-    //   }
-    // },
-  });
+  const [viewedStoryItem] = useMutation(VIEWED_STORY_ITEM_MUTATION);
 
   function resetState() {
     setPaused(false);

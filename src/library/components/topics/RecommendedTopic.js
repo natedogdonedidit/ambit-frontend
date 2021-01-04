@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,6 +10,7 @@ import { getTopicFromID } from 'library/utils/index';
 import TopicFollowButton from 'library/components/UI/buttons/TopicFollowButton';
 import TopicFollowButtonMentor from 'library/components/UI/buttons/TopicFollowButtonMentor';
 import TopicFollowButtonNetwork from 'library/components/UI/buttons/TopicFollowButtonNetwork';
+import { UserContext } from 'library/utils/UserContext';
 
 const picExample =
   'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
@@ -35,6 +36,7 @@ const RecommendedTopic = ({
 }) => {
   const navigation = useNavigation();
   const { name, icon, color, image } = getTopicFromID(topicID);
+  const { activeTab } = useContext(UserContext);
 
   // this makes it so reads "following" immediately after follow
   // const [showFollowing, setShowFollowing] = useState(false);
@@ -86,7 +88,14 @@ const RecommendedTopic = ({
       ]}
       activeOpacity={0.7}
       disabled={!allowNavigation}
-      onPress={() => navigation.navigate({ name: 'Topic', key: `Topic:${topicID}`, params: { topicID } })}
+      onPress={() =>
+        navigation.navigate(activeTab || 'HomeStack', {
+          screen: 'Topic',
+          key: `Topic:${topicID}`,
+          params: { topicID },
+        })
+      }
+      // onPress={() => navigation.navigate({ name: 'Topic', key: `Topic:${topicID}`, params: { topicID } })}
     >
       {showPic && (
         <View style={{ paddingRight: 15 }}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Animated, Alert } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -16,7 +16,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const [scrollY] = useState(new Animated.Value(0));
 
   // PARAMS
-  const { profileId, username } = route.params;
+  const { username } = route.params;
 
   // QUERIES
   const { loading, error, data } = useQuery(SINGLE_USER_BASIC, {
@@ -58,7 +58,6 @@ const ProfileScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <ProfileComponent
         navigation={navigation}
-        profileId={profileId}
         username={username}
         scrollY={scrollY}
         OUTSIDE_HEADER_HEIGHT={OUTSIDE_HEADER_HEIGHT}
@@ -76,9 +75,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 });
-
-ProfileScreen.navigationOptions = {
-  title: 'Profile',
-};
 
 export default ProfileScreen;

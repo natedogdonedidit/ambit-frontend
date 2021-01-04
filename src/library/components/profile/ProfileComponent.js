@@ -24,16 +24,7 @@ const BANNER_HEIGHT = 100;
 const HEADER_HEIGHT = 44;
 const TABS_HEIGHT = 42;
 
-const ProfileComponent = ({
-  navigation,
-  profileId,
-  username,
-  scrollY,
-  loading,
-  user,
-  showBack = true,
-  OUTSIDE_HEADER_HEIGHT = 0,
-}) => {
+const ProfileComponent = ({ navigation, username, scrollY, loading, user, OUTSIDE_HEADER_HEIGHT = 0 }) => {
   const [tabState, setTabState] = useState(0);
   const [tabPosition, setTabPosition] = useState(0);
   const [showRefreshing, setShowRefreshing] = useState(false);
@@ -46,7 +37,6 @@ const ProfileComponent = ({
   const SCROLLVIEW_PADDING_TOP = OUTSIDE_HEADER_HEIGHT;
 
   // CALCULATED
-  const nullFunction = () => null;
   const isMyProfile = user.id === currentUserId;
 
   // copy these queries from ProfileBio, ProfileGrid, and ProfilePosts
@@ -160,30 +150,9 @@ const ProfileComponent = ({
           }}
           style={{ width: '100%', height: TABS_HEIGHT, backgroundColor: 'white' }}
         />
-        {tabState === 0 && (
-          <ProfileBio
-            navigation={navigation}
-            isMyProfile={isMyProfile}
-            profileId={profileId}
-            username={username}
-            handleSelectExperience={nullFunction}
-            handleSelectEducation={nullFunction}
-            setModalVisibleSkills={nullFunction}
-          />
-        )}
-        {tabState === 1 && (
-          <ProfileGrid navigation={navigation} isMyProfile={isMyProfile} profileId={profileId} username={username} />
-        )}
-        {tabState === 2 && (
-          <ProfilePosts
-            setModalVisibleEditPost={nullFunction}
-            setPostToEdit={nullFunction}
-            navigation={navigation}
-            isMyProfile={isMyProfile}
-            profileId={profileId}
-            username={username}
-          />
-        )}
+        {tabState === 0 && <ProfileBio isMyProfile={isMyProfile} username={username} />}
+        {tabState === 1 && <ProfileGrid isMyProfile={isMyProfile} username={username} />}
+        {tabState === 2 && <ProfilePosts isMyProfile={isMyProfile} username={username} />}
       </Animated.ScrollView>
 
       {/* Profile Tabs */}
@@ -232,25 +201,23 @@ const ProfileComponent = ({
       </Animated.View>
 
       {/* Back Button */}
-      {showBack && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 8 + top,
-            left: 20,
-            width: 30,
-            height: 30,
-            borderRadius: 15,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
-            <Icon name="chevron-left" size={15} color="white" />
-          </TouchableOpacity>
-        </View>
-      )}
+      <View
+        style={{
+          position: 'absolute',
+          top: 8 + top,
+          left: 20,
+          width: 30,
+          height: 30,
+          borderRadius: 15,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
+          <Icon name="chevron-left" size={15} color="white" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

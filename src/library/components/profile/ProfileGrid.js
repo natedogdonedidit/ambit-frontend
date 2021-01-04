@@ -4,15 +4,16 @@ import { useQuery } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { sortStoriesNewestFirst } from 'library/utils';
 
 import StoryBoxGrid from 'library/components/stories/StoryBoxGrid';
 import Loader from 'library/components/UI/Loader';
 import STORIES_QUERY from 'library/queries/STORIES_QUERY';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
-const ProfileGrid = ({ navigation, username }) => {
+const ProfileGrid = ({ isMyProfile, username }) => {
+  const navigation = useNavigation();
   // QUERIES
   const { loading, error, data, refetch, fetchMore, networkStatus } = useQuery(STORIES_QUERY, {
     variables: {

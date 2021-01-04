@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import { StyleSheet, View, Text, Image, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import { CommonActions, useNavigation, DrawerActions, StackActions } from '@react-navigation/native';
+import { CommonActions, useNavigation, DrawerActions } from '@react-navigation/native';
 
 import { UserContext } from 'library/utils/UserContext';
 import ProfilePic from 'library/components/UI/ProfilePic';
@@ -16,7 +16,7 @@ import { VERSION } from 'styles/constants';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import FollowStatsDrawer from './profile/FollowStatsDrawer';
 
-const CustomDrawer = (payload) => {
+const CustomDrawer = () => {
   // const client = useApolloClient();
   const { logoutCTX, activeTab } = useContext(UserContext);
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
@@ -211,10 +211,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 4,
   },
-  name: {
-    padding: 10,
-    fontSize: 14,
-  },
   header: {
     width: '100%',
     flexDirection: 'row',
@@ -222,17 +218,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 21,
     paddingBottom: 20,
     paddingTop: 14,
-    // marginBottom: 15,
-    // borderBottomWidth: StyleSheet.hairlineWidth,
-    // borderBottomColor: colors.borderBlack,
-  },
-  headerText: {
-    color: 'tomato',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
   button: {
-    // paddingLeft: 15,
     width: '100%',
     height: 50,
     paddingHorizontal: 15,
@@ -244,26 +231,6 @@ const styles = StyleSheet.create({
     paddingLeft: 18,
     color: colors.blueGray,
   },
-  buttonBottom: {
-    paddingLeft: 15,
-    width: '100%',
-    padding: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderTopColor: colors.borderBlack,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  // buttonBottom: {
-  //   flexDirection: 'row',
-  //   padding: 15,
-  //   paddingLeft: 8,
-  //   borderTopColor: colors.borderBlack,
-  //   borderTopWidth: StyleSheet.hairlineWidth,
-  // },
 });
-
-CustomDrawer.navigationOptions = {
-  drawerLabel: 'Drawer',
-};
 
 export default CustomDrawer;

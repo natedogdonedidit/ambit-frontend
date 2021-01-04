@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-import { useQuery, useApolloClient } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 // import analytics from '@segment/analytics-react-native';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
@@ -85,9 +85,6 @@ const halfModalOptions = {
 };
 
 const MainStack = ({ navigation }) => {
-  // const client = useApolloClient();
-  // const { logoutCTX } = useContext(UserContext);
-
   // ////////////////////////////////////////
   // PRE-FETCH INITIAL QUERIES HERE
   // ////////////////////////////////////////
@@ -108,17 +105,11 @@ const MainStack = ({ navigation }) => {
   // this might cause the splash screen to render every time current_user_query runs
   // this should only render upon the first time we are loading the CURRENT_USER_QUERY
   if (!readyToDisplay) {
-    // logoutCTX(); // cant do this!!
     return <SplashScreen />;
   }
 
   return (
-    <Stack.Navigator
-      initialRouteName="MainDrawer"
-      // screenOptions={}
-      mode="modal"
-      headerMode="none"
-    >
+    <Stack.Navigator initialRouteName="MainDrawer" mode="modal" headerMode="none">
       <Stack.Screen name="MainDrawer" component={MainDrawer} />
 
       {/* modals */}

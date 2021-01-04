@@ -22,10 +22,11 @@ const PostComments = ({ navigation, post, updateInd = null }) => {
   const { error, data, refetch, networkStatus } = useQuery(POST_COMMENTS_QUERY, {
     variables: { where: { id: post.id } },
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
   });
 
-  const loading = networkStatus === 1;
-  const refetching = networkStatus === 4;
+  const loading = networkStatus === 1 && !data;
+  const refetching = networkStatus === 1 && data;
 
   // useEffect(() => {
   //   if (networkStatus === 7) {

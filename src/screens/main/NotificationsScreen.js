@@ -122,6 +122,7 @@ const NotificationsScreen = ({ navigation }) => {
       orderBy: [{ createdAt: 'desc' }],
     },
     notifyOnNetworkStatusChange: true,
+    // fetchPolicy: 'cache-and-network',
   });
 
   const refetching = networkStatus === 4;

@@ -100,6 +100,7 @@ const AddUpdateModal = ({ navigation, route }) => {
           variables: {
             where: { id: post.id },
             data: {
+              lastUpdated: new Date(),
               updates: {
                 create: [
                   {
