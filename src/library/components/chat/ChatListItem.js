@@ -32,7 +32,7 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
       // first: 10,
       orderBy: [{ createdAt: 'desc' }],
     },
-    fetchPolicy: 'cache-and-network',
+    // fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
   });
 
@@ -42,6 +42,7 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
 
   const renderRightSide = () => {
     if (loading || errorMessages || !data) {
+      // console.log(loading, errorMessages, !data);
       return (
         <View style={styles.rightSide}>
           <View style={styles.topRow}>

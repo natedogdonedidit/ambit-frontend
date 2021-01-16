@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 
-import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
+import CURRENT_USER_CONVOS from 'library/queries/CURRENT_USER_CONVOS';
 import { UserContext } from 'library/utils/UserContext';
 
 // pass in a userID and this well return the convo w/ that user, or null if no such convo exists
@@ -14,7 +14,7 @@ function useGetConvo(userID) {
 
   useEffect(() => {
     async function getConvos() {
-      const { loading, error, data } = useQuery(CURRENT_USER_MESSAGES);
+      const { loading, error, data } = useQuery(CURRENT_USER_CONVOS);
 
       if (loading) {
         setIsLoading(true);

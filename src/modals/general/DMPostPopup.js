@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useMutation, useQuery } from '@apollo/client';
 
 import CREATE_MESSAGE_MISSING_CONVO_MUTATION from 'library/mutations/CREATE_MESSAGE_MISSING_CONVO_MUTATION';
-import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
+import CURRENT_USER_CONVOS from 'library/queries/CURRENT_USER_CONVOS';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -29,7 +29,7 @@ const DMPostPopup = ({ navigation, route }) => {
 
   // CREATE MESSAGE MUTATION
   const [createOneMessageMissingConvo, { loading: loadingCreate2 }] = useMutation(CREATE_MESSAGE_MISSING_CONVO_MUTATION, {
-    refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
+    refetchQueries: () => [{ query: CURRENT_USER_CONVOS }],
     onCompleted: () => {},
     onError: (error) => {
       console.log(error);

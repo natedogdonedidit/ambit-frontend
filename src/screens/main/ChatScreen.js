@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderBack from 'library/components/headers/HeaderBack';
-import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
+import CURRENT_USER_CONVOS from 'library/queries/CURRENT_USER_CONVOS';
 import ChatBox from 'library/components/chat/ChatBox';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
@@ -23,7 +23,7 @@ const ChatScreen = ({ navigation, route }) => {
   const client = useApolloClient();
 
   // get the list of convos of the logged in user (includes hidden convos)
-  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_MESSAGES);
+  const { loading: loadingUser, error: errorUser, data: dataUser } = useQuery(CURRENT_USER_CONVOS);
 
   if (errorUser) return <Error error={errorUser} />;
   if (loadingUser) {

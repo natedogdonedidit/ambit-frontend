@@ -1,19 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useQuery, useApolloClient } from '@apollo/client';
+import { useQuery, useApolloClient, useSubscription } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import HeaderMessages from 'library/components/headers/HeaderMessages';
-import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
+import CURRENT_USER_CONVOS from 'library/queries/CURRENT_USER_CONVOS';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import FullWidthTabs from 'library/components/UI/FullWidthTabs';
 import ChatListItem from 'library/components/chat/ChatListItem';
 import { sortChats } from 'library/utils';
+import MESSAGE_SUBSCRIPTION from 'library/subscriptions/MESSAGE_SUBSCRIPTION';
+import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
+import { UserContext } from 'library/utils/UserContext';
 
 const ConvosScreen = ({ navigation }) => {
+  const client = useApolloClient();
+  const { currentUserId } = useContext(UserContext);
+
   // CONSTANTS
   // const TABS = ['Messages', 'Requests'];
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -30,7 +36,7 @@ const ConvosScreen = ({ navigation }) => {
   }, [insets.top]);
 
   // QUERIES
-  const { loading: loadingUser, error: errorUser, data: dataUser, refetch, networkStatus } = useQuery(CURRENT_USER_MESSAGES, {
+  const { loading: loadingUser, error: errorUser, data: dataUser, refetch, networkStatus } = useQuery(CURRENT_USER_CONVOS, {
     notifyOnNetworkStatusChange: true,
   });
   const refetching = networkStatus === 4;
@@ -44,6 +50,8 @@ const ConvosScreen = ({ navigation }) => {
     });
   }, []);
 
+  // console.log('loading convos: ', loading);
+
   if (errorUser) return <Error error={errorUser} />;
   if (loading)
     return (
@@ -56,7 +64,10 @@ const ConvosScreen = ({ navigation }) => {
 
   const { userLoggedIn } = dataUser;
   const convos = [...userLoggedIn.convos] || [];
+
   // convos.sort(sortChats); // sort convos by date, do this in query fragment
+
+  // console.log('convos', convos);
 
   return (
     <View style={{ ...styles.container, paddingTop: top }}>

@@ -123,8 +123,10 @@ export const sortExperiences = (a, b) => {
 };
 
 export const sortChats = (a, b) => {
-  if (a.messages[0].createdAt > b.messages.createdAt) {
-    return -1;
+  if (a.messages && a.messages[0] && b.messages && b.messages[0]) {
+    if (a.messages[0].createdAt > b.messages[0].createdAt) {
+      return -1;
+    }
   }
 
   return 1;

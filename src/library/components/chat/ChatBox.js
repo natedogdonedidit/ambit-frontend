@@ -8,12 +8,13 @@ import colors from 'styles/colors';
 import CREATE_MESSAGE_MUTATION from 'library/mutations/CREATE_MESSAGE_MUTATION';
 import CREATE_MESSAGE_MISSING_CONVO_MUTATION from 'library/mutations/CREATE_MESSAGE_MISSING_CONVO_MUTATION';
 import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
-import CURRENT_USER_MESSAGES from 'library/queries/CURRENT_USER_MESSAGES';
+import CURRENT_USER_CONVOS from 'library/queries/CURRENT_USER_CONVOS';
 import CLEAR_UNREAD_MESSAGES_MUTATION from 'library/mutations/CLEAR_UNREAD_MESSAGES_MUTATION';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import SharedPost from 'library/components/chat/SharedPost';
 import SharedStory from 'library/components/chat/SharedStory';
+import CURRENT_USER_UNREAD from 'library/queries/CURRENT_USER_UNREAD';
 
 const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
   // const client = useApolloClient();
@@ -27,13 +28,13 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
     },
     // pollInterval: 10000, // 10 seconds
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'cache-and-network', // ensure we always get the latest chat when screen opens
   });
 
   // MUTATIONS
   const [createOneMessage, { loading: loadingCreate }] = useMutation(CREATE_MESSAGE_MUTATION, {
-    refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
-    onCompleted: () => {},
+    refetchQueries: () => [{ query: CURRENT_USER_CONVOS }], // this will refresh the order of ChatListItems
+    // onCompleted: () => {},
     onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to send this message. Try again later!', [
@@ -43,8 +44,8 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
   });
 
   const [createOneMessageMissingConvo, { loading: loadingCreate2 }] = useMutation(CREATE_MESSAGE_MISSING_CONVO_MUTATION, {
-    refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
-    onCompleted: () => {},
+    refetchQueries: () => [{ query: CURRENT_USER_CONVOS }], // this will refresh the order of ChatListItems
+    // onCompleted: () => {},
     onError: (error) => {
       console.log(error);
       Alert.alert('Oh no!', 'An error occured when trying to send this message. Try again later!', [
@@ -74,7 +75,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
         unread: false,
       },
     },
-    refetchQueries: () => [{ query: CURRENT_USER_MESSAGES }],
+    refetchQueries: () => [{ query: CURRENT_USER_UNREAD }],
     onError: (e) => {
       console.log(e);
     },
@@ -188,7 +189,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
         from: userLoggedIn.id,
       },
     });
-    refetchChat();
+    // refetchChat();
   };
 
   // console.log(!convoExists, );
@@ -284,7 +285,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
       //   });
       // },
     });
-    refetchChat();
+    // refetchChat();
   };
 
   return (

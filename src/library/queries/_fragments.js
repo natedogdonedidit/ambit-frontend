@@ -303,14 +303,13 @@ export const UserFollowing = gql`
 export const UserWithMessages = gql`
   fragment UserWithMessages on User {
     ...MinimalUser
-    convos(orderBy: [{ lastUpdated: asc }]) {
+    convos(orderBy: [{ lastUpdated: desc }]) {
       id
       lastUpdated
       users {
         ...MinimalUser
       }
     }
-    unReadMessagesCount
   }
   ${MinimalUser}
 `;
