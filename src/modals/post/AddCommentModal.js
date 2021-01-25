@@ -9,6 +9,7 @@ import {
   ScrollView,
   // Image,
   TouchableOpacity,
+  Keyboard,
   KeyboardAvoidingView,
   InputAccessoryView,
 } from 'react-native';
@@ -64,6 +65,8 @@ const AddCommentModal = ({ navigation, route }) => {
   const [uploading, setUploading] = useState(false);
   const [mentionText, setMentionText] = useState('');
   const [cursorLocation, setCursorLocation] = useState(0);
+  // const [keyboardShowing, setKeyboardShowing] = useState(false); // to add padding to scrollview if keyboard is showing
+  const [inputY, setInputY] = useState(0);
 
   // constants
   const currentTime = new Date();
@@ -79,6 +82,27 @@ const AddCommentModal = ({ navigation, route }) => {
       parentCommentForDB = comment;
     }
   }
+
+  // to add padding to scrollview if keyboard is showing
+  // useEffect(() => {
+  //   Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+  //   Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+
+  //   // cleanup function
+  //   return () => {
+  //     Keyboard.removeListener('keyboardDidShow', keyboardDidShow);
+  //     Keyboard.removeListener('keyboardDidHide', keyboardDidHide);
+  //   };
+  // }, []);
+
+  // const keyboardDidShow = () => {
+  //   setKeyboardShowing(true);
+  //   scrollViewRef.current.scrollToEnd();
+  // };
+
+  // const keyboardDidHide = () => {
+  //   setKeyboardShowing(false);
+  // };
 
   // FOR MENTION SEARCH
   useEffect(() => {
@@ -278,14 +302,7 @@ const AddCommentModal = ({ navigation, route }) => {
   const renderPost = () => {
     // if its just a stand-alone Post
     if (!isUpdate) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
-        >
-          <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons showThread />
-        </TouchableOpacity>
-      );
+      return <Post post={post} currentTime={currentTime} navigation={navigation} hideButtons showThread disableVideo />;
     }
 
     const updateInd = isUpdate ? post.updates.findIndex((u) => u.id === parentUpdate.id) : null;
@@ -300,6 +317,7 @@ const AddCommentModal = ({ navigation, route }) => {
         hideButtons
         hideTopLine
         disableVideo
+        disableNav
       />
     );
   };
@@ -356,71 +374,79 @@ const AddCommentModal = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <HeaderBack navigation={navigation} handleRight={handleSubmit} textRight="Reply" title="Comment" solidRight />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
-        <View style={{ flex: 1 }}>
-          <ScrollView ref={scrollViewRef} style={{ flex: 1 }}>
-            {renderPost()}
-            {isComment && renderComments()}
+      <HeaderBack handleRight={handleSubmit} textRight="Reply" title="Comment" solidRight />
+      <ScrollView ref={scrollViewRef} style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 400 }}>
+        {renderPost()}
+        {isComment && renderComments()}
 
-            <View style={[styles.commentInput, isComment && { paddingLeft: 56 }]}>
-              <View style={isComment ? styles.leftColumnSub : styles.leftColumn}>
-                <ProfilePic size="small" navigation={navigation} user={userLoggedIn} enableIntro={false} enableStory={false} />
-              </View>
-              <View style={{ ...styles.rightColumn }}>
-                <View style={{ paddingTop: 2, paddingBottom: 10 }}>
-                  <TextInput
-                    style={{ flex: 1, marginRight: 35, ...defaultStyles.largeRegular }}
-                    onChangeText={onChangeText}
-                    autoFocus
-                    autoCompleteType="off"
-                    multiline
-                    scrollEnabled={false}
-                    textAlignVertical="top"
-                    placeholder="Start your comment"
-                    inputAccessoryViewID="1"
-                    keyboardType="twitter"
-                    onSelectionChange={({ nativeEvent }) => setCursorLocation(nativeEvent.selection.end)}
-                  >
-                    <CoolText>{content}</CoolText>
-                  </TextInput>
-                </View>
-                {!!image && (
-                  <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingRight: 10 }}>
-                    <View style={{ ...styles.image, width: '100%' }}>
-                      <FitImage source={{ uri: image }} />
-                      <View style={styles.removeImageButton}>
-                        <Icon name="times" solid size={15} color="white" onPress={() => setImage('')} />
-                      </View>
-                    </View>
+        <View
+          style={[styles.commentInput, isComment && { paddingLeft: 56 }]}
+          onLayout={({ nativeEvent }) => {
+            // this saves the Y coord of input to state so we can scroll to it upon focus
+            setInputY(nativeEvent.layout.y);
+          }}
+        >
+          <View style={isComment ? styles.leftColumnSub : styles.leftColumn}>
+            <ProfilePic size="small" navigation={navigation} user={userLoggedIn} enableIntro={false} enableStory={false} />
+          </View>
+          <View style={{ ...styles.rightColumn }}>
+            <View style={{ paddingTop: 2, paddingBottom: 10 }}>
+              <TextInput
+                style={{ flex: 1, marginRight: 35, ...defaultStyles.largeRegular }}
+                onChangeText={onChangeText}
+                autoFocus
+                autoCompleteType="off"
+                multiline
+                scrollEnabled={false}
+                textAlignVertical="top"
+                placeholder="Start your comment"
+                inputAccessoryViewID="1"
+                keyboardType="twitter"
+                onFocus={() => {
+                  // if the input is low enough on screen (that it would be hidden by keyboard)
+                  // scroll to input
+                  if (inputY > 250) {
+                    scrollViewRef.current.scrollTo({ y: inputY });
+                  }
+                }}
+                onSelectionChange={({ nativeEvent }) => setCursorLocation(nativeEvent.selection.end)}
+              >
+                <CoolText>{content}</CoolText>
+              </TextInput>
+            </View>
+            {!!image && (
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-start', paddingRight: 10 }}>
+                <View style={{ ...styles.image, width: '100%' }}>
+                  <FitImage source={{ uri: image }} />
+                  <View style={styles.removeImageButton}>
+                    <Icon name="times" solid size={15} color="white" onPress={() => setImage('')} />
                   </View>
-                )}
+                </View>
               </View>
-            </View>
-          </ScrollView>
+            )}
+          </View>
         </View>
-
-        <InputAccessoryView nativeID="1">
-          {mentionText ? (
-            <MentionsSelect mentionText={mentionText} handleMentionSelect={handleMentionSelect} />
-          ) : (
-            <View style={styles.aboveKeyboard}>
-              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Text style={{ ...defaultStyles.hugeBold, color: colors.purp, opacity: 0.7, paddingRight: 27 }}>GIF</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCameraIconPress} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.7 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
-              </TouchableOpacity>
-            </View>
-          )}
-        </InputAccessoryView>
-      </KeyboardAvoidingView>
+      </ScrollView>
+      <InputAccessoryView nativeID="1">
+        {mentionText ? (
+          <MentionsSelect mentionText={mentionText} handleMentionSelect={handleMentionSelect} />
+        ) : (
+          <View style={styles.aboveKeyboard}>
+            <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+              <Text style={{ ...defaultStyles.hugeBold, color: colors.purp, opacity: 0.7, paddingRight: 27 }}>GIF</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleCameraIconPress} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+              <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 30, opacity: 0.7 }} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+              <Icon name="at" size={18} color={colors.purp} style={{ paddingRight: 26, opacity: 0.7 }} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+              <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 10, opacity: 0.7 }} />
+            </TouchableOpacity>
+          </View>
+        )}
+      </InputAccessoryView>
       {uploading && <Loader loading={uploading} />}
     </View>
   );
@@ -495,6 +521,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'white',
   },
   aboveKeyboardLeft: {
     flexDirection: 'row',

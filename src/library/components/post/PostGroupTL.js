@@ -20,6 +20,7 @@ function PostGroupTL({
   disableVideo = false,
   showTopBorder = false,
   showRepost = false,
+  disableNav = false,
 }) {
   const hasUpdates = post.updates.length > 0;
 
@@ -33,6 +34,7 @@ function PostGroupTL({
           key={update.id}
           activeOpacity={1}
           onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+          disabled={disableNav}
         >
           <Update
             post={post}
@@ -56,6 +58,7 @@ function PostGroupTL({
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+          disabled={disableNav}
         >
           <Post
             post={post}
@@ -80,6 +83,7 @@ function PostGroupTL({
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+          disabled={disableNav}
         >
           <Post
             post={post}
@@ -95,6 +99,7 @@ function PostGroupTL({
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+          disabled={disableNav}
         >
           <Update
             post={post}
@@ -117,6 +122,7 @@ function PostGroupTL({
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        disabled={disableNav}
       >
         <Post
           post={post}
@@ -141,6 +147,7 @@ function PostGroupTL({
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+          disabled={disableNav}
         >
           <Post
             post={post}
@@ -156,6 +163,7 @@ function PostGroupTL({
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+          disabled={disableNav}
         >
           <Update
             post={post}
@@ -177,6 +185,7 @@ function PostGroupTL({
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        disabled={disableNav}
       >
         <Post
           post={post}
@@ -193,6 +202,7 @@ function PostGroupTL({
       <TouchableOpacity
         activeOpacity={1}
         onPress={() => navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } })}
+        disabled={disableNav}
       >
         <Update
           post={post}

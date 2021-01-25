@@ -28,6 +28,7 @@ function Post({
   disableVideo = false,
   showTopBorder,
   showRepost = false,
+  // disableNav = false,
 }) {
   if (!post) {
     navigation.goBack();

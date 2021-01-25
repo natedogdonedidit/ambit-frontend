@@ -7,6 +7,7 @@ import {
   Alert,
   StatusBar,
   TextInput,
+  Keyboard,
   KeyboardAvoidingView,
   TouchableOpacity,
   InputAccessoryView,
@@ -73,11 +74,32 @@ const NewPostModal = ({ navigation, route }) => {
   const [mentionText, setMentionText] = useState('');
 
   const [uploading, setUploading] = useState(false);
+  // const [keyboardShowing, setKeyboardShowing] = useState(false); // to add padding to scrollview if keyboard is showing
 
   // HOOKS
   const { currentUserId, currentUsername, setShowNetworkActivity } = useContext(UserContext);
 
   const { loading: loadingUser, error, data } = useQuery(CURRENT_USER_QUERY);
+
+  // to add padding to scrollview if keyboard is showing
+  // useEffect(() => {
+  //   Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+  //   Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+
+  //   // cleanup function
+  //   return () => {
+  //     Keyboard.removeListener('keyboardDidShow', keyboardDidShow);
+  //     Keyboard.removeListener('keyboardDidHide', keyboardDidHide);
+  //   };
+  // }, []);
+
+  // const keyboardDidShow = () => {
+  //   setKeyboardShowing(true);
+  // };
+
+  // const keyboardDidHide = () => {
+  //   setKeyboardShowing(false);
+  // };
 
   // FOR MENTION SEARCH
   useEffect(() => {
@@ -770,94 +792,93 @@ const NewPostModal = ({ navigation, route }) => {
         solidRight
         title={`Create a ${goal ? 'Goal' : 'Post'}`}
       />
-      <KeyboardAvoidingView behavior="padding" enabled>
-        <View style={styles.container}>
-          <ScrollView
-            contentContainerStyle={styles.scrollView}
-            // keyboardShouldPersistTaps="always"
-          >
-            {renderTop()}
+      <View style={styles.container}>
+        <ScrollView
+          contentContainerStyle={styles.scrollView}
+          // keyboardShouldPersistTaps="always"
+        >
+          {renderTop()}
 
-            <View style={styles.postInputView}>
-              <View style={styles.leftSide}>
-                <ProfilePicBasic pic={data.userLoggedIn.profilePic} size={34} />
-              </View>
-              <View style={styles.rightSide}>
-                <TextInput
-                  style={{
-                    flex: 1,
-                    paddingTop: 6,
-                    paddingRight: 15,
-                    ...defaultStyles.largeRegular,
-                    paddingBottom: 10,
-                    // backgroundColor: 'pink',
-                  }}
-                  onChangeText={(val) => setContent(val)}
-                  autoFocus
-                  autoCompleteType="off"
-                  keyboardType="twitter"
-                  textContentType="none"
-                  // autoCorrect={false}
-                  multiline
-                  maxLength={320}
-                  textAlignVertical="top"
-                  placeholder={goal ? 'Tell us about your goal' : "What's going on?"}
-                  inputAccessoryViewID="1"
-                  onSelectionChange={({ nativeEvent }) => setCursorLocation(nativeEvent.selection.end)}
-                >
-                  <CoolText>{content}</CoolText>
-                </TextInput>
-              </View>
+          <View style={styles.postInputView}>
+            <View style={styles.leftSide}>
+              <ProfilePicBasic pic={data.userLoggedIn.profilePic} size={34} />
             </View>
-            {renderImages()}
-            {renderVideo()}
-          </ScrollView>
-        </View>
-        <InputAccessoryView nativeID="1">
-          {mentionText ? (
-            <MentionsSelect mentionText={mentionText} handleMentionSelect={handleMentionSelect} />
-          ) : (
-            <View style={styles.aboveKeyboard}>
-              <View style={{ flex: 1, paddingRight: 20 }}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
-                  hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
-                >
-                  <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-                    <Icon
-                      name="map-marker-alt"
-                      size={15}
-                      color={colors.purp}
-                      style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.7 }}
-                    />
-                    <Text
-                      numberOfLines={1}
-                      // ellipsizeMode="head"
-                      style={{ ...defaultStyles.defaultRegular, color: colors.blueGray, flex: 1 }}
-                    >
-                      {location}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.aboveKeyboardRight}>
-                <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                  <Text style={{ ...defaultStyles.hugeBold, color: colors.purp, opacity: 0.7, paddingRight: 22 }}>GIF</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleCameraIconPress} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                  <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 22, opacity: 0.7 }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                  <Icon name="at" size={18} color={colors.blue} style={{ paddingRight: 22, opacity: 0.7 }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-                  <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 4, opacity: 0.7 }} />
-                </TouchableOpacity>
-              </View>
+            <View style={styles.rightSide}>
+              <TextInput
+                style={{
+                  flex: 1,
+                  paddingTop: 6,
+                  paddingRight: 15,
+                  ...defaultStyles.largeRegular,
+                  paddingBottom: 10,
+                  // backgroundColor: 'pink',
+                }}
+                onChangeText={(val) => setContent(val)}
+                autoFocus
+                autoCompleteType="off"
+                keyboardType="twitter"
+                textContentType="none"
+                // autoCorrect={false}
+                multiline
+                maxLength={320}
+                textAlignVertical="top"
+                placeholder={goal ? 'Tell us about your goal' : "What's going on?"}
+                inputAccessoryViewID="1"
+                onSelectionChange={({ nativeEvent }) => setCursorLocation(nativeEvent.selection.end)}
+              >
+                <CoolText>{content}</CoolText>
+              </TextInput>
             </View>
-          )}
-        </InputAccessoryView>
-      </KeyboardAvoidingView>
+          </View>
+          {renderImages()}
+          {renderVideo()}
+        </ScrollView>
+      </View>
+
+      <InputAccessoryView nativeID="1">
+        {mentionText ? (
+          <MentionsSelect mentionText={mentionText} handleMentionSelect={handleMentionSelect} />
+        ) : (
+          <View style={styles.aboveKeyboard}>
+            <View style={{ flex: 1, paddingRight: 20 }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('EditLocationModal', { initialLocation: location, handleLocationSelect })}
+                hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                  <Icon
+                    name="map-marker-alt"
+                    size={15}
+                    color={colors.purp}
+                    style={{ paddingRight: 8, paddingBottom: 2, opacity: 0.7 }}
+                  />
+                  <Text
+                    numberOfLines={1}
+                    // ellipsizeMode="head"
+                    style={{ ...defaultStyles.defaultRegular, color: colors.blueGray, flex: 1 }}
+                  >
+                    {location}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.aboveKeyboardRight}>
+              <TouchableOpacity onPress={() => null} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Text style={{ ...defaultStyles.hugeBold, color: colors.purp, opacity: 0.7, paddingRight: 22 }}>GIF</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleCameraIconPress} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="image" size={22} color={colors.purp} style={{ paddingRight: 22, opacity: 0.7 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onPressMention} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="at" size={18} color={colors.blue} style={{ paddingRight: 22, opacity: 0.7 }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onPressHashtag} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+                <Icon name="hashtag" size={18} color={colors.purp} style={{ paddingRight: 4, opacity: 0.7 }} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      </InputAccessoryView>
       {loading && <Loader active={loading} size="small" />}
     </View>
   );
@@ -874,7 +895,7 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: 'white',
     paddingHorizontal: 10,
-    // paddingBottom: 15,
+    paddingBottom: 400,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
@@ -948,6 +969,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'white',
   },
   aboveKeyboardLeft: {
     flexDirection: 'row',
