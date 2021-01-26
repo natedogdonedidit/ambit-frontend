@@ -31,6 +31,7 @@ const LoginScreen = ({ navigation }) => {
       console.log('login completed');
       // 2. store token & ID to storage, save user in CTX
       await loginCTX(data.login);
+
       setUsername('');
       setPassword('');
       // navigation.navigate('MainStack');
@@ -55,7 +56,7 @@ const LoginScreen = ({ navigation }) => {
     try {
       // 1. send login request to backend
       console.log('sending login to backend');
-      login();
+      await login();
     } catch (e) {
       // Backend GraphQL errors would lead us here
       console.log('ERROR LOGGING IN TO BACKEND:', e.message);

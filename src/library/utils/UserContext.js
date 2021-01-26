@@ -17,6 +17,7 @@ const UserContextProvider = (props) => {
   const [goToTopics, setGoToTopics] = useState(false);
   const [activeTab, setActiveTab] = useState('HomeStack');
   const [refreshHomeScreen, setRefreshHomeScreen] = useState(false);
+  const [hasNewMatches, setHasNewMatches] = useState(false);
 
   const client = useApolloClient();
 
@@ -43,6 +44,7 @@ const UserContextProvider = (props) => {
 
   // LOGIN FUNCTION -> passed to context
   const loginCTX = async (loginData) => {
+    setLoadingToken(true);
     try {
       // 1. attempt to sign in (add JWT token & userID to storage)
       await signIn(loginData);
@@ -50,11 +52,13 @@ const UserContextProvider = (props) => {
       // 2. store the user in context
       setCurrentUserId(loginData.user.id)
       setCurrentUsername(loginData.user.username)
+      setLoadingToken(false);
       // console.log(`sending identify for ${currentUserId}`);
       // analytics.identify(currentUserId);
       console.log('Saved userID/name to Storage & updated Context with userID/name', loginData.user.id, loginData.user.username);
     } catch (e) {
       // AsyncStorage errors would lead us here
+      setLoadingToken(false);
       console.log('ERROR LOGGING IN:', e.message);
       Alert.alert('Login failed');
     }
@@ -86,6 +90,7 @@ const UserContextProvider = (props) => {
     <UserContext.Provider
       value={{
         loadingToken,
+        // setLoadingToken,
         currentUserId,
         currentUsername,
         loginCTX,
@@ -97,7 +102,9 @@ const UserContextProvider = (props) => {
         activeTab,
         setActiveTab,
         refreshHomeScreen,
-        setRefreshHomeScreen
+        setRefreshHomeScreen,
+        hasNewMatches,
+        setHasNewMatches
       }}
     >
       {props.children}

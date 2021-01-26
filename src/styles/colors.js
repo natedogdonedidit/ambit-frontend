@@ -41,6 +41,7 @@ const colors = {
   peach: 'rgba(255,59,48,1)', // ios
   // green: 'rgba(10,141,42,1)',
   green: 'rgba(52,199,89,1)', // ios
+  greenO: 'rgba(52,199,89,0.15)', // ios
   orange: 'rgba(255, 149, 0, 1)', // ios
   yellow: 'rgba(255, 204, 0, 1)', // ios
   twitterBlue: 'rgba(0, 172, 237, 1)',

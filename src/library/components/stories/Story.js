@@ -10,6 +10,8 @@ import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 import colors from 'styles/colors';
 import DELETE_STORYITEM_MUTATION from 'library/mutations/DELETE_STORYITEM_MUTATION';
 import DELETE_STORY_MUTATION from 'library/mutations/DELETE_STORY_MUTATION';
+import UPDATE_STORY_MUTATION from 'library/mutations/UPDATE_STORY_MUTATION';
+import STORIES_QUERY from 'library/queries/STORIES_QUERY';
 
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 
@@ -55,7 +57,7 @@ function Story({
 }) {
   const { width } = Dimensions.get('window');
   // const client = useApolloClient();
-  const { currentUserId } = useContext(UserContext);
+  const { currentUserId, currentUsername } = useContext(UserContext);
   const navigation = useNavigation();
   const videoRef = useRef(null);
 
@@ -93,6 +95,29 @@ function Story({
   const isMyPost = owner.id === currentUserId;
 
   // MUTATIONS
+  const [updateOneStory, { loading: loadingPin }] = useMutation(UPDATE_STORY_MUTATION, {
+    refetchQueries: [
+      {
+        query: STORIES_QUERY,
+        variables: {
+          first: 18,
+          where: {
+            owner: { username: { equals: currentUsername } },
+            type: { equals: 'PROJECT' },
+          },
+          orderBy: [{ lastUpdated: 'desc' }],
+        },
+      },
+    ],
+    // onCompleted: () => {},
+    onError: (error) => {
+      console.log(error);
+      Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
+  });
+
   // DELETE POST MUTATION
   const [deleteOneStoryItem] = useMutation(DELETE_STORYITEM_MUTATION, {
     variables: { where: { id: activeItem.id } },
@@ -203,6 +228,28 @@ function Story({
   // CUSTOM FUNCTIONS
 
   // functions for "More" modal
+  const pinToShowcase = () => {
+    updateOneStory({
+      variables: {
+        where: { id: story.id },
+        data: {
+          showcase: true,
+        },
+      },
+    });
+  };
+
+  const unpinToShowcase = () => {
+    updateOneStory({
+      variables: {
+        where: { id: story.id },
+        data: {
+          showcase: false,
+        },
+      },
+    });
+  };
+
   const removeFromProject = () => {
     // setPaused(true); // doesnt work
     Alert.alert(`Are you sure you want to delete this ${activeItem.type.toLowerCase()}?`, '', [
@@ -236,6 +283,10 @@ function Story({
   const determineOptions = () => {
     if (story.type === 'PROJECT' && story.items.length > 1) {
       return [
+        !loadingPin && {
+          text: story.showcase ? `Unpin from Showcase` : 'Pin to my Showcase',
+          onPress: story.showcase ? unpinToShowcase : pinToShowcase,
+        },
         {
           text: `Add another bit`,
           onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
@@ -254,6 +305,10 @@ function Story({
     }
     if (story.type === 'PROJECT') {
       return [
+        !loadingPin && {
+          text: story.showcase ? `Unpin from Showcase` : 'Pin to my Showcase',
+          onPress: story.showcase ? unpinToShowcase : pinToShowcase,
+        },
         {
           text: `Add another bit`,
           onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),

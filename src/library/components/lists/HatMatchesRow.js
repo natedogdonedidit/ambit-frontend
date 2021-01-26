@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useQuery } from '@apollo/client';
@@ -10,8 +10,11 @@ import defaultStyles from 'styles/defaultStyles';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { getGoalInfo, buildSearchWhere } from 'library/utils';
 import POSTS_WHERE_QUERY from 'library/queries/POSTS_WHERE_QUERY';
+import { UserContext } from 'library/utils/UserContext';
 
 const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
+  const { setHasNewMatches } = useContext(UserContext);
+
   const [matchingPosts, setMatchingPosts] = useState([]);
 
   const goal = useMemo(() => {
@@ -52,6 +55,7 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
   useEffect(() => {
     if (data && data.postsWhere && data.postsWhere.posts.length > 0) {
       setMatchingPosts(data.postsWhere.posts);
+      setHasNewMatches(true); // enables the notification dot on Tab
     }
   }, [data]);
 

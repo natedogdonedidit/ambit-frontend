@@ -36,6 +36,18 @@ const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
     }
   };
 
+  const getColor = () => {
+    if (goalStatus === 'Active') {
+      return colors.greenO;
+    }
+    if (goalStatus === 'Inactive') {
+      return colors.orangeO;
+    }
+    if (goalStatus === 'Complete') {
+      return colors.blueO;
+    }
+  };
+
   const determineOptions = () => {
     if (post.goalStatus === 'Inactive') {
       return [
@@ -89,6 +101,9 @@ const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
       {/* <View style={{ ...styles.topic, backgroundColor: getColor() }}> */}
       <Text style={{ ...defaultStyles.smallMedium, color: getTextColor() }}>{renderText()}</Text>
       {/* </View> */}
+      {/* <View style={{ ...styles.topic, backgroundColor: getColor() }}>
+        <Text style={{ ...defaultStyles.smallSemibold, color: colors.black }}>{renderText()}</Text>
+      </View> */}
     </TouchableOpacity>
   );
 };
@@ -96,14 +111,12 @@ const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
 export default GoalStatus;
 
 const styles = StyleSheet.create({
-  // topic: {
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   height: 24,
-  //   borderRadius: 10,
-  //   paddingHorizontal: 9,
-  //   backgroundColor: colors.systemGray6,
-  //   marginRight: 6,
-  //   marginBottom: 6,
-  // },
+  topic: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 24,
+    borderRadius: 10,
+    paddingHorizontal: 9,
+    backgroundColor: colors.systemGray6,
+  },
 });

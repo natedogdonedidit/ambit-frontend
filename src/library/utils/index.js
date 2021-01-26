@@ -132,6 +132,21 @@ export const sortChats = (a, b) => {
   return 1;
 };
 
+export const sortShowcase = (a, b) => {
+  // if a is showcase & b is not, a goes first
+  if (a.showcase && !b.showcase) {
+    return -1;
+  }
+
+  // if b is showcase & a is not, a goes second
+  if (!a.showcase && b.showcase) {
+    return 1;
+  }
+
+  // otherwise, do nothing
+  return 0;
+};
+
 export const sortStoriesNewestFirst = (a, b) => {
   // if theres no items
   if (a.items.length <= 0 || b.items.length <= 0) {

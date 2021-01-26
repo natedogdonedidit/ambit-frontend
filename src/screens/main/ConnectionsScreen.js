@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, StatusBar, Animated, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from '@react-navigation/native';
+
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
@@ -8,14 +10,22 @@ import HeaderMatches from 'library/components/headers/HeaderMatches';
 import Error from 'library/components/UI/Error';
 import Loader from 'library/components/UI/Loader';
 import ConnectionsList from 'library/components/lists/ConnectionsList';
+import { UserContext } from 'library/utils/UserContext';
 
 const ConnectionsScreen = ({ navigation }) => {
   // OTHER HOOKS
   const insets = useSafeAreaInsets();
 
+  const { setHasNewMatches } = useContext(UserContext);
+
   const [top, setTop] = useState(insets.top); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
   const [scrollY] = useState(new Animated.Value(0));
   const [showRefreshing, setShowRefreshing] = useState(false);
+
+  // on every focus, remove the notifications dot from Tab Bar
+  useFocusEffect(() => {
+    setHasNewMatches(false);
+  });
 
   useEffect(() => {
     if (insets.top > 0) {

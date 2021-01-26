@@ -71,7 +71,11 @@ const ConvosScreen = ({ navigation }) => {
 
   return (
     <View style={{ ...styles.container, paddingTop: top }}>
-      <HeaderMessages handleMiddle={() => null} handleRight={() => navigation.navigate('Search')} navigation={navigation} />
+      <HeaderMessages
+        handleMiddle={() => null}
+        handleRight={() => navigation.navigate('DMPostPopup', { isNewMessage: true })}
+        navigation={navigation}
+      />
       {/* <FullWidthTabs tabs={TABS} activeTab={activeTab} setActiveTab={setActiveTab} height={40} /> */}
       <FlatList
         // refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}

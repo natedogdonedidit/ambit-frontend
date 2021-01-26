@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 // import { moneyGoals, helpGoals, networkGoals, answersGoals, hireGoals } from 'library/utils/lists';
 import { getGoalInfo, getTopicFromID } from 'library/utils';
 
-const Goal = ({ navigation, goal, subField, onPress }) => {
+const Goal = ({ goal, subField, onPress }) => {
   const { name } = useMemo(() => getTopicFromID(subField), [subField]);
 
   return (
@@ -22,7 +22,8 @@ const Goal = ({ navigation, goal, subField, onPress }) => {
             <Icon name={getGoalInfo(goal, 'icon')} size={16} color={getGoalInfo(goal, 'iconColor')} solid />
           )}
         </View>
-        <Text style={{ paddingRight: 16 }}>
+        {/* <Text style={{ paddingRight: 16 }}> */}
+        <Text>
           <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
           <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
           <Text style={{ ...defaultStyles.defaultMedium }}>{name}</Text>
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     // flex: 1,
     // flexShrink: 10,
-    marginRight: 25,
+    marginRight: 30,
     marginTop: 5,
     marginBottom: 10,
   },
@@ -53,9 +54,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
     paddingLeft: 16,
+    paddingRight: 16,
     paddingVertical: 10,
     backgroundColor: colors.grayButton,
-    // marginRight: 25,
+    // marginRight: 4,
     // borderWidth: StyleSheet.hairlineWidth,
     // borderColor: colors.borderBlack,
     // flexShrink: 10,

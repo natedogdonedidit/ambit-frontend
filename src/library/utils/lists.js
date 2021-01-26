@@ -159,6 +159,7 @@ export const goalsList = [
     heading: 'Which topic are you looking for a mentor in?',
     adverb: 'in',
     iconColor: 'rgb(27, 38, 59)',
+    emoji: '📚',
   },
   {
     name: 'Get Advice',

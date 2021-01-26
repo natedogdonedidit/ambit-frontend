@@ -96,7 +96,7 @@ const ProfilePosts = ({ isMyProfile, username }) => {
 const styles = StyleSheet.create({
   timeline: {
     backgroundColor: colors.lightGray,
-    marginTop: 10,
+    paddingTop: 10,
   },
 });
 

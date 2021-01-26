@@ -17,6 +17,7 @@ import UNLIKE_POST_MUTATION from 'library/mutations/UNLIKE_POST_MUTATION';
 import REPOST_POST_MUTATION from 'library/mutations/REPOST_POST_MUTATION';
 import UNDO_REPOST_POST_MUTATION from 'library/mutations/UNDO_REPOST_POST_MUTATION';
 import { UserContext } from 'library/utils/UserContext';
+import ButtonSmall from 'library/components/UI/buttons/ButtonSmall';
 
 const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost, formatedDate }) => {
   const navigation = useNavigation();
@@ -204,6 +205,12 @@ const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost
         />
         <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount <= 0 ? null : post.sharesCount}</Text>
       </View>
+      {/* <View style={{ flex: 1, alignItems: 'flex-end' }}>
+        <Text style={{ textAlign: 'right', ...defaultStyles.defaultMedium, color: colors.iosBlue }}>Update</Text>
+        <View>
+          <ButtonSmall onPress={() => navigation.navigate('AddUpdateModal', { post })}>Update</ButtonSmall>
+        </View>
+      </View> */}
     </View>
   );
 };

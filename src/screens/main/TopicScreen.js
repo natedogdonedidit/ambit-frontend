@@ -83,7 +83,10 @@ const TopicScreen = ({ navigation, route }) => {
           alignItems: 'center',
         }}
       >
-        <TouchableOpacity onPress={() => null} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('DMPostPopup', { topicID })}
+          hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
+        >
           <Icon name="share" size={15} color="white" />
         </TouchableOpacity>
       </View>

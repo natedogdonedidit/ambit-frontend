@@ -14,6 +14,7 @@ import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import SharedPost from 'library/components/chat/SharedPost';
 import SharedStory from 'library/components/chat/SharedStory';
+import SharedTopic from 'library/components/chat/SharedTopic';
 import CURRENT_USER_UNREAD from 'library/queries/CURRENT_USER_UNREAD';
 
 const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
@@ -28,7 +29,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
     },
     // pollInterval: 10000, // 10 seconds
     notifyOnNetworkStatusChange: true,
-    fetchPolicy: 'cache-and-network', // ensure we always get the latest chat when screen opens
+    // fetchPolicy: 'cache-and-network', // ensure we always get the latest chat when screen opens
   });
 
   // MUTATIONS
@@ -161,6 +162,9 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
       }
       if (type === 'Story' || type === 'StoryItem') {
         return <SharedStory navigation={navigation} storyId={id} />;
+      }
+      if (type === 'Topic') {
+        return <SharedTopic navigation={navigation} topicID={id} />;
       }
 
       // if is a story or storyitem

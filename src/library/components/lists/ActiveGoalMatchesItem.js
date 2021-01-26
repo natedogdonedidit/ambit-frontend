@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useQuery } from '@apollo/client';
@@ -10,8 +10,11 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import { getGoalInfo, getTopicFromID } from 'library/utils';
 import POST_MATCHES_QUERY from 'library/queries/POST_MATCHES_QUERY';
 import Loader from 'library/components/UI/Loader';
+import { UserContext } from 'library/utils/UserContext';
 
 const ActiveGoalMatchesItem = ({ navigation, post, triggerRefresh }) => {
+  const { setHasNewMatches } = useContext(UserContext);
+
   const [matches, setMatches] = useState([]);
 
   if (!post) {
@@ -42,6 +45,7 @@ const ActiveGoalMatchesItem = ({ navigation, post, triggerRefresh }) => {
   useEffect(() => {
     if (data && data.singlePostMatches && data.singlePostMatches.length >= 0) {
       setMatches(data.singlePostMatches);
+      setHasNewMatches(true); // enables the notification dot on Tab
     }
   }, [data]);
 

@@ -21,6 +21,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { UserContext } from 'library/utils/UserContext';
 import { storyPicUpload, storyVideoUpload, createThumbnail, sortStoriesNewestFirst, getTopicFromID } from 'library/utils';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HeaderPostToModal from 'library/components/headers/HeaderPostToModal';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
@@ -36,6 +37,7 @@ import Topic from 'library/components/post/Topic';
 const PostClipModal = ({ navigation, route }) => {
   const { currentUserId, currentUsername, setShowNetworkActivity } = useContext(UserContext);
   const { capturedImage, capturedVideo, projectPassedIn, textInput } = route.params; // from camera modal / CapturedStoryItem
+  const insets = useSafeAreaInsets();
 
   // source of truth for inputs - initialize with projectPassedIn, if it exists
   const [projectTitle, setProjectTitle] = useState(projectPassedIn ? projectPassedIn.title : '');
@@ -417,7 +419,8 @@ const PostClipModal = ({ navigation, route }) => {
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              paddingVertical: 20,
+              paddingTop: 20,
+              paddingBottom: 20 + insets.bottom,
               borderTopColor: colors.borderBlack,
               borderTopWidth: StyleSheet.hairlineWidth,
               backgroundColor: colors.lightLightGray,

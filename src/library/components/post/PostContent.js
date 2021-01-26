@@ -23,7 +23,7 @@ const PostContent = ({ post, showDetails }) => {
         (isCustomGoalTest(post.goal) ? (
           <CustomGoal navigation={navigation} goal={post.goal} color={post.goalColor} icon={post.goalIcon} />
         ) : (
-          <Goal navigation={navigation} goal={post.goal} subField={post.subField} />
+          <Goal goal={post.goal} subField={post.subField} />
         ))}
       {post.content && (
         <View style={styles.content}>

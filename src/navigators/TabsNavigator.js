@@ -11,8 +11,10 @@ import { UserContext } from 'library/utils/UserContext';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
+import MatchesDot from 'library/components/UI/icons/MatchesDot';
 import BellDot from 'library/components/UI/icons/BellDot';
 import EnvelopeDot from 'library/components/UI/icons/EnvelopeDot';
+
 import colors from 'styles/colors';
 import { useSubscription, useApolloClient } from '@apollo/client';
 import MESSAGE_SUBSCRIPTION from 'library/subscriptions/MESSAGE_SUBSCRIPTION';
@@ -98,7 +100,7 @@ const TabsNavigator = ({ route }) => {
       <Tabs.Screen
         name="PeopleStack"
         component={PeopleStack}
-        options={{ tabBarIcon: ({ focused, color, size }) => <Icon name="user-friends" size={22} color={color} solid /> }}
+        options={{ tabBarIcon: ({ focused, color, size }) => <MatchesDot color={color} /> }}
       />
       <Tabs.Screen
         name="NotificationsStack"

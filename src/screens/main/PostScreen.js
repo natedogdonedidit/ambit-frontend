@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View, ScrollView, Alert, Text } from 'react-native';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import differenceInCalendarDays from 'date-fns/differenceInCalendarDays';
 
@@ -46,14 +46,30 @@ const PostScreen = ({ navigation, route }) => {
       ]),
   });
 
-  const { loading: loadingMatches, data: dataMatches } = useQuery(POST_MATCHES_QUERY, {
+  const [getMatches, { loading: loadingMatches, data: dataMatches }] = useLazyQuery(POST_MATCHES_QUERY, {
     variables: { postId: postToQuery.id },
   });
+
   const matches = dataMatches ? dataMatches.singlePostMatches : [];
 
   const { loading, error, data } = useQuery(SINGLE_POST_QUERY, {
     variables: { where: { id: postToQuery.id } },
   });
+
+  // decide if we should run matches query
+  useEffect(() => {
+    // if post loaded
+    if (data && data.post) {
+      // if it is my post, and a goal
+      if (post.owner.id === currentUserId && !!post.goal) {
+        const isCustomGoal = isCustomGoalTest(post.goal);
+        // if not custom goal
+        if (!isCustomGoal) {
+          getMatches();
+        }
+      }
+    }
+  }, [data]);
 
   if (error) {
     navigation.goBack();
@@ -80,18 +96,15 @@ const PostScreen = ({ navigation, route }) => {
   }
 
   const isMyPost = post.owner.id === currentUserId;
-  const showMatchesLoader = isMyPost && !!post.goal && loadingMatches;
+  const isCustomGoal = isCustomGoalTest(post.goal);
+  const showMatches = isMyPost && !!post.goal && !isCustomGoal; // show # of matches only if its a non-custom goal by ME
 
   const today = new Date();
   const daysSinceUpdated = differenceInCalendarDays(today, new Date(post.lastUpdated));
   const daysRemainingTillInactive = DAYS_TILL_INACTIVE - daysSinceUpdated;
   const isAlmostInactive = daysRemainingTillInactive < DAYS_TILL_INACTIVE_NOTIFY;
 
-  // if today is after dateToNotify, create notifcation
-
   const showPopover = isMyPost && !hidePopover && post.isGoal && post.goalStatus === 'Active' && isAlmostInactive;
-
-  const isCustomGoal = isCustomGoalTest(post.goal);
 
   const updateLastUpdated = async () => {
     await updatePost({
@@ -166,13 +179,13 @@ const PostScreen = ({ navigation, route }) => {
       <HeaderBackLoader
         navigation={navigation}
         title={post.goal ? 'Goal' : 'Post'}
-        loading={showMatchesLoader}
+        loading={loadingMatches}
         handleRight={
-          loadingMatches || !isMyPost || !post.goal || isCustomGoal
-            ? null
-            : () => navigation.navigate({ name: 'PostMatches', key: `PostMatches:${post.id}`, params: { post } })
+          showMatches && !loadingMatches
+            ? () => navigation.navigate({ name: 'PostMatches', key: `PostMatches:${post.id}`, params: { post } })
+            : null
         }
-        textRight={loadingMatches || !isMyPost || !post.goal || isCustomGoal ? '' : `${matches.length || ''} Matches`}
+        textRight={showMatches && !loadingMatches ? `${matches.length} Matches` : ''}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
         {renderPost()}

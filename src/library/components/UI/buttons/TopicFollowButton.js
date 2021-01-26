@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react';
 import { StyleSheet, TouchableOpacity, Text, View, Alert } from 'react-native';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -107,7 +107,10 @@ const TopicFollowButton = ({ topicID, onRow = false }) => {
   return (
     <TouchableOpacity onPress={() => onPressFollow()} activeOpacity={0.7}>
       <View style={isFollowing ? styles.buttonActive : styles.button}>
-        <Text style={{ ...defaultStyles.defaultMedium, color: isFollowing ? colors.white : colors.black }}>
+        {/* <View style={{ paddingRight: 6 }}>
+          <Ionicons name="checkmark-outline" size={22} color={colors.purp} />
+        </View> */}
+        <Text style={{ ...defaultStyles.defaultMedium, color: isFollowing ? colors.black : colors.white }}>
           {isFollowing ? 'Following' : 'Follow'}
         </Text>
       </View>
@@ -120,7 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.grayButton,
+    backgroundColor: colors.purp,
     borderRadius: 17,
     height: 34,
     width: 100,
@@ -131,11 +134,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.purp,
+    backgroundColor: colors.grayButton,
     borderRadius: 17,
     height: 34,
     width: 100,
-    // paddingHorizontal: 14,
+    // paddingHorizontal: 10,
     // ...defaultStyles.shadowButton,
   },
 

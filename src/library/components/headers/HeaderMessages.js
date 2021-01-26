@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/Feather';
 import { useQuery } from '@apollo/client';
 // import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -23,9 +23,7 @@ const HeaderMessages = ({ navigation, handleMiddle, handleRight }) => {
         <Text style={{ ...defaultStyles.headerSmall, color: colors.black }}>Inbox</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
-        {/* <View style={styles.iconCircle}> */}
-        {/* <Icon name="cog" size={20} color={colors.iconDark} /> */}
-        {/* </View> */}
+        <Icon name="plus" size={26} color={colors.purp} style={{ paddingRight: 4 }} />
       </TouchableOpacity>
     </View>
   );

@@ -18,7 +18,8 @@ const CustomGoal = ({ navigation, goal, color, icon }) => {
           {/* <Ionicons name="ios-rocket" size={22} color={colors.blueGray} /> */}
           <Text style={{ ...defaultStyles.defaultMedium }}>{icon || '🚀'}</Text>
         </View>
-        <Text style={{ paddingRight: 16 }}>
+        {/* <Text style={{ paddingRight: 16 }}> */}
+        <Text>
           <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
         </Text>
       </View>
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     // flex: 1,
     // flexShrink: 10,
-    marginRight: 25,
+    marginRight: 30,
     marginTop: 5,
     marginBottom: 10,
   },
@@ -47,6 +48,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 15,
     paddingLeft: 16,
+    paddingRight: 16,
     paddingVertical: 10,
     backgroundColor: colors.grayButton,
     // marginRight: 25,

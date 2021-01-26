@@ -16,9 +16,10 @@ import { UserContext } from 'library/utils/UserContext';
 import USERS_QUERY from 'library/queries/USERS_QUERY';
 import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 import ProfilePic from 'library/components/UI/ProfilePic';
+import Loader from 'library/components/UI/Loader';
 
 const DMPostPopup = ({ navigation, route }) => {
-  const { postId, storyItemId, storyId } = route.params; // only one of these should be truthy
+  const { postId, storyItemId, storyId, topicID, isNewMessage } = route.params; // only one of these should be truthy
   const { currentUserId } = useContext(UserContext);
 
   const insets = useSafeAreaInsets();
@@ -29,7 +30,7 @@ const DMPostPopup = ({ navigation, route }) => {
 
   // CREATE MESSAGE MUTATION
   const [createOneMessageMissingConvo, { loading: loadingCreate2 }] = useMutation(CREATE_MESSAGE_MISSING_CONVO_MUTATION, {
-    refetchQueries: () => [{ query: CURRENT_USER_CONVOS }],
+    refetchQueries: () => [{ query: CURRENT_USER_CONVOS, fetchPolicy: 'cache-and-network' }], // this will refresh the order of ChatListItems
     onCompleted: () => {},
     onError: (error) => {
       console.log(error);
@@ -40,7 +41,7 @@ const DMPostPopup = ({ navigation, route }) => {
   });
 
   // GET PEOPLE I FOLLOW
-  const { data: dataFollowing } = useQuery(CURRENT_USER_FOLLOWING);
+  const { data: dataFollowing, loading: loadingFollowing } = useQuery(CURRENT_USER_FOLLOWING);
   const network = useMemo(() => {
     if (dataFollowing && dataFollowing.iFollow) {
       return [...dataFollowing.iFollow];
@@ -100,7 +101,7 @@ const DMPostPopup = ({ navigation, route }) => {
       results.push(...userMatchesFollowing.users);
     }
 
-    // second priority
+    // second priority (SHOULD PROBABLY DELETE THIS EVENTUALLY - SHOULD ONLY BE ABLE TO SEARCH PEOPLE THAT YOU FOLLOW)
     if (userMatchesAll && userMatchesAll.users && userMatchesAll.users.length > 0) {
       const resultsFiltered = userMatchesAll.users.filter((u) => {
         const ind = results.findIndex((res) => res.username === u.username);
@@ -124,31 +125,51 @@ const DMPostPopup = ({ navigation, route }) => {
   }, [userMatchesFollowing, userMatchesAll, usersFollowing]);
 
   const handleMentionSelect = async (userSelected) => {
-    let content = '';
-    if (postId) {
-      content = `Post:${postId}`;
-    } else if (storyItemId && !shareFullStory) {
-      // content = `StoryItem:${storyItemId}`;
-      content = `Story:${storyId}`;
-    } else if (storyId && shareFullStory) {
-      content = `Story:${storyId}`;
+    if (isNewMessage) {
+      // if we are just sending a new message - go to Chat screen
+      navigation.navigate({ name: 'Chat', key: `Chat:${userSelected.id}`, params: { otherUserPassedIn: userSelected } });
+    } else {
+      // if we are sharing a Post, Story, or Topic. Create message then go to Chat screen
+      let content = '';
+      if (postId) {
+        content = `Post:${postId}`;
+      } else if (storyItemId && !shareFullStory) {
+        // content = `StoryItem:${storyItemId}`;
+        content = `Story:${storyId}`;
+      } else if (storyId && shareFullStory) {
+        content = `Story:${storyId}`;
+      } else if (topicID) {
+        content = `Topic:${topicID}`;
+      }
+
+      createOneMessageMissingConvo({
+        variables: {
+          content,
+          to: userSelected.id,
+          from: currentUserId,
+          isShare: true,
+        },
+      });
+
+      navigation.navigate({ name: 'Chat', key: `Chat:${userSelected.id}`, params: { otherUserPassedIn: userSelected } });
     }
-
-    createOneMessageMissingConvo({
-      variables: {
-        content,
-        to: userSelected.id,
-        from: currentUserId,
-        isShare: true,
-      },
-    });
-
-    navigation.navigate({ name: 'Chat', key: `Chat:${userSelected.id}`, params: { otherUserPassedIn: userSelected } });
   };
 
   const renderSearchResults = () => {
+    if (loadingFollowing && !dataFollowing) {
+      return (
+        <View style={{ height: 100 }}>
+          <Loader size="small" />
+        </View>
+      );
+    }
+
     if (!searchResults || searchResults.length < 1) {
-      return null;
+      return (
+        <View style={{ height: 100 }}>
+          <Loader size="small" />
+        </View>
+      );
     }
 
     return searchResults.map((user) => {
@@ -165,9 +186,19 @@ const DMPostPopup = ({ navigation, route }) => {
   };
 
   const renderTitle = () => {
+    // if sending a new message
+    if (isNewMessage) {
+      return <Text style={styles.title}>New Message</Text>;
+    }
+
     // if sharing post
     if (postId) {
       return <Text style={styles.title}>Share Post</Text>;
+    }
+
+    // if sharing post
+    if (topicID) {
+      return <Text style={styles.title}>Share Topic</Text>;
     }
 
     // if share story
