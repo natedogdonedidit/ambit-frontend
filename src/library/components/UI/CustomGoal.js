@@ -19,9 +19,7 @@ const CustomGoal = ({ navigation, goal, color, icon }) => {
           <Text style={{ ...defaultStyles.defaultMedium }}>{icon || '🚀'}</Text>
         </View>
         {/* <Text style={{ paddingRight: 16 }}> */}
-        <Text>
-          <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
-        </Text>
+        <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
       </View>
     </View>
   );

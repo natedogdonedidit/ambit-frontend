@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useMemo } from 'react';
+import React, { useState, useContext, useEffect, useMemo, useRef } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   InputAccessoryView,
   Dimensions,
+  InteractionManager,
 } from 'react-native';
 import { useMutation, useQuery, useApolloClient } from '@apollo/client';
 import Video from 'react-native-video';
@@ -56,6 +57,7 @@ const NewPostModal = ({ navigation, route }) => {
   // ROUTE PARAMS
   const { topicPassedIn } = route.params;
   const client = useApolloClient();
+  const textInputRef = useRef();
 
   const { width } = Dimensions.get('window');
 
@@ -155,7 +157,7 @@ const NewPostModal = ({ navigation, route }) => {
     navigation.goBack();
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const message = validateInputs();
     // if missing a required field, Alert user
     if (message) {
@@ -163,131 +165,143 @@ const NewPostModal = ({ navigation, route }) => {
       return;
     }
 
-    try {
-      navigation.goBack();
-      setShowNetworkActivity(true);
-      const uploadedImages = await uploadImages();
-      const uploadedVideo = await uploadVideo();
+    // textInputRef.current.blur();
+    // Keyboard.dismiss();
+    navigation.goBack();
 
-      // !loadingCreate prevents duplicate created posts
-      if (!loadingCreate) {
-        createOnePost({
-          variables: {
-            data: {
-              isGoal: !!goal,
-              goal: goal ? goal.name : null,
-              goalColor: goal ? goal.secondaryColor : null,
-              goalIcon: goal ? goal.goalIcon : null,
-              subField,
-              goalStatus: goal ? 'Active' : null,
-              topic,
-              location,
-              locationID,
-              locationLat,
-              locationLon,
-              content,
-              video: uploadedVideo && uploadedVideo.url ? uploadedVideo.url : '',
-              images: { set: uploadedImages },
-              lastUpdated: new Date(),
-              owner: {
-                connect: { id: currentUserId },
+    // do this so navigation.goBack() is not slow/delayed
+    InteractionManager.runAfterInteractions(() => {
+      // 2: Component is done animating
+      // 3: Do long thing
+      const createPost = async () => {
+        try {
+          setShowNetworkActivity(true);
+          const uploadedImages = await uploadImages();
+          const uploadedVideo = await uploadVideo();
+
+          // !loadingCreate prevents duplicate created posts
+          if (!loadingCreate) {
+            createOnePost({
+              variables: {
+                data: {
+                  isGoal: !!goal,
+                  goal: goal ? goal.name : null,
+                  goalColor: goal ? goal.secondaryColor : null,
+                  goalIcon: goal ? goal.goalIcon : null,
+                  subField,
+                  goalStatus: goal ? 'Active' : null,
+                  topic,
+                  location,
+                  locationID,
+                  locationLat,
+                  locationLon,
+                  content,
+                  video: uploadedVideo && uploadedVideo.url ? uploadedVideo.url : '',
+                  images: { set: uploadedImages },
+                  lastUpdated: new Date(),
+                  owner: {
+                    connect: { id: currentUserId },
+                  },
+                },
               },
-            },
-          },
-          // OPTIMISTIC OBJECT COMMENTED AT BOTTOM OF COMPONENT
-          // optimisticResponse: {
-          //   __typename: 'Mutation',
-          //   createOnePost: { ...newPostOptimisticObject },
-          // },
-          update: (proxy, { data: dataReturned }) => {
-            const newPost = dataReturned && dataReturned.createOnePost ? dataReturned.createOnePost : undefined;
+              // OPTIMISTIC OBJECT COMMENTED AT BOTTOM OF COMPONENT
+              // optimisticResponse: {
+              //   __typename: 'Mutation',
+              //   createOnePost: { ...newPostOptimisticObject },
+              // },
+              update: (proxy, { data: dataReturned }) => {
+                const newPost = dataReturned && dataReturned.createOnePost ? dataReturned.createOnePost : undefined;
 
-            if (newPost) {
-              // write the new post directly to the FOLLOWING timeline
-              const followingTimeline = client.readQuery({
-                query: POSTS_FOLLOWING_QUERY,
-                variables: { feed: 'following' },
-              });
-
-              if (followingTimeline && followingTimeline.postsFollowing) {
-                client.writeQuery({
-                  query: POSTS_FOLLOWING_QUERY,
-                  variables: { feed: 'following' }, // must provide variable for UI to update
-                  data: {
-                    postsFollowing: {
-                      __typename: 'PostConnection',
-                      hasNextPage: followingTimeline.postsFollowing.hasNextPage,
-                      posts: [newPost, ...followingTimeline.postsFollowing.posts],
-                    },
-                  },
-                });
-              }
-
-              if (followingTimeline && followingTimeline.postsFollowing) {
-                client.writeQuery({
-                  query: POSTS_FOLLOWING_QUERY,
-                  variables: { feed: 'following' }, // must provide variable for UI to update
-                  data: {
-                    postsFollowing: {
-                      __typename: 'PostConnection',
-                      hasNextPage: followingTimeline.postsFollowing.hasNextPage,
-                      posts: [newPost, ...followingTimeline.postsFollowing.posts],
-                    },
-                  },
-                });
-              }
-
-              // if it's a goal add to MYGOALS timeline
-              if (newPost.isGoal) {
-                const myGoalsTimeline = client.readQuery({
-                  query: POSTS_MYGOALS_QUERY,
-                  variables: { feed: 'mygoals' },
-                });
-
-                if (myGoalsTimeline && myGoalsTimeline.postsMyGoals) {
-                  client.writeQuery({
-                    query: POSTS_MYGOALS_QUERY,
-                    variables: { feed: 'mygoals' }, // must provide variable for UI to update
-                    data: {
-                      postsMyGoals: {
-                        __typename: 'PostConnection',
-                        hasNextPage: myGoalsTimeline.postsMyGoals.hasNextPage,
-                        posts: [newPost, ...myGoalsTimeline.postsMyGoals.posts],
-                      },
-                    },
+                if (newPost) {
+                  // write the new post directly to the FOLLOWING timeline
+                  const followingTimeline = client.readQuery({
+                    query: POSTS_FOLLOWING_QUERY,
+                    variables: { feed: 'following' },
                   });
+
+                  if (followingTimeline && followingTimeline.postsFollowing) {
+                    client.writeQuery({
+                      query: POSTS_FOLLOWING_QUERY,
+                      variables: { feed: 'following' }, // must provide variable for UI to update
+                      data: {
+                        postsFollowing: {
+                          __typename: 'PostConnection',
+                          hasNextPage: followingTimeline.postsFollowing.hasNextPage,
+                          posts: [newPost, ...followingTimeline.postsFollowing.posts],
+                        },
+                      },
+                    });
+                  }
+
+                  if (followingTimeline && followingTimeline.postsFollowing) {
+                    client.writeQuery({
+                      query: POSTS_FOLLOWING_QUERY,
+                      variables: { feed: 'following' }, // must provide variable for UI to update
+                      data: {
+                        postsFollowing: {
+                          __typename: 'PostConnection',
+                          hasNextPage: followingTimeline.postsFollowing.hasNextPage,
+                          posts: [newPost, ...followingTimeline.postsFollowing.posts],
+                        },
+                      },
+                    });
+                  }
+
+                  // if it's a goal add to MYGOALS timeline
+                  if (newPost.isGoal) {
+                    const myGoalsTimeline = client.readQuery({
+                      query: POSTS_MYGOALS_QUERY,
+                      variables: { feed: 'mygoals' },
+                    });
+
+                    if (myGoalsTimeline && myGoalsTimeline.postsMyGoals) {
+                      client.writeQuery({
+                        query: POSTS_MYGOALS_QUERY,
+                        variables: { feed: 'mygoals' }, // must provide variable for UI to update
+                        data: {
+                          postsMyGoals: {
+                            __typename: 'PostConnection',
+                            hasNextPage: myGoalsTimeline.postsMyGoals.hasNextPage,
+                            posts: [newPost, ...myGoalsTimeline.postsMyGoals.posts],
+                          },
+                        },
+                      });
+                    }
+                  }
                 }
-              }
-            }
-          },
-          // refetchQueries: [
-          //   {
-          //     query: POSTS_WHERE_QUERY,
-          //     variables: {
-          //       take: 50,
-          //       where: {
-          //         owner: { username: { equals: currentUsername } },
-          //       },
-          //     },
-          //   },
-          // ],
-        });
-        setShowNetworkActivity(false);
-      }
-    } catch (e) {
-      setUploading(false);
-      setShowNetworkActivity(false);
-      console.log(e);
-      if (e.message === 'Image upload fail') {
-        Alert.alert('Oh no!', 'An error occured when trying to upload your photo. Remove the photo or try again.', [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]);
-      } else {
-        Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
-          { text: 'OK', onPress: () => console.log('OK Pressed') },
-        ]);
-      }
-    }
+              },
+              // refetchQueries: [
+              //   {
+              //     query: POSTS_WHERE_QUERY,
+              //     variables: {
+              //       take: 50,
+              //       where: {
+              //         owner: { username: { equals: currentUsername } },
+              //       },
+              //     },
+              //   },
+              // ],
+            });
+            setShowNetworkActivity(false);
+          }
+        } catch (e) {
+          setUploading(false);
+          setShowNetworkActivity(false);
+          console.log(e);
+          if (e.message === 'Image upload fail') {
+            Alert.alert('Oh no!', 'An error occured when trying to upload your photo. Remove the photo or try again.', [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+          } else {
+            Alert.alert('Oh no!', 'An error occured when trying to create this post. Try again later!', [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
+          }
+        }
+      };
+
+      createPost();
+    });
   };
 
   const handleMentionSelect = (usernameClicked) => {
@@ -359,7 +373,7 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const validateInputs = () => {
-    if (!content) return 'Post';
+    if (!content && !video && images.length < 1) return 'Please add content before posting';
     return null;
   };
 
@@ -813,6 +827,7 @@ const NewPostModal = ({ navigation, route }) => {
                   paddingBottom: 10,
                   // backgroundColor: 'pink',
                 }}
+                ref={textInputRef}
                 onChangeText={(val) => setContent(val)}
                 autoFocus
                 autoCompleteType="off"

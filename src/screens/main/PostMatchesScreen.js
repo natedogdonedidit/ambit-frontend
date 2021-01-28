@@ -5,7 +5,7 @@ import HeaderBack from 'library/components/headers/HeaderBack';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import SuggestedConnection from 'library/components/lists/SuggestedConnection';
+import UserListItem from 'library/components/lists/UserListItem';
 import Post from 'library/components/post/Post';
 import POST_MATCHES_QUERY from 'library/queries/POST_MATCHES_QUERY';
 import Loader from 'library/components/UI/Loader';

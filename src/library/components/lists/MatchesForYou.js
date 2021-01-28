@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 // import USERS_QUERY from 'library/queries/USERS_QUERY';
 import SUGGESTED_FOLLOWS from 'library/queries/SUGGESTED_FOLLOWS';
 
-import SuggestedConnection from 'library/components/lists/SuggestedConnection';
+import UserListItem from 'library/components/lists/UserListItem';
 import Section from 'library/components/UI/Section';
 import Loader from 'library/components/UI/Loader';
 import { UserContext } from 'library/utils/UserContext';
@@ -42,9 +42,7 @@ const MatchesForYou = ({ navigation, title, triggerRefresh }) => {
     }
 
     if (data.suggestedFollows && data.suggestedFollows.length > 0) {
-      return data.suggestedFollows.map((match) => (
-        <SuggestedConnection key={match.id} navigation={navigation} user={match} showFollow />
-      ));
+      return data.suggestedFollows.map((match) => <UserListItem key={match.id} user={match} showFollow />);
     }
 
     return (

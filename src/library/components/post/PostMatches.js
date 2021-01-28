@@ -6,7 +6,7 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import POST_MATCHES_QUERY from 'library/queries/POST_MATCHES_QUERY';
 
-import SuggestedConnection from 'library/components/lists/SuggestedConnection';
+import UserListItem from 'library/components/lists/UserListItem';
 import TextButton from 'library/components/UI/buttons/TextButton';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
@@ -64,6 +64,27 @@ const PostMatches = ({ navigation, post, matches, loading }) => {
         </Text>
       );
     }
+    if (goal === 'Network' && name) {
+      return (
+        <Text style={{ ...defaultStyles.defaultMute, paddingTop: 4, paddingRight: 15 }}>
+          People open to network in <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>{name}</Text>
+        </Text>
+      );
+    }
+    if (goal === 'Find Business Partners' && name) {
+      return (
+        <Text style={{ ...defaultStyles.defaultMute, paddingTop: 4, paddingRight: 15 }}>
+          People open to network in <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>{name}</Text>
+        </Text>
+      );
+    }
+    if (goal === 'Get Coffee' && name) {
+      return (
+        <Text style={{ ...defaultStyles.defaultMute, paddingTop: 4, paddingRight: 15 }}>
+          People nearby open to network in <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>{name}</Text>
+        </Text>
+      );
+    }
 
     return null;
   };
@@ -78,9 +99,8 @@ const PostMatches = ({ navigation, post, matches, loading }) => {
         {matches.map((user) => {
           return (
             <View key={user.id}>
-              <SuggestedConnection
+              <UserListItem
                 user={user}
-                navigation={navigation}
                 showHide
                 showFollow={false}
                 postId={post.id}

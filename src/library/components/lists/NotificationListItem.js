@@ -11,12 +11,13 @@ import { DAYS_TILL_INACTIVE } from 'styles/constants';
 import CoolText from 'library/components/UI/CoolText';
 
 const NotificationListItem = ({ navigation, notification }) => {
-  const { style, createdAt, from, post, update, comment } = notification;
+  const { style, createdAt, from, post, update, comment, story, storyItem } = notification;
 
   // incase the post/comment/update has been deleted
   if (style === 'LIKE_POST' && !post) return null;
   if (style === 'LIKE_UPDATE' && !update) return null;
   if (style === 'LIKE_COMMENT' && !comment) return null;
+  if (style === 'LIKE_STORYITEM' && !story) return null;
   if (style === 'COMMENT_POST' && !comment) return null;
   if (style === 'COMMENT_UPDATE' && !comment) return null;
   if (style === 'COMMENT_COMMENT' && !comment) return null;
@@ -63,24 +64,45 @@ const NotificationListItem = ({ navigation, notification }) => {
       ]);
     }
     if (style === 'LIKE_COMMENT') {
-      const isOnPost = !!comment && !!comment.parentPost;
       const isOnUpdate = !!comment && !!comment.parentUpdate;
+      const isOnPost = !!comment && !!comment.parentPost;
 
-      if (isOnPost)
-        return navigation.navigate({
-          name: 'Post',
-          key: `Post:${comment.parentPost.id}`,
-          params: { post: comment.parentPost },
-        });
-      if (isOnUpdate)
+      if (isOnUpdate) {
         return navigation.navigate({
           name: 'Update',
           key: `Update:${comment.parentUpdate.id}`,
           params: { updatePassedIn: comment.parentUpdate },
         });
+      }
+
+      if (isOnPost) {
+        return navigation.navigate({
+          name: 'Post',
+          key: `Post:${comment.parentPost.id}`,
+          params: { post: comment.parentPost },
+        });
+      }
 
       // if update is missing from cache
       Alert.alert('Oh no!', `We could not find that comment or post`, [
+        {
+          text: 'OK',
+          onPress: () => {
+            console.log('OK Pressed');
+          },
+        },
+      ]);
+    }
+    if (style === 'LIKE_STORYITEM') {
+      if (story) {
+        return navigation.navigate('StoryModalUser', {
+          story,
+          // moreType,
+          // topicIDtoSearch,
+        });
+      }
+      // if update is missing from cache
+      Alert.alert('Oh no!', `We could not find that story`, [
         {
           text: 'OK',
           onPress: () => {
@@ -221,6 +243,7 @@ const NotificationListItem = ({ navigation, notification }) => {
       ]);
     }
     if (style === 'MENTIONED_IN_UPDATE') {
+      // should navigate to Update. But i have no way to attach Update.id on the backend.
       if (post) {
         return navigation.navigate({ name: 'Post', key: `Post:${post.id}`, params: { post } });
       }
@@ -274,6 +297,14 @@ const NotificationListItem = ({ navigation, notification }) => {
         <Text>
           <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
           <Text style={defaultStyles.defaultLight}> liked your comment</Text>
+        </Text>
+      );
+    }
+    if (style === 'LIKE_STORYITEM') {
+      return (
+        <Text>
+          <Text style={defaultStyles.defaultSemibold}>{from.name}</Text>
+          <Text style={defaultStyles.defaultLight}> liked your story</Text>
         </Text>
       );
     }

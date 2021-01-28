@@ -7,6 +7,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import { useQuery } from '@apollo/client';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
+import LoaderTiny from '../UI/LoaderTiny';
 
 // user is from SINGLE_USER_BASIC
 const FollowStatsDrawer = ({ username, activeTab }) => {
@@ -42,9 +43,13 @@ const FollowStatsDrawer = ({ username, activeTab }) => {
           navigation.navigate(activeTab || 'HomeStack', { screen: 'Followers', params: { username, followingCount } });
         }}
       >
-        <Text style={{ ...defaultStyles.largeSemibold, marginRight: 7, marginLeft: 0, color: colors.iosBlue }}>
-          {followersCount}
-        </Text>
+        {loading ? (
+          <LoaderTiny />
+        ) : (
+          <Text style={{ ...defaultStyles.largeSemibold, marginRight: 7, marginLeft: 0, color: colors.iosBlue }}>
+            {followersCount}
+          </Text>
+        )}
         <Text style={{ ...defaultStyles.largeMute, marginRight: 20 }}>Followers</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -54,9 +59,13 @@ const FollowStatsDrawer = ({ username, activeTab }) => {
           navigation.navigate(activeTab || 'HomeStack', { screen: 'Following', params: { username, followingCount } });
         }}
       >
-        <Text style={{ ...defaultStyles.largeSemibold, marginRight: 7, marginLeft: 0, color: colors.iosBlue }}>
-          {followingCount}
-        </Text>
+        {loading ? (
+          <LoaderTiny />
+        ) : (
+          <Text style={{ ...defaultStyles.largeSemibold, marginRight: 7, marginLeft: 0, color: colors.iosBlue }}>
+            {followingCount}
+          </Text>
+        )}
         <Text style={{ ...defaultStyles.largeMute, marginRight: 10 }}>Following</Text>
       </TouchableOpacity>
     </View>

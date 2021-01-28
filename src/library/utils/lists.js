@@ -79,6 +79,7 @@ export const goalsList = [
     adverb: 'for',
     emoji: '💰',
     iconColor: 'rgb(27, 38, 59)',
+    getsMatches: true,
   },
   {
     name: 'Find Freelancers',
@@ -93,6 +94,7 @@ export const goalsList = [
     adverb: 'for',
     emoji: '✏️',
     iconColor: 'rgb(27, 38, 59)',
+    getsMatches: true,
   },
   // {
   //   name: 'Find Agencies',
@@ -119,6 +121,7 @@ export const goalsList = [
     adverb: 'to discuss',
     emoji: '☕️',
     iconColor: 'rgb(27, 38, 59)',
+    getsMatches: true,
   },
   {
     name: 'Network',
@@ -132,7 +135,8 @@ export const goalsList = [
     heading: 'Which topic are you looking to network in?',
     adverb: 'in',
     iconColor: 'rgb(27, 38, 59)',
-    // emoji: '🤝',
+    emoji: '🤝',
+    getsMatches: true,
   },
   {
     name: 'Find Business Partners',
@@ -146,6 +150,8 @@ export const goalsList = [
     heading: 'Which topic are you looking for business partners in?',
     adverb: 'in',
     iconColor: 'rgb(27, 38, 59)',
+    emoji: '🤝',
+    getsMatches: true,
   },
   {
     name: 'Find Mentors',
@@ -160,6 +166,7 @@ export const goalsList = [
     adverb: 'in',
     iconColor: 'rgb(27, 38, 59)',
     emoji: '📚',
+    getsMatches: true,
   },
   {
     name: 'Get Advice',

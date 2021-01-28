@@ -54,7 +54,8 @@ const MatchesHats = ({ navigation, title, triggerRefresh }) => {
     const isFreelancer = myTopics.topicsFreelance.length > 0;
     const isMentor = myTopics.topicsMentor.length > 0;
     const isInvestor = myTopics.topicsInvest.length > 0;
-    const hasHats = isFreelancer || isMentor || isInvestor;
+    const isNetworker = myTopics.topicsInterest.length > 0;
+    const hasHats = isFreelancer || isMentor || isInvestor || isNetworker;
     // const hasHats = false;
 
     // if we have hats
@@ -74,6 +75,14 @@ const MatchesHats = ({ navigation, title, triggerRefresh }) => {
           )}
           {isMentor && (
             <HatMatchesRow navigation={navigation} hats={myTopics.topicsMentor} type="mentor" triggerRefresh={triggerRefresh} />
+          )}
+          {isNetworker && (
+            <HatMatchesRow
+              navigation={navigation}
+              hats={myTopics.topicsInterest}
+              type="network"
+              triggerRefresh={triggerRefresh}
+            />
           )}
         </>
       );

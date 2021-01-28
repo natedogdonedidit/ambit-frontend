@@ -19,6 +19,7 @@ const BellDot = ({ color }) => {
       orderBy: [{ createdAt: 'desc' }],
     },
     pollInterval: 120000, // 120 seconds
+    // pollInterval: 30000, // 30 seconds
   });
 
   // UPDATE # OF UNSEEN NOTIFICATIONS EVERYTIME NEW NOTIFICATIONS DATA COMES IN

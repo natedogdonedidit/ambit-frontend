@@ -22,6 +22,7 @@ import { UserContext } from 'library/utils/UserContext';
 import UPDATE_POST_MUTATION from 'library/mutations/UPDATE_POST_MUTATION';
 import { BasicPost } from 'library/queries/_fragments';
 import { DAYS_TILL_INACTIVE, DAYS_TILL_INACTIVE_NOTIFY } from 'styles/constants';
+import { goalsList } from 'library/utils/lists';
 
 const PostScreen = ({ navigation, route }) => {
   // ROUTE PARAMS
@@ -62,9 +63,10 @@ const PostScreen = ({ navigation, route }) => {
     if (data && data.post) {
       // if it is my post, and a goal
       if (post.owner.id === currentUserId && !!post.goal) {
-        const isCustomGoal = isCustomGoalTest(post.goal);
+        // const isCustomGoal = isCustomGoalTest(post.goal);
+        const getsMatches = goalsList.find((goal) => goal.name === post.goal && goal.getsMatches);
         // if not custom goal
-        if (!isCustomGoal) {
+        if (getsMatches) {
           getMatches();
         }
       }
@@ -96,8 +98,11 @@ const PostScreen = ({ navigation, route }) => {
   }
 
   const isMyPost = post.owner.id === currentUserId;
-  const isCustomGoal = isCustomGoalTest(post.goal);
-  const showMatches = isMyPost && !!post.goal && !isCustomGoal; // show # of matches only if its a non-custom goal by ME
+  // const isCustomGoal = isCustomGoalTest(post.goal);
+
+  // filter out goals that dont exist in goalsList (custom goals), and goals that dont get matches
+  const getsMatches = goalsList.find((goal) => goal.name === post.goal && goal.getsMatches);
+  const showMatches = isMyPost && !!post.goal && !!getsMatches; // show # of matches only if its a non-custom goal by ME
 
   const today = new Date();
   const daysSinceUpdated = differenceInCalendarDays(today, new Date(post.lastUpdated));
@@ -189,7 +194,7 @@ const PostScreen = ({ navigation, route }) => {
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
         {renderPost()}
-        <PostUpdates navigation={navigation} post={post} currentTime={currentTime} />
+        <PostUpdates navigation={navigation} post={post} currentTime={currentTime} isMyPost={isMyPost} />
         <PostComments navigation={navigation} post={post} />
       </ScrollView>
       {showPopover && <Popover onPress={handlePopoverSelect} messageComponent={messageComponent} />}

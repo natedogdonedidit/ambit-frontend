@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     // padding: 2,
     // backgroundColor: 'white',
     position: 'absolute',
-    bottom: -10,
+    bottom: -8,
     left: 13,
     borderRadius: 11,
     justifyContent: 'center',
@@ -36,10 +36,10 @@ const styles = StyleSheet.create({
   dot: {
     justifyContent: 'center',
     alignItems: 'center',
-    height: 8,
-    minWidth: 8,
-    paddingHorizontal: 4,
-    borderRadius: 4,
+    height: 6,
+    width: 6,
+    // paddingHorizontal: 4,
+    borderRadius: 3,
     backgroundColor: colors.peach,
   },
 });

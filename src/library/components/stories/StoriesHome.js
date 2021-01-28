@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { STORIES_HEIGHT } from 'styles/constants';
 import NewProjectButton from './NewProjectButton';
 import ForYouButton from './ForYouButton';
+import MoreTopicsStory from './MoreTopicsStory';
 
 function StoriesHome() {
   const navigation = useNavigation();
@@ -58,6 +59,7 @@ function StoriesHome() {
       <NewProjectButton />
       <ForYouButton />
       {renderTopicStories()}
+      <MoreTopicsStory followsTopics={favoriteTopics.length > 0} />
     </ScrollView>
   );
 }

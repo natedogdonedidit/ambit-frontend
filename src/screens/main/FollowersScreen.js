@@ -68,7 +68,7 @@ const FollowersScreen = ({ navigation, route }) => {
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
           // console.log(item);
-          return <UserListItem navigation={navigation} user={item} />;
+          return <UserListItem user={item} showFollow />;
         }}
       />
     </View>

@@ -11,6 +11,7 @@ import { isCustomGoalTest } from 'library/utils';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import { UserContext } from 'library/utils/UserContext';
 import Loader from 'library/components/UI/Loader';
+import { goalsList } from 'library/utils/lists';
 import ActiveGoalMatchesItem from './ActiveGoalMatchesItem';
 
 // MATCHES - BASED ON GOALS
@@ -47,7 +48,6 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
   const loadingPostsMyGoals = networkStatusPostsMyGoals === 1;
 
   // RENDER FUNCTIONS
-
   const renderRows = () => {
     // if loading my goals - render skeleton
     if (loadingPostsMyGoals || !dataPostsMyGoals) {
@@ -64,11 +64,26 @@ const MatchesGoals = ({ triggerRefresh, navigation, title }) => {
     // if we have data
     if (posts.length > 0) {
       // compile a lits of only non-custom goals
-      const nonCustomGoals = posts.filter((post) => !isCustomGoalTest(post.goal));
+      // const nonCustomGoals = posts.filter((post) => !isCustomGoalTest(post.goal));
 
-      // if we have non-custom goals
-      if (nonCustomGoals.length > 0) {
-        return nonCustomGoals.map((post) => {
+      const activeGoals = posts.filter((post) => {
+        // filter out non-active goals
+        if (post.goalStatus !== 'Active') {
+          return false;
+        }
+
+        // filter out goals that dont exist in goalsList (custom goals), and goals that dont get matches
+        const getsMatches = goalsList.find((goal) => goal.name === post.goal && goal.getsMatches);
+
+        if (getsMatches) {
+          return true;
+        }
+
+        return false;
+      });
+
+      if (activeGoals.length > 0) {
+        return activeGoals.map((post) => {
           return <ActiveGoalMatchesItem key={post.id} triggerRefresh={triggerRefresh} navigation={navigation} post={post} />;
         });
       }

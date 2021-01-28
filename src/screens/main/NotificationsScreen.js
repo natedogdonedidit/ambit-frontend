@@ -141,7 +141,8 @@ const NotificationsScreen = ({ navigation }) => {
 
   if (loading || error || !data) {
     return (
-      <View style={{ ...styles.container, paddingTop: top }}>
+      <View style={{ ...styles.container }}>
+        <View style={{ height: top, backgroundColor: colors.white }} />
         <HeaderNotifications
           handleMiddle={() => null}
           handleRight={() => navigation.navigate('Search')}

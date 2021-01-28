@@ -21,6 +21,7 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
     if (type === 'invest') return 'Find Investors';
     if (type === 'freelance') return 'Find Freelancers';
     if (type === 'mentor') return 'Find Mentors';
+    if (type === 'network') return 'Network';
     return '';
   }, [type]);
 
@@ -71,6 +72,9 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
     if (type === 'mentor') {
       return <Icon name="user-friends" size={24} color={colors.purp} solid />;
     }
+    if (type === 'network') {
+      return <Icon name="users" size={24} color={colors.purp} solid />;
+    }
   };
 
   const renderTitle = () => {
@@ -93,6 +97,13 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
         return (
           <Text style={{ paddingRight: 12 }}>
             <Text style={defaultStyles.defaultMuteItalic}>Finding mentorship opportunities for you...</Text>
+          </Text>
+        );
+      }
+      if (type === 'network') {
+        return (
+          <Text style={{ paddingRight: 12 }}>
+            <Text style={defaultStyles.defaultMuteItalic}>Finding network opportunities for you...</Text>
           </Text>
         );
       }
@@ -138,6 +149,19 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
           </Text>
         );
       }
+      if (type === 'network') {
+        return (
+          <Text style={{ paddingRight: 12 }}>
+            <Text style={defaultStyles.defaultText}>
+              Found {matchingPosts.length} potential{' '}
+              <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>
+                network opportunit{matchingPosts.length > 1 ? 'ies' : 'y'}
+              </Text>{' '}
+              for you
+            </Text>
+          </Text>
+        );
+      }
     }
 
     // if we could not find any matches
@@ -159,6 +183,13 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
       return (
         <Text style={{ paddingRight: 12 }}>
           <Text style={defaultStyles.defaultMuteItalic}>No new mentorship opportunities, check back later!</Text>{' '}
+        </Text>
+      );
+    }
+    if (type === 'network') {
+      return (
+        <Text style={{ paddingRight: 12 }}>
+          <Text style={defaultStyles.defaultMuteItalic}>No new network opportunities, check back later!</Text>{' '}
         </Text>
       );
     }

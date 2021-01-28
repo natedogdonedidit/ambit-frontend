@@ -6,6 +6,7 @@ import defaultStyles from 'styles/defaultStyles';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import SINGLE_USER_BIO from 'library/queries/SINGLE_USER_BIO';
 import { useQuery } from '@apollo/client';
+import LoaderTiny from '../UI/LoaderTiny';
 
 // user is from SINGLE_USER_BASIC
 const FollowStats = ({ username, navigation }) => {
@@ -39,9 +40,13 @@ const FollowStats = ({ username, navigation }) => {
           navigation.navigate({ name: 'Followers', key: `Followers:${username}`, params: { username, followingCount } })
         }
       >
-        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
-          {followersCount}
-        </Text>
+        {loading ? (
+          <LoaderTiny />
+        ) : (
+          <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
+            {followersCount}
+          </Text>
+        )}
         <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Followers</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -51,9 +56,13 @@ const FollowStats = ({ username, navigation }) => {
           navigation.navigate({ name: 'Following', key: `Following:${username}`, params: { username, followingCount } })
         }
       >
-        <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
-          {followingCount}
-        </Text>
+        {loading ? (
+          <LoaderTiny />
+        ) : (
+          <Text style={{ ...defaultStyles.defaultSemibold, marginRight: 5, marginLeft: 0, color: colors.iosBlue }}>
+            {followingCount}
+          </Text>
+        )}
         <Text style={{ ...defaultStyles.defaultMute, marginRight: 10 }}>Following</Text>
       </TouchableOpacity>
     </View>

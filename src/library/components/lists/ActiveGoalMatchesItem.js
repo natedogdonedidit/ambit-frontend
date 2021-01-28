@@ -54,7 +54,7 @@ const ActiveGoalMatchesItem = ({ navigation, post, triggerRefresh }) => {
   }
 
   const renderIcon = () => {
-    return <Text style={{ fontSize: 28 }}>{getGoalInfo(post.goal, 'emoji')}</Text>;
+    return <Text style={{ fontSize: 32 }}>{getGoalInfo(post.goal, 'emoji')}</Text>;
     // return (
     //   <Icon
     //     name={getGoalInfo(post.goal, 'icon')}

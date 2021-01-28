@@ -72,17 +72,29 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
       hasUnread = latestMessage.unread || false;
     }
 
+    let { content } = latestMessage;
+
+    // if it is a share, set content to 'Shared a [thing]'
+    if (latestMessage.isShare) {
+      // separate TYPE from text
+      const textSplit = content.split(':');
+      const type = textSplit[0].toLowerCase();
+
+      content = `Shared a ${type}`;
+    }
+
     return (
       <View style={styles.rightSide}>
         <View style={styles.topRow}>
           <Text style={{ ...defaultStyles.largeSemibold }}>{otherUser.name}</Text>
-          <Text style={defaultStyles.defaultMute}>
-            {timeDiff} {period}
+          <Text style={defaultStyles.smallMute}>
+            {timeDiff}
+            {period}
           </Text>
         </View>
         <View style={styles.bottomRow}>
           <View style={{ flex: 1 }}>
-            <Text style={{ ...defaultStyles.largeMute }}>{latestMessage.isShare ? `Shared a post` : latestMessage.content}</Text>
+            <Text style={{ ...defaultStyles.largeMute }}>{content}</Text>
           </View>
           <View style={{ width: 20, justifyContent: 'center' }}>{hasUnread && <View style={styles.redDot} />}</View>
         </View>

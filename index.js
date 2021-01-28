@@ -78,7 +78,7 @@ const httpLink = new HttpLink({
     // ios: 'http://172.16.227.28:4000', // starbucks
     // ios: 'http://192.168.0.16:4000', // Moms
     // ios: 'https://ambit-yoga-prod.herokuapp.com/',
-    ios: 'https://ambit-backend-nexus.herokuapp.com/graphql',
+    ios: 'https://ambit-backend-nexus.herokuapp.com/graphql', // heroku prod
   }),
   // fetch: unfetch, // required so Network Inspect works on RNdebugger
 });
@@ -95,7 +95,7 @@ const wsLink = new WebSocketLink({
     // ios: 'ws://172.16.227.28:4000', // starbucks
     // ios: 'ws://192.168.0.16:4000', // Moms
     // ios: 'ws://ambit-yoga-prod.herokuapp.com/',
-    ios: 'ws://ambit-backend-nexus.herokuapp.com/graphql',
+    ios: 'ws://ambit-backend-nexus.herokuapp.com/graphql', // heroku prod
   }),
   options: {
     reconnect: true,

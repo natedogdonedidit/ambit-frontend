@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/client';
@@ -14,16 +14,69 @@ import defaultStyles from 'styles/defaultStyles';
 import { VERSION } from 'styles/constants';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
 import FollowStatsDrawer from './profile/FollowStatsDrawer';
 
 const CustomDrawer = () => {
   // const client = useApolloClient();
+  const navigation = useNavigation();
   const { logoutCTX, activeTab } = useContext(UserContext);
+
+  // count the number of topics that you follow to display #
+  const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
+  const numInvest = useMemo(() => {
+    if (
+      dataTopics &&
+      dataTopics.userLoggedIn &&
+      dataTopics.userLoggedIn.topicsFocus &&
+      Array.isArray(dataTopics.userLoggedIn.topicsFocus)
+    ) {
+      return dataTopics.userLoggedIn.topicsFocus.length;
+    }
+
+    return 0;
+  }, [dataTopics]);
+  const numFreelance = useMemo(() => {
+    if (
+      dataTopics &&
+      dataTopics.userLoggedIn &&
+      dataTopics.userLoggedIn.topicsFreelance &&
+      Array.isArray(dataTopics.userLoggedIn.topicsFreelance)
+    ) {
+      return dataTopics.userLoggedIn.topicsFreelance.length;
+    }
+
+    return 0;
+  }, [dataTopics]);
+  const numMentor = useMemo(() => {
+    if (
+      dataTopics &&
+      dataTopics.userLoggedIn &&
+      dataTopics.userLoggedIn.topicsMentor &&
+      Array.isArray(dataTopics.userLoggedIn.topicsMentor)
+    ) {
+      return dataTopics.userLoggedIn.topicsMentor.length;
+    }
+
+    return 0;
+  }, [dataTopics]);
+  const numNetwork = useMemo(() => {
+    if (
+      dataTopics &&
+      dataTopics.userLoggedIn &&
+      dataTopics.userLoggedIn.topicsInterest &&
+      Array.isArray(dataTopics.userLoggedIn.topicsInterest)
+    ) {
+      return dataTopics.userLoggedIn.topicsInterest.length;
+    }
+
+    return 0;
+  }, [dataTopics]);
+
+  // get the current user
   const { loading, error, data } = useQuery(CURRENT_USER_QUERY, {
     onError: () => handleLogout(),
   });
-
-  const navigation = useNavigation();
 
   if (loading) return null;
   if (error) return <Text>{`Error! ${error}`}</Text>;
@@ -129,6 +182,9 @@ const CustomDrawer = () => {
               <Feather name="trending-up" size={22} color={colors.green} />
             </View>
             <Text style={styles.buttonText}>Invest</Text>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.green }}>{numInvest}</Text>
+            </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -143,6 +199,9 @@ const CustomDrawer = () => {
               <Feather name="briefcase" size={22} color={colors.peach} />
             </View>
             <Text style={styles.buttonText}>Freelance</Text>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.peach }}>{numFreelance}</Text>
+            </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -157,6 +216,9 @@ const CustomDrawer = () => {
               <Feather name="users" size={22} color={colors.purp} />
             </View>
             <Text style={styles.buttonText}>Mentor</Text>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.purp }}>{numMentor}</Text>
+            </View>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -171,6 +233,9 @@ const CustomDrawer = () => {
               <Feather name="coffee" size={22} color={colors.orange} />
             </View>
             <Text style={styles.buttonText}>Network</Text>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.orange }}>{numNetwork}</Text>
+            </View>
           </View>
         </TouchableOpacity>
       </View>

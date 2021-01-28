@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { useQuery } from '@apollo/client';
+import { useNavigation } from '@react-navigation/native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -11,7 +12,6 @@ import SINGLE_USER_FOLLOW_LIST from 'library/queries/SINGLE_USER_FOLLOW_LIST';
 import Loader from 'library/components/UI/Loader';
 import Error from 'library/components/UI/Error';
 import UserListItem from 'library/components/lists/UserListItem';
-import { useNavigation } from '@react-navigation/native';
 
 const FollowingScreen = ({ route }) => {
   const { username, followingCount } = route.params;
@@ -69,7 +69,7 @@ const FollowingScreen = ({ route }) => {
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => {
           // console.log(item);
-          return <UserListItem navigation={navigation} user={item} />;
+          return <UserListItem user={item} showFollow />;
         }}
       />
     </View>

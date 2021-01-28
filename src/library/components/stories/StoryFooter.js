@@ -7,7 +7,8 @@ import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { getTopicFromID } from 'library/utils';
 import { useMutation } from '@apollo/client';
-import UPDATE_STORY_ITEM_MUTATION from 'library/mutations/UPDATE_STORY_ITEM_MUTATION';
+import LIKE_STORY_ITEM_MUTATION from 'library/mutations/LIKE_STORY_ITEM_MUTATION';
+import UNLIKE_STORY_ITEM_MUTATION from 'library/mutations/UNLIKE_STORY_ITEM_MUTATION';
 // import UNLIKE_STORYITEM_MUTATION from 'library/mutations/UNLIKE_STORYITEM_MUTATION';
 import { StoryItemFragment } from 'library/queries/_fragments';
 import { UserContext } from 'library/utils/UserContext';
@@ -53,9 +54,9 @@ function StoryFooter({
   const { id, plays, text, link } = item;
 
   // MUTATIONS
-  const [likeStoryItem, { loading: loadingLike }] = useMutation(UPDATE_STORY_ITEM_MUTATION);
+  const [likeStoryItem, { loading: loadingLike }] = useMutation(LIKE_STORY_ITEM_MUTATION);
 
-  const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UPDATE_STORY_ITEM_MUTATION, {
+  const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UNLIKE_STORY_ITEM_MUTATION, {
     onError: () => null,
   });
 
