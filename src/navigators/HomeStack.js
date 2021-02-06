@@ -10,7 +10,7 @@ import PostScreen from 'screens/main/PostScreen';
 import PostMatchesScreen from 'screens/main/PostMatchesScreen';
 import UpdateScreen from 'screens/main/UpdateScreen';
 import TopicScreen from 'screens/main/TopicScreen';
-import SearchScreen from 'screens/main/SearchScreen';
+import ConvosScreen from 'screens/main/ConvosScreen';
 import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';
 
@@ -45,7 +45,8 @@ const HomeStack = ({ navigation, route }) => {
       <Stack.Screen name="Topic" component={TopicScreen} />
       <Stack.Screen name="Followers" component={FollowersScreen} />
       <Stack.Screen name="Following" component={FollowingScreen} />
-      <Stack.Screen
+      <Stack.Screen name="Convos" component={ConvosScreen} />
+      {/* <Stack.Screen
         name="Search"
         component={SearchScreen}
         initialParams={{
@@ -55,7 +56,7 @@ const HomeStack = ({ navigation, route }) => {
           locationLatToSearch: null,
           locationLonToSearch: null,
         }}
-      />
+      /> */}
       <Stack.Screen name="Chat" component={ChatScreen} />
     </Stack.Navigator>
   );

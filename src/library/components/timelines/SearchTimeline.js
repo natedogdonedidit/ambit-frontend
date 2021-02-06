@@ -9,10 +9,10 @@ import Loader from 'library/components/UI/Loader';
 import { rad2Deg, deg2Rad, buildSearchWhere } from 'library/utils';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 
-const SearchTimeline = ({ navigation, scrollY, activeTab, textInput, goal, topicIDs, locationLat, locationLon }) => {
+const SearchTimeline = ({ navigation, scrollY, searchText, goal, topicIDs, locationLat, locationLon }) => {
   // STATE
 
-  const where = buildSearchWhere({ text: textInput, goal, topicIDs, lat: locationLat, lon: locationLon });
+  const where = buildSearchWhere({ text: searchText, goal, topicIDs, lat: locationLat, lon: locationLon });
 
   // QUERIES
   const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_WHERE_QUERY, {

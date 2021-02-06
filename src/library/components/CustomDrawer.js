@@ -24,7 +24,7 @@ const CustomDrawer = () => {
 
   // count the number of topics that you follow to display #
   const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
-  const numInvest = useMemo(() => {
+  const numTopics = useMemo(() => {
     if (
       dataTopics &&
       dataTopics.userLoggedIn &&
@@ -32,6 +32,18 @@ const CustomDrawer = () => {
       Array.isArray(dataTopics.userLoggedIn.topicsFocus)
     ) {
       return dataTopics.userLoggedIn.topicsFocus.length;
+    }
+
+    return 0;
+  }, [dataTopics]);
+  const numInvest = useMemo(() => {
+    if (
+      dataTopics &&
+      dataTopics.userLoggedIn &&
+      dataTopics.userLoggedIn.topicsInvest &&
+      Array.isArray(dataTopics.userLoggedIn.topicsInvest)
+    ) {
+      return dataTopics.userLoggedIn.topicsInvest.length;
     }
 
     return 0;
@@ -160,6 +172,9 @@ const CustomDrawer = () => {
               <Ionicons name="chatbubbles-outline" size={24} color={colors.blueGray} />
             </View>
             <Text style={styles.buttonText}>Topics</Text>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <Text style={{ ...defaultStyles.largeMedium, color: colors.blueGray }}>{numTopics}</Text>
+            </View>
           </View>
         </TouchableOpacity>
         <View

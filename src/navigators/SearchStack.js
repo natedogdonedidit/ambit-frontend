@@ -15,7 +15,7 @@ import FollowingScreen from 'screens/main/FollowingScreen';
 
 const Stack = createStackNavigator();
 
-const InboxStack = ({ navigation, route }) => {
+const SearchStack = ({ navigation, route }) => {
   // hides the tabs in Chat screen
   useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route) || 'HomeStack';
@@ -25,20 +25,9 @@ const InboxStack = ({ navigation, route }) => {
     });
   }, [navigation, route]);
 
-  // NOT BEING USED !!
-
   return (
-    <Stack.Navigator initialRouteName="Convos" headerMode="none">
-      <Stack.Screen name="Convos" component={ConvosScreen} />
-
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Post" component={PostScreen} />
-      <Stack.Screen name="PostMatches" component={PostMatchesScreen} />
-      <Stack.Screen name="Update" component={UpdateScreen} />
-      <Stack.Screen name="Topic" component={TopicScreen} />
-      <Stack.Screen name="Followers" component={FollowersScreen} />
-      <Stack.Screen name="Following" component={FollowingScreen} />
-      {/* <Stack.Screen
+    <Stack.Navigator initialRouteName="Search" headerMode="none">
+      <Stack.Screen
         name="Search"
         component={SearchScreen}
         initialParams={{
@@ -48,11 +37,19 @@ const InboxStack = ({ navigation, route }) => {
           locationLatToSearch: null,
           locationLonToSearch: null,
         }}
-      /> */}
+      />
+
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Post" component={PostScreen} />
+      <Stack.Screen name="PostMatches" component={PostMatchesScreen} />
+      <Stack.Screen name="Update" component={UpdateScreen} />
+      <Stack.Screen name="Topic" component={TopicScreen} />
+      <Stack.Screen name="Followers" component={FollowersScreen} />
+      <Stack.Screen name="Following" component={FollowingScreen} />
 
       <Stack.Screen name="Chat" component={ChatScreen} />
     </Stack.Navigator>
   );
 };
 
-export default InboxStack;
+export default SearchStack;

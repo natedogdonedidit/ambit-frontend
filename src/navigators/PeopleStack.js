@@ -36,7 +36,7 @@ const PeopleStack = ({ navigation, route }) => {
       <Stack.Screen name="Topic" component={TopicScreen} />
       <Stack.Screen name="Followers" component={FollowersScreen} />
       <Stack.Screen name="Following" component={FollowingScreen} />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Search"
         component={SearchScreen}
         initialParams={{
@@ -46,7 +46,7 @@ const PeopleStack = ({ navigation, route }) => {
           locationLatToSearch: null,
           locationLonToSearch: null,
         }}
-      />
+      /> */}
 
       <Stack.Screen name="Chat" component={ChatScreen} />
     </Stack.Navigator>

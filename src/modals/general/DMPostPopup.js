@@ -20,7 +20,7 @@ import Loader from 'library/components/UI/Loader';
 
 const DMPostPopup = ({ navigation, route }) => {
   const { postId, storyItemId, storyId, topicID, isNewMessage } = route.params; // only one of these should be truthy
-  const { currentUserId } = useContext(UserContext);
+  const { currentUserId, activeTab } = useContext(UserContext);
 
   const insets = useSafeAreaInsets();
 
@@ -127,7 +127,12 @@ const DMPostPopup = ({ navigation, route }) => {
   const handleMentionSelect = async (userSelected) => {
     if (isNewMessage) {
       // if we are just sending a new message - go to Chat screen
-      navigation.navigate({ name: 'Chat', key: `Chat:${userSelected.id}`, params: { otherUserPassedIn: userSelected } });
+      // navigation.navigate({ name: 'Chat', key: `Chat:${userSelected.id}`, params: { otherUserPassedIn: userSelected } });
+      navigation.navigate(activeTab || 'HomeStack', {
+        screen: 'Chat',
+        key: `Chat:${userSelected.id}`,
+        params: { otherUserPassedIn: userSelected },
+      });
     } else {
       // if we are sharing a Post, Story, or Topic. Create message then go to Chat screen
       let content = '';
@@ -151,7 +156,13 @@ const DMPostPopup = ({ navigation, route }) => {
         },
       });
 
-      navigation.navigate({ name: 'Chat', key: `Chat:${userSelected.id}`, params: { otherUserPassedIn: userSelected } });
+      navigation.navigate(activeTab || 'HomeStack', {
+        screen: 'Chat',
+        key: `Chat:${userSelected.id}`,
+        params: { otherUserPassedIn: userSelected },
+      });
+
+      // navigation.navigate({ name: 'Chat', key: `Chat:${userSelected.id}`, params: { otherUserPassedIn: userSelected } });
     }
   };
 

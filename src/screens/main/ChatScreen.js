@@ -62,7 +62,6 @@ const ChatScreen = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <HeaderBack
-        navigation={navigation}
         title={otherUserPassedIn.name}
         // textRight={<Ionicons name="refresh-outline" size={24} color={colors.purp} />}
         // handleRight={handleRefresh}

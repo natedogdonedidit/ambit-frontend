@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeStack from 'navigators/HomeStack';
 import PeopleStack from 'navigators/PeopleStack';
 import NotificationsStack from 'navigators/NotificationsStack';
+import SearchStack from 'navigators/SearchStack';
 import InboxStack from 'navigators/InboxStack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
@@ -110,12 +111,19 @@ const TabsNavigator = ({ route }) => {
         }}
       />
       <Tabs.Screen
+        name="SearchStack"
+        component={SearchStack}
+        options={{
+          tabBarIcon: ({ focused, color, size }) => <Icon name="search" size={21} color={color} style={{ paddingLeft: 1 }} />,
+        }}
+      />
+      {/* <Tabs.Screen
         name="InboxStack"
         component={InboxStack}
         options={{
           tabBarIcon: ({ focused, color, size }) => <EnvelopeDot color={color} />,
         }}
-      />
+      /> */}
     </Tabs.Navigator>
   );
 };

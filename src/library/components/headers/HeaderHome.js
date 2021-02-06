@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useQuery } from '@apollo/client';
 // import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -34,9 +35,10 @@ const HeaderHome = ({ handleMiddle, activeTimeline, setActiveTimeline }) => {
               <Icon name="star" solid size={16} color={colors.black} style={{ paddingLeft: 1 }} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Search')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Convos')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
             <View style={styles.iconCircle}>
-              <Icon name="search" size={16} color={colors.black} style={{ paddingLeft: 1 }} />
+              {/* <Icon name="search" size={16} color={colors.black} style={{ paddingLeft: 1 }} /> */}
+              <Ionicons name="ios-chatbubble-ellipses" size={20} color={colors.black} style={{ paddingLeft: 1 }} />
             </View>
           </TouchableOpacity>
         </View>

@@ -194,7 +194,7 @@ const PostScreen = ({ navigation, route }) => {
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={{ paddingBottom: 20 }}>
         {renderPost()}
-        <PostUpdates navigation={navigation} post={post} currentTime={currentTime} isMyPost={isMyPost} />
+        {post.goal && <PostUpdates navigation={navigation} post={post} currentTime={currentTime} isMyPost={isMyPost} />}
         <PostComments navigation={navigation} post={post} />
       </ScrollView>
       {showPopover && <Popover onPress={handlePopoverSelect} messageComponent={messageComponent} />}

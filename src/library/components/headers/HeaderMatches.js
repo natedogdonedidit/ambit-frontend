@@ -22,11 +22,12 @@ const HeaderMatches = ({ navigation, handleMiddle, handleRight }) => {
       <TouchableOpacity style={styles.middleSection} onPress={handleMiddle}>
         <Text style={{ ...defaultStyles.headerSmall, color: colors.black }}>Connect</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
+      <View style={styles.rightSide} />
+      {/* <TouchableOpacity style={styles.rightSide} onPress={handleRight} hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}>
         <View style={styles.iconCircle}>
           <Icon name="search" size={16} color={colors.black} style={{ paddingLeft: 1 }} />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
