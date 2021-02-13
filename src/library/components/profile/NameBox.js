@@ -21,10 +21,10 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   return (
     <View style={{ ...styles.profileBox }}>
       <Text style={{ fontFamily: 'SFProDisplay-Bold', fontSize: 20, fontWeight: '600', ...styles.name }}>{user.name}</Text>
-      {user.username && (
+      {!!user.username && (
         <Text style={{ ...defaultStyles.defaultMute, fontWeight: '500', ...styles.headline }}>@{user.username}</Text>
       )}
-      {user.bio && <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>}
+      {!!user.bio && <Text style={{ ...defaultStyles.defaultText, ...styles.bio }}>{user.bio}</Text>}
       {!!user.website && <View style={styles.detailsBox}>{renderWebsite()}</View>}
       <FollowStats username={user.username} navigation={navigation} />
 

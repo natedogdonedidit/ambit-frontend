@@ -55,7 +55,7 @@ const errorLink = onError(({ graphQLErrors }) => {
 const authLink = setContext(async (req, { headers }) => {
   // grab token from AsyncStorage
   const token = await getToken();
-  // console.log(token);
+  // console.log('chad', token);
 
   // put token in authorization header
   return {

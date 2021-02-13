@@ -197,7 +197,7 @@ const ProfileComponent = ({ navigation, username, scrollY, loading, user, OUTSID
         }}
       >
         <Text style={{ ...defaultStyles.largeHeavy, color: 'white' }}>{user.name}</Text>
-        {user.headline && <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>@{user.username}</Text>}
+        {!!user.headline && <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>@{user.username}</Text>}
       </Animated.View>
 
       {/* Back Button */}

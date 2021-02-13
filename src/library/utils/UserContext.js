@@ -10,6 +10,7 @@ import { signIn, signOut, getTokenAndUser } from 'library/utils/authUtil'
 const UserContext = createContext();
 
 const UserContextProvider = (props) => {
+  const [loadingApp, setLoadingApp] = useState(true);
   const [loadingToken, setLoadingToken] = useState(true);
   const [showNetworkActivity, setShowNetworkActivity] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
@@ -24,6 +25,7 @@ const UserContextProvider = (props) => {
   // INITIAL RENDER -> get user token out of Async Storage
   useEffect(() => {
     const fetchTokenAndUser = async () => {
+      setLoadingApp(true);
       setLoadingToken(true);
       const { token, userID, username } = await getTokenAndUser();
 
@@ -37,6 +39,7 @@ const UserContextProvider = (props) => {
         await setCurrentUsername('');
       }
 
+      setLoadingApp(false);
       setLoadingToken(false);
     };
     fetchTokenAndUser();
@@ -89,8 +92,8 @@ const UserContextProvider = (props) => {
   return (
     <UserContext.Provider
       value={{
+        loadingApp,
         loadingToken,
-        // setLoadingToken,
         currentUserId,
         currentUsername,
         loginCTX,

@@ -99,8 +99,15 @@ const MainStack = ({ navigation }) => {
       // cursor: null,
     },
   });
+  const { data: postsData2, loading: loadingPosts2 } = useQuery(POSTS_FORYOU_QUERY, {
+    variables: {
+      feed: 'foryou',
+      take: 10,
+      // cursor: null,
+    },
+  });
 
-  const readyToDisplay = userData && storyData && postsData;
+  const readyToDisplay = userData && storyData && postsData && postsData2;
 
   // this might cause the splash screen to render every time current_user_query runs
   // this should only render upon the first time we are loading the CURRENT_USER_QUERY

@@ -312,6 +312,11 @@ const styles = StyleSheet.create({
     fontSize: huge,
     fontFamily: 'SFProDisplay-Heavy',
   },
+  bigInput: {
+    color: colors.black,
+    fontSize: 24,
+    fontFamily: 'SFProDisplay-Medium',
+  },
 
   headerHat: {
     color: colors.black,

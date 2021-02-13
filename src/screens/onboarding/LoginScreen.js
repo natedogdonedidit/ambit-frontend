@@ -78,13 +78,13 @@ const LoginScreen = ({ navigation }) => {
         <Text style={{ ...defaultStyles.ambitLogo, fontSize: 36, paddingTop: 45, paddingBottom: 35 }}>ambit</Text>
         <TextInput
           style={styles.input}
-          placeholder="Email or username"
+          placeholder="Username or phone number"
           value={username}
           onChangeText={(val) => setUsername(val)}
           editable={!loading}
           autoCapitalize="none"
-          textContentType="emailAddress"
-          keyboardType="email-address"
+          // textContentType="emailAddress"
+          // keyboardType="email-address"
         />
         <TextInput
           style={styles.input}
@@ -97,14 +97,14 @@ const LoginScreen = ({ navigation }) => {
         />
 
         <TouchableOpacity onPress={onLoginSubmit} style={{ ...styles.button }} activeOpacity={0.8}>
-          <Text style={{ ...defaultStyles.hugeMedium, color: 'white' }}>Sign{loading ? 'ing in...' : ' in'}</Text>
+          <Text style={{ ...defaultStyles.hugeMedium, color: 'white' }}>{loading ? 'Logging in...' : ' Login'}</Text>
         </TouchableOpacity>
 
-        <TextButton buttonStyle={{ marginTop: 44 }}>Forgot password</TextButton>
+        <TextButton buttonStyle={{ marginTop: 34 }}>Forgot password</TextButton>
         {renderErrors()}
         <View style={{ flex: 1 }} />
 
-        <TextButton onPress={() => navigation.navigate('CreateAccount')}>Don't have an account? Create here</TextButton>
+        <TextButton onPress={() => navigation.navigate('Welcome')}>Don't have an account? Sign up</TextButton>
       </SafeAreaView>
     </View>
   );

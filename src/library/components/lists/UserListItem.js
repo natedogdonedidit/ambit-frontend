@@ -39,9 +39,9 @@ const UserListItem = ({ user, showFollow, showHide, postId, selectedUser, setSel
         </View>
         <View style={styles.rightSide}>
           <Text style={defaultStyles.largeSemibold}>{user.name}</Text>
-          {user.username && <Text style={defaultStyles.defaultMute}>@{user.username}</Text>}
+          {!!user.username && <Text style={defaultStyles.defaultMute}>@{user.username}</Text>}
           {/* {user.location && <Text style={defaultStyles.defaultMute}>{user.location}</Text>} */}
-          {user.bio && <Text style={{ ...defaultStyles.defaultText, paddingTop: 8 }}>{user.bio}</Text>}
+          {!!user.bio && <Text style={{ ...defaultStyles.defaultText, paddingTop: 8 }}>{user.bio}</Text>}
           <View style={styles.absoluteButtons}>
             {showFollow && <FollowButton userToFollowID={user.id} username={user.username} small onRow />}
             {showHide && (

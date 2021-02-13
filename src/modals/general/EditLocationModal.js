@@ -22,14 +22,14 @@ const EditLocationModal = ({ navigation, route }) => {
       const res = await fetch(url, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
       });
       if (res.status === 200) {
         const resJson = await res.json();
         let cities = [];
         if (resJson.suggestions) {
-          cities = resJson.suggestions.filter(loc => loc.matchLevel === 'city');
+          cities = resJson.suggestions.filter((loc) => loc.matchLevel === 'city');
         }
         setLocationList(cities);
       }
@@ -47,7 +47,7 @@ const EditLocationModal = ({ navigation, route }) => {
       const response = await fetch(url, {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
       });
       if (response.status === 200) {
@@ -81,7 +81,7 @@ const EditLocationModal = ({ navigation, route }) => {
     navigation.goBack();
   };
 
-  const handleSelect = async id => {
+  const handleSelect = async (id) => {
     try {
       const locObject = await getSingleLocationFromAPI(id);
       // console.log(locObject);
@@ -122,10 +122,12 @@ const EditLocationModal = ({ navigation, route }) => {
       <View style={styles.inputRow}>
         <TextInput
           style={{ ...styles.input, ...defaultStyles.defaultText }}
-          onChangeText={val => setLocationInput(val)}
+          onChangeText={(val) => setLocationInput(val)}
           value={locationInput}
           placeholder="San Francisco, CA"
           autoFocus
+          autoCompleteType="off"
+          textContentType="none"
         />
         <TouchableOpacity onPress={() => setLocationInput('')} hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}>
           <Icon name="times-circle" solid size={15} color={colors.iconGray} />

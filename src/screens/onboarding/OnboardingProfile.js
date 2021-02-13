@@ -19,10 +19,10 @@ const OnboardingProfile = ({ navigation, route }) => {
   const { username } = route.params;
 
   const [profilePic, setProfilePic] = useState('');
-  const [location, setLocation] = useState('');
-  const [locationID, setLocationID] = useState('');
-  const [locationLat, setLocationLat] = useState('');
-  const [locationLon, setLocationLon] = useState('');
+  // const [location, setLocation] = useState('');
+  // const [locationID, setLocationID] = useState('');
+  // const [locationLat, setLocationLat] = useState('');
+  // const [locationLon, setLocationLon] = useState('');
 
   // MUTATION
   const [updateOneUser, { loading: loadingEdit, error, data }] = useMutation(UPDATE_USER_MUTATION, {
@@ -30,10 +30,10 @@ const OnboardingProfile = ({ navigation, route }) => {
       where: { username },
       data: {
         profilePic,
-        location,
-        locationID,
-        locationLat,
-        locationLon,
+        // location,
+        // locationID,
+        // locationLat,
+        // locationLon,
       },
     },
   });
@@ -66,10 +66,10 @@ const OnboardingProfile = ({ navigation, route }) => {
           where: { username },
           data: {
             profilePic: url,
-            location,
-            locationID,
-            locationLat,
-            locationLon,
+            // location,
+            // locationID,
+            // locationLat,
+            // locationLon,
           },
         },
       });
@@ -79,14 +79,14 @@ const OnboardingProfile = ({ navigation, route }) => {
   };
 
   // must pass this to location modal
-  const handleLocationSelect = (locObject) => {
-    if (locObject) {
-      setLocation(locObject.location);
-      setLocationID(locObject.locationID);
-      setLocationLat(locObject.locationLat);
-      setLocationLon(locObject.locationLon);
-    }
-  };
+  // const handleLocationSelect = (locObject) => {
+  //   if (locObject) {
+  //     setLocation(locObject.location);
+  //     setLocationID(locObject.locationID);
+  //     setLocationLat(locObject.locationLat);
+  //     setLocationLon(locObject.locationLon);
+  //   }
+  // };
 
   return (
     <View style={{ flex: 1 }}>
@@ -95,22 +95,29 @@ const OnboardingProfile = ({ navigation, route }) => {
           <Text style={{ ...defaultStyles.ambitLogoSmall }}>ambit</Text>
         </View>
         <View style={styles.picSection}>
-          {username && <Text style={{ ...defaultStyles.hugeSemibold, paddingTop: 20, fontSize: 22 }}>Hi, {username}!</Text>}
-          <View style={styles.profilePic}>
-            <Image
-              source={{ uri: profilePic || profilePicExample }}
-              style={{ width: `100%`, height: '100%' }}
-              // resizeMode="contain"
-              resizeMode="cover"
-              // overflow="hidden"
-            />
-          </View>
+          {/* {username && <Text style={{ ...defaultStyles.hugeSemibold, paddingTop: 20, fontSize: 22 }}>Hi, {username}!</Text>} */}
+          <Text style={{ ...defaultStyles.headerMedium, textAlign: 'center', paddingBottom: 40 }}>
+            Select your profile{`\n`}picture
+          </Text>
+          <TouchableOpacity activeOpacity={0.7} onPress={handleEditPicButton}>
+            <View style={styles.profilePic}>
+              <Image
+                source={{ uri: profilePic || profilePicExample }}
+                style={{ width: `100%`, height: '100%', opacity: profilePic ? 1 : 0.4 }}
+                // resizeMode="contain"
+                resizeMode="cover"
+                // overflow="hidden"
+              />
+            </View>
+          </TouchableOpacity>
+
           <TextButton textStyle={styles.editButton} onPress={handleEditPicButton}>
             Edit Profile Pic
           </TextButton>
         </View>
-        <View style={styles.formSection}>
+        {/* <View style={styles.formSection}>
           <TouchableOpacity
+            activeOpacity={0.7}
             onPress={() => navigation.navigate('EditLocationModalRight', { initialLocation: location, handleLocationSelect })}
             style={{ flexDirection: 'row', alignItems: 'center', height: 40, position: 'relative' }}
           >
@@ -142,7 +149,9 @@ const OnboardingProfile = ({ navigation, route }) => {
               )}
             </View>
           </TouchableOpacity>
-        </View>
+        </View> */}
+
+        <View style={{ flex: 1 }} />
 
         <View style={styles.bottom}>
           {/* <TextButton onPress={() => navigation.navigate('MainStack')}>Skip</TextButton> */}
