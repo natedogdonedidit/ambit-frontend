@@ -129,7 +129,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
             setName(val);
           }}
           editable={!loading}
-          textContentType="name"
+          textContentType="none"
           autoCompleteType="name"
           autoCapitalize="words"
         />
@@ -190,6 +190,12 @@ const CreateAccountScreen = ({ navigation, route }) => {
         <View style={{ flex: 1 }} />
 
         {/* <TextButton onPress={() => navigation.navigate('Login')}>Already have an account? Login here</TextButton> */}
+        <TouchableOpacity onPress={() => navigation.navigate('Login')} activeOpacity={0.8}>
+          <Text style={{ ...defaultStyles.defaultMute, paddingBottom: 10, textAlign: 'center' }}>
+            Already have an account?{'  '}
+            <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>Login</Text>
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </View>
   );

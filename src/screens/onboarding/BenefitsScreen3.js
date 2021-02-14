@@ -23,7 +23,7 @@ const BenefitsScreen3 = ({ navigation }) => {
             <View style={styles.circleFilled} />
           </View>
           <View style={{ width: 80, flexDirection: 'row', justifyContent: 'flex-end' }}>
-            <TextButton onPress={() => navigation.navigate('Login')}>Let's go!</TextButton>
+            <TextButton onPress={() => navigation.navigate('Welcome')}>Let's go!</TextButton>
           </View>
         </View>
       </SafeAreaView>

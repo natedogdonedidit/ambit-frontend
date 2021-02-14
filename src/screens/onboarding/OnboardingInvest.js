@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import { useMutation } from '@apollo/client';
 import InvestList from 'library/components/lists/InvestList';
+import { CommonActions } from '@react-navigation/native';
 
 import EDIT_TOPICS_MUTATION from 'library/mutations/EDIT_TOPICS_MUTATION';
 
@@ -22,7 +23,13 @@ const OnboardingInvest = ({ navigation, route }) => {
   const [updateOneUser] = useMutation(EDIT_TOPICS_MUTATION);
 
   const handleNext = async () => {
-    navigation.navigate('MainStack');
+    // did it this way to remove LoginScreen from stack. Prevents the ability to go back to Login Screen via swipe
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'MainStack' }],
+      })
+    );
 
     // upload profile pic if they selected one
     if (activeTopics.length > 0) {

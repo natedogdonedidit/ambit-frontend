@@ -19,7 +19,7 @@ const PhoneNumber = ({ navigation }) => {
   const [getVerificationCode, { loading, error, data }] = useLazyQuery(GET_VERIFICATION_CODE, {
     onError: () => Alert.alert('Oops! Something went wrong on our end.'),
     onCompleted: (result) => {
-      console.log('result:', result.getVerificationCode);
+      // console.log('result:', result.getVerificationCode);
     },
   });
 
@@ -54,7 +54,7 @@ const PhoneNumber = ({ navigation }) => {
     if (!phoneNumberClean || phoneNumberClean.length < 10) {
       Alert.alert('Please enter a valid phone number');
     } else {
-      console.log(phoneNumberClean);
+      // console.log(phoneNumberClean);
       // send sms
       getVerificationCode({ variables: { phoneNumber: phoneNumberClean }, fetchPolicy: 'no-cache' });
 

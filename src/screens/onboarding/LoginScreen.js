@@ -104,7 +104,13 @@ const LoginScreen = ({ navigation }) => {
         {renderErrors()}
         <View style={{ flex: 1 }} />
 
-        <TextButton onPress={() => navigation.navigate('Welcome')}>Don't have an account? Sign up</TextButton>
+        {/* <TextButton onPress={() => navigation.navigate('Welcome')}>Don't have an account? Sign up</TextButton> */}
+        <TouchableOpacity onPress={() => navigation.navigate('Welcome')} activeOpacity={0.8}>
+          <Text style={{ ...defaultStyles.defaultMute, paddingBottom: 10, textAlign: 'center' }}>
+            Don't have an account?{'  '}
+            <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>Sign up</Text>
+          </Text>
+        </TouchableOpacity>
       </SafeAreaView>
     </View>
   );

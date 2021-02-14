@@ -13,6 +13,7 @@ import { HEADER_HEIGHT } from 'styles/constants';
 import { useNavigation } from '@react-navigation/native';
 import StoriesHome from 'library/components/stories/StoriesHome';
 import HomeTimelineTabs from 'library/components/UI/HomeTimelineTabs';
+import MessagesDot from '../UI/icons/MessagesDot';
 
 const HeaderHome = ({ handleMiddle, activeTimeline, setActiveTimeline }) => {
   const navigation = useNavigation();
@@ -35,12 +36,7 @@ const HeaderHome = ({ handleMiddle, activeTimeline, setActiveTimeline }) => {
               <Icon name="star" solid size={16} color={colors.black} style={{ paddingLeft: 1 }} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Convos')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
-            <View style={styles.iconCircle}>
-              {/* <Icon name="search" size={16} color={colors.black} style={{ paddingLeft: 1 }} /> */}
-              <Ionicons name="ios-chatbubble-ellipses" size={20} color={colors.black} style={{ paddingLeft: 1 }} />
-            </View>
-          </TouchableOpacity>
+          <MessagesDot />
         </View>
       </View>
       <StoriesHome />

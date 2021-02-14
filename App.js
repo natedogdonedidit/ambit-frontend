@@ -193,7 +193,7 @@ const AppNavigator = () => {
         />
 
         {/* THE MAIN APP IS HERE */}
-        <Stack.Screen name="MainStack" component={MainStack} />
+        <Stack.Screen name="MainStack" component={MainStack} options={{ gestureEnabled: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -22,7 +22,7 @@ const PhoneNumberVerify = ({ navigation, route }) => {
   const [checkVerificationCode, { loading, error, data }] = useLazyQuery(CHECK_VERIFICATION_CODE, {
     onError: () => Alert.alert('Oops! Something went wrong on our end.'),
     onCompleted: (result) => {
-      console.log('result:', result.checkVerificationCode);
+      // console.log('result:', result.checkVerificationCode);
 
       if (result.checkVerificationCode === 'approved') {
         // save to async storage that this device was verified (so we wont need to repeat the process)
@@ -66,7 +66,7 @@ const PhoneNumberVerify = ({ navigation, route }) => {
     if (!codeClean || codeClean.length < 4) {
       Alert.alert('Please enter a 4 digit code');
     } else {
-      console.log(codeClean);
+      // console.log(codeClean);
 
       // send sms
       checkVerificationCode({ variables: { phoneNumber, code: codeClean }, fetchPolicy: 'no-cache' });

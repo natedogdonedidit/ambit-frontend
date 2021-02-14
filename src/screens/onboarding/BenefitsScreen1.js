@@ -15,7 +15,7 @@ const BenefitsScreen1 = ({ navigation }) => {
 
         <View style={styles.bottom}>
           <View style={{ width: 80, flexDirection: 'row', justifyContent: 'flex-start' }}>
-            <TextButton onPress={() => navigation.navigate('Login')}>Skip</TextButton>
+            <TextButton onPress={() => navigation.navigate('Welcome')}>Skip</TextButton>
           </View>
           <View style={styles.circles}>
             <View style={styles.circleFilled} />

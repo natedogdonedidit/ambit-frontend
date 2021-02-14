@@ -12,17 +12,18 @@ const WelcomeScreen = ({ navigation }) => {
       <SafeAreaView style={styles.container}>
         <Text style={{ ...defaultStyles.hugeMediumDisplay, fontSize: 50, paddingTop: 100, paddingBottom: 10 }}>🚀</Text>
         <Text style={{ ...defaultStyles.ambitLogo, fontSize: 46, paddingBottom: 45 }}>ambit</Text>
+        <View style={{ flex: 1 }} />
 
-        <View style={{ position: 'absolute', bottom: 56, left: 0, right: 0, alignItems: 'center' }}>
+        <View style={{ alignItems: 'center' }}>
           <TouchableOpacity onPress={() => navigation.navigate('PhoneNumber')} style={{ ...styles.button }} activeOpacity={0.8}>
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ ...defaultStyles.hugeMediumDisplay, color: 'white', fontSize: 20 }}>Get your username</Text>
+              <Text style={{ ...defaultStyles.hugeMediumDisplay, color: 'white', fontSize: 20 }}>Create account</Text>
               <Ionicons name="ios-arrow-forward" size={25} color={colors.white} style={{ paddingLeft: 10 }} />
             </View>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('Login')} activeOpacity={0.8}>
-            <Text style={{ ...defaultStyles.defaultMute, marginTop: 36, textAlign: 'center' }}>
+            <Text style={{ ...defaultStyles.defaultMute, marginTop: 50, paddingBottom: 10, textAlign: 'center' }}>
               Already have an account?{'  '}
               <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>Login</Text>
             </Text>

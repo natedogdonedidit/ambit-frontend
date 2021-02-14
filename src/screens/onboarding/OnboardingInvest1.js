@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ButtonDefault from 'library/components/UI/buttons/ButtonDefault';
 import Feather from 'react-native-vector-icons/Feather';
+import { CommonActions } from '@react-navigation/native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -41,7 +42,19 @@ const OnboardingInvest1 = ({ navigation, route }) => {
             <ButtonDefault onPress={() => navigation.navigate('OnboardingInvest', { username })}>Yes</ButtonDefault>
           </View>
           <View style={{ height: 50, justifyContent: 'center', alignItems: 'center' }}>
-            <TextButton onPress={() => navigation.navigate('MainStack')}>Nope</TextButton>
+            <TextButton
+              onPress={() => {
+                // did it this way to remove LoginScreen from stack. Prevents the ability to go back to Login Screen via swipe
+                navigation.dispatch(
+                  CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'MainStack' }],
+                  })
+                );
+              }}
+            >
+              Nope
+            </TextButton>
           </View>
         </View>
       </SafeAreaView>
