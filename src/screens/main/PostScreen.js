@@ -109,15 +109,30 @@ const PostScreen = ({ navigation, route }) => {
   const daysRemainingTillInactive = DAYS_TILL_INACTIVE - daysSinceUpdated;
   const isAlmostInactive = daysRemainingTillInactive < DAYS_TILL_INACTIVE_NOTIFY;
 
-  const showPopover = isMyPost && !hidePopover && post.isGoal && post.goalStatus === 'Active' && isAlmostInactive;
+  const showPopover =
+    isMyPost &&
+    !hidePopover &&
+    post.isGoal &&
+    ((post.goalStatus === 'Active' && isAlmostInactive) || post.goalStatus === 'Inactive');
 
   const updateLastUpdated = async () => {
     await updatePost({
       variables: {
-        owner: post.owner.id,
-        postID: post.id,
-        post: {
+        where: {
+          id: post.id,
+        },
+        data: {
           lastUpdated: new Date(),
+          goalStatus: 'Active',
+        },
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        updateOnePost: {
+          __typename: 'Post',
+          ...post,
+          lastUpdated: new Date(),
+          goalStatus: 'Active',
         },
       },
     });
@@ -168,13 +183,24 @@ const PostScreen = ({ navigation, route }) => {
         </Text>
       );
     }
-    return (
-      <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
-        Your goal will expire today. To keep your goal active,{' '}
-        <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or select{' '}
-        <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.
-      </Text>
-    );
+    if (daysRemainingTillInactive === 0) {
+      return (
+        <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
+          Your goal will expire today. To keep your goal active,{' '}
+          <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or select{' '}
+          <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.
+        </Text>
+      );
+    }
+    if (post.goalStatus === 'Inactive') {
+      return (
+        <Text style={{ ...defaultStyles.smallRegular, color: 'white' }}>
+          Your goal has expired due to inactivity. To make your goal active,{' '}
+          <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Add an Update</Text> or select{' '}
+          <Text style={{ ...defaultStyles.smallSemibold, color: 'white' }}>Keep Active</Text>.
+        </Text>
+      );
+    }
   };
 
   const messageComponent = decidePopoverMessage();

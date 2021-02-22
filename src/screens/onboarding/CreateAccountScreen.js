@@ -191,7 +191,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
 
         {/* <TextButton onPress={() => navigation.navigate('Login')}>Already have an account? Login here</TextButton> */}
         <TouchableOpacity onPress={() => navigation.navigate('Login')} activeOpacity={0.8}>
-          <Text style={{ ...defaultStyles.defaultMute, paddingBottom: 10, textAlign: 'center' }}>
+          <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center' }}>
             Already have an account?{'  '}
             <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>Login</Text>
           </Text>
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     paddingHorizontal: 42,
-    paddingBottom: 10,
+    paddingBottom: 25,
   },
   input: {
     width: '100%',

@@ -15,7 +15,7 @@ import { UserContext } from 'library/utils/UserContext';
 const placeholderImage =
   'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80';
 
-const ExploreTopicButton = ({ topicID }) => {
+const ExploreTopicButton = ({ topicID, isFullyViewed, isNotFullyViewed }) => {
   const navigation = useNavigation();
   const client = useApolloClient();
   const { color, icon, name, image } = getTopicFromID(topicID);
@@ -46,8 +46,14 @@ const ExploreTopicButton = ({ topicID }) => {
 
       if (noStories || allStoriesViewed) {
         setHasNew(false);
+
+        // tell parent StoriesHome that this topic is fully viewed
+        isFullyViewed(topicID);
       } else {
         setHasNew(true);
+
+        // tell parent StoriesHome that this topic is NOT fully viewed
+        isNotFullyViewed(topicID);
       }
     }
   }, [loading, data, viewedStoriesLocal]);

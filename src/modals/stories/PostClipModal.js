@@ -186,6 +186,13 @@ const PostClipModal = ({ navigation, route }) => {
       setIsNewProject(true);
       setSelectedProject(null);
       setProjectTitle('');
+
+      // this automatically opens input / keyboard when select "New Project"
+      // CHAD - there must be a better way to do this
+      setTimeout(() => {
+        setIsTitleFocused(true);
+      }, 800);
+      // setIsTitleFocused((prev) => !prev);
     } else if (projSelected && projSelected.id) {
       // if selected an existing project
       setSelectedProject(projSelected);
@@ -313,6 +320,7 @@ const PostClipModal = ({ navigation, route }) => {
             paddingTop: 15,
             paddingBottom: 15,
             paddingHorizontal: 12,
+            backgroundColor: 'white',
           }}
         >
           <View style={{ flex: 1 }}>
@@ -382,7 +390,22 @@ const PostClipModal = ({ navigation, route }) => {
         </View>
 
         {/* this is the view below the inputs */}
-        <View style={{ flex: 1, position: 'relative' }}>
+        <View
+          style={{
+            flex: 1,
+            position: 'relative',
+            backgroundColor: 'white',
+          }}
+        >
+          <View
+            style={{
+              height: 12,
+              width: '100%',
+              borderBottomColor: colors.borderBlack,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              backgroundColor: colors.lightGray,
+            }}
+          />
           <View style={{ flex: 1, paddingTop: 36, paddingHorizontal: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Icon name="unlock" size={18} color={colors.blueGray} />
@@ -410,6 +433,9 @@ const PostClipModal = ({ navigation, route }) => {
             <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)' }} />
           )}
         </View>
+        <View
+          style={{ height: 12, width: '100%', borderTopColor: colors.borderBlack, borderTopWidth: StyleSheet.hairlineWidth }}
+        />
 
         {/* this is the view at the very bottom */}
         {!isProject ? (
@@ -442,6 +468,7 @@ const PostClipModal = ({ navigation, route }) => {
               flexDirection: 'row',
               alignItems: 'center',
               backgroundColor: colors.lightLightGray,
+              paddingBottom: insets.bottom,
             }}
           >
             <TouchableOpacity
@@ -550,7 +577,7 @@ const PostClipModal = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.lightGray,
   },
   storyRow: {
     flexDirection: 'row',

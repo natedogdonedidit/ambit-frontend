@@ -23,7 +23,7 @@ const WelcomeScreen = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => navigation.navigate('Login')} activeOpacity={0.8}>
-            <Text style={{ ...defaultStyles.defaultMute, marginTop: 50, paddingBottom: 10, textAlign: 'center' }}>
+            <Text style={{ ...defaultStyles.defaultMute, marginTop: 50, textAlign: 'center' }}>
               Already have an account?{'  '}
               <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>Login</Text>
             </Text>
@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     paddingHorizontal: 42,
-    paddingBottom: 10,
+    paddingBottom: 25,
   },
   button: {
     justifyContent: 'center',

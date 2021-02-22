@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 import { useQuery } from '@apollo/client';
 
@@ -15,7 +15,8 @@ import ForYouButton from './ForYouButton';
 import MoreTopicsStory from './MoreTopicsStory';
 
 function StoriesHome() {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
+  const [topicsAvailable, setTopicsAvailable] = useState([]); // a list of topicID's that have stories to see
 
   const { data: dataTopics, loading: loadingTopics, error: errorTopics } = useQuery(CURRENT_USER_TOPICS);
 
@@ -27,6 +28,54 @@ function StoriesHome() {
 
     return [];
   }, [dataTopics]);
+
+  const favoriteTopicsSorted = useMemo(() => {
+    function sortTopics(a, b) {
+      const aAvailable = topicsAvailable.includes(a.id);
+      const bAvailable = topicsAvailable.includes(b.id);
+
+      // if a is available and b is not - do nothing
+
+      // if b is available and b is not
+      if (!aAvailable && bAvailable) return 1;
+
+      return -1;
+    }
+
+    const newArray = [...favoriteTopics];
+
+    return newArray.sort(sortTopics);
+  }, [favoriteTopics, topicsAvailable]);
+
+  // this topic should NOT be in the list
+  const isFullyViewed = (topID) => {
+    // see if already in list
+    const index = topicsAvailable.findIndex((t) => t === topID);
+
+    // if in list - remove it
+    if (index >= 0) {
+      setTopicsAvailable((prevState) => {
+        const newArray = [...prevState];
+        newArray.splice(index, 1);
+        return newArray;
+      });
+    }
+
+    // if not in list - do nothing
+  };
+
+  // this topic should be in the list
+  const isNotFullyViewed = (topID) => {
+    // see if already in list
+    const index = topicsAvailable.findIndex((t) => t === topID);
+
+    // if not in list - add it
+    if (index === -1) {
+      setTopicsAvailable((prevState) => [...prevState, topID]);
+    }
+
+    // if in list - do nothing
+  };
 
   const renderTopicStories = () => {
     if (loadingTopics) {
@@ -44,8 +93,10 @@ function StoriesHome() {
       return null;
     }
 
-    return favoriteTopics.map((topic) => {
-      return <ExploreTopicButton key={topic.id} topicID={topic.id} />;
+    return favoriteTopicsSorted.map((topic) => {
+      return (
+        <ExploreTopicButton key={topic.id} topicID={topic.id} isFullyViewed={isFullyViewed} isNotFullyViewed={isNotFullyViewed} />
+      );
     });
   };
 

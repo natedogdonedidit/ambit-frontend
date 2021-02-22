@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useContext, useState } from 'react';
 import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, StatusBar } from 'react-native';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
+import { useScrollToTop } from '@react-navigation/native';
 
 import { UserContext } from 'library/utils/UserContext';
 import colors from 'styles/colors';
@@ -20,6 +21,7 @@ import TimelineRefresh from './TimelineRefresh';
 
 const HomeTimeline = ({ navigation, scrollY, paddingTop, activeTimeline, headerValue }) => {
   const homeTimelineRef = useRef();
+  useScrollToTop(homeTimelineRef);
   const client = useApolloClient();
   const { setRefreshHomeScreen, setShowNetworkActivity } = useContext(UserContext);
 

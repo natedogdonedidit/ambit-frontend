@@ -43,6 +43,11 @@ const PostHeader = ({ user, timeDiff, period }) => {
           </View>
         </View>
       </TouchableOpacity>
+      {/* {!!post && !!post.goal && (
+        <View>
+          <Text style={{ ...defaultStyles.smallMedium, color: colors.blueGray, paddingTop: 8 }}>My goal:</Text>
+        </View>
+      )} */}
     </View>
   );
 };

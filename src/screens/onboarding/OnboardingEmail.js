@@ -38,7 +38,7 @@ const OnboardingEmail = ({ navigation, route }) => {
     // console.log(e.endCoordinates.height);
     // const height = Math.max(e.endCoordinates.height, 260); // min of 260
     const { height } = e.endCoordinates;
-    setKeyboardHeight(height);
+    setKeyboardHeight(height - insets.bottom);
   };
 
   const keyboardWillHide = () => {

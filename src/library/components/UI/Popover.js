@@ -19,7 +19,7 @@ const Popover = ({ messageComponent, onPress }) => {
         left: 10,
         bottom: insets.bottom + 10,
         width: width - 20,
-        height: 56,
+        // height: 56,
         backgroundColor: colors.purp,
         borderRadius: 10,
       }}

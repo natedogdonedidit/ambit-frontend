@@ -34,7 +34,7 @@ const PostUpdates = ({ navigation, post, currentTime, isMyPost }) => {
       rightComponent={
         isMyPost && (
           <View style={{ position: 'absolute', top: 0, bottom: 0, right: 12, alignItems: 'center', justifyContent: 'center' }}>
-            <ButtonSmall onPress={() => navigation.navigate('AddUpdateModal', { post })}>New</ButtonSmall>
+            <ButtonSmall onPress={() => navigation.navigate('AddUpdateModal', { post })}>New Update</ButtonSmall>
           </View>
         )
       }

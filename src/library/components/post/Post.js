@@ -18,6 +18,7 @@ import PostFooter from './PostFooter';
 import PostHeader from './PostHeader';
 import Threadline from './Threadline';
 import PostContent from './PostContent';
+import GoalHeader from './GoalHeader';
 
 function Post({
   post,
@@ -220,13 +221,14 @@ function Post({
       ]}
     >
       {showRepost && <RepostedBy postId={post.id} />}
+      {!!post.goal && <GoalHeader hasUpdates={!!post.updates && Array.isArray(post.updates) && post.updates.length > 0} />}
       <View style={styles.post}>
         <View style={styles.leftColumn}>
           <ProfilePic user={post.owner} size="medium" enableIntro={!disableVideo} enableStory={!disableVideo} />
           <Threadline showThread={showThread} />
         </View>
         <View style={[{ ...styles.rightColumn }, showThread && { paddingBottom: 20 }]}>
-          <PostHeader user={post.owner} timeDiff={timeDiff} period={period} />
+          <PostHeader post={post} user={post.owner} timeDiff={timeDiff} period={period} />
           <PostContent post={post} showDetails={showDetails} />
           <PostFooter
             post={post}

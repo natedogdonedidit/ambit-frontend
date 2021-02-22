@@ -4,6 +4,7 @@ import React, { useState, useEffect, createContext } from 'react'
 import { Alert } from 'react-native';
 import { useApolloClient } from '@apollo/client';
 import analytics from '@segment/analytics-react-native';
+import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 
 import { signIn, signOut, getTokenAndUser } from 'library/utils/authUtil'
 
@@ -74,8 +75,10 @@ const UserContextProvider = (props) => {
       await signOut();
       console.log('Cleared login token from storage, user logged out!');
 
-      // 2. clear apollo store
+      // 2. clear apollo store & reactive variables
       await client.clearStore();
+      viewedStoryItems([]);
+      viewedStories([]);
       console.log('Cleared apollo store')
 
       // 3. clear user in context
