@@ -100,7 +100,9 @@ const LoginScreen = ({ navigation }) => {
           <Text style={{ ...defaultStyles.hugeMedium, color: 'white' }}>{loading ? 'Logging in...' : ' Login'}</Text>
         </TouchableOpacity>
 
-        <TextButton buttonStyle={{ marginTop: 34 }}>Forgot password</TextButton>
+        <TextButton onPress={() => navigation.navigate('PhoneNumber', { isPasswordReset: true })} buttonStyle={{ marginTop: 34 }}>
+          Forgot password
+        </TextButton>
         {renderErrors()}
         <View style={{ flex: 1 }} />
 

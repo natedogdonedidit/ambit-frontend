@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   Alert,
   InputAccessoryView,
+  // NativeModules,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -22,6 +23,8 @@ import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 import TextButton from 'library/components/UI/buttons/TextButton';
 
 import EmojiBoard from 'react-native-emoji-board';
+
+// const { EmojiInputMethods } = NativeModules; // couldnt figure it out
 
 const CustomGoalModal = ({ navigation, route }) => {
   const { goalText, goalColor, goalIcon } = route.params;
@@ -43,6 +46,7 @@ const CustomGoalModal = ({ navigation, route }) => {
   };
 
   const openEmojiKeyboard = () => {
+    // EmojiInputMethods.createCalendarEvent('chaddy', 'nathan'); // couldnt figure it out
     Keyboard.dismiss();
     setShowEmojis(true);
   };

@@ -15,7 +15,11 @@ const WelcomeScreen = ({ navigation }) => {
         <View style={{ flex: 1 }} />
 
         <View style={{ alignItems: 'center' }}>
-          <TouchableOpacity onPress={() => navigation.navigate('PhoneNumber')} style={{ ...styles.button }} activeOpacity={0.8}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('PhoneNumber', { isPasswordReset: false })}
+            style={{ ...styles.button }}
+            activeOpacity={0.8}
+          >
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ ...defaultStyles.hugeMediumDisplay, color: 'white', fontSize: 20 }}>Create account</Text>
               <Ionicons name="ios-arrow-forward" size={25} color={colors.white} style={{ paddingLeft: 10 }} />

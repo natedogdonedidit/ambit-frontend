@@ -9,7 +9,7 @@ import CHECK_VERIFICATION_CODE from 'library/queries/CHECK_VERIFICATION_CODE';
 import { useLazyQuery } from '@apollo/client';
 
 const PhoneNumberVerify = ({ navigation, route }) => {
-  const { phoneNumber } = route.params;
+  const { phoneNumber, isPasswordReset } = route.params;
 
   const insets = useSafeAreaInsets();
 
@@ -20,15 +20,37 @@ const PhoneNumberVerify = ({ navigation, route }) => {
 
   // get a new verification code texted to user
   const [checkVerificationCode, { loading, error, data }] = useLazyQuery(CHECK_VERIFICATION_CODE, {
+    fetchPolicy: 'no-cache',
     onError: () => Alert.alert('Oops! Something went wrong on our end.'),
-    onCompleted: (result) => {
-      // console.log('result:', result.checkVerificationCode);
+    onCompleted: (response) => {
+      const { status, username } = response.checkVerificationCode;
+      // console.log('checkVerificationCode:', status, username);
 
-      if (result.checkVerificationCode === 'approved') {
+      if (isPasswordReset) {
+        // if code approved
+        if (status === 'approved') {
+          // if found username, navigate to password reset
+          if (username) {
+            // navigate
+            navigation.navigate('ForgotPW', { phoneNumber, username });
+          } else {
+            Alert.alert('We could not find a username associated with that phone number');
+          }
+        } else {
+          // if code not approved
+          Alert.alert("Oops! That code didn't work. Try sending another code.");
+        }
+
+        // if not doing a password reset, then this is create account flow
+      } else if (status === 'approved') {
         // save to async storage that this device was verified (so we wont need to repeat the process)
 
-        // navigate to onboarding
-        navigation.navigate('CreateAccount', { phoneNumber });
+        if (username) {
+          Alert.alert(`A username already exists for this phone number: ${username}. Try logging in.`);
+        } else {
+          // navigate to onboarding
+          navigation.navigate('CreateAccount', { phoneNumber });
+        }
       } else {
         Alert.alert("Oops! That code didn't work. Try sending another code.");
       }

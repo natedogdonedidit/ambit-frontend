@@ -12,6 +12,7 @@ import BenefitsScreen3 from 'screens/onboarding/BenefitsScreen3';
 import WelcomeScreen from 'screens/onboarding/WelcomeScreen';
 import PhoneNumber from 'screens/onboarding/PhoneNumber';
 import PhoneNumberVerify from 'screens/onboarding/PhoneNumberVerify';
+import ForgotPwScreen from 'screens/onboarding/ForgotPwScreen';
 
 import LoginScreen from 'screens/onboarding/LoginScreen';
 import CreateAccountScreen from 'screens/onboarding/CreateAccountScreen';
@@ -168,6 +169,7 @@ const AppNavigator = () => {
 
         <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={{ gestureEnabled: false }} />
         <Stack.Screen name="PhoneNumberVerify" component={PhoneNumberVerify} options={{ gestureEnabled: false }} />
+        <Stack.Screen name="ForgotPW" component={ForgotPwScreen} options={{ gestureEnabled: false }} />
 
         <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ gestureEnabled: false }} />
 

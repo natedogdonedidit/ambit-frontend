@@ -139,6 +139,30 @@ const PostScreen = ({ navigation, route }) => {
     setHidePopover(true);
   };
 
+  const setAsComplete = async () => {
+    await updatePost({
+      variables: {
+        where: {
+          id: post.id,
+        },
+        data: {
+          lastUpdated: new Date(),
+          goalStatus: 'Complete',
+        },
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        updateOnePost: {
+          __typename: 'Post',
+          ...post,
+          lastUpdated: new Date(),
+          goalStatus: 'Complete',
+        },
+      },
+    });
+    setHidePopover(true);
+  };
+
   const handlePopoverSelect = () => {
     const options = [
       {
@@ -149,6 +173,11 @@ const PostScreen = ({ navigation, route }) => {
       {
         text: 'Keep Active',
         onPress: () => updateLastUpdated(),
+      },
+      {
+        text: 'I completed this goal',
+        onPress: () => setAsComplete(),
+        color: colors.green,
       },
     ];
     navigation.navigate('SelectorModal', { options });
