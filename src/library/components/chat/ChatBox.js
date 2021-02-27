@@ -160,8 +160,16 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
       if (type === 'Post') {
         return <SharedPost navigation={navigation} message={currentMessage} />;
       }
-      if (type === 'Story' || type === 'StoryItem') {
+      if (type === 'Story') {
         return <SharedStory navigation={navigation} storyId={id} />;
+      }
+      if (type === 'StoryItem') {
+        // get the storyitem id
+        const idSplit = id.split('?');
+        const storyId = idSplit[0];
+        const storyItemId = idSplit[1];
+
+        return <SharedStory navigation={navigation} storyId={storyId} storyItemId={storyItemId} />;
       }
       if (type === 'Topic') {
         return <SharedTopic navigation={navigation} topicID={id} />;

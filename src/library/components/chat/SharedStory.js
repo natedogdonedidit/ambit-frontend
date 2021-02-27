@@ -8,7 +8,7 @@ import defaultStyles from 'styles/defaultStyles';
 import SINGLE_STORY_QUERY from 'library/queries/SINGLE_STORY_QUERY';
 import ProfilePic from 'library/components/UI/ProfilePic';
 
-const SharedStory = ({ navigation, storyId }) => {
+const SharedStory = ({ navigation, storyId, storyItemId = undefined }) => {
   const { loading, error, data } = useQuery(SINGLE_STORY_QUERY, {
     variables: { where: { id: storyId } },
   });
@@ -26,12 +26,17 @@ const SharedStory = ({ navigation, storyId }) => {
     return <View style={styles.storyBoxBlank} />;
   }
 
-  if (story.type === 'PROJECT') {
+  // decide which story item was shared so we can show preview
+  const startingIndex = storyItemId ? story.items.findIndex(({ id }) => id === storyItemId) : -1;
+  const previewIndex = startingIndex > 0 ? startingIndex : story.items.length - 1;
+
+  if (story.type === 'PROJECT' || story.type === 'INTRO') {
     return (
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('StoryModalUser', {
             story,
+            startingStoryItemId: storyItemId,
           })
         }
         style={styles.storyBox}
@@ -39,7 +44,7 @@ const SharedStory = ({ navigation, storyId }) => {
       >
         <Image
           style={{ position: 'absolute', top: 0, left: 0, width: 128, height: 204 }}
-          source={{ uri: story.items[story.items.length - 1].preview || null }}
+          source={{ uri: story.items[previewIndex].preview || null }}
           resizeMode="cover"
         />
         <LinearGradient

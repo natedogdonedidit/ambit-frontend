@@ -51,6 +51,7 @@ import { STORY_IMAGE_DURATION } from 'styles/constants';
 function Story({
   // navigation,
   story,
+  startingStoryItemId,
   storyIsActive,
   tryGoToPrevStory,
   tryGoToNextStory,
@@ -72,10 +73,31 @@ function Story({
     });
   }, []);
 
+  // will decide which story item to start the story
+  const startingStoryItemIndex = useMemo(() => {
+    // if a starting index was passed in
+    if (startingStoryItemId) {
+      const startingIndex = story.items.findIndex(({ id }) => id === startingStoryItemId);
+
+      // if we found a matching story item
+      if (startingIndex > 0) {
+        return startingIndex;
+      }
+    }
+
+    // if a startind index was NOT passed in, start where we left off
+    if (newestUnseen > 0) {
+      return newestUnseen;
+    }
+
+    // otherwise, start at the beginning
+    return 0;
+  }, []);
+
   // STATE
   // const [currentTime, setCurrentTime] = useState(0);
   const [hasError, setHasError] = useState(false);
-  const [activeItemIndex, setActiveItemIndex] = useState(newestUnseen > 0 ? newestUnseen : 0);
+  const [activeItemIndex, setActiveItemIndex] = useState(startingStoryItemIndex);
   const [isBuffering, setIsBuffering] = useState(false);
   const [paused, setPaused] = useState(false);
   const [videoStarted, setVideoStarted] = useState(false);

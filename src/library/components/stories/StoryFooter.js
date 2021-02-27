@@ -1,5 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Image, InteractionManager } from 'react-native';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  TextInput,
+  InteractionManager,
+  InputAccessoryView,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -14,6 +25,8 @@ import { StoryItemFragment } from 'library/queries/_fragments';
 import { UserContext } from 'library/utils/UserContext';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import StoryTapRegions from 'library/components/stories/StoryTapRegions';
+import CREATE_MESSAGE_MISSING_CONVO_MUTATION from 'library/mutations/CREATE_MESSAGE_MISSING_CONVO_MUTATION';
+import CURRENT_USER_CONVOS from '../../queries/CURRENT_USER_CONVOS';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
 function areEqual(prevProps, nextProps) {
@@ -49,6 +62,36 @@ function StoryFooter({
   const [likesCount, setLikesCount] = useState(item.likesCount);
   const [sentMutation, setSentMutation] = useState(false);
 
+  const [message, setMessage] = useState('');
+  const [showMessage, setShowMessage] = useState(false);
+  const [showSent, setShowSent] = useState(false);
+
+  const messageInputRef = useRef(null);
+
+  // whenever user decides to show/hide messgae input
+  // focus / blur the input
+  // paush / unpaus the story
+  useEffect(() => {
+    if (messageInputRef.current) {
+      if (showMessage) {
+        setPaused(true);
+        messageInputRef.current.focus();
+      } else {
+        messageInputRef.current.blur();
+      }
+    } else if (!showMessage) {
+      setPaused(false);
+    }
+  }, [showMessage]);
+
+  // this removes the "Sent" alert after 2 seconds
+  useEffect(() => {
+    if (showSent) {
+      const timer1 = setTimeout(() => setShowSent(false), 2000);
+      return () => clearTimeout(timer1);
+    }
+  }, [showSent]);
+
   const { owner, title, type, topic } = story;
 
   const { id, plays, text, link } = item;
@@ -58,6 +101,20 @@ function StoryFooter({
 
   const [unlikeStoryItem, { loading: loadingUnlike }] = useMutation(UNLIKE_STORY_ITEM_MUTATION, {
     onError: () => null,
+  });
+
+  // CREATE MESSAGE MUTATION
+  const [createOneMessageMissingConvo, { loading: loadingCreateMessage }] = useMutation(CREATE_MESSAGE_MISSING_CONVO_MUTATION, {
+    refetchQueries: () => [{ query: CURRENT_USER_CONVOS, fetchPolicy: 'cache-and-network' }], // this will refresh the order of ChatListItems
+    // onCompleted: () => {
+    //   setShowSent(true);
+    // },
+    onError: (error) => {
+      console.log(error);
+      Alert.alert('Oh no!', 'An error occured when trying to send this message. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]);
+    },
   });
 
   // if the item isn't active...don't render anything. But this will allow us to keep our state (isLiked, likeCount)
@@ -122,6 +179,39 @@ function StoryFooter({
         });
       });
     }
+  };
+
+  const handleSendMessage = async () => {
+    // send two messages
+
+    // 1. send story
+    await createOneMessageMissingConvo({
+      variables: {
+        content: `StoryItem:${story.id}?${item.id}`,
+        to: owner.id,
+        from: currentUserId,
+        isShare: true,
+      },
+      onCompleted: () => {
+        setShowSent(true);
+      },
+    });
+
+    // 2. then send message text
+    createOneMessageMissingConvo({
+      variables: {
+        content: message,
+        to: owner.id,
+        from: currentUserId,
+        isShare: false,
+      },
+    });
+
+    // then open popup saying message was sent
+    // if click popup -> go to message screen
+
+    setMessage('');
+    setShowMessage(false); // this will also unpause story
   };
 
   // RENDER FUNCTIONS
@@ -370,7 +460,7 @@ function StoryFooter({
   const renderBottomRow = () => {
     if (isMyPost) {
       return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text
               style={{ ...defaultStyles.defaultRegular, color: 'white', paddingLeft: 6, paddingRight: 30 }}
@@ -393,9 +483,13 @@ function StoryFooter({
     }
 
     return (
-      <View style={{ justifyContent: 'center' }}>
+      <TouchableOpacity
+        onPress={() => setShowMessage(true)}
+        activeOpacity={0.8}
+        style={{ height: '100%', width: '100%', justifyContent: 'center', paddingLeft: 12 }}
+      >
         <Text style={{ ...defaultStyles.defaultMedium, color: 'rgba(255,255,255,0.6)' }}>{`Send ${owner.name} a message..`}</Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -412,6 +506,85 @@ function StoryFooter({
         <View style={styles.bottomRow}>{renderBottomRow()}</View>
         <View style={styles.sideButtonContainer}>{renderActions()}</View>
       </View>
+
+      {/* this is the message input */}
+      {showMessage && (
+        <InputAccessoryView>
+          <View
+            style={{
+              paddingHorizontal: 12,
+              borderTopColor: colors.borderBlack,
+              borderTopWidth: StyleSheet.hairlineWidth,
+              borderBottomColor: colors.borderBlack,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: colors.white,
+              // backgroundColor: 'pink',
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                paddingTop: 16,
+                paddingBottom: 16,
+              }}
+            >
+              <TextInput
+                ref={messageInputRef}
+                style={{
+                  paddingRight: 15,
+                  ...defaultStyles.largeDefault,
+                  // fontSize: 18,
+                }}
+                // editable={titleEditable}
+                onChangeText={(val) => setMessage(val)}
+                value={message}
+                autoCompleteType="off"
+                keyboardType="default"
+                returnKeyType="send"
+                textContentType="none"
+                multiline
+                maxLength={160}
+                textAlignVertical="top"
+                placeholder={`Send ${owner.name} a message..`}
+                blurOnSubmit
+                onSubmitEditing={() => handleSendMessage()}
+                onBlur={() => setShowMessage(false)}
+              />
+            </View>
+          </View>
+        </InputAccessoryView>
+      )}
+
+      {/* dimmer for title */}
+      {showMessage && (
+        <TouchableWithoutFeedback
+          onPress={() => setShowMessage(false)}
+          style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)' }}
+        >
+          <View style={{ width: '100%', height: '100%' }} />
+        </TouchableWithoutFeedback>
+      )}
+
+      {showSent && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 100,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <View style={{ backgroundColor: colors.gray90, borderRadius: 8, padding: 10 }}>
+            <Text style={{ ...defaultStyles.defaultSemibold, color: 'white' }}>Sent</Text>
+          </View>
+        </View>
+      )}
     </>
   );
 }
@@ -433,10 +606,11 @@ const styles = StyleSheet.create({
   bottomRow: {
     width: '100%',
     height: 50,
-    paddingLeft: 12,
+    // paddingLeft: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(255,255,255,0.3)',
     justifyContent: 'center',
+    // backgroundColor: 'pink',
   },
 
   // side buttons

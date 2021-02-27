@@ -16,7 +16,7 @@ import colors from 'styles/colors';
 // COPY HOW STORYMODALTOPIC AND STORYMODALFORYOU WORK
 
 const StoryModalUser = ({ navigation, route }) => {
-  const { story } = route.params;
+  const { story, startingStoryItemId } = route.params;
   const { width } = Dimensions.get('window');
   const storyFlatlist = useRef();
 
@@ -103,7 +103,7 @@ const StoryModalUser = ({ navigation, route }) => {
         data={[...storyQ]}
         getItemLayout={(data, index) => ({ length: width, offset: width * index, index })}
         renderItem={({ item, index }) => {
-          console.log(item);
+          // console.log(item);
           const storyIsActive = index === activeStoryIndex;
 
           return (
@@ -114,6 +114,7 @@ const StoryModalUser = ({ navigation, route }) => {
               storyIsActive={storyIsActive}
               tryGoToPrevStory={tryGoToPrevStory}
               tryGoToNextStory={tryGoToNextStory}
+              startingStoryItemId={startingStoryItemId}
             />
           );
         }}

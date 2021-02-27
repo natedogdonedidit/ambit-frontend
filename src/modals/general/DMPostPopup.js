@@ -139,8 +139,8 @@ const DMPostPopup = ({ navigation, route }) => {
       if (postId) {
         content = `Post:${postId}`;
       } else if (storyItemId && !shareFullStory) {
-        // content = `StoryItem:${storyItemId}`;
-        content = `Story:${storyId}`;
+        content = `StoryItem:${storyId}?${storyItemId}`;
+        // content = `Story:${storyId}`;
       } else if (storyId && shareFullStory) {
         content = `Story:${storyId}`;
       } else if (topicID) {
