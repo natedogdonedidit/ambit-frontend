@@ -173,7 +173,10 @@ const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost
             <View style={{ paddingLeft: 30 }}>
               <ShareIcon
                 shared={post.repostedByMe}
-                onPress={() => navigation.navigate('SharePopup', { handleRepost, postId: post.id })}
+                // onPress={() => navigation.navigate('SharePopup', { handleRepost, postId: post.id })}
+                onPress={() => {
+                  navigation.navigate('DMPostPopup', { postId: post.id });
+                }}
               />
             </View>
           </View>
@@ -201,7 +204,10 @@ const PostFooter = ({ post, showDetails, hideButtons, updateGoalStatus, isMyPost
       <View style={styles.button}>
         <ShareIcon
           shared={post.repostedByMe}
-          onPress={() => navigation.navigate('SharePopup', { handleRepost, postId: post.id })}
+          // onPress={() => navigation.navigate('SharePopup', { handleRepost, postId: post.id })}
+          onPress={() => {
+            navigation.navigate('DMPostPopup', { postId: post.id });
+          }}
         />
         <Text style={{ ...defaultStyles.smallMute, marginLeft: 3 }}>{post.sharesCount <= 0 ? null : post.sharesCount}</Text>
       </View>

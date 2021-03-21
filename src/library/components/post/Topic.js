@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -20,6 +21,7 @@ const Topic = ({ topicToShow, isPostToModal = false, touchable = true }) => {
   if (isPostToModal) {
     return (
       <View style={styles.topicLarge}>
+        {/* <Ionicons name="chatbubbles" size={17} color={colors.blueGray} style={{ paddingRight: 6 }} /> */}
         <Text style={defaultStyles.largeMedium}>{name}</Text>
       </View>
     );
@@ -52,6 +54,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   topicLarge: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     height: 30,

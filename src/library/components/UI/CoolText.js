@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const CoolText = ({ children }) => {
+const CoolText = ({ children, style = {} }) => {
   const navigation = useNavigation();
 
   const handleHashtagPress = (hashtag) => {
@@ -27,7 +27,7 @@ const CoolText = ({ children }) => {
 
   return (
     <ParsedText
-      style={styles.text}
+      style={[styles.text, style]}
       parse={[
         {
           pattern: /\B#[a-z0-9_]+/gi,

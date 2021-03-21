@@ -6,6 +6,7 @@ import TopicsList from 'library/components/lists/TopicsList';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
+import TextButton from 'library/components/UI/buttons/TextButton';
 
 const TOPIC_LIMIT = 3;
 
@@ -53,7 +54,21 @@ const SelectPostTopicsModal = ({ navigation, route }) => {
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
-        <HeaderBackBlank navigation={navigation} />
+        <HeaderBackBlank
+          navigation={navigation}
+          rightComponent={
+            <View style={{ paddingRight: 4 }}>
+              <TextButton
+                onPress={() => {
+                  setTopic(null);
+                  navigation.goBack();
+                }}
+              >
+                Clear
+              </TextButton>
+            </View>
+          }
+        />
         <ScrollView style contentContainerStyle={styles.scrollView}>
           <View style={{ width: '100%', paddingHorizontal: 5 }}>
             <View style={styles.mainTitle}>

@@ -11,7 +11,7 @@ import { DAYS_TILL_INACTIVE } from 'styles/constants';
 import CoolText from 'library/components/UI/CoolText';
 
 const NotificationListItem = ({ navigation, notification }) => {
-  const { style, createdAt, from, post, update, comment, story, storyItem } = notification;
+  const { style, createdAt, seen, from, post, update, comment, story, storyItem } = notification;
 
   // incase the post/comment/update has been deleted
   if (style === 'LIKE_POST' && !post) return null;
@@ -427,23 +427,40 @@ const NotificationListItem = ({ navigation, notification }) => {
 
   if (!notification) return null;
 
+  const hideTime = style === 'GOAL_ALMOST_EXPIRE' || style === 'GOAL_EXPIRE';
+
   // RETURN STATEMENT PULLS DATA FROM ABOVE FUNCTIONS
   return (
     <TouchableOpacity activeOpacity={0.9} style={styles.container} onPress={getNotificationOnPress}>
-      <View style={styles.connection}>
+      <View style={styles.row}>
         <View style={styles.profilePicView}>{getIcon()}</View>
         <View style={styles.rightSide}>
           <View style={styles.headlineRow}>
             <View style={{ flex: 1 }}>{getNotificationTitle()}</View>
-            <View style={{ paddingLeft: 5 }}>
-              <Text style={{ ...defaultStyles.smallMute }}>
-                {timeDiff}
-                {period}
-              </Text>
-            </View>
+            {hideTime ? (
+              <View style={{ width: 10 }} />
+            ) : (
+              <View style={{ paddingLeft: 5 }}>
+                <Text style={{ ...defaultStyles.smallMute }}>
+                  {timeDiff}
+                  {period}
+                </Text>
+              </View>
+            )}
           </View>
-          {!!getNotificationContent() && <CoolText>{getNotificationContent()}</CoolText>}
+          {!!getNotificationContent() && <CoolText style={{ paddingRight: 18 }}>{getNotificationContent()}</CoolText>}
         </View>
+        {!seen && (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 10,
+              right: 10,
+            }}
+          >
+            <View style={{ height: 6, width: 6, borderRadius: 3, backgroundColor: colors.red }} />
+          </View>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -453,7 +470,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
   },
-  connection: {
+  row: {
     flexDirection: 'row',
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
@@ -469,7 +486,7 @@ const styles = StyleSheet.create({
   },
   rightSide: {
     flex: 1,
-    paddingRight: 15,
+    paddingRight: 10,
   },
   headlineRow: {
     flexDirection: 'row',

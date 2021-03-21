@@ -78,7 +78,8 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
     if (latestMessage.isShare) {
       // separate TYPE from text
       const textSplit = content.split(':');
-      const type = textSplit[0].toLowerCase();
+      let type = textSplit[0].toLowerCase();
+      if (type === 'storyitem') type = 'story';
 
       content = `Shared a ${type}`;
     }

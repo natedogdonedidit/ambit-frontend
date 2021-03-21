@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import { YellowBox } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -48,6 +48,8 @@ const AppNavigator = () => {
     'Non-serializable values were found in the navigation state',
     'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.',
   ]);
+
+  const navigation = useRef();
 
   const { loadingApp, loadingToken, currentUserId } = useContext(UserContext);
 
@@ -157,7 +159,13 @@ const AppNavigator = () => {
 
   // if it is not the first launch & not logged in - SHOW LOGIN SCREEN
   return (
-    <NavigationContainer>
+    <NavigationContainer
+    // ref={navigation}
+    // onReady={() => {
+    //   // Register the navigation container with the instrumentation inside onReady
+    //   routingInstrumentation.registerNavigationContainer(navigation);
+    // }}
+    >
       <Stack.Navigator initialRouteName={initialRoute} headerMode="none">
         <Stack.Screen name="Benefits1" component={BenefitsScreen1} />
         <Stack.Screen name="Benefits2" component={BenefitsScreen2} />

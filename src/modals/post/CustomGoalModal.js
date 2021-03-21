@@ -52,21 +52,26 @@ const CustomGoalModal = ({ navigation, route }) => {
   };
 
   const handleDone = () => {
-    const customGoal = {
-      name: customGoalText,
-      goalIcon: emojiSelected,
-      topicID: 'goals_customgoal',
-      modalType: 'none',
-      primaryColor: colors.blue,
-      secondaryColor: color,
-      fieldName: 'Topic',
-      fieldText: 'Select a topic',
-      heading: 'Which topic best describes your goal?',
-      adverb: '',
-    };
+    const textTrimmed = customGoalText.trim();
+    if (textTrimmed) {
+      const customGoal = {
+        name: textTrimmed,
+        goalIcon: emojiSelected,
+        topicID: 'goals_customgoal',
+        modalType: 'none',
+        primaryColor: colors.blue,
+        secondaryColor: color,
+        fieldName: 'Topic',
+        fieldText: 'Select a topic',
+        heading: 'Which topic best describes your goal?',
+        adverb: '',
+      };
 
-    setGoal(customGoal);
-    navigation.navigate('SelectPostTopicsModal', { goal: customGoal, setGoal, setTopic });
+      setGoal(customGoal);
+    }
+
+    navigation.navigate('NewPostModal');
+    // navigation.navigate('SelectPostTopicsModal', { goal: customGoal, setGoal, setTopic });
     // textInputRef.current.blur();
     // Keyboard.dismiss();
   };
@@ -80,8 +85,8 @@ const CustomGoalModal = ({ navigation, route }) => {
   // ROUTE PARAMS
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <HeaderBackBlank navigation={navigation} rightComponent={<ButtonHeader onPress={handleDone}>Next</ButtonHeader>} />
-      <ScrollView contentContainerStyle={styles.container}>
+      <HeaderBackBlank navigation={navigation} rightComponent={<ButtonHeader onPress={handleDone}>Done</ButtonHeader>} />
+      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="always">
         <View style={{ width: '100%', paddingHorizontal: 5 }}>
           <View style={styles.mainTitle}>
             <Text style={defaultStyles.headerMedium}>What's your goal?</Text>
@@ -92,9 +97,9 @@ const CustomGoalModal = ({ navigation, route }) => {
           <View style={{ flexDirection: 'row', alignItems: 'center', position: 'relative' }}>
             <View style={styles.whiteBack}>
               <View style={{ ...styles.goalView, backgroundColor: color }}>
-                <TouchableOpacity onPress={openEmojiKeyboard} style={styles.iconView} activeOpacity={0.6}>
+                <View style={styles.iconView}>
                   <Text style={{ ...defaultStyles.hugeRegular }}>{emojiSelected}</Text>
-                </TouchableOpacity>
+                </View>
                 <TextInput
                   ref={textInputRef}
                   style={{
@@ -126,9 +131,9 @@ const CustomGoalModal = ({ navigation, route }) => {
 
       <InputAccessoryView nativeID="1">
         <View style={styles.aboveKeyboard}>
-          <TouchableOpacity onPress={openEmojiKeyboard} style={{ paddingRight: 15 }}>
+          {/* <TouchableOpacity onPress={openEmojiKeyboard} style={{ paddingRight: 15 }}>
             <Text style={{ fontSize: 20 }}>{emojiSelected}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <TouchableOpacity style={{ paddingRight: 15 }} onPress={() => setColor(colors.gray12)}>
             <View
               style={{
@@ -261,7 +266,7 @@ const CustomGoalModal = ({ navigation, route }) => {
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={{ paddingRight: 15 }} onPress={() => setColor(colors.goalPeach)}>
+          <TouchableOpacity onPress={() => setColor(colors.goalPeach)}>
             <View
               style={{
                 width: 30,
@@ -333,6 +338,7 @@ const styles = StyleSheet.create({
   aboveKeyboard: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-around',
     paddingVertical: 10,
     paddingHorizontal: 17,
   },

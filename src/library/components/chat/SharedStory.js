@@ -20,7 +20,7 @@ const SharedStory = ({ navigation, storyId, storyItemId = undefined }) => {
   }
 
   const { story } = data;
-  if (!story) return null;
+  if (!story || !story.items || story.items.length < 1) return null;
 
   if (loading) {
     return <View style={styles.storyBoxBlank} />;
@@ -28,7 +28,7 @@ const SharedStory = ({ navigation, storyId, storyItemId = undefined }) => {
 
   // decide which story item was shared so we can show preview
   const startingIndex = storyItemId ? story.items.findIndex(({ id }) => id === storyItemId) : -1;
-  const previewIndex = startingIndex > 0 ? startingIndex : story.items.length - 1;
+  const previewIndex = startingIndex > 0 ? startingIndex : 0;
 
   if (story.type === 'PROJECT' || story.type === 'INTRO') {
     return (
@@ -42,11 +42,13 @@ const SharedStory = ({ navigation, storyId, storyItemId = undefined }) => {
         style={styles.storyBox}
         activeOpacity={0.8}
       >
-        <Image
-          style={{ position: 'absolute', top: 0, left: 0, width: 128, height: 204 }}
-          source={{ uri: story.items[previewIndex].preview || null }}
-          resizeMode="cover"
-        />
+        {!!story.items[previewIndex].preview && (
+          <Image
+            style={{ position: 'absolute', top: 0, left: 0, width: 128, height: 204 }}
+            source={{ uri: story.items[previewIndex].preview }}
+            resizeMode="cover"
+          />
+        )}
         <LinearGradient
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}

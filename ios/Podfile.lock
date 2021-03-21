@@ -344,8 +344,8 @@ PODS:
     - React-Core
   - RNScreens (2.15.0):
     - React-Core
-  - RNSentry (1.7.2):
-    - React
+  - RNSentry (1.9.0):
+    - React-Core
     - Sentry (~> 5.2.0)
   - RNVectorIcons (6.7.0):
     - React
@@ -590,7 +590,7 @@ SPEC CHECKSUMS:
   RNImageCropPicker: f0557a908758c4a3f83978894ec7227651529b45
   RNReanimated: e03f7425cb7a38dcf1b644d680d1bfc91c3337ad
   RNScreens: 2ad555d4d9fa10b91bb765ca07fe9b29d59573f0
-  RNSentry: 2d4a0e18c6dfe93b647c360e0d15c9391d24e9d1
+  RNSentry: 1adaa43b01c6a3ab5091d4d1add66b7c58558898
   RNVectorIcons: 368d6d8b8301224e5ffb6254191f4f8876c2be0d
   Segment-Mixpanel: b5d949a7eda1018a8d5afbb2cfcb59c870ecce34
   Sentry: 8fa58a051237554f22507fb483b9a1de0171a2dc
