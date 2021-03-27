@@ -25,7 +25,7 @@ const PostContent = ({ post, showDetails }) => {
         ) : (
           <Goal goal={post.goal} subField={post.subField} />
         ))}
-      {post.content && (
+      {!!post.content && (
         <View style={styles.content}>
           <CoolText>{post.content}</CoolText>
         </View>

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const CoolText = ({ children, style = {} }) => {
+const CoolText = ({ children, style = {}, isStory = false }) => {
   const navigation = useNavigation();
 
   const handleHashtagPress = (hashtag) => {
@@ -25,19 +25,42 @@ const CoolText = ({ children, style = {} }) => {
     });
   };
 
+  if (isStory) {
+    return (
+      <ParsedText
+        style={[defaultStyles.defaultText, style]}
+        parse={[
+          {
+            pattern: /\B#[a-z0-9_]+/gi,
+            style: { ...defaultStyles.defaultSemibold, color: 'white' },
+            // onPress: handleHashtagPress,
+          },
+          {
+            // pattern: /@(\w+)/,
+            pattern: /\B@[a-z0-9_]+/gi,
+            style: { ...defaultStyles.defaultSemibold, color: 'white' },
+            onPress: handleUsernamePress,
+          },
+        ]}
+      >
+        {children}
+      </ParsedText>
+    );
+  }
+
   return (
     <ParsedText
-      style={[styles.text, style]}
+      style={[defaultStyles.defaultText, style]}
       parse={[
         {
           pattern: /\B#[a-z0-9_]+/gi,
-          style: styles.hashtag,
+          style: { ...defaultStyles.defaultMedium, color: colors.purp },
           onPress: handleHashtagPress,
         },
         {
           // pattern: /@(\w+)/,
           pattern: /\B@[a-z0-9_]+/gi,
-          style: styles.username,
+          style: { ...defaultStyles.defaultMedium, color: colors.purp },
           onPress: handleUsernamePress,
         },
       ]}
@@ -47,18 +70,18 @@ const CoolText = ({ children, style = {} }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  text: {
-    ...defaultStyles.defaultText,
-  },
-  hashtag: {
-    ...defaultStyles.defaultMedium,
-    color: colors.purp,
-  },
-  username: {
-    ...defaultStyles.defaultMedium,
-    color: colors.purp,
-  },
-});
+// const styles = StyleSheet.create({
+// text: {
+//   ...defaultStyles.defaultText,
+// },
+// hashtag: {
+//   ...defaultStyles.defaultMedium,
+//   color: colors.purp,
+// },
+// username: {
+//   ...defaultStyles.defaultMedium,
+//   color: colors.purp,
+// },
+// });
 
 export default CoolText;

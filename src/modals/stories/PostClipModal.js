@@ -33,6 +33,7 @@ import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 import CoolText from 'library/components/UI/CoolText';
 import Topic from 'library/components/post/Topic';
+import MentionsSelect from 'library/components/MentionsSelect';
 
 const PostClipModal = ({ navigation, route }) => {
   const { currentUserId, currentUsername, setShowNetworkActivity } = useContext(UserContext);
@@ -52,13 +53,15 @@ const PostClipModal = ({ navigation, route }) => {
 
   const [isDescFocused, setIsDescFocused] = useState(false);
   const [isTitleFocused, setIsTitleFocused] = useState(false);
+  const [mentionText, setMentionText] = useState('');
 
   const [saveToDevice, setSaveToDevice] = useState(true);
 
   // true if an existing project is selected
   const isExistingProject = !!selectedProject && !!selectedProject.id;
   const isProject = isExistingProject || isNewProject;
-  const titleEditable = isNewProject || (isExistingProject && !selectedProject.title);
+  // const titleEditable = isNewProject || (isExistingProject && !selectedProject.title);
+  const titleEditable = true;
 
   // const [uploading, setUploading] = useState(false);
 
@@ -74,6 +77,21 @@ const PostClipModal = ({ navigation, route }) => {
       }
     }
   }, [isTitleFocused]);
+
+  // FOR MENTION SEARCH
+  useEffect(() => {
+    // see if the string ends in a mention
+    const re = /\B@\w+$/g;
+    const mentions = description.match(re);
+
+    // if it does, save to state
+    if (mentions && mentions.length > 0) {
+      const mentionToSearch = mentions[0].substr(1).toLowerCase();
+      setMentionText(mentionToSearch);
+    } else {
+      setMentionText('');
+    }
+  }, [description]);
 
   // MUTATIONS
   const [updateOneStory] = useMutation(UPDATE_STORY_MUTATION, {
@@ -178,6 +196,23 @@ const PostClipModal = ({ navigation, route }) => {
   //   navigation.navigate('SelectStoryTopicsModal', { handleSend });
   // };
 
+  const handleMentionSelect = (usernameClicked) => {
+    setDescription((prevState) => {
+      // see if the string ends in a mention
+      const re = /\B@\w+$/g;
+      const mentions = prevState.match(re);
+
+      // if it does, remove the partial mention, add in the full mention
+      if (mentions && mentions.length > 0) {
+        const mentionToSearch = mentions[0].substr(1).toLowerCase();
+        const startOfString = prevState.substr(0, prevState.length - mentionToSearch.length);
+
+        return `${startOfString}${usernameClicked} `;
+      }
+      return prevState;
+    });
+  };
+
   const handleProjectSelect = (projSelected) => {
     navigation.goBack();
 
@@ -251,6 +286,8 @@ const PostClipModal = ({ navigation, route }) => {
               where: { id: selectedProject.id },
               data: {
                 lastUpdated: new Date(),
+                title: projectTitle,
+                topic: topic || null,
                 items: {
                   create: [newStoryItem],
                 },
@@ -338,8 +375,9 @@ const PostClipModal = ({ navigation, route }) => {
               textContentType="none"
               multiline
               // autoFocus
-              maxLength={160}
+              maxLength={240}
               textAlignVertical="top"
+              inputAccessoryViewID="mentionView"
               placeholder="Describe your bit"
               onFocus={() => setIsDescFocused(true)}
               onBlur={() => setIsDescFocused(false)}
@@ -349,7 +387,7 @@ const PostClipModal = ({ navigation, route }) => {
             <TouchableOpacity
               style={{ alignSelf: 'flex-start' }}
               activeOpacity={0.7}
-              disabled={isExistingProject}
+              // disabled={isExistingProject}
               onPress={() => navigation.navigate('NewProjectTopicsModal', { setTopic })}
             >
               {topic ? (
@@ -570,6 +608,10 @@ const PostClipModal = ({ navigation, route }) => {
           <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)' }} />
         )}
       </ScrollView>
+
+      <InputAccessoryView nativeID="mentionView" style={{ width: '100%', backgroundColor: 'white' }}>
+        <MentionsSelect mentionText={mentionText} handleMentionSelect={handleMentionSelect} />
+      </InputAccessoryView>
     </View>
   );
 };

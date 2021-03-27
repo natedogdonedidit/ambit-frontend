@@ -96,18 +96,22 @@ const LoginScreen = ({ navigation }) => {
           editable={!loading}
         />
 
-        <TouchableOpacity onPress={onLoginSubmit} style={{ ...styles.button }} activeOpacity={0.8}>
+        <TouchableOpacity disabled={loading} onPress={onLoginSubmit} style={{ ...styles.button }} activeOpacity={0.8}>
           <Text style={{ ...defaultStyles.hugeMedium, color: 'white' }}>{loading ? 'Logging in...' : ' Login'}</Text>
         </TouchableOpacity>
 
-        <TextButton onPress={() => navigation.navigate('PhoneNumber', { isPasswordReset: true })} buttonStyle={{ marginTop: 34 }}>
+        <TextButton
+          disabled={loading}
+          onPress={() => navigation.navigate('PhoneNumber', { isPasswordReset: true })}
+          buttonStyle={{ marginTop: 34 }}
+        >
           Forgot password
         </TextButton>
         {renderErrors()}
         <View style={{ flex: 1 }} />
 
         {/* <TextButton onPress={() => navigation.navigate('Welcome')}>Don't have an account? Sign up</TextButton> */}
-        <TouchableOpacity onPress={() => navigation.navigate('Welcome')} activeOpacity={0.8}>
+        <TouchableOpacity disabled={loading} onPress={() => navigation.navigate('Welcome')} activeOpacity={0.8}>
           <Text style={{ ...defaultStyles.defaultMute, textAlign: 'center' }}>
             Don't have an account?{'  '}
             <Text style={{ ...defaultStyles.defaultSemibold, color: colors.purp }}>Sign up</Text>

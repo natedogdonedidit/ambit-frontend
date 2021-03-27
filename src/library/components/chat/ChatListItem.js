@@ -97,8 +97,19 @@ const ChatListItem = ({ navigation, convo, userLoggedIn, currentTime }) => {
           <View style={{ flex: 1 }}>
             <Text style={{ ...defaultStyles.largeMute }}>{content}</Text>
           </View>
-          <View style={{ width: 20, justifyContent: 'center' }}>{hasUnread && <View style={styles.redDot} />}</View>
+          {/* <View style={{ width: 20, justifyContent: 'center' }}>{hasUnread && <View style={styles.redDot} />}</View> */}
         </View>
+        {hasUnread && (
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              right: 10,
+            }}
+          >
+            <View style={{ height: 6, width: 6, borderRadius: 3, backgroundColor: colors.red }} />
+          </View>
+        )}
       </View>
     );
   };
@@ -139,7 +150,7 @@ const styles = StyleSheet.create({
   },
   rightSide: {
     flex: 1,
-    paddingRight: 15,
+    paddingRight: 10,
   },
   topRow: {
     width: '100%',
@@ -151,6 +162,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     paddingBottom: 5,
+    paddingRight: 8,
   },
   redDot: {
     width: 10,

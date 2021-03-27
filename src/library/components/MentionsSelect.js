@@ -31,7 +31,7 @@ const MentionsSelect = ({ mentionText, handleMentionSelect }) => {
     }
   }, [data, loading, error]);
 
-  if (error) return null;
+  if (error || !mentionText) return <View />;
 
   if (searchResults.length > 0) {
     const renderMentions = () => {
@@ -62,6 +62,7 @@ const MentionsSelect = ({ mentionText, handleMentionSelect }) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    backgroundColor: 'white',
     maxHeight: 120,
     paddingHorizontal: 5,
     borderTopWidth: StyleSheet.hairlineWidth,

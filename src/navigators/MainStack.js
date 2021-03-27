@@ -139,6 +139,7 @@ const MainStack = ({ navigation }) => {
         component={PostClipModal}
         options={{
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          gestureEnabled: false,
         }}
       />
       <Stack.Screen

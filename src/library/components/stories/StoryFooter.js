@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -27,6 +28,7 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import StoryTapRegions from 'library/components/stories/StoryTapRegions';
 import CREATE_MESSAGE_MISSING_CONVO_MUTATION from 'library/mutations/CREATE_MESSAGE_MISSING_CONVO_MUTATION';
 import CURRENT_USER_CONVOS from '../../queries/CURRENT_USER_CONVOS';
+import CoolText from '../UI/CoolText';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
 function areEqual(prevProps, nextProps) {
@@ -65,6 +67,7 @@ function StoryFooter({
   const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
   const [showSent, setShowSent] = useState(false);
+  const [maxLines, setMaxLines] = useState(4);
 
   const messageInputRef = useRef(null);
 
@@ -182,36 +185,46 @@ function StoryFooter({
   };
 
   const handleSendMessage = async () => {
-    // send two messages
-
-    // 1. send story
-    await createOneMessageMissingConvo({
-      variables: {
-        content: `StoryItem:${story.id}?${item.id}`,
-        to: owner.id,
-        from: currentUserId,
-        isShare: true,
-      },
-      onCompleted: () => {
-        setShowSent(true);
-      },
-    });
-
-    // 2. then send message text
-    createOneMessageMissingConvo({
-      variables: {
-        content: message,
-        to: owner.id,
-        from: currentUserId,
-        isShare: false,
-      },
-    });
-
-    // then open popup saying message was sent
-    // if click popup -> go to message screen
-
-    setMessage('');
     setShowMessage(false); // this will also unpause story
+
+    // send two messages
+    if (!loadingCreateMessage) {
+      // 1. send story
+      await createOneMessageMissingConvo({
+        variables: {
+          content: `StoryItem:${story.id}?${item.id}`,
+          to: owner.id,
+          from: currentUserId,
+          isShare: true,
+        },
+        onCompleted: () => {
+          setShowSent(true);
+        },
+      });
+
+      // 2. then send message text
+      createOneMessageMissingConvo({
+        variables: {
+          content: message,
+          to: owner.id,
+          from: currentUserId,
+          isShare: false,
+        },
+      });
+
+      // then open popup saying message was sent
+      // if click popup -> go to message screen
+
+      setMessage('');
+    }
+  };
+
+  const swapMaxLines = () => {
+    if (!maxLines) {
+      setMaxLines(4);
+    } else {
+      setMaxLines(undefined);
+    }
   };
 
   // RENDER FUNCTIONS
@@ -375,17 +388,20 @@ function StoryFooter({
               </View>
             )} */}
             {!!text && (
-              <Text
-                numberOfLines={3}
-                style={{
-                  ...defaultStyles.defaultRegular,
-                  color: 'white',
-                  paddingLeft: 12,
-                  paddingTop: 10,
-                }}
-              >
-                {text}
-              </Text>
+              <TouchableOpacity onPress={swapMaxLines} activeOpacity={0.9}>
+                <Text
+                  numberOfLines={maxLines}
+                  style={{
+                    ...defaultStyles.defaultRegular,
+                    color: 'rgba(255,255,255,1)',
+                    paddingLeft: 12,
+                    paddingTop: 8,
+                    lineHeight: 20,
+                  }}
+                >
+                  {text}
+                </Text>
+              </TouchableOpacity>
             )}
           </View>
           {renderTopics()}
@@ -398,17 +414,20 @@ function StoryFooter({
         <>
           <View style={{ paddingRight: 70, paddingBottom: 12 }}>
             {!!text && (
-              <Text
-                numberOfLines={3}
-                style={{
-                  ...defaultStyles.defaultRegular,
-                  color: 'rgba(255,255,255,1)',
-                  paddingLeft: 12,
-                  paddingTop: 10,
-                }}
-              >
-                {text}
-              </Text>
+              <TouchableOpacity onPress={swapMaxLines} activeOpacity={0.9}>
+                <Text
+                  numberOfLines={maxLines}
+                  style={{
+                    ...defaultStyles.defaultRegular,
+                    color: 'rgba(255,255,255,1)',
+                    paddingLeft: 12,
+                    paddingTop: 8,
+                    lineHeight: 20,
+                  }}
+                >
+                  {text}
+                </Text>
+              </TouchableOpacity>
             )}
           </View>
           {renderTopics()}
@@ -437,17 +456,29 @@ function StoryFooter({
             )}
 
             {!!text && (
-              <Text
-                numberOfLines={3}
-                style={{
-                  ...defaultStyles.defaultRegular,
-                  color: 'rgba(255,255,255,1)',
-                  paddingLeft: 12,
-                  paddingTop: 8,
-                }}
-              >
-                {text}
-              </Text>
+              <TouchableOpacity onPress={swapMaxLines} activeOpacity={0.9}>
+                <Text
+                  numberOfLines={maxLines}
+                  style={{
+                    //   ...defaultStyles.defaultRegular,
+                    //   color: 'rgba(255,255,255,1)',
+                    paddingLeft: 12,
+                    paddingTop: 8,
+                    lineHeight: 20,
+                  }}
+                >
+                  <CoolText
+                    isStory
+                    style={{
+                      ...defaultStyles.defaultRegular,
+                      color: 'rgba(255,255,255,1)',
+                      // lineHeight: 20,
+                    }}
+                  >
+                    {text}
+                  </CoolText>
+                </Text>
+              </TouchableOpacity>
             )}
           </View>
         </>
@@ -512,7 +543,7 @@ function StoryFooter({
         <InputAccessoryView>
           <View
             style={{
-              paddingHorizontal: 12,
+              paddingLeft: 12,
               borderTopColor: colors.borderBlack,
               borderTopWidth: StyleSheet.hairlineWidth,
               borderBottomColor: colors.borderBlack,
@@ -528,14 +559,16 @@ function StoryFooter({
                 flex: 1,
                 paddingTop: 16,
                 paddingBottom: 16,
+                // backgroundColor: 'pink',
               }}
             >
               <TextInput
                 ref={messageInputRef}
                 style={{
-                  paddingRight: 15,
+                  paddingRight: 5,
                   ...defaultStyles.largeDefault,
                   // fontSize: 18,
+                  // backgroundColor: 'blue',
                 }}
                 // editable={titleEditable}
                 onChangeText={(val) => setMessage(val)}
@@ -553,6 +586,13 @@ function StoryFooter({
                 onBlur={() => setShowMessage(false)}
               />
             </View>
+            <TouchableOpacity
+              onPress={() => handleSendMessage()}
+              activeOpacity={0.6}
+              style={{ height: '100%', justifyContent: 'center', paddingHorizontal: 10 }}
+            >
+              <Ionicons name="send" size={22} color={colors.purp} />
+            </TouchableOpacity>
           </View>
         </InputAccessoryView>
       )}
