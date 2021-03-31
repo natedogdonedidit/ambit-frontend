@@ -1085,13 +1085,13 @@
 				);
 				INFOPLIST_FILE = Ambit1/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.3.22;
+				MARKETING_VERSION = 0.3.23d;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Ambit0322;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Ambit0323d;
 				PRODUCT_NAME = "Ambit Dev";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1109,13 +1109,13 @@
 				DEVELOPMENT_TEAM = 4Q2397L86H;
 				INFOPLIST_FILE = Ambit1/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 0.3.22;
+				MARKETING_VERSION = 0.3.23d;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Ambit0322;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Ambit0323d;
 				PRODUCT_NAME = "Ambit Dev";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
