@@ -52,18 +52,18 @@ const OnboardingEmail = ({ navigation, route }) => {
       navigation.navigate('OnboardingLocation', { username });
 
       // CHAD - comment this back in when you want to set the email address
-      // try {
-      //   updateOneUser({
-      //     variables: {
-      //       where: { username },
-      //       data: {
-      //         email,
-      //       },
-      //     },
-      //   });
-      // } catch (e) {
-      //   console.log(e);
-      // }
+      try {
+        updateOneUser({
+          variables: {
+            where: { username },
+            data: {
+              email,
+            },
+          },
+        });
+      } catch (e) {
+        console.log(e);
+      }
     } else {
       console.log('invalid email');
     }

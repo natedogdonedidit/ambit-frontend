@@ -34,7 +34,7 @@ const TopicFollowButtonInvest = ({ topicID, showX }) => {
   // 3 - AFTER MUTATION COMES BACK - UPDATE STATE TO MATCH CACHE
   useEffect(() => {
     let isCancelled = false;
-    if (!isCancelled && dataTopics && dataTopics.userLoggedIn && dataTopics.userLoggedIn.topicsInvest) {
+    if (!isCancelled && !loadingMutation && dataTopics && dataTopics.userLoggedIn && dataTopics.userLoggedIn.topicsInvest) {
       const topicsIDonly = dataTopics.userLoggedIn.topicsInvest.map((topic) => topic.id);
 
       const alreadyFollowing = topicsIDonly.includes(topicID);

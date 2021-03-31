@@ -67,7 +67,10 @@ const SearchScreen = ({ navigation, route }) => {
     variables: {
       first: 10,
       where: {
-        OR: [{ username: { startsWith: searchText.toLowerCase() } }, { name: { startsWith: searchText.toLowerCase() } }],
+        OR: [
+          { username: { startsWith: searchText, mode: 'insensitive' } },
+          { name: { startsWith: searchText, mode: 'insensitive' } },
+        ],
       },
     },
   });

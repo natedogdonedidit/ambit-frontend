@@ -33,12 +33,16 @@ const TopicFollowButtonMentor = ({ topicID, showX }) => {
 
   // 3 - AFTER MUTATION COMES BACK - UPDATE STATE TO MATCH CACHE
   useEffect(() => {
-    if (dataTopics && dataTopics.userLoggedIn && dataTopics.userLoggedIn.topicsMentor) {
+    let isCancelled = false;
+    if (!isCancelled && !loadingMutation && dataTopics && dataTopics.userLoggedIn && dataTopics.userLoggedIn.topicsMentor) {
       const topicsIDonly = dataTopics.userLoggedIn.topicsMentor.map((topic) => topic.id);
 
       const alreadyFollowing = topicsIDonly.includes(topicID);
       setIsFollowing(alreadyFollowing);
     }
+    return () => {
+      isCancelled = true;
+    };
   }, [dataTopics]);
 
   // 2 - AFTER BUTTON PRESSED & STATE UPDATED - SEND MUTATION

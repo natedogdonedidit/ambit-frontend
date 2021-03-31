@@ -57,7 +57,10 @@ const DMPostPopup = ({ navigation, route }) => {
       where: {
         AND: [
           {
-            OR: [{ username: { startsWith: searchText } }, { name: { startsWith: searchText } }],
+            OR: [
+              { username: { startsWith: searchText, mode: 'insensitive' } },
+              { name: { startsWith: searchText, mode: 'insensitive' } },
+            ],
           },
           {
             id: { in: network },
@@ -74,7 +77,10 @@ const DMPostPopup = ({ navigation, route }) => {
       where: {
         AND: [
           {
-            OR: [{ username: { startsWith: searchText } }, { name: { startsWith: searchText } }],
+            OR: [
+              { username: { startsWith: searchText, mode: 'insensitive' } },
+              { name: { startsWith: searchText, mode: 'insensitive' } },
+            ],
           },
           {
             id: { not: { equals: currentUserId } },
@@ -175,10 +181,18 @@ const DMPostPopup = ({ navigation, route }) => {
       );
     }
 
-    if (!searchResults || searchResults.length < 1) {
+    if (!searchResults) {
       return (
         <View style={{ height: 100 }}>
           <Loader size="small" />
+        </View>
+      );
+    }
+
+    if (searchResults.length < 1) {
+      return (
+        <View style={{ height: 100 }}>
+          <Text style={{ ...defaultStyles.defaultMediumMute, paddingTop: 30, textAlign: 'center' }}>No users found</Text>
         </View>
       );
     }

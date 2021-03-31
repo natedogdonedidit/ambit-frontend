@@ -15,7 +15,7 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
   // custom functions
   const renderWebsite = () => {
     if (!user.website) return null;
-    return <Text style={{ ...defaultStyles.defaultRegular, color: colors.iosBlue }}>🌎{`  ${user.website}`}</Text>;
+    return <Text style={{ ...defaultStyles.defaultRegular, color: colors.iosBlue }}>{user.website}</Text>;
   };
 
   return (
@@ -58,7 +58,7 @@ export default NameBox;
 const styles = StyleSheet.create({
   profileBox: {
     width: '100%',
-    paddingTop: 56, // to make white space for Profile Pic & Buttons
+    paddingTop: 53, // to make white space for Profile Pic & Buttons
     paddingHorizontal: 20,
     backgroundColor: 'white',
     // borderTopLeftRadius: 10,
@@ -83,10 +83,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   bio: {
-    marginBottom: 15,
+    marginBottom: 12,
   },
   detailsBox: {
-    marginBottom: 15,
+    marginBottom: 12,
   },
   whiteButtons: {
     flexDirection: 'row',

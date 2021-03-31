@@ -334,16 +334,18 @@ export const NotificationFragment = gql`
     comment {
       ...CommentFragment
     }
-    # story {
-    #   ...StoryFragment
-    # }
-    # storyItem {
-    #   ...StoryItemFragment
-    # }
+    story {
+      ...StoryFragment
+    }
+    storyItem {
+      ...StoryItemFragment
+    }
     seen
   }
   ${MinimalUser}
   ${BasicPost}
   ${UpdateFragment}
   ${CommentFragment}
+  ${StoryFragment}
+  ${StoryItemFragment}
 `;

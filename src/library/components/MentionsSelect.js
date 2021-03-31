@@ -16,7 +16,10 @@ const MentionsSelect = ({ mentionText, handleMentionSelect }) => {
     variables: {
       first: 10,
       where: {
-        OR: [{ username: { startsWith: mentionText } }, { name: { startsWith: mentionText } }],
+        OR: [
+          { username: { startsWith: mentionText, mode: 'insensitive' } },
+          { name: { startsWith: mentionText, mode: 'insensitive' } },
+        ],
       },
     },
   });

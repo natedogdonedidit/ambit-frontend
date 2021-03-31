@@ -81,7 +81,7 @@ const TopicsModal = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <HeaderBack navigation={navigation} title="Topics" />
+      <HeaderBack navigation={navigation} title="Topics" showTopicSearch />
       <SectionList
         contentContainerStyle={{ paddingTop: 10, paddingBottom: 20 }}
         style={styles.timeline}
@@ -109,11 +109,11 @@ const TopicsModal = ({ navigation }) => {
             data: recommendedTopics,
           },
         ]}
-        ListEmptyComponent={
-          <View>
-            <Text>hey</Text>
-          </View>
-        }
+        // ListEmptyComponent={
+        //   <View>
+        //     <Text>hey</Text>
+        //   </View>
+        // }
         renderSectionHeader={({ section }) => {
           if (section.title === 'Following' && favoriteTopics.length <= 0) {
             return null;
@@ -141,7 +141,7 @@ const TopicsModal = ({ navigation }) => {
             return (
               <View style={{ backgroundColor: 'white' }}>
                 <View style={{ alignSelf: 'center', paddingTop: 20, paddingBottom: 20 }}>
-                  <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>More Topics</ButtonDefault>
+                  <ButtonDefault onPress={() => navigation.navigate('SelectTopicsFocusModal')}>Follow More Topics</ButtonDefault>
                 </View>
               </View>
             );

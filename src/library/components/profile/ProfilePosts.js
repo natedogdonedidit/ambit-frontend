@@ -39,7 +39,8 @@ const ProfilePosts = ({ isMyProfile, username }) => {
   if (loading) {
     return (
       <>
-        <View style={{ height: 100, width: '100%', marginTop: 10 }}>
+        <View style={{ width: '100%', height: 10, backgroundColor: colors.lightGray }} />
+        <View style={{ height: 100, width: '100%' }}>
           <Loader loading={loading} size="small" full={false} backgroundColor="transparent" />
         </View>
         <View style={{ width: '100%', height: 700 }} />

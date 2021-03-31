@@ -48,7 +48,7 @@ const ProfileGrid = ({ isMyProfile, username }) => {
     }
 
     return (
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingTop: 1, backgroundColor: colors.lightGray }}>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', paddingTop: 1, backgroundColor: colors.lightGray, minHeight: 500 }}>
         {storiesWithItems.map((story) => {
           if (story.items.length > 0) {
             return (

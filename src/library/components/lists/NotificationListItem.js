@@ -97,6 +97,7 @@ const NotificationListItem = ({ navigation, notification }) => {
       if (story) {
         return navigation.navigate('StoryModalUser', {
           story,
+          startingStoryItemId: storyItem.id,
           // moreType,
           // topicIDtoSearch,
         });

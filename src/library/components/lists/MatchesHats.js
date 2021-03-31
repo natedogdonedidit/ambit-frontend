@@ -51,10 +51,10 @@ const MatchesHats = ({ navigation, title, triggerRefresh }) => {
 
     const { userLoggedIn: myTopics } = data;
 
-    const isFreelancer = myTopics.topicsFreelance.length > 0;
-    const isMentor = myTopics.topicsMentor.length > 0;
-    const isInvestor = myTopics.topicsInvest.length > 0;
-    const isNetworker = myTopics.topicsInterest.length > 0;
+    const isFreelancer = !!myTopics.topicsFreelance && myTopics.topicsFreelance.length > 0;
+    const isMentor = !!myTopics.topicsMentor && myTopics.topicsMentor.length > 0;
+    const isInvestor = !!myTopics.topicsInvest && myTopics.topicsInvest.length > 0;
+    const isNetworker = !!myTopics.topicsInterest && myTopics.topicsInterest.length > 0;
     const hasHats = isFreelancer || isMentor || isInvestor || isNetworker;
     // const hasHats = false;
 

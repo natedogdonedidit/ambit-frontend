@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -11,7 +12,7 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 import ButtonHeader from 'library/components/UI/buttons/ButtonHeader';
 import { useNavigation } from '@react-navigation/native';
 
-const HeaderBack = ({ handleRight, textRight, title, solidRight, pressed }) => {
+const HeaderBack = ({ handleRight, textRight, title, solidRight, showTopicSearch }) => {
   const insets = useSafeAreaInsets();
   const [top, setTop] = useState(insets.top); // had to do this to save initial insets.top to state. otherwise top padding jumps after you close a modal
   const navigation = useNavigation();
@@ -21,6 +22,35 @@ const HeaderBack = ({ handleRight, textRight, title, solidRight, pressed }) => {
       setTop(insets.top);
     }
   }, [insets.top]);
+
+  const renderRightSide = () => {
+    if (showTopicSearch) {
+      // return <ComponentRight />;
+      return (
+        <TouchableOpacity
+          style={styles.iconCircle}
+          onPress={() => navigation.navigate('SelectTopicsFocusModal')}
+          hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
+        >
+          <Icon name="search" size={16} color={colors.black} style={{ paddingLeft: 1 }} />
+        </TouchableOpacity>
+      );
+    }
+
+    if (solidRight) {
+      return <ButtonHeader onPress={handleRight}>{textRight}</ButtonHeader>;
+    }
+
+    if (textRight) {
+      return (
+        <TextButton textStyle={styles.rightText} onPress={handleRight}>
+          {textRight}
+        </TextButton>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <View style={{ ...styles.container, paddingTop: top, height: HEADER_HEIGHT + top }}>
@@ -34,15 +64,7 @@ const HeaderBack = ({ handleRight, textRight, title, solidRight, pressed }) => {
         <Text style={{ ...defaultStyles.headerSmall, ...styles.headerText }}>{title}</Text>
       </View>
 
-      <View style={styles.rightSide}>
-        {solidRight ? (
-          <ButtonHeader onPress={handleRight}>{textRight}</ButtonHeader>
-        ) : (
-          <TextButton textStyle={styles.rightText} onPress={handleRight}>
-            {textRight}
-          </TextButton>
-        )}
-      </View>
+      <View style={styles.rightSide}>{renderRightSide()}</View>
     </View>
   );
 };
@@ -94,6 +116,15 @@ const styles = StyleSheet.create({
   headerText: {
     flexGrow: 1,
     textAlign: 'center',
+  },
+  iconCircle: {
+    height: 34,
+    width: 34,
+    marginRight: 4,
+    borderRadius: 17,
+    backgroundColor: colors.systemGray5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

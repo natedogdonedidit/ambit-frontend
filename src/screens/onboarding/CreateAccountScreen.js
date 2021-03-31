@@ -46,7 +46,7 @@ const CreateAccountScreen = ({ navigation, route }) => {
   const [signup, { loading, error }] = useMutation(SIGNUP_MUTATION, {
     variables: {
       name,
-      email: `${phoneNumber}`, // placeholder until we create phoneNumber in DB schema
+      phone: `${phoneNumber}`, // placeholder until we create phoneNumber in DB schema
       username,
       password,
       // phoneNumber,
