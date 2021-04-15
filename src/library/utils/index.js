@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../styles/colors';
 import { goalsList, allTopics, topicsList, mainTopicsList } from './lists';
 
-export const buildSearchWhere = ({ text, goal, topicIDs, lat, lon }) => {
+export const buildSearchWhere = ({ text, goal, topicIDs, lat, lon, currentUsername }) => {
   const hasTopics = topicIDs.length > 0;
   const haveInputs = !!text || !!goal || hasTopics || (!!lat && !!lon);
   const blankSearch = { id: { equals: '99' } }; // PostWhereInput
@@ -70,8 +70,17 @@ export const buildSearchWhere = ({ text, goal, topicIDs, lat, lon }) => {
     };
   };
 
+  const getOwner = () => {
+    if (!haveInputs) return blankSearch;
+    if (!currentUsername) return allSearch;
+
+    if (currentUsername) {
+      return { owner: { username: { not: { equals: currentUsername } } } };
+    }
+  };
+
   return {
-    AND: [getTextQuery(), getGoalQuery(), getTopicQuery(), getLocationQuery()],
+    AND: [getOwner(), getTextQuery(), getGoalQuery(), getTopicQuery(), getLocationQuery()],
   };
 };
 

@@ -13,7 +13,7 @@ import POSTS_WHERE_QUERY from 'library/queries/POSTS_WHERE_QUERY';
 import { UserContext } from 'library/utils/UserContext';
 
 const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
-  const { setHasNewMatches } = useContext(UserContext);
+  const { setHasNewMatches, currentUsername } = useContext(UserContext);
 
   const [matchingPosts, setMatchingPosts] = useState([]);
 
@@ -29,7 +29,7 @@ const HatMatchesRow = ({ navigation, hats, type, triggerRefresh }) => {
     return hats.map((topic) => topic.id);
   }, [hats]);
 
-  const where = buildSearchWhere({ goal, topicIDs });
+  const where = buildSearchWhere({ goal, topicIDs, currentUsername });
 
   const { loading: loadingQuery, error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_WHERE_QUERY, {
     variables: {

@@ -12,7 +12,7 @@ import Error from 'library/components/UI/Error';
 import FullWidthTabs from 'library/components/UI/FullWidthTabs';
 import ChatListItem from 'library/components/chat/ChatListItem';
 import { sortChats } from 'library/utils';
-import MESSAGE_SUBSCRIPTION from 'library/subscriptions/MESSAGE_SUBSCRIPTION';
+// import MESSAGE_SUBSCRIPTION from 'library/subscriptions/MESSAGE_SUBSCRIPTION';
 import MESSAGES_CONNECTION from 'library/queries/MESSAGES_CONNECTION';
 import { UserContext } from 'library/utils/UserContext';
 

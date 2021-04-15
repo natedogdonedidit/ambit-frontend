@@ -764,7 +764,7 @@ const NewPostModal = ({ navigation, route }) => {
         <ScrollView
           // style={{ flex: 1 }}
           contentContainerStyle={styles.scrollView}
-          // keyboardShouldPersistTaps="always"
+          keyboardShouldPersistTaps="always"
         >
           <TouchableOpacity onPress={handleGoalRowSelect} activeOpacity={0.7}>
             {renderGoal()}

@@ -9,7 +9,27 @@ import defaultStyles from 'styles/defaultStyles';
 import POST_RETWEETS_QUERY from 'library/queries/POST_RETWEETS_QUERY';
 import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
 
-const GoalHeader = ({ hasUpdates = false }) => {
+const GoalHeader = ({ goalStatus, hasUpdates = false }) => {
+  if (goalStatus === 'Inactive') {
+    return (
+      <View style={styles.container}>
+        {/* <Ionicons name="repeat-outline" size={12} color={colors.blueGray} /> */}
+        <Text style={{ ...defaultStyles.smallMute, paddingLeft: 0, fontSize: 11 }}>💤</Text>
+        <Text style={{ ...defaultStyles.smallSemibold, color: colors.blueGray, paddingLeft: 5 }}>Inactive Goal</Text>
+      </View>
+    );
+  }
+
+  if (goalStatus === 'Complete') {
+    return (
+      <View style={styles.container}>
+        {/* <Ionicons name="repeat-outline" size={12} color={colors.blueGray} /> */}
+        <Text style={{ ...defaultStyles.smallMute, paddingLeft: 0, fontSize: 11 }}>✅</Text>
+        <Text style={{ ...defaultStyles.smallSemibold, color: colors.blueGray, paddingLeft: 5 }}>Completed Goal</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {/* <Ionicons name="repeat-outline" size={12} color={colors.blueGray} /> */}

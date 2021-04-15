@@ -6,10 +6,12 @@ import ProgressBar from './ProgressBar';
 import ProgressBarStatic from './ProgressBarStatic';
 
 function StoryProgressBars({ items, activeItemIndex, paused, storyIsActive, incrementIndex, videoStarted }) {
+  // console.log(items);
   // get the entire length of the story items added together
   const storyLength = useMemo(() => {
     return items.reduce((total, item) => {
-      const itemLength = item.duration || STORY_IMAGE_DURATION;
+      const itemLength = item.duration ? parseFloat(item.duration) : STORY_IMAGE_DURATION;
+      // console.log(item.type, itemLength);
       return total + itemLength;
     }, 0);
   });

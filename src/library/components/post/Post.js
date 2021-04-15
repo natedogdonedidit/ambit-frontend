@@ -221,7 +221,12 @@ function Post({
       ]}
     >
       {showRepost && <RepostedBy postId={post.id} />}
-      {!!post.goal && <GoalHeader hasUpdates={!!post.updates && Array.isArray(post.updates) && post.updates.length > 0} />}
+      {!!post.goal && (
+        <GoalHeader
+          goalStatus={post.goalStatus}
+          hasUpdates={!!post.updates && Array.isArray(post.updates) && post.updates.length > 0}
+        />
+      )}
       <View style={styles.post}>
         <View style={styles.leftColumn}>
           <ProfilePic user={post.owner} size="medium" enableIntro={!disableVideo} enableStory={!disableVideo} />

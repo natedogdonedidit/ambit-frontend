@@ -22,7 +22,7 @@ function NoMoreStories({ tryGoToPrevStory }) {
     <SafeAreaView style={{ ...styles.container, width }}>
       <View style={{ flex: 1, backgroundColor: colors.black }}>
         <Text style={{ paddingTop: 200, ...defaultStyles.hugeBold, textAlign: 'center', color: 'white' }}>
-          You've reached the end
+          You've seen it all
         </Text>
         <Text style={{ ...defaultStyles.hugeBold, textAlign: 'center', color: 'white' }}>Check back soon!</Text>
         <Text style={{ ...defaultStyles.hugeBold, textAlign: 'center', color: 'white' }}>✌🏻</Text>

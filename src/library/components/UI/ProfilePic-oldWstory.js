@@ -14,6 +14,7 @@ const ProfilePic = ({
   user, // required
   size = 'medium',
   enableIntro = true,
+  enableStory = true,
   enableClick = true,
   border = false,
   borderWidth = 1.6,
@@ -50,11 +51,75 @@ const ProfilePic = ({
     }
   }
 
+  const hasStory = false;
+  // if (user) {
+  //   if (user.myStory) {
+  //     if (user.myStory.items.length > 0) {
+  //       hasStory = true;
+  //     }
+  //   }
+  // }
+
+  let hasProject = false;
+  if (user) {
+    if (user.latestProject) {
+      if (user.latestProject.items.length > 0) {
+        hasProject = true;
+      }
+    }
+  }
+
   let showIntro = false;
+  let showStory = false;
+  let showProject = false;
+
   let storyToShow = null;
 
   // decide if we should show project
-  if (hasIntro && enableIntro) {
+
+  if (enableStory && hasProject) {
+    if (hasStory) {
+      // if you have a story AND a project, only show project if its less than 7 days old
+
+      // decide if the project is greater than 7 days old
+      const someDayAgo = sub(new Date(), { hours: 24 * 7 });
+      const isTooOld = isBefore(new Date(user.latestProject.lastUpdated), someDayAgo);
+
+      // if the project is too old or this is the profile screen...show the mystory
+      if (isTooOld || size === 'large') {
+        showStory = true;
+        storyToShow = { ...user.myStory };
+      } else {
+        showProject = true;
+        storyToShow = { ...user.latestProject };
+      }
+    } else if (hasIntro && enableIntro) {
+      // if you don't have a MyStory...show latest project...unless its too old
+
+      // decide if the project is greater than 30 days old
+      const someDayAgo2 = sub(new Date(), { hours: 24 * 30 });
+      const isTooOld2 = isBefore(new Date(user.latestProject.lastUpdated), someDayAgo2);
+
+      // if the project is too old...show the mystory
+      if (isTooOld2) {
+        showIntro = true;
+        storyToShow = { ...user.intro };
+      } else {
+        showProject = true;
+        storyToShow = { ...user.latestProject };
+      }
+    } else {
+      showProject = true;
+      storyToShow = { ...user.latestProject };
+    }
+
+    // if you dont have a project...but you have a story...show story
+  } else if (hasStory && enableStory) {
+    showStory = true;
+    storyToShow = { ...user.myStory };
+
+    // if you dont have a project or a story...but you have an intro...show intro
+  } else if (hasIntro && enableIntro) {
     showIntro = true;
     storyToShow = { ...user.intro };
   }
@@ -181,7 +246,7 @@ const ProfilePic = ({
   }
 
   // if theres a story or intro or project and enabled...show the blue ring
-  if (showIntro) {
+  if (showIntro || showProject || showStory) {
     // if STORY and INTRO
     return (
       <View style={styles.introBorderBackground}>
