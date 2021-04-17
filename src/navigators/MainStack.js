@@ -50,7 +50,7 @@ import AddUpdateModal from 'modals/post/AddUpdateModal';
 import AddCommentModal from 'modals/post/AddCommentModal';
 
 // popups
-import SelectorModal from 'modals/general/SelectorModal';
+import GenericPopupMenu from 'modals/general/GenericPopupMenu';
 import SharePopup from 'modals/general/SharePopup';
 import DMPostPopup from 'modals/general/DMPostPopup';
 import EditSkillsPopup from 'modals/profile/EditSkillsPopup';
@@ -59,7 +59,7 @@ import MonthModal from 'modals/general/MonthModal';
 import ForYouSettingsPopup from 'modals/general/ForYouSettingsPopup';
 import EditStoryItemPopup from 'modals/stories/EditStoryItemPopup';
 import IntroInfoPopup from 'modals/stories/IntroInfoPopup';
-import { UserContext } from 'library/utils/UserContext';
+// import { UserContext } from 'library/utils/UserContext';
 
 const Stack = createStackNavigator();
 
@@ -134,6 +134,13 @@ const MainStack = ({ navigation }) => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
+      {/* <Stack.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        // options={{
+        //   cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        // }}
+      /> */}
       <Stack.Screen
         name="PostClipModal"
         component={PostClipModal}
@@ -241,7 +248,7 @@ const MainStack = ({ navigation }) => {
       <Stack.Screen name="EditAboutModal" component={EditAboutModal} />
       <Stack.Screen name="EditSkillsModal" component={EditSkillsModal} />
       <Stack.Screen name="EditSkillsPopup" component={EditSkillsPopup} options={halfModalOptions} />
-      <Stack.Screen name="SelectorModal" component={SelectorModal} options={halfModalOptions} />
+      <Stack.Screen name="GenericPopupMenu" component={GenericPopupMenu} options={halfModalOptions} />
       <Stack.Screen name="SharePopup" component={SharePopup} options={halfModalOptions} />
       <Stack.Screen name="DMPostPopup" component={DMPostPopup} options={halfModalOptions} />
       <Stack.Screen name="EditStoryItemPopup" component={EditStoryItemPopup} options={halfModalOptions} />

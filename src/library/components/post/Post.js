@@ -186,7 +186,7 @@ function Post({
 
   const handleMoreButton = () => {
     const options = determineOptions();
-    navigation.navigate('SelectorModal', { options });
+    navigation.navigate('GenericPopupMenu', { options });
   };
 
   // CUSTOM FUNCTIONS

@@ -12,6 +12,8 @@ import TopicScreen from 'screens/main/TopicScreen';
 import SearchScreen from 'screens/main/SearchScreen';
 import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';
+import BlockedUsersScreen from 'screens/main/BlockedUsersScreen';
+import SettingsScreen from 'modals/general/SettingsScreen';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +38,9 @@ const PeopleStack = ({ navigation, route }) => {
       <Stack.Screen name="Topic" component={TopicScreen} />
       <Stack.Screen name="Followers" component={FollowersScreen} />
       <Stack.Screen name="Following" component={FollowingScreen} />
+      <Stack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
+      <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+
       {/* <Stack.Screen
         name="Search"
         component={SearchScreen}

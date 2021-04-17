@@ -361,7 +361,7 @@ function Story({
 
     setPaused(true);
     const options = determineOptions();
-    navigation.navigate('SelectorModal', { options, onCancel });
+    navigation.navigate('GenericPopupMenu', { options, onCancel });
   };
 
   // RENDER FUNCTIONS

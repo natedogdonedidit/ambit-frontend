@@ -251,6 +251,7 @@ export const UserProfileFragment = gql`
     about
     followingCount
     followersCount
+    isBlockedByMe
     ...AllTopicsFragment
     experience {
       id
@@ -294,6 +295,9 @@ export const UserFollowing = gql`
       ...MinimalUser
     }
     followers {
+      ...MinimalUser
+    }
+    blockedByMe {
       ...MinimalUser
     }
   }

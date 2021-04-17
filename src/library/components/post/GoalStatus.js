@@ -92,7 +92,7 @@ const GoalStatus = ({ navigation, post, updateGoalStatus, isMyPost }) => {
   const handleClick = () => {
     if (isMyPost) {
       const options = determineOptions();
-      navigation.navigate('SelectorModal', { options });
+      navigation.navigate('GenericPopupMenu', { options });
     }
   };
 

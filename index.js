@@ -236,6 +236,23 @@ const client = new ApolloClient({
               return [...incoming];
             },
           },
+          // added this kinda on a wimb...if have trouble with following/followers try uncomment
+          followers: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          // added this kinda on a wimb...if have trouble with following/followers try uncomment
+          following: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
+          blockedByMe: {
+            merge(existing = [], incoming = [], options) {
+              return [...incoming];
+            },
+          },
         },
       },
       Notification: {

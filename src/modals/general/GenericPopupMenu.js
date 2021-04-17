@@ -4,7 +4,7 @@ import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity, TouchableWithou
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 
-const SelectorModal = ({ navigation, route }) => {
+const GenericPopupMenu = ({ navigation, route }) => {
   // array: [{ text: '', color: '', onPress: function }]
   const options = route.params.options || [];
   const onCancel = route.params.onCancel || navigation.goBack;
@@ -54,7 +54,7 @@ const SelectorModal = ({ navigation, route }) => {
   );
 };
 
-export default SelectorModal;
+export default GenericPopupMenu;
 
 const styles = StyleSheet.create({
   container: {

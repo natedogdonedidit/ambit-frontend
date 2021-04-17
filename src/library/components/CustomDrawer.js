@@ -1,9 +1,10 @@
 import React, { useContext, useMemo } from 'react';
 import { StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import { CommonActions, useNavigation, DrawerActions } from '@react-navigation/native';
 
@@ -15,12 +16,22 @@ import { VERSION } from 'styles/constants';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import CURRENT_USER_TOPICS from 'library/queries/CURRENT_USER_TOPICS';
+import SINGLE_USER_FOLLOW_LIST from 'library/queries/SINGLE_USER_FOLLOW_LIST';
 import FollowStatsDrawer from './profile/FollowStatsDrawer';
 
 const CustomDrawer = () => {
   // const client = useApolloClient();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
-  const { logoutCTX, activeTab } = useContext(UserContext);
+  const { logoutCTX, activeTab, currentUsername } = useContext(UserContext);
+
+  // QUERIES
+  // pre-fetching this here so we have list of following/followers/blocked of userloggedin
+  const { data: userList } = useQuery(SINGLE_USER_FOLLOW_LIST, {
+    variables: { where: { username: currentUsername } },
+    notifyOnNetworkStatusChange: true,
+    // onCompleted: () => console.log('getting lists'),
+  });
 
   // count the number of topics that you follow to display #
   const { data: dataTopics } = useQuery(CURRENT_USER_TOPICS);
@@ -275,11 +286,27 @@ const CustomDrawer = () => {
               <Ionicons name="log-out-outline" size={22} color={colors.blueGray} />
             </View>
             <Text style={styles.buttonText}>Sign out</Text>
-            <View style={{ position: 'absolute', bottom: 18, right: 10 }}>
-              <Text style={{ ...defaultStyles.smallMute, textAlign: 'right', paddingRight: 10 }}>{VERSION}</Text>
+            <View style={{ position: 'absolute', bottom: 12, right: 12 }}>
+              {/* <Text style={{ ...defaultStyles.smallMute, textAlign: 'right', paddingRight: 10 }}>{VERSION}</Text> */}
+              <TouchableOpacity
+                onPress={() => navigation.navigate(activeTab || 'HomeStack', { screen: 'SettingsScreen' })}
+                hitSlop={{ top: 20, left: 20, bottom: 20, right: 20 }}
+              >
+                <Ionicons name="settings-outline" size={21} color={colors.blueGray} />
+              </TouchableOpacity>
             </View>
           </View>
         </TouchableOpacity>
+      </View>
+      {/* Version */}
+      <View
+        style={{
+          position: 'absolute',
+          bottom: insets.bottom + 2,
+          right: 7,
+        }}
+      >
+        <Text style={{ ...defaultStyles.smallMute, textAlign: 'right', fontSize: 10 }}>{VERSION}</Text>
       </View>
     </SafeAreaView>
   );

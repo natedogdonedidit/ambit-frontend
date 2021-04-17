@@ -180,7 +180,7 @@ const PostScreen = ({ navigation, route }) => {
         color: colors.green,
       },
     ];
-    navigation.navigate('SelectorModal', { options });
+    navigation.navigate('GenericPopupMenu', { options });
   };
 
   // CUSTOM FUNCTIONS

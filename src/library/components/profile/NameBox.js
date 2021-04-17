@@ -11,7 +11,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import FollowStats from './FollowStats';
 
 // user is from SINGLE_USER_BASIC
-const NameBox = ({ user, navigation, isMyProfile }) => {
+const NameBox = ({ user, navigation, isMyProfile, blockedByMe }) => {
   // custom functions
   const renderWebsite = () => {
     if (!user.website) return null;
@@ -36,13 +36,15 @@ const NameBox = ({ user, navigation, isMyProfile }) => {
           </SmallGrayButton>
         ) : (
           <>
-            <MessageButton
-              onPress={() => navigation.navigate({ name: 'Chat', key: `Chat:${user.id}`, params: { otherUserPassedIn: user } })}
-              buttonStyle={{ marginRight: 6 }}
-            />
+            {!blockedByMe && (
+              <MessageButton
+                onPress={() => navigation.navigate({ name: 'Chat', key: `Chat:${user.id}`, params: { otherUserPassedIn: user } })}
+                buttonStyle={{ marginRight: 6 }}
+              />
+            )}
             {/* <ConnectButton onPress={() => null} buttonStyle={{ marginRight: 10 }} /> */}
 
-            <FollowButton userToFollowID={user.id} username={user.username} />
+            {!blockedByMe && <FollowButton userToFollowID={user.id} username={user.username} />}
           </>
         )}
       </View>

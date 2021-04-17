@@ -17,13 +17,13 @@ import defaultStyles from 'styles/defaultStyles';
 import HeaderWhite from 'library/components/headers/HeaderWhite';
 
 const EditNameModal = ({ navigation, route }) => {
-  // ROUTE PARAMS
-  const { userLoggedIn } = route.params;
+  // // ROUTE PARAMS
+  // const { userLoggedIn } = route.params;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <HeaderWhite handleLeft={null} handleRight={null} textLeft="Cancel" textRight="" title="Title" />
-    </SafeAreaView>
+    <View style={{ flex: 1 }}>
+      <HeaderWhite handleLeft={() => navigation.goBack()} handleRight={null} textLeft="Cancel" textRight="" title="Title" />
+    </View>
   );
 };
 

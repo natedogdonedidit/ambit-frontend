@@ -28,6 +28,7 @@ const FollowButton = ({ userToFollowID, username, setFollowersCount, small = fal
     refetchQueries: () => [
       { query: SINGLE_USER_BIO, variables: { where: { id: userToFollowID } } },
       { query: SINGLE_USER_BIO, variables: { where: { id: currentUserId } } },
+      { query: CURRENT_USER_FOLLOWING },
     ],
     onError: () => null,
   });
@@ -37,6 +38,7 @@ const FollowButton = ({ userToFollowID, username, setFollowersCount, small = fal
     refetchQueries: () => [
       { query: SINGLE_USER_BIO, variables: { where: { id: userToFollowID } } },
       { query: SINGLE_USER_BIO, variables: { where: { id: currentUserId } } },
+      { query: CURRENT_USER_FOLLOWING },
     ],
     onError: () => null,
   });

@@ -81,6 +81,7 @@ function StoryImage({
           resizeMode="cover"
           progressUpdateInterval={300}
           // onPlaybackRateChange={onPlaybackRateChange}
+          // onLoadStart={() => console.log('loading video', activeItem.id)}
           onProgress={onProgress}
           onBuffer={onBuffer}
           onEnd={onEnd}
