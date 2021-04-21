@@ -54,7 +54,7 @@ const PhoneNumber = ({ navigation, route }) => {
 
     // console.log(phoneNumberClean);
 
-    if (phoneNumberClean && phoneNumberClean === '999') {
+    if (phoneNumberClean && phoneNumberClean.startsWith('999')) {
       // by-pass the system if 999 is phone number
       navigation.navigate('CreateAccount', { phoneNumber: phoneNumberClean });
     } else if (!phoneNumberClean || phoneNumberClean.length < 10) {
