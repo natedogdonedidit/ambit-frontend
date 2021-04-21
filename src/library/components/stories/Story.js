@@ -25,6 +25,7 @@ import StoryFooter from 'library/components/stories/StoryFooter';
 import VIEWED_STORY_ITEM_MUTATION from 'library/mutations/VIEWED_STORY_ITEM_MUTATION';
 import { StoryItemFragment } from 'library/queries/_fragments';
 import { STORY_IMAGE_DURATION } from 'styles/constants';
+import REPORT_CONTENT from '../../mutations/REPORT_CONTENT';
 
 // function areEqual(prevProps, nextProps) {
 //   /*
@@ -117,6 +118,25 @@ function Story({
   const isMyPost = owner.id === currentUserId;
 
   // MUTATIONS
+
+  // REPORT CONTENT
+  const [report] = useMutation(REPORT_CONTENT, {
+    variables: {
+      text:
+        `<p>Content Type: StoryItem</p>` +
+        `<p>Date Reported: ${new Date()}</p>` +
+        `<p>StoryID: ${story.id}</p>` +
+        `<p>StoryItemID: ${activeItem.id}</p>` +
+        `<p>StoryItem Text: ${activeItem.text || 'no content'}</p>` +
+        `<p>Content Owner: ${owner.name}, ${owner.username}, ${owner.id}</p>` +
+        `<p>Reported By: ${currentUsername}, ${currentUserId}</p>`,
+    },
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
+
   const [updateOneStory, { loading: loadingPin }] = useMutation(UPDATE_STORY_MUTATION, {
     refetchQueries: [
       {
@@ -303,54 +323,67 @@ function Story({
   };
 
   const determineOptions = () => {
-    if (story.type === 'PROJECT' && story.items.length > 1) {
+    if (isMyPost) {
+      if (story.type === 'PROJECT' && story.items.length > 1) {
+        return [
+          !loadingPin && {
+            text: story.showcase ? `Unpin from Showcase` : 'Pin to my Showcase',
+            onPress: story.showcase ? unpinToShowcase : pinToShowcase,
+          },
+          {
+            text: `Add another bit`,
+            onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
+          },
+          {
+            text: `Delete this ${activeItem.type.toLowerCase()}`,
+            color: colors.peach,
+            onPress: removeFromProject,
+          },
+          {
+            text: 'Delete entire Project',
+            color: colors.peach,
+            onPress: deleteProject,
+          },
+        ];
+      }
+      if (story.type === 'PROJECT') {
+        return [
+          !loadingPin && {
+            text: story.showcase ? `Unpin from Showcase` : 'Pin to my Showcase',
+            onPress: story.showcase ? unpinToShowcase : pinToShowcase,
+          },
+          {
+            text: `Add another bit`,
+            onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
+          },
+          {
+            text: `Delete this ${activeItem.type.toLowerCase()}`,
+            color: colors.peach,
+            onPress: removeFromProject,
+          },
+        ];
+      }
+      if (story.type === 'INTRO') {
+        return [
+          {
+            text: 'Delete Intro',
+            color: colors.peach,
+            onPress: removeFromProject,
+          },
+        ];
+      }
+    } else {
       return [
-        !loadingPin && {
-          text: story.showcase ? `Unpin from Showcase` : 'Pin to my Showcase',
-          onPress: story.showcase ? unpinToShowcase : pinToShowcase,
-        },
         {
-          text: `Add another bit`,
-          onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
-        },
-        {
-          text: `Delete this ${activeItem.type.toLowerCase()}`,
-          color: colors.peach,
-          onPress: removeFromProject,
-        },
-        {
-          text: 'Delete entire Project',
-          color: colors.peach,
-          onPress: deleteProject,
+          text: `Report`,
+          onPress: () => {
+            report();
+            // navigation.goBack();
+          },
         },
       ];
     }
-    if (story.type === 'PROJECT') {
-      return [
-        !loadingPin && {
-          text: story.showcase ? `Unpin from Showcase` : 'Pin to my Showcase',
-          onPress: story.showcase ? unpinToShowcase : pinToShowcase,
-        },
-        {
-          text: `Add another bit`,
-          onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
-        },
-        {
-          text: `Delete this ${activeItem.type.toLowerCase()}`,
-          color: colors.peach,
-          onPress: removeFromProject,
-        },
-      ];
-    }
-    if (story.type === 'INTRO') {
-      return [
-        {
-          text: 'Delete Intro',
-          color: colors.peach,
-          onPress: removeFromProject,
-        },
-      ];
-    }
+
     return [];
   };
   const handleMoreButton = () => {

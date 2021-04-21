@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import analytics from '@segment/analytics-react-native';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 
@@ -15,6 +15,7 @@ import FollowersScreen from 'screens/main/FollowersScreen';
 import FollowingScreen from 'screens/main/FollowingScreen';
 import BlockedUsersScreen from 'screens/main/BlockedUsersScreen';
 import SettingsScreen from 'modals/general/SettingsScreen';
+import MyTopicsList from 'screens/main/MyTopicsList';
 
 const Stack = createStackNavigator();
 
@@ -50,6 +51,7 @@ const HomeStack = ({ navigation, route }) => {
       <Stack.Screen name="BlockedUsers" component={BlockedUsersScreen} />
       <Stack.Screen name="Convos" component={ConvosScreen} />
       <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+      <Stack.Screen name="MyTopicsList" component={MyTopicsList} />
 
       {/* <Stack.Screen
         name="Search"

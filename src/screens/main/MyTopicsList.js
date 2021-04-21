@@ -23,7 +23,7 @@ function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const TopicsModal = ({ navigation }) => {
+const MyTopicsList = ({ navigation }) => {
   const { currentUserId } = useContext(UserContext);
   // QUERY TO GET USERS TOPICS
   const { loading, error, data } = useQuery(CURRENT_USER_TOPICS);
@@ -219,4 +219,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopicsModal;
+export default MyTopicsList;

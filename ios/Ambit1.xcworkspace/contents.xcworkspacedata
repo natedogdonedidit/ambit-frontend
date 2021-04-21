@@ -5,9 +5,9 @@
       location = "group:/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/ios/Ambit1.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Pods/Pods.xcodeproj">
+      location = "group:Ambit1.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:Ambit1.xcodeproj">
+      location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>

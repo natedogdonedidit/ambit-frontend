@@ -31,7 +31,10 @@ const HeaderHome = ({ handleMiddle, activeTimeline, setActiveTimeline }) => {
           <Text style={{ ...defaultStyles.ambitLogo }}>ambit</Text>
         </TouchableOpacity>
         <View style={styles.rightSide}>
-          <TouchableOpacity onPress={() => navigation.navigate('TopicsModal')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('MyTopicsList')}
+            hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}
+          >
             <View style={styles.iconCircle}>
               <Icon name="star" solid size={16} color={colors.black} style={{ paddingLeft: 1 }} />
             </View>

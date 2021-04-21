@@ -16,6 +16,7 @@ import PostHeader from './PostHeader';
 import Threadline from './Threadline';
 import PostContent from './PostContent';
 import UpdateFooter from './UpdateFooter';
+import REPORT_CONTENT from '../../mutations/REPORT_CONTENT';
 
 function Update({
   post,
@@ -30,13 +31,30 @@ function Update({
 }) {
   // HOOKS
   const client = useApolloClient();
-  const { currentUserId } = useContext(UserContext);
+  const { currentUserId, currentUsername } = useContext(UserContext);
   const currentTime = new Date();
 
   // const [isLiked, setIsLiked] = useState(update.likedByMe); // this is the source of truth
   // const [likesCount, setLikesCount] = useState(update.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
+
+  // REPORT CONTENT
+  const [report] = useMutation(REPORT_CONTENT, {
+    variables: {
+      text:
+        `<p>Content Type: Update</p>` +
+        `<p>Date Reported: ${new Date()}</p>` +
+        `<p>UpdateID: ${update.id}</p>` +
+        `<p>Update Text: ${update.content || 'no content'}</p>` +
+        `<p>Content Owner: ${post.owner.name}, ${post.owner.username}, ${post.owner.id}</p>` +
+        `<p>Reported By: ${currentUsername}, ${currentUserId}</p>`,
+    },
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // DELETE MUTATION
   const [deleteOneUpdate] = useMutation(DELETE_UPDATE_MUTATION, {
@@ -98,7 +116,7 @@ function Update({
     return [
       {
         text: 'Report',
-        onPress: () => navigation.goBack(),
+        onPress: () => report(),
       },
     ];
   };

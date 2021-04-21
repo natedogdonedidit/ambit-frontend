@@ -177,7 +177,7 @@ const CustomDrawer = () => {
             <Text style={styles.buttonText}>Your Intro</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('TopicsModal')}>
+        <TouchableOpacity activeOpacity={0.6} onPress={() => navigation.navigate('MyTopicsList')}>
           <View style={styles.button}>
             <View style={{ width: 28, justifyContent: 'center', alignItems: 'center' }}>
               <Ionicons name="chatbubbles-outline" size={24} color={colors.blueGray} />

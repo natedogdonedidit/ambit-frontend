@@ -52,11 +52,14 @@ const PhoneNumber = ({ navigation, route }) => {
     // remove non-numbers from number (double check)
     const phoneNumberClean = number.replace(/[^0-9]/g, '');
 
-    // if input is NOT valid - send error message
-    if (!phoneNumberClean || phoneNumberClean.length < 10) {
+    // console.log(phoneNumberClean);
+
+    if (phoneNumberClean && phoneNumberClean === '999') {
+      // by-pass the system if 999 is phone number
+      navigation.navigate('CreateAccount', { phoneNumber: phoneNumberClean });
+    } else if (!phoneNumberClean || phoneNumberClean.length < 10) {
       Alert.alert('Please enter a valid phone number');
     } else {
-      // console.log(phoneNumberClean);
       // send sms
       getVerificationCode({ variables: { phoneNumber: phoneNumberClean }, fetchPolicy: 'no-cache' });
 

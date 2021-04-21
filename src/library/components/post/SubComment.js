@@ -19,6 +19,7 @@ import PostHeader from './PostHeader';
 import Threadline from './Threadline';
 import PostContent from './PostContent';
 import CommentFooter from './CommentFooter';
+import REPORT_CONTENT from '../../mutations/REPORT_CONTENT';
 
 const SubComment = ({
   comment,
@@ -30,7 +31,7 @@ const SubComment = ({
   lessTopPadding = false,
 }) => {
   // HOOKS
-  const { currentUserId } = useContext(UserContext);
+  const { currentUserId, currentUsername } = useContext(UserContext);
   const navigation = useNavigation();
   const client = useApolloClient();
 
@@ -38,6 +39,23 @@ const SubComment = ({
   // const [likesCount, setLikesCount] = useState(comment.likesCount); // this is the source of truth
 
   // MUTATIONS - like, share, delete
+
+  // REPORT CONTENT
+  const [report] = useMutation(REPORT_CONTENT, {
+    variables: {
+      text:
+        `<p>Content Type: Comment</p>` +
+        `<p>Date Reported: ${new Date()}</p>` +
+        `<p>CommentID: ${comment.id}</p>` +
+        `<p>Comment Text: ${comment.content || 'no content'}</p>` +
+        `<p>Content Owner: ${comment.owner.name}, ${comment.owner.username}, ${comment.owner.id}</p>` +
+        `<p>Reported By: ${currentUsername}, ${currentUserId}</p>`,
+    },
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // DELETE MUTATIONS
   const [deleteOneComment] = useMutation(DELETE_COMMENT_MUTATION, {
@@ -109,7 +127,7 @@ const SubComment = ({
     return [
       {
         text: 'Report',
-        onPress: () => navigation.goBack(),
+        onPress: () => report(),
       },
     ];
   };

@@ -514,13 +514,29 @@ function StoryFooter({
     }
 
     return (
-      <TouchableOpacity
-        onPress={() => setShowMessage(true)}
-        activeOpacity={0.8}
-        style={{ height: '100%', width: '100%', justifyContent: 'center', paddingLeft: 12 }}
-      >
-        <Text style={{ ...defaultStyles.defaultMedium, color: 'rgba(255,255,255,0.6)' }}>{`Send ${owner.name} a message..`}</Text>
-      </TouchableOpacity>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: 12 }}>
+        <TouchableOpacity
+          onPress={() => setShowMessage(true)}
+          activeOpacity={0.8}
+          style={{ height: '100%', justifyContent: 'center' }}
+        >
+          <Text
+            style={{ ...defaultStyles.defaultMedium, color: 'rgba(255,255,255,0.6)' }}
+          >{`Send ${owner.name} a message..`}</Text>
+        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity
+            onPress={handleMoreButton}
+            activeOpacity={0.8}
+            style={{
+              paddingRight: 15,
+              paddingTop: 4,
+            }}
+          >
+            <Feather name="more-horizontal" solid size={30} color="rgba(255,255,255,0.8)" />
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   };
 

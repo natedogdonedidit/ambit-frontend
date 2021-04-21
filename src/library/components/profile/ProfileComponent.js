@@ -19,6 +19,7 @@ import POSTS_WHERE_QUERY from 'library/queries/POSTS_WHERE_QUERY';
 import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
 import UNFOLLOW_MUTATION from 'library/mutations/UNFOLLOW_MUTATION';
 import CURRENT_USER_FOLLOWING from 'library/queries/CURRENT_USER_FOLLOWING';
+import REPORT_CONTENT from '../../mutations/REPORT_CONTENT';
 
 const bannerExample =
   'https://images.unsplash.com/photo-1592320937521-84c88747a68a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80';
@@ -52,6 +53,21 @@ const ProfileComponent = ({ navigation, username, scrollY, loading, user, OUTSID
   });
 
   // MUTATIONS
+
+  // REPORT CONTENT
+  const [report] = useMutation(REPORT_CONTENT, {
+    variables: {
+      text:
+        `<p>Content Type: User</p>` +
+        `<p>Date Reported: ${new Date()}</p>` +
+        `<p>UserID: ${user.name}, ${user.username}, ${user.id}</p>` +
+        `<p>Reported By: ${currentUsername}, ${currentUserId}</p>`,
+    },
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
   const [blockUser, { loading: loadingEdit }] = useMutation(UPDATE_USER_MUTATION, {
     variables: {
       where: { username: currentUsername },
@@ -145,11 +161,11 @@ const ProfileComponent = ({ navigation, username, scrollY, loading, user, OUTSID
     }
 
     return [
-      // {
-      //   text: 'Report User',
-      //   // color: colors.purp,
-      //   // onPress: () => updateGoalStatus('Complete'),
-      // },
+      {
+        text: 'Report User',
+        // color: colors.purp,
+        onPress: () => report(),
+      },
       {
         text: 'Block User',
         color: colors.red,

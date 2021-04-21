@@ -14,6 +14,7 @@ import Chevron from 'library/components/UI/icons/Chevron';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import { UserContext } from 'library/utils/UserContext';
 import RepostedBy from 'library/components/post/RepostedBy';
+import REPORT_CONTENT from 'library/mutations/REPORT_CONTENT';
 import PostFooter from './PostFooter';
 import PostHeader from './PostHeader';
 import Threadline from './Threadline';
@@ -37,9 +38,26 @@ function Post({
   }
 
   // HOOKS
-  const { currentUserId } = useContext(UserContext);
+  const { currentUserId, currentUsername } = useContext(UserContext);
   const currentTime = new Date();
   const route = useRoute();
+
+  // REPORT CONTENT
+  const [report] = useMutation(REPORT_CONTENT, {
+    variables: {
+      text:
+        `<p>Content Type: Post</p>` +
+        `<p>Date Reported: ${new Date()}</p>` +
+        `<p>PostID: ${post.id}</p>` +
+        `<p>Post Text: ${post.content || 'no content'}</p>` +
+        `<p>Content Owner: ${post.owner.name}, ${post.owner.username}, ${post.owner.id}</p>` +
+        `<p>Reported By: ${currentUsername}, ${currentUserId}</p>`,
+    },
+    onError: () =>
+      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ]),
+  });
 
   // DELETE POST MUTATION
   const [editGoalStatus] = useMutation(UPDATE_POST_MUTATION, {
@@ -179,7 +197,7 @@ function Post({
     return [
       {
         text: 'Report',
-        onPress: () => navigation.goBack(),
+        onPress: () => report(),
       },
     ];
   };
