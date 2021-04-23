@@ -21,9 +21,13 @@ const PostContent = ({ post, showDetails }) => {
     <>
       {post.isGoal &&
         (isCustomGoalTest(post.goal) ? (
-          <CustomGoal navigation={navigation} goal={post.goal} color={post.goalColor} icon={post.goalIcon} />
+          <View style={{ paddingTop: 5, paddingBottom: 10 }}>
+            <CustomGoal navigation={navigation} goal={post.goal} color={post.goalColor} icon={post.goalIcon} />
+          </View>
         ) : (
-          <Goal goal={post.goal} subField={post.subField} />
+          <View style={{ paddingTop: 5, paddingBottom: 10 }}>
+            <Goal goal={post.goal} subField={post.subField} />
+          </View>
         ))}
       {!!post.content && (
         <View style={styles.content}>

@@ -518,7 +518,7 @@ function StoryFooter({
         <TouchableOpacity
           onPress={() => setShowMessage(true)}
           activeOpacity={0.8}
-          style={{ height: '100%', justifyContent: 'center' }}
+          style={{ height: '100%', justifyContent: 'center', flex: 1 }}
         >
           <Text
             style={{ ...defaultStyles.defaultMedium, color: 'rgba(255,255,255,0.6)' }}

@@ -9,9 +9,18 @@ import defaultStyles from 'styles/defaultStyles';
 import { getGoalInfo, getTopicFromID } from 'library/utils';
 
 const Goal = ({ goal, subField, onPress }) => {
+  // const parentDiv = useRef(null);
+
   const { name } = useMemo(() => getTopicFromID(subField), [subField]);
 
-  const nameWords = name ? name.split(' ') : [''];
+  // const [parentWidth, setParentWidth] = useState(undefined);
+
+  // const onParentLayout = (e) => {
+  //   if (e.nativeEvent && e.nativeEvent.layout && e.nativeEvent.layout.width && e.nativeEvent.layout.width > 0) {
+  //     console.log('setting goal width to:', e.nativeEvent.layout.width);
+  //     setParentWidth(e.nativeEvent.layout.width);
+  //   }
+  // };
 
   return (
     <View style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
@@ -26,22 +35,16 @@ const Goal = ({ goal, subField, onPress }) => {
           </View>
 
           <View style={{ flexShrink: 10 }}>
-            <Text>
+            <Text style={{ backgroundColor: 'white' }}>
               <Text style={{ ...defaultStyles.defaultMedium }}>{`${goal}`}</Text>
               <Text style={{ ...defaultStyles.defaultLight }}>{` ${getGoalInfo(goal, 'adverb')} `}</Text>
-              <Text style={{ ...defaultStyles.defaultMedium }}>{`${name}`}</Text>
-              {/* didnt change anything */}
-              {/* {nameWords.map((word, i) => (
-                <Text key={`${word}${i}`} style={{ ...defaultStyles.defaultMedium }}>
-                  {word}{' '}
-                </Text>
-              ))} */}
+              <Text style={{ ...defaultStyles.defaultMedium }}>{name}</Text>
             </Text>
           </View>
         </View>
       </View>
 
-      <View style={{ flex: 1, flexGrow: 10 }} />
+      <View style={{ flex: 1, flexGrow: 10, backgroundColor: 'pink', opacity: 0.3 }} />
     </View>
   );
 };
@@ -54,19 +57,29 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     ...defaultStyles.shadowGoal,
     flexShrink: 10,
+    // marginTop: 5,
+    // marginBottom: 10,
   },
   goalView: {
+    // minWidth: 0,
     flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     borderRadius: 15,
-    paddingHorizontal: 16,
+    paddingLeft: 16,
+    paddingRight: 16,
     paddingVertical: 10,
     backgroundColor: colors.grayButton,
+    // marginRight: 4,
+    // borderWidth: StyleSheet.hairlineWidth,
+    // borderColor: colors.borderBlack,
+    // flexShrink: 10,
   },
   iconView: {
-    width: 33,
     justifyContent: 'center',
-    // backgroundColor: 'black',
+    paddingRight: 10,
+    width: 34,
+    backgroundColor: 'black',
   },
 });
 

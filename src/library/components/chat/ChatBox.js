@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { StyleSheet, View, Alert, Text } from 'react-native';
 import { useQuery, useMutation, useApolloClient } from '@apollo/client';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
@@ -16,9 +16,12 @@ import SharedPost from 'library/components/chat/SharedPost';
 import SharedStory from 'library/components/chat/SharedStory';
 import SharedTopic from 'library/components/chat/SharedTopic';
 import CURRENT_USER_UNREAD from 'library/queries/CURRENT_USER_UNREAD';
+import { UserContext } from 'library/utils/UserContext';
 
 const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPassedIn }) => {
   // const client = useApolloClient();
+
+  const { activeTab } = useContext(UserContext);
 
   // GET ALL MESSAGES - THIS SHOULD HAVE ALREADY PRELOADED ON CONVOSSCREEN
   const { error: errorMessages, data, fetchMore, networkStatus, refetch: refetchChat } = useQuery(MESSAGES_CONNECTION, {
@@ -140,7 +143,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
   const convoExists = convo.id !== null;
   const currentUserFormated = {
     _id: userLoggedIn.id,
-    name: userLoggedIn.name,
+    name: userLoggedIn.username,
     avatar: userLoggedIn.profilePic,
   };
 
@@ -240,7 +243,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
           createdAt: message.createdAt,
           user: {
             _id: message.from.id,
-            name: message.from.name,
+            name: message.from.username,
             avatar: message.from.profilePic,
           },
         };
@@ -267,7 +270,7 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
       //     from: {
       //       __typename: 'User',
       //       id: newMessage.user._id,
-      //       name: newMessage.user.name,
+      //       name: newMessage.user.username,
       //       profilePic: newMessage.user.avatar,
       //     },
       //     to: {
@@ -307,6 +310,13 @@ const ChatBox = ({ navigation, convo = { id: null }, userLoggedIn, otherUserPass
         onSend={(payload) => onSend(payload)}
         user={currentUserFormated}
         renderBubble={renderBubble}
+        onPressAvatar={(user) => {
+          navigation.navigate(activeTab || 'HomeStack', {
+            screen: 'Profile',
+            key: `Profile:${user.name}`,
+            params: { username: user.name },
+          });
+        }}
         // loadEarlier
         // isLoadingEarlier={fetchingMore}
         // onLoadEarlier={() => {

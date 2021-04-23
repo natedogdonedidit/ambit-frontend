@@ -53,6 +53,7 @@ import CustomGoal from 'library/components/UI/CustomGoal';
 import Topic from 'library/components/post/Topic';
 
 const NewPostModal = ({ navigation, route }) => {
+  // for setting banner width and height
   const { width } = Dimensions.get('window');
 
   // ROUTE PARAMS
@@ -307,18 +308,7 @@ const NewPostModal = ({ navigation, route }) => {
   };
 
   const handleGoalRowSelect = () => {
-    // if custom goal -> go to Custom Goal Modal
-    if (goal && goal.name && isCustomGoalTest(goal.name)) {
-      navigation.navigate('CustomGoalModal', {
-        goalText: goal.name,
-        goalColor: goal.secondaryColor,
-        goalIcon: goal.goalIcon,
-        setGoal,
-        setTopic,
-      });
-    } else {
-      navigation.navigate('SelectGoalModal', { setGoal, setTopic, setSubField });
-    }
+    navigation.navigate('SelectGoalModal', { setGoal, setTopic, setSubField });
   };
 
   const handleTopicRowSelect = async () => {
@@ -698,17 +688,28 @@ const NewPostModal = ({ navigation, route }) => {
       // if custom goal
       if (isCustomGoalTest(goal.name)) {
         return (
-          <View style={{ ...styles.goalContainer, width: width - 27 }}>
-            <View style={{ width: width - 27 - 30 }}>
+          <View style={{ ...styles.goalContainer, width: width - 20 }}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() =>
+                navigation.navigate('CustomGoalModal', {
+                  goalText: goal.name,
+                  goalColor: goal.secondaryColor,
+                  goalIcon: goal.goalIcon,
+                  setGoal,
+                  setTopic,
+                })
+              }
+            >
               <CustomGoal navigation={navigation} goal={goal.name} color={goal.secondaryColor} icon={goal.goalIcon} />
-            </View>
-            <View style={{ width: 30, justifyContent: 'center', alignItems: 'flex-end' }}>
+            </TouchableOpacity>
+            <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
               <TouchableOpacity
-                style={{ justifyContent: 'center', alignItems: 'center' }}
+                style={{ justifyContent: 'center', alignItems: 'center', paddingRight: 3 }}
                 onPress={clearGoal}
                 hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
               >
-                <Ionicons name="md-close" size={20} color={colors.iconGray} style={{ paddingBottom: 0 }} />
+                <Ionicons name="md-close" size={20} color={colors.iconGray} style={{ paddingBottom: 5 }} />
               </TouchableOpacity>
             </View>
           </View>
@@ -717,17 +718,18 @@ const NewPostModal = ({ navigation, route }) => {
 
       // if NOT custom goal
       return (
-        <View style={{ ...styles.goalContainer, width: width - 27 }}>
-          <View style={{ width: width - 27 - 30 }}>
+        <View style={{ ...styles.goalContainer, width: width - 20 }}>
+          <View style={{ width: width - 20 - 30, backgroundColor: 'tomato' }}>
             <Goal goal={goal.name} subField={subField} />
           </View>
-          <View style={{ width: 30, justifyContent: 'center', alignItems: 'flex-end' }}>
+          {/* <View style={{ width: 30, height: 15 }} /> */}
+          <View style={{ width: 30, backgroundColor: 'pink', justifyContent: 'center', alignItems: 'flex-end' }}>
             <TouchableOpacity
               style={{ justifyContent: 'center', alignItems: 'center' }}
               onPress={clearGoal}
               hitSlop={{ top: 15, bottom: 15, right: 15, left: 15 }}
             >
-              <Ionicons name="md-close" size={20} color={colors.iconGray} style={{ paddingBottom: 0 }} />
+              <Ionicons name="md-close" size={20} color={colors.iconGray} style={{ paddingBottom: 5 }} />
             </TouchableOpacity>
           </View>
         </View>
@@ -893,13 +895,13 @@ const styles = StyleSheet.create({
     // flex: 1,
   },
   goalContainer: {
-    width: '100%',
     flexDirection: 'row',
-    paddingTop: 15,
-    paddingBottom: 10,
-    paddingLeft: 7,
+    // justifyContent: 'space-between',
+    paddingTop: 10,
+    // paddingLeft: 7,
     // paddingRight: 7,
-    // backgroundColor: 'green',
+    width: '100%',
+    backgroundColor: 'green',
   },
   noGoalContainer: {
     flexDirection: 'row',
