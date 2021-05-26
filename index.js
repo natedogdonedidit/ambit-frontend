@@ -1,9 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 import 'react-native-gesture-handler'; // required by React Navigation docs
 import React from 'react';
-import { AppRegistry, Platform } from 'react-native';
-import { enableScreens } from 'react-native-screens';
-import { relayStylePagination, getMainDefinition } from '@apollo/client/utilities';
+import {AppRegistry, Platform} from 'react-native';
+import {enableScreens} from 'react-native-screens';
+import {
+  relayStylePagination,
+  getMainDefinition,
+} from '@apollo/client/utilities';
 import unfetch from 'unfetch';
 
 // APOLLO SETUP AFTER SUBSCRIPTIONS
@@ -17,19 +20,22 @@ import {
   // defaultDataIdFromObject,
 } from '@apollo/client';
 // import { defaultDataIdFromObject } from '@apollo/client/cache';
-import { onError } from '@apollo/client/link/error';
-import { setContext } from '@apollo/client/link/context';
-import { WebSocketLink } from '@apollo/client/link/ws';
+import {onError} from '@apollo/client/link/error';
+import {setContext} from '@apollo/client/link/context';
+import {WebSocketLink} from '@apollo/client/link/ws';
 
 // for analytics
 import analytics from '@segment/analytics-react-native';
 import mixpanel from '@segment/analytics-react-native-mixpanel';
 
-import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
-import { UserContextProvider } from 'library/utils/UserContext';
-import { getToken } from 'library/utils/authUtil';
+import {
+  SafeAreaProvider,
+  initialWindowMetrics,
+} from 'react-native-safe-area-context';
+import {UserContextProvider} from 'library/utils/UserContext';
+import {getToken} from 'library/utils/authUtil';
 import AppNavigator from './App';
-import { name as appName } from './app.json';
+import {name as appName} from './app.json';
 
 // setup analytics
 // const setupAnalytics = async () => {
@@ -48,11 +54,13 @@ import { name as appName } from './app.json';
 // eslint-disable-next-line no-undef
 // GLOBAL.Blob = null; // required so Network Inspect works on RNdebugger
 
-const errorLink = onError(({ graphQLErrors }) => {
-  if (graphQLErrors) graphQLErrors.map(({ message }) => console.log(message));
+const errorLink = onError(({graphQLErrors}) => {
+  if (graphQLErrors) {
+    graphQLErrors.map(({message}) => console.log(message));
+  }
 });
 
-const authLink = setContext(async (req, { headers }) => {
+const authLink = setContext(async (req, {headers}) => {
   // grab token from AsyncStorage
   const token = await getToken();
   // console.log('chad', token);
@@ -108,12 +116,15 @@ const wsLink = new WebSocketLink({
 // depending on what kind of operation is being sent
 const link = split(
   // split based on operation type
-  ({ query }) => {
+  ({query}) => {
     const definition = getMainDefinition(query);
-    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
   },
   wsLink,
-  httpLink
+  httpLink,
 );
 
 // create apollo client
@@ -124,13 +135,19 @@ const client = new ApolloClient({
     typePolicies: {
       Query: {
         fields: {
-          user(existingData, { args, toReference }) {
-            return existingData || toReference({ __typename: 'User', username: args.where.username });
+          user(existingData, {args, toReference}) {
+            return (
+              existingData ||
+              toReference({__typename: 'User', username: args.where.username})
+            );
           },
-          post(existingData, { args, toReference, canRead }) {
+          post(existingData, {args, toReference, canRead}) {
             // const item = existingData || toReference({ __typename: 'Post', id: args.where.id });
             // return canRead(item) ? item : null;
-            return existingData || toReference({ __typename: 'Post', id: args.where.id });
+            return (
+              existingData ||
+              toReference({__typename: 'Post', id: args.where.id})
+            );
           },
           postsForYou: {
             keyArgs: ['feed'],
@@ -163,7 +180,11 @@ const client = new ApolloClient({
               // console.log(options);
 
               // if it is a subscription - put message first
-              if (!options.args.orderBy && !options.args.first && !options.args.after) {
+              if (
+                !options.args.orderBy &&
+                !options.args.first &&
+                !options.args.after
+              ) {
                 return [...incoming, ...existing];
               }
 
@@ -258,19 +279,19 @@ const client = new ApolloClient({
       Notification: {
         // this is to remove dangling refs error if something is deleted. returns 'null' if child ref is deleted from cache
         fields: {
-          post(existing, { canRead, toReference }) {
+          post(existing, {canRead, toReference}) {
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
           },
-          comment(existing, { canRead, toReference }) {
+          comment(existing, {canRead, toReference}) {
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
           },
-          update(existing, { canRead, toReference }) {
+          update(existing, {canRead, toReference}) {
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
           },
-          from(existing, { canRead, toReference }) {
+          from(existing, {canRead, toReference}) {
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
           },
@@ -329,15 +350,15 @@ const client = new ApolloClient({
       Comment: {
         // this is to remove dangling refs error if something is deleted. returns 'null' if child ref is deleted from cache
         fields: {
-          parentPost(existing, { canRead, toReference }) {
+          parentPost(existing, {canRead, toReference}) {
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
           },
-          parentUpdate(existing, { canRead, toReference }) {
+          parentUpdate(existing, {canRead, toReference}) {
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
           },
-          parentComment(existing, { canRead, toReference }) {
+          parentComment(existing, {canRead, toReference}) {
             // If there is no existing thing, return null
             return canRead(existing) ? existing : null;
           },
@@ -383,7 +404,7 @@ const client = new ApolloClient({
     //   },
     // },
   }),
-  onError: ({ networkError, graphQLErrors }) => {
+  onError: ({networkError, graphQLErrors}) => {
     console.log('graphQLErrors', graphQLErrors);
     console.log('networkError', networkError);
   },

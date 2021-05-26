@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/chadwhittaker/Documents/CodeProjects/react-native-apps/Ambit1/ios/Ambit1.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:Ambit1.xcodeproj">
    </FileRef>
    <FileRef

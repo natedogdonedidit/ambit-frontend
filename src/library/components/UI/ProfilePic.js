@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
+import React, {useContext} from 'react';
+import {StyleSheet, View, Image, TouchableOpacity, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { sub, isBefore } from 'date-fns';
-import { useNavigation } from '@react-navigation/native';
+import {sub, isBefore} from 'date-fns';
+import {useNavigation} from '@react-navigation/native';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
-import { UserContext } from 'library/utils/UserContext';
+import {UserContext} from 'library/utils/UserContext';
 
-const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
+const profilePicExample =
+  'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
 const ProfilePic = ({
   user, // required
@@ -20,7 +21,7 @@ const ProfilePic = ({
   extraBorder = 0, // adds a white ring around outside
   extraColorBorder = 0.4,
 }) => {
-  const { activeTab } = useContext(UserContext);
+  const {activeTab} = useContext(UserContext);
   const navigation = useNavigation();
 
   // set the size of the profile pic
@@ -56,11 +57,12 @@ const ProfilePic = ({
   // decide if we should show project
   if (hasIntro && enableIntro) {
     showIntro = true;
-    storyToShow = { ...user.intro };
+    storyToShow = {...user.intro};
   }
 
   const whiteWidth = sizePX + 2 * borderWidth;
-  const colorWidth = whiteWidth + 2 * borderWidth + 2 * extraColorBorder + 2 * extraBorder;
+  const colorWidth =
+    whiteWidth + 2 * borderWidth + 2 * extraColorBorder + 2 * extraBorder;
 
   const styles = StyleSheet.create({
     noBorder: {
@@ -89,6 +91,7 @@ const ProfilePic = ({
     profilePic: {
       width: '100%',
       height: '100%',
+      backgroundColor: colors.iconGray,
     },
     grayBox: {
       width: '100%',
@@ -141,7 +144,7 @@ const ProfilePic = ({
               navigation.navigate('StoryModalUser', {
                 story: {
                   ...user.intro,
-                  owner: { ...user },
+                  owner: {...user},
                 },
               });
             }}
@@ -157,10 +160,16 @@ const ProfilePic = ({
               flexDirection: 'row',
               alignItems: 'center',
             }}
-            hitSlop={{ top: 10, left: 10, right: 15, bottom: 15 }}
-          >
+            hitSlop={{top: 10, left: 10, right: 15, bottom: 15}}>
             <Icon name="play" solid size={10} color={colors.white} />
-            <Text style={{ ...defaultStyles.smallSemibold, color: colors.white, paddingLeft: 4 }}>Intro</Text>
+            <Text
+              style={{
+                ...defaultStyles.smallSemibold,
+                color: colors.white,
+                paddingLeft: 4,
+              }}>
+              Intro
+            </Text>
           </TouchableOpacity>
         );
       }
@@ -180,6 +189,8 @@ const ProfilePic = ({
     );
   }
 
+  // console.log(user.profilePic);
+
   // if theres a story or intro or project and enabled...show the blue ring
   if (showIntro) {
     // if STORY and INTRO
@@ -194,20 +205,19 @@ const ProfilePic = ({
               navigation.navigate('StoryModalUser', {
                 story: {
                   ...user.intro,
-                  owner: { ...user },
+                  owner: {...user},
                 },
               });
             } else {
               navigation.navigate('StoryModalUser', {
                 story: {
                   ...storyToShow,
-                  owner: { ...user },
+                  owner: {...user},
                 },
               });
             }
-          }}
-        >
-          <View style={{ ...styles.whiteBorder, overflow: 'hidden' }}>
+          }}>
+          <View style={{...styles.whiteBorder, overflow: 'hidden'}}>
             <Image
               style={styles.profilePic}
               resizeMode="cover"
@@ -224,7 +234,11 @@ const ProfilePic = ({
 
   // if no story or intro to show
   return (
-    <View style={[border ? styles.whiteBorder : styles.noBorder, { overflow: 'hidden' }]}>
+    <View
+      style={[
+        border ? styles.whiteBorder : styles.noBorder,
+        {overflow: 'hidden'},
+      ]}>
       <TouchableOpacity
         style={border ? styles.whiteBorder : styles.noBorder}
         disabled={!enableClick}
@@ -239,12 +253,11 @@ const ProfilePic = ({
           navigation.navigate(activeTab || 'HomeStack', {
             screen: 'Profile',
             key: `Profile:${user.username}`,
-            params: { username: user.username },
+            params: {username: user.username},
           });
-        }}
-      >
+        }}>
         <Image
-          style={{ ...styles.profilePic }}
+          style={{...styles.profilePic}}
           resizeMode="cover"
           source={{
             uri: user.profilePic || profilePicExample,

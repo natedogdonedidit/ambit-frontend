@@ -1,16 +1,29 @@
-import React, { useEffect, useState, useMemo, useRef, useContext } from 'react';
-import { StyleSheet, View, Text, Animated, RefreshControl, ActivityIndicator, StatusBar } from 'react-native';
-import { useQuery, useMutation, useApolloClient } from '@apollo/client';
-import { useScrollToTop } from '@react-navigation/native';
+import React, {useEffect, useState, useMemo, useRef, useContext} from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Animated,
+  RefreshControl,
+  ActivityIndicator,
+  StatusBar,
+} from 'react-native';
+import {useQuery, useMutation, useApolloClient} from '@apollo/client';
+import {useScrollToTop} from '@react-navigation/native';
 
-import { UserContext } from 'library/utils/UserContext';
+import {UserContext} from 'library/utils/UserContext';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import POSTS_MYGOALS_QUERY from 'library/queries/POSTS_MYGOALS_QUERY';
 import Loader from 'library/components/UI/Loader';
 import PostGroupTL from 'library/components/post/PostGroupTL';
 import VIEWED_POST_MUTATION from 'library/mutations/VIEWED_POST_MUTATION';
-import { refreshPostsForYou, refreshPostsFollowing, refreshPostsMyGoals, refreshStoriesForYou } from 'library/utils/refreshQuery';
+import {
+  refreshPostsForYou,
+  refreshPostsFollowing,
+  refreshPostsMyGoals,
+  refreshStoriesForYou,
+} from 'library/utils/refreshQuery';
 import TimelineRefresh from './TimelineRefresh';
 
 // networkStatus states:
@@ -19,23 +32,35 @@ import TimelineRefresh from './TimelineRefresh';
 // 4: refetch
 // 7: no loading, no refetch, everything OK!
 
-const HomeTimeline = ({ navigation, scrollY, paddingTop, activeTimeline, headerValue }) => {
+const HomeTimeline = ({
+  navigation,
+  scrollY,
+  paddingTop,
+  activeTimeline,
+  headerValue,
+}) => {
   const homeTimelineRef = useRef();
   useScrollToTop(homeTimelineRef);
   const client = useApolloClient();
-  const { setRefreshHomeScreen, setShowNetworkActivity } = useContext(UserContext);
+  const {setRefreshHomeScreen, setShowNetworkActivity} = useContext(
+    UserContext,
+  );
+  const animated0 = useRef(new Animated.Value(0)).current;
 
   // GET POSTS "FOR YOU"
-  const { error, data, refetch, fetchMore, networkStatus } = useQuery(POSTS_MYGOALS_QUERY, {
-    variables: {
-      feed: 'mygoals',
-      take: 10,
-      // no cursor on initial query or refetch
+  const {error, data, refetch, fetchMore, networkStatus} = useQuery(
+    POSTS_MYGOALS_QUERY,
+    {
+      variables: {
+        feed: 'mygoals',
+        take: 10,
+        // no cursor on initial query or refetch
+      },
+      onError: e => console.log('error loading for you posts', e),
+      notifyOnNetworkStatusChange: true,
+      // fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI (but it ruins opt response of Likes)
     },
-    onError: (e) => console.log('error loading for you posts', e),
-    notifyOnNetworkStatusChange: true,
-    // fetchPolicy: 'cache-and-network', // had to do this or refetch would not update the UI (but it ruins opt response of Likes)
-  });
+  );
 
   // VIEWED POST MUTATION
   const [viewedPost] = useMutation(VIEWED_POST_MUTATION);
@@ -43,7 +68,7 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop, activeTimeline, headerV
   // THIS WILL KEEP THE SCROLL IN SYNC (BETWEEN 0 & SLIDE_HEIGHT) ACROSS ALL THE TIMELINES
   useEffect(() => {
     if (activeTimeline !== 2) {
-      homeTimelineRef.current.scrollToOffset({ offset: headerValue });
+      homeTimelineRef.current.scrollToOffset({offset: headerValue});
     }
   }, [headerValue, activeTimeline]);
 
@@ -56,7 +81,9 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop, activeTimeline, headerV
     console.log('ERROR LOADING POSTS:', error);
     return (
       <View style={styles.timeline}>
-        <Text style={{ textAlign: 'center', width: '100%', color: 'red' }}>Error loading posts</Text>
+        <Text style={{textAlign: 'center', width: '100%', color: 'red'}}>
+          Error loading posts
+        </Text>
       </View>
     );
   }
@@ -78,12 +105,22 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop, activeTimeline, headerV
   return (
     <View style={styles.container}>
       {/* This is the absolute positioned loading animation */}
-      <TimelineRefresh scrollY={scrollY} refetching={refetching} paddingTop={paddingTop} />
+      <TimelineRefresh
+        scrollY={scrollY}
+        refetching={refetching}
+        paddingTop={paddingTop}
+      />
       <Animated.FlatList
         scrollEventThrottle={16}
         ref={homeTimelineRef}
-        refreshControl={<RefreshControl refreshing={refetching} onRefresh={onRefresh} tintColor="transparent" />}
-        contentContainerStyle={{ paddingTop, paddingBottom: 20 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refetching}
+            onRefresh={onRefresh}
+            tintColor="transparent"
+          />
+        }
+        contentContainerStyle={{paddingTop, paddingBottom: 20}}
         style={styles.timeline}
         data={posts}
         ListHeaderComponent={() => {
@@ -103,13 +140,23 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop, activeTimeline, headerV
         }}
         ListEmptyComponent={() => {
           return (
-            <View style={{ width: '100%', height: 400 }}>
+            <View style={{width: '100%', height: 400}}>
               {loading ? (
-                <View style={{ width: '100%', height: 100 }}>
-                  <Loader backgroundColor={colors.lightGray} size="small" full={false} active />
+                <View style={{width: '100%', height: 100}}>
+                  <Loader
+                    backgroundColor={colors.lightGray}
+                    size="small"
+                    full={false}
+                    active
+                  />
                 </View>
               ) : (
-                <Text style={{ ...defaultStyles.largeMuteItalic, textAlign: 'center', paddingTop: 40 }}>
+                <Text
+                  style={{
+                    ...defaultStyles.largeMuteItalic,
+                    textAlign: 'center',
+                    paddingTop: 40,
+                  }}>
                   Your goals will show here
                 </Text>
               )}
@@ -120,32 +167,38 @@ const HomeTimeline = ({ navigation, scrollY, paddingTop, activeTimeline, headerV
           // SHOW LOADER IF FETCHING MORE
           if (activeTimeline === 2 && fetchingMore) {
             return (
-              <View style={{ height: 80 }}>
-                <Loader backgroundColor="transparent" size="small" full={false} active />
+              <View style={{height: 80}}>
+                <Loader
+                  backgroundColor="transparent"
+                  size="small"
+                  full={false}
+                  active
+                />
               </View>
             );
           }
 
-          return <View style={{ height: 30 }} />;
+          return <View style={{height: 30}} />;
         }}
         onScroll={Animated.event(
           [
             {
               nativeEvent: {
                 contentOffset: {
-                  y: activeTimeline === 2 ? scrollY : undefined,
+                  x: animated0,
+                  y: activeTimeline === 2 ? scrollY : animated0,
                 },
               },
             },
           ],
-          { useNativeDriver: true }
+          {useNativeDriver: true},
         )}
         keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => {
+        renderItem={({item}) => {
           return <PostGroupTL post={item} navigation={navigation} />;
         }}
         onEndReachedThreshold={0.5}
-        onEndReached={(info) => {
+        onEndReached={info => {
           // console.log('onEndReached triggered', info);
           // sometimes triggers on distanceToEnd -598 on initial render. Could add this check to if statment
 

@@ -1,8 +1,11 @@
-import React, { useContext, useEffect, useState, useRef } from 'react';
-import { YellowBox } from 'react-native';
+import React, {useContext, useEffect, useState, useRef} from 'react';
+import {LogBox} from 'react-native';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
+import {NavigationContainer} from '@react-navigation/native';
+import {
+  createStackNavigator,
+  CardStyleInterpolators,
+} from '@react-navigation/stack';
 import * as Sentry from '@sentry/react-native';
 
 import SplashScreen from 'library/components/UI/SplashScreen';
@@ -28,36 +31,37 @@ import OnboardingInvest1 from 'screens/onboarding/OnboardingInvest1';
 import OnboardingMentor1 from 'screens/onboarding/OnboardingMentor1';
 import EditLocationModal from 'modals/general/EditLocationModal';
 
-import { UserContext } from 'library/utils/UserContext';
+import {UserContext} from 'library/utils/UserContext';
 
 import MainStack from 'navigators/MainStack';
 
 import AsyncStorage from '@react-native-community/async-storage';
-import { VERSION } from './src/styles/constants';
+import {VERSION} from './src/styles/constants';
 
 Sentry.init({
   release: `ambit@${VERSION}`,
-  dsn: 'https://47935ea32c8c4270aff14584c94e17cc@o448985.ingest.sentry.io/5431210',
+  dsn:
+    'https://47935ea32c8c4270aff14584c94e17cc@o448985.ingest.sentry.io/5431210',
   enableAutoSessionTracking: true,
 });
 
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  YellowBox.ignoreWarnings([
+  LogBox.ignoreLogs([
     'Non-serializable values were found in the navigation state',
     'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation - use another VirtualizedList-backed container instead.',
   ]);
 
-  const navigation = useRef();
+  // const navigation = useRef();
 
-  const { loadingApp, loadingToken, currentUserId } = useContext(UserContext);
+  const {loadingApp, loadingToken, currentUserId} = useContext(UserContext);
 
   const [isFirstLaunch, setIsFirstLaunch] = useState(null);
 
   // determine if this is the first launch
   useEffect(() => {
-    AsyncStorage.getItem('alreadyLaunched').then((value) => {
+    AsyncStorage.getItem('alreadyLaunched').then(value => {
       if (value === null) {
         AsyncStorage.setItem('alreadyLaunched', 'true');
         setIsFirstLaunch(true);
@@ -172,28 +176,92 @@ const AppNavigator = () => {
         <Stack.Screen name="Benefits3" component={BenefitsScreen3} />
 
         {/* START HERE */}
-        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="Login" component={LoginScreen} options={{ gestureEnabled: false }} />
+        <Stack.Screen
+          name="Welcome"
+          component={WelcomeScreen}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{gestureEnabled: false}}
+        />
 
-        <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="PhoneNumberVerify" component={PhoneNumberVerify} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="ForgotPW" component={ForgotPwScreen} options={{ gestureEnabled: false }} />
+        <Stack.Screen
+          name="PhoneNumber"
+          component={PhoneNumber}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="PhoneNumberVerify"
+          component={PhoneNumberVerify}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="ForgotPW"
+          component={ForgotPwScreen}
+          options={{gestureEnabled: false}}
+        />
 
-        <Stack.Screen name="CreateAccount" component={CreateAccountScreen} options={{ gestureEnabled: false }} />
+        <Stack.Screen
+          name="CreateAccount"
+          component={CreateAccountScreen}
+          options={{gestureEnabled: false}}
+        />
 
         {/* ONLY GET HERE IF CREATING NEW ACCOUNT */}
-        <Stack.Screen name="OnboardingEmail" component={OnboardingEmail} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="OnboardingLocation" component={OnboardingLocation} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="OnboardingProfile" component={OnboardingProfile} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="OnboardingTopics" component={OnboardingTopics} options={{ gestureEnabled: false }} />
+        <Stack.Screen
+          name="OnboardingEmail"
+          component={OnboardingEmail}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="OnboardingLocation"
+          component={OnboardingLocation}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="OnboardingProfile"
+          component={OnboardingProfile}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="OnboardingTopics"
+          component={OnboardingTopics}
+          options={{gestureEnabled: false}}
+        />
 
-        <Stack.Screen name="OnboardingInvest" component={OnboardingInvest} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="OnboardingFreelance" component={OnboardingFreelance} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="OnboardingMentor" component={OnboardingMentor} options={{ gestureEnabled: false }} />
+        <Stack.Screen
+          name="OnboardingInvest"
+          component={OnboardingInvest}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="OnboardingFreelance"
+          component={OnboardingFreelance}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="OnboardingMentor"
+          component={OnboardingMentor}
+          options={{gestureEnabled: false}}
+        />
 
-        <Stack.Screen name="OnboardingInvest1" component={OnboardingInvest1} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="OnboardingFreelance1" component={OnboardingFreelance1} options={{ gestureEnabled: false }} />
-        <Stack.Screen name="OnboardingMentor1" component={OnboardingMentor1} options={{ gestureEnabled: false }} />
+        <Stack.Screen
+          name="OnboardingInvest1"
+          component={OnboardingInvest1}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="OnboardingFreelance1"
+          component={OnboardingFreelance1}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          name="OnboardingMentor1"
+          component={OnboardingMentor1}
+          options={{gestureEnabled: false}}
+        />
         <Stack.Screen
           name="EditLocationModal"
           component={EditLocationModal}
@@ -203,7 +271,11 @@ const AppNavigator = () => {
         />
 
         {/* THE MAIN APP IS HERE */}
-        <Stack.Screen name="MainStack" component={MainStack} options={{ gestureEnabled: false }} />
+        <Stack.Screen
+          name="MainStack"
+          component={MainStack}
+          options={{gestureEnabled: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
