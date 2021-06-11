@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
+import { getApnToken } from 'library/utils/apnUtil';
 // import analytics from '@segment/analytics-react-native';
 
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
+import CURRENT_USER_APN_TOKEN from 'library/queries/CURRENT_USER_APN_TOKEN';
 import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
 import POSTS_FORYOU_QUERY from 'library/queries/POSTS_FORYOU_QUERY';
 import POSTS_FOLLOWING_QUERY from 'library/queries/POSTS_FOLLOWING_QUERY';
+import UPDATE_USER_MUTATION from 'library/mutations/UPDATE_USER_MUTATION';
 
 import SplashScreen from 'library/components/UI/SplashScreen';
 import MainDrawer from 'navigators/MainDrawer';
@@ -58,7 +61,7 @@ import MonthModal from 'modals/general/MonthModal';
 import ForYouSettingsPopup from 'modals/general/ForYouSettingsPopup';
 import EditStoryItemPopup from 'modals/stories/EditStoryItemPopup';
 import IntroInfoPopup from 'modals/stories/IntroInfoPopup';
-// import { UserContext } from 'library/utils/UserContext';
+import { UserContext } from 'library/utils/UserContext';
 
 const Stack = createStackNavigator();
 
@@ -84,10 +87,18 @@ const halfModalOptions = {
 };
 
 const MainStack = ({ navigation }) => {
+  const { currentUsername } = useContext(UserContext);
+
+  // ////////////////////////////////////////
+  // MUTATION TO SAVE APN TOKEN TO DATABASE
+  // ////////////////////////////////////////
+  const [writeApn, { loading: loadingApnWrite }] = useMutation(UPDATE_USER_MUTATION);
+
   // ////////////////////////////////////////
   // PRE-FETCH INITIAL QUERIES HERE
   // ////////////////////////////////////////
   const { data: userData, loading: loadingUser } = useQuery(CURRENT_USER_QUERY);
+  const { data: userApnTokenData, loading: loadingUserApnToken } = useQuery(CURRENT_USER_APN_TOKEN);
   const { data: storyData, loading: loadingStories } = useQuery(STORIES_FORYOU_QUERY, {
     variables: { feed: 'foryou' },
   });
@@ -108,6 +119,34 @@ const MainStack = ({ navigation }) => {
 
   const readyToDisplay = userData && storyData && postsData && postsData2;
 
+  // write the APN device code to the DB if the one in Async Storage does not match the one in the DB
+  // Async Storage will always hold the latest APN device code for the user
+  useEffect(() => {
+    const compareAPN = async () => {
+      if (userApnTokenData && userApnTokenData.userApnToken) {
+        // 1. grab apn token from Database
+        const databaseApn = userApnTokenData.userApnToken.apnToken || '';
+
+        // 2. grab apn token from AsyncStorage
+        const apnToken = await getApnToken();
+
+        // 3. save Async Storage apn to the database if they don't match
+        if (!!currentUsername && !!apnToken && (apnToken !== databaseApn)) {
+          console.log('writing apn token to database')
+          console.log('db:', databaseApn, 'async:', apnToken)
+          await writeApn({
+            variables: {
+              where: { username: currentUsername },
+              data: { apnToken: apnToken },
+            },
+          })
+        }
+      }
+    }
+
+    compareAPN();
+  }, [userApnTokenData])
+
   // this might cause the splash screen to render every time current_user_query runs
   // this should only render upon the first time we are loading the CURRENT_USER_QUERY
   if (!readyToDisplay) {
@@ -115,7 +154,14 @@ const MainStack = ({ navigation }) => {
   }
 
   return (
-    <Stack.Navigator initialRouteName="MainDrawer" mode="modal" headerMode="none">
+    <Stack.Navigator
+      initialRouteName="MainDrawer"
+      mode="modal"
+      headerMode="none"
+      screenOptions={{
+        gestureResponseDistance: { vertical: 500 }
+      }}
+    >
       <Stack.Screen name="MainDrawer" component={MainDrawer} />
 
       {/* modals */}

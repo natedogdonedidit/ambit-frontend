@@ -238,9 +238,9 @@ const StoryModalTopic = ({ navigation, route }) => {
           return (
             <Story
               key={item.id}
-              navigation={navigation}
               story={item}
               storyIsActive={storyIsActive}
+              // startingStoryItemId={startingStoryItemId} // not needed here
               tryGoToPrevStory={tryGoToPrevStory}
               tryGoToNextStory={tryGoToNextStory}
             />

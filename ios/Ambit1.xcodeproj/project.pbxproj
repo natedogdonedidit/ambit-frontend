@@ -96,6 +96,7 @@
 		6632CF6EE4EB19F3F871ED3C /* libPods-Ambit1-Ambit1Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Ambit1-Ambit1Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Ambit1/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9F8306961DDF1C090C40EAE8 /* libPods-Ambit1.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Ambit1.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE0C7ECE266F7C05002101CF /* Ambit1.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Ambit1.entitlements; path = Ambit1/Ambit1.entitlements; sourceTree = "<group>"; };
 		BE5293772641FAEB00EB057E /* SF-Pro-Display-Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Thin.otf"; sourceTree = "<group>"; };
 		BE5293782641FAEB00EB057E /* SF-Pro-Display-SemiboldItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-SemiboldItalic.otf"; sourceTree = "<group>"; };
 		BE5293792641FAEB00EB057E /* SF-Pro-Text-UltralightItalic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-UltralightItalic.otf"; sourceTree = "<group>"; };
@@ -210,6 +211,7 @@
 		13B07FAE1A68108700A75B9A /* Ambit1 */ = {
 			isa = PBXGroup;
 			children = (
+				BE0C7ECE266F7C05002101CF /* Ambit1.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -749,7 +751,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = Ambit1/Ambit1.entitlements;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NV79PVDC52;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ambit1/Info.plist;
@@ -757,7 +760,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.4.5;
+				MARKETING_VERSION = 0.4.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -778,14 +781,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = Ambit1/Ambit1.entitlements;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NV79PVDC52;
 				INFOPLIST_FILE = Ambit1/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.4.5;
+				MARKETING_VERSION = 0.4.6;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

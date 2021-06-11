@@ -11,7 +11,7 @@ const MoreTopicsStory = ({ followsTopics = false }) => {
   const navigation = useNavigation();
 
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('TopicScreen')} style={styles.storyBox}>
+    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('MyTopicsList')} style={styles.storyBox}>
       <Text style={{ ...defaultStyles.largeSemibold, color: colors.white, paddingBottom: 10, textAlign: 'left' }}>
         Follow {followsTopics ? 'more' : 'some'} topics
       </Text>

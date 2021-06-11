@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback,
   TextInput,
@@ -29,6 +28,7 @@ import StoryTapRegions from 'library/components/stories/StoryTapRegions';
 import CREATE_MESSAGE_MISSING_CONVO_MUTATION from 'library/mutations/CREATE_MESSAGE_MISSING_CONVO_MUTATION';
 import CURRENT_USER_CONVOS from '../../queries/CURRENT_USER_CONVOS';
 import CoolText from '../UI/CoolText';
+import { useNavigation } from '@react-navigation/native';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
 function areEqual(prevProps, nextProps) {
@@ -38,7 +38,7 @@ function areEqual(prevProps, nextProps) {
   otherwise return false
   */
 
-  if (prevProps.itemIsActive === nextProps.itemIsActive) {
+  if (prevProps.isActiveItem === nextProps.isActiveItem) {
     return true;
   }
 
@@ -46,18 +46,16 @@ function areEqual(prevProps, nextProps) {
 }
 
 function StoryFooter({
-  navigation,
   story,
   item,
-  itemIsActive,
+  isActiveItem,
   isMyPost,
   handleMoreButton,
   setPaused,
-
-  decrementIndex,
   incrementIndex,
-  // setDisableOutterScroll,
+  decrementIndex,
 }) {
+  const navigation = useNavigation();
   const { currentUserId } = useContext(UserContext);
 
   const [isLiked, setIsLiked] = useState(item.likedByMe);
@@ -121,7 +119,7 @@ function StoryFooter({
   });
 
   // if the item isn't active...don't render anything. But this will allow us to keep our state (isLiked, likeCount)
-  if (!itemIsActive) {
+  if (!isActiveItem) {
     return null;
   }
 
@@ -694,4 +692,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(StoryFooter, areEqual);
+// export default React.memo(StoryFooter, areEqual);
+export default React.memo(StoryFooter);
+
+// export default StoryFooter

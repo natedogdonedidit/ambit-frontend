@@ -1,15 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { StyleSheet, View, StatusBar, Dimensions, FlatList, InteractionManager, Text } from 'react-native';
-import { useQuery, useLazyQuery, useApolloClient } from '@apollo/client';
+import { StyleSheet, View, StatusBar, Dimensions, FlatList, InteractionManager } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { viewedStories, viewedStoryItems } from 'library/utils/cache';
 
-import STORIES_FORYOU_QUERY from 'library/queries/STORIES_FORYOU_QUERY';
 import Story from 'library/components/stories/Story';
-import Loader from 'library/components/UI/Loader';
-import NoMoreStories from 'library/components/stories/NoMoreStories';
-import defaultStyles from 'styles/defaultStyles';
-import colors from 'styles/colors';
+
 
 // WHEN IT COMES TIME. EXPAND THIS MODAL TO BE ABLE TO QUERY FOR MORE
 // STORIES FROM THE USER
@@ -109,12 +103,11 @@ const StoryModalUser = ({ navigation, route }) => {
           return (
             <Story
               key={item.id}
-              navigation={navigation}
               story={item}
               storyIsActive={storyIsActive}
+              startingStoryItemId={startingStoryItemId}
               tryGoToPrevStory={tryGoToPrevStory}
               tryGoToNextStory={tryGoToNextStory}
-              startingStoryItemId={startingStoryItemId}
             />
           );
         }}

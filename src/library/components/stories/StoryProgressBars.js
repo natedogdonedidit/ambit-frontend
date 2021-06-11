@@ -5,8 +5,15 @@ import { STORY_IMAGE_DURATION } from 'styles/constants';
 import ProgressBar from './ProgressBar';
 import ProgressBarStatic from './ProgressBarStatic';
 
-function StoryProgressBars({ items, activeItemIndex, paused, storyIsActive, incrementIndex, videoStarted }) {
-  // console.log(items);
+function StoryProgressBars({ 
+  items, 
+  activeItemIndex, 
+  isActiveItem, 
+  paused, 
+  videoStarted,
+  incrementIndex, 
+}) {
+
   // get the entire length of the story items added together
   const storyLength = useMemo(() => {
     return items.reduce((total, item) => {
@@ -18,14 +25,9 @@ function StoryProgressBars({ items, activeItemIndex, paused, storyIsActive, incr
 
   const renderProgressBars = () => {
     return items.map((item, i) => {
-      const itemIsActive = activeItemIndex === i;
+
       const itemNotPlayed = activeItemIndex < i;
       const itemHasPlayed = activeItemIndex > i;
-
-      // if story is not active, just render empty progress bars
-      if (!storyIsActive) {
-        return <ProgressBarStatic key={item.id} duration={item.duration} storyLength={storyLength} itemHasPlayed={false} />;
-      }
 
       // if the story is not active...we're just going to render
       if (itemNotPlayed || itemHasPlayed) {
@@ -34,7 +36,8 @@ function StoryProgressBars({ items, activeItemIndex, paused, storyIsActive, incr
         );
       }
 
-      if (itemIsActive) {
+      if (isActiveItem) {
+        
         return (
           <ProgressBar
             key={item.id}
@@ -47,7 +50,8 @@ function StoryProgressBars({ items, activeItemIndex, paused, storyIsActive, incr
         );
       }
 
-      return null;
+      // else
+      return <ProgressBarStatic key={item.id} duration={item.duration} storyLength={storyLength} itemHasPlayed={false} />;
     });
   };
 

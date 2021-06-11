@@ -137,7 +137,7 @@ const ProfileComponent = ({ navigation, username, scrollY, loading, user, OUTSID
         {
           text: 'Edit Profile',
           // color: colors.purp,
-          // onPress: () => updateGoalStatus('Complete'),
+          onPress: () => navigation.navigate('EditProfileModal', { username: user.username }),
         },
       ];
     }

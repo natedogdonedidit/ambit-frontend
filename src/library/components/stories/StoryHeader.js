@@ -9,29 +9,32 @@ import { timeDifference } from 'library/utils';
 import ProfilePic from 'library/components/UI/ProfilePic';
 import FollowButton from 'library/components/UI/buttons/FollowButton';
 import { UserContext } from 'library/utils/UserContext';
+import { useNavigation } from '@react-navigation/native';
 
 // ONLY RE-RENDER IF THE ACTIVEITEM CHANGES
-function areEqual(prevProps, nextProps) {
-  /*
-  return true if passing nextProps to render would return
-  the same result as passing prevProps to render,
-  otherwise return false
-  */
+// function areEqual(prevProps, nextProps) {
+//   /*
+//   return true if passing nextProps to render would return
+//   the same result as passing prevProps to render,
+//   otherwise return false
+//   */
 
-  if (prevProps.activeItem === nextProps.activeItem) {
-    return true;
-  }
+//   if (prevProps.item === nextProps.item) {
+//     return true;
+//   }
 
-  return false;
-}
+//   return false;
+// }
 
-function StoryHeader({ owner, type, activeItem, navigation, isMyPost }) {
+function StoryHeader({ owner, type, item, isMyPost }) {
+  const navigation = useNavigation()
+
   // MEMO VALUES
   const { timeDiff, period } = useMemo(() => {
-    const createdAt = new Date(activeItem.createdAt);
+    const createdAt = new Date(item.createdAt);
     const timeOfDay = new Date();
     return timeDifference(timeOfDay, createdAt);
-  }, [activeItem]);
+  }, [item]);
 
   const { activeTab } = useContext(UserContext);
 
@@ -127,4 +130,6 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.memo(StoryHeader, areEqual);
+// export default React.memo(StoryHeader, areEqual);
+export default React.memo(StoryHeader);
+

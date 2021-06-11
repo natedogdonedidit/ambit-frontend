@@ -12,7 +12,7 @@ const GenericPopupMenu = ({ navigation, route }) => {
   const renderButtons = () => {
     if (options.length < 1) return null;
 
-    return options.map(({ text, color, onPress, closeModal = true }, i) => {
+    return options.map(({ text, color, onPress = () => null, closeModal = true }, i) => {
       return (
         <TouchableOpacity
           key={i}

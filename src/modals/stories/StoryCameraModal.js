@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import CameraRoll from '@react-native-community/cameraroll';
 import LinearGradient from 'react-native-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Feather from 'react-native-vector-icons/Feather';
 
 import ImagePicker from 'react-native-image-crop-picker';
 import { RNCamera } from 'react-native-camera';
@@ -252,7 +253,7 @@ const StoryCameraModal = ({ navigation, route }) => {
         flashMode={flashMode}
         keepAudioSession
         onRecordingStart={onRecordingStart}
-        // onRecordingEnd={onRecordingEnd}
+      // onRecordingEnd={onRecordingEnd}
       />
       <LinearGradient
         start={{ x: 0.5, y: 0 }}
@@ -289,18 +290,25 @@ const StoryCameraModal = ({ navigation, route }) => {
         MAX_DURATION={MAX_DURATION}
       />
       {renderHeader()}
-      {isIntro && (
-        <View style={{ position: 'absolute', top: insets.top + 15, left: 10 }}>
-          <TouchableOpacity
+      {!recording && <View style={{ position: 'absolute', top: insets.top + 10, left: 10 }}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          style={{ ...styles.sideButton }}
+          onPress={() => navigation.goBack()}
+          hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
+        >
+          <Feather name="x" size={24} color={colors.white} style={{ paddingTop: 2, paddingLeft: 1 }} />
+        </TouchableOpacity>
+        {/* <TouchableOpacity
             activeOpacity={0.8}
             style={styles.sideButton}
             onPress={() => navigation.navigate('IntroInfoPopup')}
             hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
           >
             <Icon name="question" solid size={16} color={colors.white} />
-          </TouchableOpacity>
-        </View>
-      )}
+          </TouchableOpacity> */}
+      </View>}
+
       {renderCurrentIntro()}
     </View>
   );

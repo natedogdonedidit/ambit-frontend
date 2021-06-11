@@ -30,7 +30,7 @@ const EditLocationRadiusModal = ({ navigation, route }) => {
   async function getLocationsFromAPI() {
     const app_id = 'h9qumdLXOxidgnOtyADi';
     const app_code = 'AeO_1-X9yngGRO4RHd_IsQ';
-    const url = `http://autocomplete.geocoder.api.here.com/6.2/suggest.json?app_id=${app_id}&app_code=${app_code}&query=${locationInput}&maxresults=20&country=USA&resultType=areas`;
+    const url = `https://autocomplete.geocoder.api.here.com/6.2/suggest.json?app_id=${app_id}&app_code=${app_code}&query=${locationInput}&maxresults=20&country=USA&resultType=areas`;
 
     if (!selecting) {
       try {
@@ -61,7 +61,7 @@ const EditLocationRadiusModal = ({ navigation, route }) => {
   async function getSingleLocationFromAPI(locationId) {
     const app_id = 'h9qumdLXOxidgnOtyADi';
     const app_code = 'AeO_1-X9yngGRO4RHd_IsQ';
-    const url = `http://geocoder.api.here.com/6.2/geocode.json?app_id=${app_id}&app_code=${app_code}&locationid=${locationId}&jsonattributes=1&gen=9`;
+    const url = `https://geocoder.api.here.com/6.2/geocode.json?app_id=${app_id}&app_code=${app_code}&locationid=${locationId}&jsonattributes=1&gen=9`;
 
     try {
       const response = await fetch(url, {
