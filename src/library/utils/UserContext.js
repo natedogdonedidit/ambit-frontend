@@ -14,6 +14,8 @@ const UserContextProvider = (props) => {
   const [loadingApp, setLoadingApp] = useState(true);
   const [loadingToken, setLoadingToken] = useState(true);
   const [showNetworkActivity, setShowNetworkActivity] = useState(false);
+  const [uploadingStory, setUploadingStory] = useState(false);
+  const [uploadingPost, setUploadingPost] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
   const [currentUsername, setCurrentUsername] = useState('');
   const [goToTopics, setGoToTopics] = useState(false);
@@ -103,6 +105,10 @@ const UserContextProvider = (props) => {
         logoutCTX,
         showNetworkActivity,
         setShowNetworkActivity,
+        uploadingStory,
+        setUploadingStory,
+        uploadingPost,
+        setUploadingPost,
         goToTopics,
         setGoToTopics,
         activeTab,

@@ -1,15 +1,7 @@
-import React, {useState, useRef, useEffect, useContext} from 'react';
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  TouchableOpacity,
-  Animated,
-  Dimensions,
-  ScrollView,
-} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useApolloClient} from '@apollo/client';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { StyleSheet, View, StatusBar, TouchableOpacity, Animated, Dimensions, ScrollView } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useApolloClient } from '@apollo/client';
 
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
@@ -22,23 +14,19 @@ import HomeTimeline0 from 'library/components/timelines/HomeTimeline0';
 import HomeTimeline1 from 'library/components/timelines/HomeTimeline1';
 import HomeTimeline2 from 'library/components/timelines/HomeTimeline2';
 
-import {
-  HEADER_HEIGHT,
-  STORIES_HEIGHT,
-  HOME_TABS_HEIGHT,
-} from 'styles/constants';
-import {UserContext} from 'library/utils/UserContext';
+import { HEADER_HEIGHT, STORIES_HEIGHT, HOME_TABS_HEIGHT } from 'styles/constants';
+import { UserContext } from 'library/utils/UserContext';
 
 const SLIDE_HEIGHT = HEADER_HEIGHT + STORIES_HEIGHT - StyleSheet.hairlineWidth;
-const TIMELINE_PADDING_TOP = HEADER_HEIGHT + STORIES_HEIGHT + HOME_TABS_HEIGHT;
+const TIMELINE_PADDING_TOP = HEADER_HEIGHT + STORIES_HEIGHT + HOME_TABS_HEIGHT + 3; // last number is for story loading animation
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   // CONTEXT
-  const {showNetworkActivity, setRefreshHomeScreen} = useContext(UserContext);
+  const { showNetworkActivity, setRefreshHomeScreen } = useContext(UserContext);
   const insets = useSafeAreaInsets();
   const horizontalScrollRef = useRef();
   const client = useApolloClient();
-  const {width} = Dimensions.get('window');
+  const { width } = Dimensions.get('window');
 
   // STATE
   // const [scrollY] = useState(new Animated.Value(0));
@@ -62,7 +50,7 @@ const HomeScreen = ({navigation}) => {
 
   // track the slide height of the Home Header in state so timelines can sync scroll
   useEffect(() => {
-    scrollY.addListener(({value}) => {
+    scrollY.addListener(({ value }) => {
       if (value > 0 && value < SLIDE_HEIGHT) {
         const val = Math.round(value / 8) * 8;
         setHeaderValue(val);
@@ -77,11 +65,11 @@ const HomeScreen = ({navigation}) => {
   // for HORIZONTAL scroll. If change tab --> scroll to timeline
   useEffect(() => {
     if (activeTimeline === 0) {
-      horizontalScrollRef.current.scrollTo({x: 0});
+      horizontalScrollRef.current.scrollTo({ x: 0 });
     } else if (activeTimeline === 1) {
-      horizontalScrollRef.current.scrollTo({x: width});
+      horizontalScrollRef.current.scrollTo({ x: width });
     } else if (activeTimeline === 2) {
-      horizontalScrollRef.current.scrollTo({x: width * 2});
+      horizontalScrollRef.current.scrollTo({ x: width * 2 });
     }
   }, [activeTimeline, width]);
 
@@ -98,14 +86,11 @@ const HomeScreen = ({navigation}) => {
   };
 
   return (
-    <View style={{...styles.container, paddingTop: top}}>
-      <StatusBar
-        barStyle="dark-content"
-        networkActivityIndicatorVisible={showNetworkActivity}
-      />
+    <View style={{ ...styles.container, paddingTop: top }}>
+      <StatusBar barStyle="dark-content" networkActivityIndicatorVisible={showNetworkActivity} />
       <ScrollView
         ref={horizontalScrollRef}
-        style={{flex: 1}} // must give a fixed height here of the onEndReached doesnt work in FlatLists
+        style={{ flex: 1 }} // must give a fixed height here of the onEndReached doesnt work in FlatLists
         horizontal
         snapToAlignment="start"
         snapToInterval={width}
@@ -114,7 +99,7 @@ const HomeScreen = ({navigation}) => {
         scrollEventThrottle={16}
         onScroll={handleOnScroll}
         removeClippedSubviews={false}>
-        <View style={{width}}>
+        <View style={{ width }}>
           <HomeTimeline0
             navigation={navigation}
             scrollY={scrollY}
@@ -123,7 +108,7 @@ const HomeScreen = ({navigation}) => {
             headerValue={headerValue}
           />
         </View>
-        <View style={{width}}>
+        <View style={{ width }}>
           <HomeTimeline1
             navigation={navigation}
             scrollY={scrollY}
@@ -132,7 +117,7 @@ const HomeScreen = ({navigation}) => {
             headerValue={headerValue}
           />
         </View>
-        <View style={{width}}>
+        <View style={{ width }}>
           <HomeTimeline2
             navigation={navigation}
             scrollY={scrollY}
@@ -151,10 +136,9 @@ const HomeScreen = ({navigation}) => {
         <TouchableOpacity
           activeOpacity={0.8}
           onPress={() => {
-            navigation.navigate('NewPostModal', {topicsPassedIn: []});
+            navigation.navigate('NewPostModal', { topicsPassedIn: [] });
           }}>
-          <View
-            style={{...styles.newPostButton, ...defaultStyles.shadowButton}}>
+          <View style={{ ...styles.newPostButton, ...defaultStyles.shadowButton }}>
             <Icon name="pencil-alt" size={24} color="white" />
           </View>
         </TouchableOpacity>
@@ -183,11 +167,7 @@ const HomeScreen = ({navigation}) => {
           style={{
             paddingTop: top,
           }}>
-          <HeaderHome
-            handleMiddle={() => null}
-            activeTimeline={activeTimeline}
-            setActiveTimeline={setActiveTimeline}
-          />
+          <HeaderHome handleMiddle={() => null} activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
         </Animated.View>
       </Animated.View>
 

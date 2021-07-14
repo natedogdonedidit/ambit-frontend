@@ -1,27 +1,18 @@
 import React from 'react';
-import {PermissionsAndroid, Alert} from 'react-native';
-import {
-  differenceInSeconds,
-  differenceInDays,
-  differenceInHours,
-} from 'date-fns';
-import {cloud_name} from 'library/config';
+import { AppState } from 'react-native';
+import { PermissionsAndroid, Alert } from 'react-native';
+
+import { differenceInSeconds, differenceInDays, differenceInHours } from 'date-fns';
+import { cloud_name } from 'library/config';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import colors from '../../styles/colors';
-import {goalsList, allTopics, topicsList, mainTopicsList} from './lists';
+import { goalsList, allTopics, topicsList, mainTopicsList } from './lists';
 
-export const buildSearchWhere = ({
-  text,
-  goal,
-  topicIDs,
-  lat,
-  lon,
-  currentUsername,
-}) => {
+export const buildSearchWhere = ({ text, goal, topicIDs, lat, lon, currentUsername }) => {
   const hasTopics = topicIDs.length > 0;
   const haveInputs = !!text || !!goal || hasTopics || (!!lat && !!lon);
-  const blankSearch = {id: {equals: '99'}}; // PostWhereInput
-  const allSearch = {id: {not: {equals: '99'}}}; // PostWhereInput
+  const blankSearch = { id: { equals: '99' } }; // PostWhereInput
+  const allSearch = { id: { not: { equals: '99' } } }; // PostWhereInput
 
   // text stuff - must return a PostWhereInput
   const getTextQuery = () => {
@@ -34,9 +25,9 @@ export const buildSearchWhere = ({
 
     return {
       OR: [
-        {content: {contains: text, mode: 'insensitive'}},
-        {goal: {contains: text, mode: 'insensitive'}},
-        {owner: {username: {contains: text, mode: 'insensitive'}}},
+        { content: { contains: text, mode: 'insensitive' } },
+        { goal: { contains: text, mode: 'insensitive' } },
+        { owner: { username: { contains: text, mode: 'insensitive' } } },
       ],
     };
   };
@@ -50,7 +41,7 @@ export const buildSearchWhere = ({
       return allSearch;
     }
 
-    return {goal: {contains: goal, mode: 'insensitive'}};
+    return { goal: { contains: goal, mode: 'insensitive' } };
   };
 
   // topic stuff - must return a PostWhereInput
@@ -64,11 +55,11 @@ export const buildSearchWhere = ({
 
     // if there's a goal involved then the topic refers to subField
     if (goal) {
-      return {subField: {in: topicIDs}};
+      return { subField: { in: topicIDs } };
     }
 
     // otherwise query the topics array
-    return {topic: {in: topicIDs}};
+    return { topic: { in: topicIDs } };
   };
 
   // location stuff - must return a PostWhereInput
@@ -84,18 +75,11 @@ export const buildSearchWhere = ({
     const distance = 50; // default to 50 miles radius
     const maxLat = lat + rad2Deg(distance / EARTH_RADIUS_MI);
     const minLat = lat - rad2Deg(distance / EARTH_RADIUS_MI);
-    const maxLon =
-      lon + rad2Deg(distance / EARTH_RADIUS_MI / Math.cos(deg2Rad(lat)));
-    const minLon =
-      lon - rad2Deg(distance / EARTH_RADIUS_MI / Math.cos(deg2Rad(lat)));
+    const maxLon = lon + rad2Deg(distance / EARTH_RADIUS_MI / Math.cos(deg2Rad(lat)));
+    const minLon = lon - rad2Deg(distance / EARTH_RADIUS_MI / Math.cos(deg2Rad(lat)));
 
     return {
-      AND: [
-        {locationLat: {gte: minLat}},
-        {locationLat: {lte: maxLat}},
-        {locationLon: {gte: minLon}},
-        {locationLon: {lte: maxLon}},
-      ],
+      AND: [{ locationLat: { gte: minLat } }, { locationLat: { lte: maxLat } }, { locationLon: { gte: minLon } }, { locationLon: { lte: maxLon } }],
     };
   };
 
@@ -108,18 +92,12 @@ export const buildSearchWhere = ({
     }
 
     if (currentUsername) {
-      return {owner: {username: {not: {equals: currentUsername}}}};
+      return { owner: { username: { not: { equals: currentUsername } } } };
     }
   };
 
   return {
-    AND: [
-      getOwner(),
-      getTextQuery(),
-      getGoalQuery(),
-      getTopicQuery(),
-      getLocationQuery(),
-    ],
+    AND: [getOwner(), getTextQuery(), getGoalQuery(), getTopicQuery(), getLocationQuery()],
   };
 };
 
@@ -225,10 +203,7 @@ export const sortStoriesNewestFirst = (a, b) => {
     return 1;
   }
   // grab the last item of each story, compare
-  if (
-    a.items[a.items.length - 1].createdAt >
-    b.items[b.items.length - 1].createdAt
-  ) {
+  if (a.items[a.items.length - 1].createdAt > b.items[b.items.length - 1].createdAt) {
     return -1;
   }
 
@@ -237,17 +212,13 @@ export const sortStoriesNewestFirst = (a, b) => {
 
 export async function requestCameraRollPermission() {
   try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      {
-        title: 'Ambit Camera Roll Permission',
-        message:
-          'Ambit needs access to your camera roll for your profile picture.',
-        // buttonNeutral: 'Ask Me Later',
-        buttonNegative: 'Cancel',
-        buttonPositive: 'OK',
-      },
-    );
+    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE, {
+      title: 'Ambit Camera Roll Permission',
+      message: 'Ambit needs access to your camera roll for your profile picture.',
+      // buttonNeutral: 'Ask Me Later',
+      buttonNegative: 'Cancel',
+      buttonPositive: 'OK',
+    });
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       console.log('You can use the camera roll');
     } else {
@@ -276,16 +247,13 @@ export const profilePicUpload = async (userId, uri) => {
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
   try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: uploadData,
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: uploadData,
+    });
     const resJson = await res.json();
     console.log('resJson', resJson);
 
@@ -317,16 +285,13 @@ export const bannerPicUpload = async (userId, uri) => {
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
   try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: uploadData,
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: uploadData,
+    });
     const resJson = await res.json();
     // console.log('resJson', resJson);
 
@@ -353,110 +318,38 @@ export const postPicUpload = async (userId, uri) => {
   // create body
   const uploadData = new FormData();
   uploadData.append('file', photo);
-  uploadData.append('upload_preset', 'ambit-postpic-preset');
+  uploadData.append('upload_preset', 'ambit-post-pic-preset');
   uploadData.append('tags', tags);
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
-  try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-      {
+  let count = 0;
+  const maxTries = 3;
+  while (true) {
+    try {
+      console.log('trying to upload image, take', count);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: uploadData,
-      },
-    );
-    const resJson = await res.json();
-    // console.log('resJson', resJson);
+      });
 
-    // return the image url
-    return resJson.secure_url;
-  } catch (error) {
-    console.log(error);
-    throw new Error('Image upload fail');
-  }
-};
+      const resJson = await res.json();
 
-export const introPicUpload = async (userId, uri) => {
-  // create tags
-  const tags = `${userId}, intro, image`;
+      // return the image url and duration
+      return resJson.secure_url;
+    } catch (error) {
+      // console.log(error);
+      console.log('an error occured trying to upload your image, count =', count);
 
-  // create file object (all fields required)
-  const photo = {
-    uri,
-    type: 'image',
-    name: uri,
-  };
-  // create body
-  const uploadData = new FormData();
-  uploadData.append('file', photo);
-  uploadData.append('upload_preset', 'ambit-postpic-preset');
-  uploadData.append('tags', tags);
-  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
+      count = count + 1;
 
-  try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: uploadData,
-      },
-    );
-    const resJson = await res.json();
-    // console.log('resJson', resJson);
-
-    // return the image url
-    return resJson.secure_url;
-  } catch (error) {
-    console.log('an error occured trying to upload your photo');
-    // console.error(error);
-    throw new Error('Image upload fail');
-  }
-};
-
-export const introVideoUpload = async (userId, uri) => {
-  // create tags
-  const tags = `${userId}, intro, video`;
-
-  // create file object (all fields required)
-  const video = {
-    uri,
-    type: 'video',
-    name: uri,
-  };
-  // create body
-  const uploadData = new FormData();
-  uploadData.append('file', video);
-  uploadData.append('upload_preset', 'ambit-intro-video-preset');
-  uploadData.append('tags', tags);
-  // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
-
-  try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: uploadData,
-      },
-    );
-    const resJson = await res.json();
-    // console.log('resJson', resJson);
-
-    // return the image url and duration
-    return {url: resJson.secure_url, duration: resJson.duration};
-  } catch (error) {
-    console.log('fail2');
-    console.log('an error occured trying to upload your photo');
-    // console.error(error);
-    throw new Error('Video upload fail');
+      if (count >= maxTries) {
+        count = 0;
+        throw new Error('Image upload fail');
+      }
+    }
   }
 };
 
@@ -473,30 +366,38 @@ export const storyPicUpload = async (userId, uri) => {
   // create body
   const uploadData = new FormData();
   uploadData.append('file', photo);
-  uploadData.append('upload_preset', 'ambit-postpic-preset');
+  uploadData.append('upload_preset', 'ambit-project-pic-preset');
   uploadData.append('tags', tags);
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
-  try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`,
-      {
+  let count = 0;
+  const maxTries = 3;
+  while (true) {
+    try {
+      console.log('trying to upload image, take', count);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: uploadData,
-      },
-    );
-    const resJson = await res.json();
-    // console.log('resJson', resJson);
+      });
 
-    // return the image url
-    return resJson.secure_url;
-  } catch (error) {
-    console.log('an error occured trying to upload your photo');
-    console.log(error);
-    throw new Error('Image upload fail');
+      const resJson = await res.json();
+
+      // return the image url and duration
+      return resJson.secure_url;
+    } catch (error) {
+      // console.log(error);
+      console.log('an error occured trying to upload your image, count =', count);
+
+      count = count + 1;
+
+      if (count >= maxTries) {
+        count = 0;
+        throw new Error('Image upload fail');
+      }
+    }
   }
 };
 
@@ -510,38 +411,42 @@ export const storyVideoUpload = async (userId, uri, isIntro = false) => {
     type: 'video',
     name: uri,
   };
+
   // create body
   const uploadData = new FormData();
   uploadData.append('file', video);
   uploadData.append('tags', tags);
-  if (isIntro) {
-    uploadData.append('upload_preset', 'ambit-intro-video-preset');
-  } else {
-    uploadData.append('upload_preset', 'ambit-project-video-preset');
-  }
+  uploadData.append('upload_preset', 'ambit-project-video-preset');
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
-  try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`,
-      {
+  let count = 0;
+  const maxTries = 3;
+  while (true) {
+    try {
+      console.log('trying to upload video, take', count);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: uploadData,
-      },
-    );
-    const resJson = await res.json();
-    // console.log('resJson', resJson);
+      });
 
-    // return the image url and duration
-    return {url: resJson.secure_url, duration: resJson.duration};
-  } catch (error) {
-    console.log('fail2');
-    console.log('an error occured trying to upload your photo');
-    // console.error(error);
-    throw new Error('Video upload fail');
+      const resJson = await res.json();
+
+      // return the image url and duration
+      return { url: resJson.secure_url, duration: resJson.duration };
+    } catch (error) {
+      // console.log(error);
+      console.log('an error occured trying to upload your video, count =', count);
+
+      count = count + 1;
+
+      if (count >= maxTries) {
+        count = 0;
+        throw new Error('Video upload fail');
+      }
+    }
   }
 };
 
@@ -562,26 +467,34 @@ export const postVideoUpload = async (userId, uri) => {
   uploadData.append('upload_preset', 'ambit-post-video-preset');
   // uploadData.append('public_id', `${user.id}_profilepic`); // cant overwrite for unsigned uploads
 
-  try {
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`,
-      {
+  let count = 0;
+  const maxTries = 3;
+  while (true) {
+    try {
+      console.log('trying to upload video, take', count);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: uploadData,
-      },
-    );
-    const resJson = await res.json();
-    // console.log('resJson', resJson);
+      });
 
-    // return the image url and duration
-    return {url: resJson.secure_url, duration: resJson.duration};
-  } catch (error) {
-    console.log('an error occured trying to upload your video for this post');
-    // console.error(error);
-    throw new Error('Video upload fail');
+      const resJson = await res.json();
+
+      // return the image url and duration
+      return { url: resJson.secure_url, duration: resJson.duration };
+    } catch (error) {
+      // console.log(error);
+      console.log('an error occured trying to upload your video, count =', count);
+
+      count = count + 1;
+
+      if (count >= maxTries) {
+        count = 0;
+        throw new Error('Video upload fail');
+      }
+    }
   }
 };
 
@@ -610,7 +523,7 @@ export const timeDifference = (laterDate, earlierDate) => {
 
   timeDiff = Math.round(timeDiff);
 
-  return {timeDiff, period};
+  return { timeDiff, period };
 };
 
 export const timeDifferenceGoal = (laterDate, earlierDate) => {
@@ -635,7 +548,7 @@ export const timeDifferenceGoal = (laterDate, earlierDate) => {
 
   // timeDiff = Math.round(timeDiff);
 
-  return {timeRemaining, period};
+  return { timeRemaining, period };
 };
 
 export const isCustomGoalTest = goal => {
@@ -672,10 +585,8 @@ export const getGoalInfo = (goal, field) => {
 };
 
 // will return an object { topicID: 'text', name: 'text' }
-export const getTopicFromID = topicID =>
-  allTopics.find(topic => topic.topicID === topicID);
-export const getFullTopicFromID = topicID =>
-  topicsList.find(topic => topic.topicID === topicID);
+export const getTopicFromID = topicID => allTopics.find(topic => topic.topicID === topicID);
+export const getFullTopicFromID = topicID => topicsList.find(topic => topic.topicID === topicID);
 export const getFullTopicListFromIDs = topicIDs => {
   return topicIDs.map(topicID => {
     const fullTopic = allTopics.find(topic => topic.topicID === topicID);
@@ -687,7 +598,7 @@ export const getParentTopicFromID = topicIDpassedIn => {
   for (let i = 0; i < topicsList.length; i++) {
     const parentTopic = topicsList[i];
 
-    const {name, topicID, icon, children} = parentTopic;
+    const { name, topicID, icon, children } = parentTopic;
 
     if (topicID === topicIDpassedIn) {
       return parentTopic;
@@ -713,12 +624,8 @@ export const getTopicIDsFromUser = usr => {
   if (!usr) {
     return [];
   }
-  const topicFocusIDs = usr.topicsFocus
-    ? usr.topicsFocus.map(t => t.topicID)
-    : [];
-  const topicInterestIDs = usr.topicsInterest
-    ? usr.topicsInterest.map(t => t.topicID)
-    : [];
+  const topicFocusIDs = usr.topicsFocus ? usr.topicsFocus.map(t => t.topicID) : [];
+  const topicInterestIDs = usr.topicsInterest ? usr.topicsInterest.map(t => t.topicID) : [];
   return [...topicFocusIDs, ...topicInterestIDs];
 };
 export const getNetworkIDsFromUser = usr => {
@@ -739,14 +646,11 @@ export const addMainTopics = topics => {
 
   mainTopicsIDonly.forEach(mainTopicID => {
     // check if the mainTopicID needs to be added
-    const addIt = usedTopicsIDonly.some(
-      usedTopicID =>
-        usedTopicID.startsWith(mainTopicID) && mainTopicID !== usedTopicID,
-    );
+    const addIt = usedTopicsIDonly.some(usedTopicID => usedTopicID.startsWith(mainTopicID) && mainTopicID !== usedTopicID);
 
     // if true - add the main topic
     if (addIt) {
-      mainTopicsToAdd.push({topicID: mainTopicID});
+      mainTopicsToAdd.push({ topicID: mainTopicID });
     }
   });
 
@@ -755,7 +659,7 @@ export const addMainTopics = topics => {
 };
 
 export const combineFavoriteTopics = myTopics => {
-  const {topicsFocus = [], topicsInterest = []} = myTopics;
+  const { topicsFocus = [], topicsInterest = [] } = myTopics;
 
   let combinedTopics = [];
 
@@ -768,9 +672,7 @@ export const combineFavoriteTopics = myTopics => {
     } else {
       // only add topics that dont already exist
       topicsInterest.forEach(topic => {
-        if (
-          combinedTopics.findIndex(fav => fav.topicID === topic.topicID) === -1
-        ) {
+        if (combinedTopics.findIndex(fav => fav.topicID === topic.topicID) === -1) {
           combinedTopics = [...combinedTopics, topic];
         }
       });

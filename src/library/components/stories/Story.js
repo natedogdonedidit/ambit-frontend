@@ -32,13 +32,7 @@ import StoryItem from './StoryItem';
 //   return false;
 // }
 
-function Story({
-  story,
-  storyIsActive,
-  startingStoryItemId,
-  tryGoToPrevStory,
-  tryGoToNextStory,
-}) {
+function Story({ story, storyIsActive, startingStoryItemId, tryGoToPrevStory, tryGoToNextStory }) {
   const { width } = Dimensions.get('window');
   const navigation = useNavigation();
 
@@ -93,7 +87,7 @@ function Story({
       navigation.goBack();
     } else if (activeItemIndex < items.length - 1) {
       // setCurrentTime(0);
-      setActiveItemIndex((prevState) => prevState + 1);
+      setActiveItemIndex(prevState => prevState + 1);
     } else {
       // setCurrentTime(0);
       tryGoToNextStory();
@@ -105,7 +99,7 @@ function Story({
       navigation.goBack();
     } else if (activeItemIndex > 0) {
       // setCurrentTime(0);
-      setActiveItemIndex((prevState) => prevState - 1);
+      setActiveItemIndex(prevState => prevState - 1);
     } else {
       // setCurrentTime(0);
       tryGoToPrevStory();
@@ -156,20 +150,23 @@ function Story({
 
   const renderItems = () => {
     return items.map((item, index) => {
-      const isActiveItem = storyIsActive && (activeItemIndex === index);
+      const isActiveItem = storyIsActive && activeItemIndex === index;
+      const isTopItem = activeItemIndex === index;
+
       return (
-        <StoryItem 
-          key={item.id} 
-          story={story} 
-          item={item} 
-          isActiveItem={isActiveItem} 
-          activeItemIndex={activeItemIndex} 
-          incrementIndex={incrementIndex} 
-          decrementIndex={decrementIndex} 
+        <StoryItem
+          key={item.id}
+          story={story}
+          item={item}
+          isActiveItem={isActiveItem}
+          isTopItem={isTopItem}
+          activeItemIndex={activeItemIndex}
+          incrementIndex={incrementIndex}
+          decrementIndex={decrementIndex}
         />
-      ) 
-    })
-  }
+      );
+    });
+  };
 
   return (
     <SafeAreaView style={{ ...styles.container, width }}>

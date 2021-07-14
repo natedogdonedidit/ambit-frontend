@@ -37,7 +37,9 @@ function StoriesHome() {
       // if a is available and b is not - do nothing
 
       // if b is available and b is not
-      if (!aAvailable && bAvailable) return 1;
+      if (!aAvailable && bAvailable) {
+        return 1;
+      }
 
       return -1;
     }
@@ -48,13 +50,13 @@ function StoriesHome() {
   }, [favoriteTopics, topicsAvailable]);
 
   // this topic should NOT be in the list
-  const isFullyViewed = (topID) => {
+  const isFullyViewed = topID => {
     // see if already in list
-    const index = topicsAvailable.findIndex((t) => t === topID);
+    const index = topicsAvailable.findIndex(t => t === topID);
 
     // if in list - remove it
     if (index >= 0) {
-      setTopicsAvailable((prevState) => {
+      setTopicsAvailable(prevState => {
         const newArray = [...prevState];
         newArray.splice(index, 1);
         return newArray;
@@ -65,13 +67,13 @@ function StoriesHome() {
   };
 
   // this topic should be in the list
-  const isNotFullyViewed = (topID) => {
+  const isNotFullyViewed = topID => {
     // see if already in list
-    const index = topicsAvailable.findIndex((t) => t === topID);
+    const index = topicsAvailable.findIndex(t => t === topID);
 
     // if not in list - add it
     if (index === -1) {
-      setTopicsAvailable((prevState) => [...prevState, topID]);
+      setTopicsAvailable(prevState => [...prevState, topID]);
     }
 
     // if in list - do nothing
@@ -93,10 +95,8 @@ function StoriesHome() {
       return null;
     }
 
-    return favoriteTopicsSorted.map((topic) => {
-      return (
-        <ExploreTopicButton key={topic.id} topicID={topic.id} isFullyViewed={isFullyViewed} isNotFullyViewed={isNotFullyViewed} />
-      );
+    return favoriteTopicsSorted.map(topic => {
+      return <ExploreTopicButton key={topic.id} topicID={topic.id} isFullyViewed={isFullyViewed} isNotFullyViewed={isNotFullyViewed} />;
     });
   };
 
@@ -105,8 +105,7 @@ function StoriesHome() {
       horizontal
       style={{ backgroundColor: 'white' }}
       contentContainerStyle={[styles.stories, { height: STORIES_HEIGHT }]}
-      showsHorizontalScrollIndicator={false}
-    >
+      showsHorizontalScrollIndicator={false}>
       <NewProjectButton />
       <ForYouButton />
       {renderTopicStories()}

@@ -40,19 +40,10 @@ import REPORT_CONTENT from '../../mutations/REPORT_CONTENT';
 //   return false;
 // }
 
-function StoryItem({
-  story,
-  item,
-  isActiveItem,
-  activeItemIndex,
-  incrementIndex,
-  decrementIndex,
-}) {
-
+function StoryItem({ story, item, isActiveItem, isTopItem, activeItemIndex, incrementIndex, decrementIndex }) {
   const { currentUserId, currentUsername } = useContext(UserContext);
   const navigation = useNavigation();
   const videoRef = useRef(null);
-
 
   // STATE
   const [hasError, setHasError] = useState(false);
@@ -71,7 +62,7 @@ function StoryItem({
   const [report] = useMutation(REPORT_CONTENT, {
     variables: {
       text:
-        `<p>Content Type: StoryItem</p>` +
+        '<p>Content Type: StoryItem</p>' +
         `<p>Date Reported: ${new Date()}</p>` +
         `<p>StoryID: ${story.id}</p>` +
         `<p>StoryItemID: ${item.id}</p>` +
@@ -80,9 +71,7 @@ function StoryItem({
         `<p>Reported By: ${currentUsername}, ${currentUserId}</p>`,
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
+      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
   });
 
   const [updateOneStory, { loading: loadingPin }] = useMutation(UPDATE_STORY_MUTATION, {
@@ -100,11 +89,9 @@ function StoryItem({
       },
     ],
     // onCompleted: () => {},
-    onError: (error) => {
+    onError: error => {
       console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+      Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
     },
   });
 
@@ -121,9 +108,7 @@ function StoryItem({
       cache.gc();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this item. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
+      Alert.alert('Oh no!', 'An error occured when trying to delete this item. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
   });
 
   const [deleteOneStory] = useMutation(DELETE_STORY_MUTATION, {
@@ -138,11 +123,8 @@ function StoryItem({
       cache.gc();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this story. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
+      Alert.alert('Oh no!', 'An error occured when trying to delete this story. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
   });
-
 
   function resetState() {
     setPaused(false);
@@ -157,7 +139,7 @@ function StoryItem({
 
   useEffect(() => {
     resetState();
-  }, [isActiveItem])
+  }, [isActiveItem]);
 
   // CUSTOM FUNCTIONS
 
@@ -188,7 +170,7 @@ function StoryItem({
     // setPaused(true); // doesnt work
     Alert.alert(`Are you sure you want to delete this ${item.type.toLowerCase()}?`, '', [
       {
-        text: `Delete`,
+        text: 'Delete',
         onPress: () => {
           navigation.goBack(); // close options modal
           deleteOneStoryItem();
@@ -201,7 +183,7 @@ function StoryItem({
 
   const deleteProject = () => {
     // setPaused(true); // doesnt work
-    Alert.alert(`Are you sure you want to delete this entire project?`, 'There is no going back', [
+    Alert.alert('Are you sure you want to delete this entire project?', 'There is no going back', [
       {
         text: 'Delete',
         onPress: () => {
@@ -219,11 +201,11 @@ function StoryItem({
       if (story.type === 'PROJECT' && story.items.length > 1) {
         return [
           !loadingPin && {
-            text: story.showcase ? `Unpin from Showcase` : 'Pin to my Showcase',
+            text: story.showcase ? 'Unpin from Showcase' : 'Pin to my Showcase',
             onPress: story.showcase ? unpinToShowcase : pinToShowcase,
           },
           {
-            text: `Add another bit`,
+            text: 'Add another bit',
             onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
           },
           {
@@ -241,11 +223,11 @@ function StoryItem({
       if (story.type === 'PROJECT') {
         return [
           !loadingPin && {
-            text: story.showcase ? `Unpin from Showcase` : 'Pin to my Showcase',
+            text: story.showcase ? 'Unpin from Showcase' : 'Pin to my Showcase',
             onPress: story.showcase ? unpinToShowcase : pinToShowcase,
           },
           {
-            text: `Add another bit`,
+            text: 'Add another bit',
             onPress: () => navigation.navigate('StoryCameraModal', { projectPassedIn: story }),
           },
           {
@@ -267,7 +249,7 @@ function StoryItem({
     } else {
       return [
         {
-          text: `Report`,
+          text: 'Report',
           onPress: () => {
             report();
             // navigation.goBack();
@@ -290,7 +272,6 @@ function StoryItem({
     navigation.navigate('GenericPopupMenu', { options, onCancel });
   };
 
-
   // RETURN
   if (hasError) {
     return (
@@ -304,10 +285,11 @@ function StoryItem({
     <View
       style={{
         ...StyleSheet.absoluteFillObject,
-        opacity: isActiveItem ? 1 : 0,
-        zIndex: isActiveItem ? 999 : 1,
-      }}
-    >
+        opacity: isTopItem ? 1 : 0,
+        zIndex: isTopItem ? 999 : 1,
+        // opacity: isActiveItem ? 1 : 0,
+        // zIndex: isActiveItem ? 999 : 1,
+      }}>
       {/* fill */}
       <StoryImage
         videoRef={videoRef}
@@ -321,7 +303,7 @@ function StoryItem({
         setVideoStarted={setVideoStarted}
         incrementIndex={incrementIndex}
       />
-      
+
       {/* absolute positioned stuff */}
       <TopLinearFade />
       <BottomLinearFade />
@@ -343,12 +325,7 @@ function StoryItem({
         incrementIndex={incrementIndex}
         decrementIndex={decrementIndex}
       />
-      <StoryHeader 
-        owner={owner} 
-        type={type} 
-        item={item} 
-        isMyPost={isMyPost} 
-      />
+      <StoryHeader owner={owner} type={type} item={item} isMyPost={isMyPost} />
     </View>
   );
 }

@@ -1,16 +1,5 @@
 import React, { useState, useContext, useRef, useEffect } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  Image,
-  TextInput,
-  Switch,
-  InputAccessoryView,
-} from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity, Alert, Image, TextInput, Switch, InputAccessoryView } from 'react-native';
 import { useMutation } from '@apollo/client';
 import Icon from 'react-native-vector-icons/Feather';
 import Feather from 'react-native-vector-icons/Feather';
@@ -20,7 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from 'styles/colors';
 import defaultStyles from 'styles/defaultStyles';
 import { UserContext } from 'library/utils/UserContext';
-import { storyPicUpload, storyVideoUpload, createThumbnail, sortStoriesNewestFirst, getTopicFromID } from 'library/utils';
+import { storyPicUpload, storyVideoUpload, createThumbnail } from 'library/utils';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import HeaderPostToModal from 'library/components/headers/HeaderPostToModal';
@@ -36,7 +25,7 @@ import Topic from 'library/components/post/Topic';
 import MentionsSelect from 'library/components/MentionsSelect';
 
 const PostClipModal = ({ navigation, route }) => {
-  const { currentUserId, currentUsername, setShowNetworkActivity } = useContext(UserContext);
+  const { currentUserId, currentUsername, setShowNetworkActivity, setUploadingStory } = useContext(UserContext);
   const { capturedImage, capturedVideo, projectPassedIn, textInput } = route.params; // from camera modal / CapturedStoryItem
   const insets = useSafeAreaInsets();
 
@@ -109,11 +98,9 @@ const PostClipModal = ({ navigation, route }) => {
       },
     ],
     // onCompleted: () => {},
-    onError: (error) => {
+    onError: error => {
       console.log(error);
-      Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+      Alert.alert('Oh no!', 'An error occured when trying to update this story. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
     },
   });
 
@@ -196,8 +183,8 @@ const PostClipModal = ({ navigation, route }) => {
   //   navigation.navigate('SelectStoryTopicsModal', { handleSend });
   // };
 
-  const handleMentionSelect = (usernameClicked) => {
-    setDescription((prevState) => {
+  const handleMentionSelect = usernameClicked => {
+    setDescription(prevState => {
       // see if the string ends in a mention
       const re = /\B@\w+$/g;
       const mentions = prevState.match(re);
@@ -213,7 +200,7 @@ const PostClipModal = ({ navigation, route }) => {
     });
   };
 
-  const handleProjectSelect = (projSelected) => {
+  const handleProjectSelect = projSelected => {
     navigation.goBack();
 
     // if selected 'new project'
@@ -244,6 +231,8 @@ const PostClipModal = ({ navigation, route }) => {
 
   const handleSend = async () => {
     setShowNetworkActivity(true);
+    setUploadingStory(true);
+
     navigation.navigate('Home');
     // if image, upload image, then save item to state
 
@@ -262,6 +251,8 @@ const PostClipModal = ({ navigation, route }) => {
           link: '',
         };
       } else if (capturedVideo) {
+        // for the case that video upload fails, we can re-attempt later
+
         const uploadedVideo = await storyVideoUpload(currentUserId, capturedVideo.uri);
 
         // create preview URL for video thumbnail by inserting "so_0.0"
@@ -314,12 +305,18 @@ const PostClipModal = ({ navigation, route }) => {
         }
       }
     } catch (e) {
+      console.log(e.message);
       setShowNetworkActivity(false);
-      Alert.alert('Oh no!', 'An error occured when creating your story. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]);
+      setUploadingStory(false);
+
+      if (e.message === 'EB1') {
+        // don't alert, because will re-attempt upload
+      } else {
+        Alert.alert('Oh no!', 'An error occured when creating your story. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]);
+      }
     }
     setShowNetworkActivity(false);
+    setUploadingStory(false);
   };
 
   const getHeaderText = () => {
@@ -358,8 +355,7 @@ const PostClipModal = ({ navigation, route }) => {
             paddingBottom: 15,
             paddingHorizontal: 12,
             backgroundColor: 'white',
-          }}
-        >
+          }}>
           <View style={{ flex: 1 }}>
             <TextInput
               style={{
@@ -369,7 +365,7 @@ const PostClipModal = ({ navigation, route }) => {
                 paddingBottom: 10,
                 flex: 1,
               }}
-              onChangeText={(val) => setDescription(val)}
+              onChangeText={val => setDescription(val)}
               autoCompleteType="off"
               keyboardType="twitter"
               textContentType="none"
@@ -380,16 +376,14 @@ const PostClipModal = ({ navigation, route }) => {
               inputAccessoryViewID="mentionView"
               placeholder="Describe your bit"
               onFocus={() => setIsDescFocused(true)}
-              onBlur={() => setIsDescFocused(false)}
-            >
+              onBlur={() => setIsDescFocused(false)}>
               <CoolText>{description}</CoolText>
             </TextInput>
             <TouchableOpacity
               style={{ alignSelf: 'flex-start' }}
               activeOpacity={0.7}
               // disabled={isExistingProject}
-              onPress={() => navigation.navigate('NewProjectTopicsModal', { setTopic })}
-            >
+              onPress={() => navigation.navigate('NewProjectTopicsModal', { setTopic })}>
               {topic ? (
                 // <TopicRow topicID={topic} />
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -404,25 +398,24 @@ const PostClipModal = ({ navigation, route }) => {
                     borderRadius: 10,
                     paddingHorizontal: 14,
                     backgroundColor: colors.systemGray6,
-                  }}
-                >
+                  }}>
                   <Text style={defaultStyles.defaultText}>Tag a topic</Text>
                 </View>
               )}
             </TouchableOpacity>
           </View>
-          <View style={{ width: 100, height: 160, borderRadius: 10, backgroundColor: colors.gray12, overflow: 'hidden' }}>
+          <View
+            style={{
+              width: 100,
+              height: 160,
+              borderRadius: 10,
+              backgroundColor: colors.gray12,
+              overflow: 'hidden',
+            }}>
             {capturedImage ? (
               <Image source={{ uri: capturedImage.uri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
             ) : (
-              <Video
-                source={{ uri: capturedVideo.uri }}
-                ref={videoRef}
-                style={{ height: '100%', width: '100%' }}
-                resizeMode="cover"
-                repeat
-                muted
-              />
+              <Video source={{ uri: capturedVideo.uri }} ref={videoRef} style={{ height: '100%', width: '100%' }} resizeMode="cover" repeat muted />
             )}
           </View>
         </View>
@@ -433,8 +426,7 @@ const PostClipModal = ({ navigation, route }) => {
             flex: 1,
             position: 'relative',
             backgroundColor: 'white',
-          }}
-        >
+          }}>
           <View
             style={{
               height: 12,
@@ -452,27 +444,49 @@ const PostClipModal = ({ navigation, route }) => {
               </View>
               <Text style={{ ...defaultStyles.largeLightMute }}>Public</Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 26 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingTop: 26,
+              }}>
               <Icon name="download" size={18} color={colors.blueGray} />
               <View style={{ flex: 1 }}>
                 <Text style={{ ...defaultStyles.largeMute, paddingLeft: 15 }}>Save to device</Text>
               </View>
               <Switch
-                trackColor={{ false: colors.systemBackgroundSecondary, true: colors.green }}
+                trackColor={{
+                  false: colors.systemBackgroundSecondary,
+                  true: colors.green,
+                }}
                 thumbColor="white"
                 ios_backgroundColor={colors.systemBackgroundSecondary}
-                onValueChange={() => setSaveToDevice((prev) => !prev)}
+                onValueChange={() => setSaveToDevice(prev => !prev)}
                 value={saveToDevice}
                 style={{ transform: [{ scaleX: 0.84 }, { scaleY: 0.84 }], left: 4 }}
               />
             </View>
           </View>
           {isDescFocused && (
-            <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)' }} />
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.4)',
+              }}
+            />
           )}
         </View>
         <View
-          style={{ height: 12, width: '100%', borderTopColor: colors.borderBlack, borderTopWidth: StyleSheet.hairlineWidth }}
+          style={{
+            height: 12,
+            width: '100%',
+            borderTopColor: colors.borderBlack,
+            borderTopWidth: StyleSheet.hairlineWidth,
+          }}
         />
 
         {/* this is the view at the very bottom */}
@@ -488,12 +502,18 @@ const PostClipModal = ({ navigation, route }) => {
               borderTopColor: colors.borderBlack,
               borderTopWidth: StyleSheet.hairlineWidth,
               backgroundColor: colors.lightLightGray,
-            }}
-          >
+            }}>
             {/* <Icon name="file-plus" size={22} color={colors.purp} /> */}
             {/* <Icon name="copy" size={22} color={colors.purp} /> */}
             <Icon name="plus-circle" size={22} color={colors.purp} />
-            <Text style={{ ...defaultStyles.hugeMedium, color: colors.purp, paddingLeft: 13 }}>Add this bit to a project</Text>
+            <Text
+              style={{
+                ...defaultStyles.hugeMedium,
+                color: colors.purp,
+                paddingLeft: 13,
+              }}>
+              Add this bit to a project
+            </Text>
           </TouchableOpacity>
         ) : (
           <View
@@ -507,31 +527,41 @@ const PostClipModal = ({ navigation, route }) => {
               alignItems: 'center',
               backgroundColor: colors.lightLightGray,
               paddingBottom: insets.bottom,
-            }}
-          >
+            }}>
             <TouchableOpacity
               activeOpacity={0.9}
-              onPress={() => setIsTitleFocused((prev) => !prev)}
+              onPress={() => setIsTitleFocused(prev => !prev)}
               disabled={!titleEditable}
               style={{
                 flex: 1,
                 paddingTop: 16,
                 paddingBottom: 16,
-              }}
-            >
-              <Text style={{ ...defaultStyles.smallMute, paddingBottom: 2 }}>
-                {isExistingProject ? 'Adding to project:' : 'Project Title:'}
-              </Text>
+              }}>
+              <Text style={{ ...defaultStyles.smallMute, paddingBottom: 2 }}>{isExistingProject ? 'Adding to project:' : 'Project Title:'}</Text>
               <Text
-                style={[{ paddingRight: 15, ...defaultStyles.largeSemibold, fontSize: 18 }, !projectTitle && { opacity: 0.4 }]}
-              >
+                style={[
+                  {
+                    paddingRight: 15,
+                    ...defaultStyles.largeSemibold,
+                    fontSize: 18,
+                  },
+                  !projectTitle && { opacity: 0.4 },
+                ]}>
                 {projectTitle || 'Title'}
               </Text>
             </TouchableOpacity>
             {isExistingProject && selectedProject.items[selectedProject.items.length - 1].preview && (
-              <View style={{ height: 50, width: 34, borderRadius: 8, overflow: 'hidden' }}>
+              <View
+                style={{
+                  height: 50,
+                  width: 34,
+                  borderRadius: 8,
+                  overflow: 'hidden',
+                }}>
                 <Image
-                  source={{ uri: selectedProject.items[selectedProject.items.length - 1].preview }}
+                  source={{
+                    uri: selectedProject.items[selectedProject.items.length - 1].preview,
+                  }}
                   style={{ width: '100%', height: '100%' }}
                   resizeMode="cover"
                 />
@@ -556,18 +586,14 @@ const PostClipModal = ({ navigation, route }) => {
                 flexDirection: 'row',
                 alignItems: 'center',
                 backgroundColor: colors.white,
-              }}
-            >
+              }}>
               <View
                 style={{
                   flex: 1,
                   paddingTop: 16,
                   paddingBottom: 16,
-                }}
-              >
-                <Text style={{ ...defaultStyles.smallMute, paddingBottom: 2 }}>
-                  {isExistingProject ? 'Adding to project:' : 'Project title:'}
-                </Text>
+                }}>
+                <Text style={{ ...defaultStyles.smallMute, paddingBottom: 2 }}>{isExistingProject ? 'Adding to project:' : 'Project title:'}</Text>
                 <TextInput
                   ref={titleInputRef}
                   style={{
@@ -576,7 +602,7 @@ const PostClipModal = ({ navigation, route }) => {
                     fontSize: 18,
                   }}
                   editable={titleEditable}
-                  onChangeText={(val) => setProjectTitle(val)}
+                  onChangeText={val => setProjectTitle(val)}
                   value={projectTitle}
                   autoCompleteType="off"
                   keyboardType="default"
@@ -591,9 +617,17 @@ const PostClipModal = ({ navigation, route }) => {
                 />
               </View>
               {isExistingProject && selectedProject.items[selectedProject.items.length - 1].preview && (
-                <View style={{ height: 50, width: 34, borderRadius: 8, overflow: 'hidden' }}>
+                <View
+                  style={{
+                    height: 50,
+                    width: 34,
+                    borderRadius: 8,
+                    overflow: 'hidden',
+                  }}>
                   <Image
-                    source={{ uri: selectedProject.items[selectedProject.items.length - 1].preview }}
+                    source={{
+                      uri: selectedProject.items[selectedProject.items.length - 1].preview,
+                    }}
                     style={{ width: '100%', height: '100%' }}
                     resizeMode="cover"
                   />
@@ -605,7 +639,16 @@ const PostClipModal = ({ navigation, route }) => {
 
         {/* dimmer for title */}
         {isTitleFocused && (
-          <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)' }} />
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.4)',
+            }}
+          />
         )}
       </ScrollView>
 

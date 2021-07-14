@@ -46,7 +46,7 @@ function Post({
   const [report] = useMutation(REPORT_CONTENT, {
     variables: {
       text:
-        `<p>Content Type: Post</p>` +
+        '<p>Content Type: Post</p>' +
         `<p>Date Reported: ${new Date()}</p>` +
         `<p>PostID: ${post.id}</p>` +
         `<p>Post Text: ${post.content || 'no content'}</p>` +
@@ -54,17 +54,13 @@ function Post({
         `<p>Reported By: ${currentUsername}, ${currentUserId}</p>`,
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
+      Alert.alert('Oh no!', 'An error occured when trying to report content. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
   });
 
   // DELETE POST MUTATION
   const [editGoalStatus] = useMutation(UPDATE_POST_MUTATION, {
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to update this post. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
+      Alert.alert('Oh no!', 'An error occured when trying to update this post. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
   });
 
   // DELETE POST MUTATION
@@ -84,9 +80,7 @@ function Post({
       cache.gc();
     },
     onError: () =>
-      Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ]),
+      Alert.alert('Oh no!', 'An error occured when trying to delete this post. Try again later!', [{ text: 'OK', onPress: () => console.log('OK Pressed') }]),
   });
 
   // CALCULATE THESE VARIABLES ONCE - THEY SHOULD NEVER CHANGE
@@ -208,7 +202,7 @@ function Post({
   };
 
   // CUSTOM FUNCTIONS
-  const updateGoalStatus = (newStatus) => {
+  const updateGoalStatus = newStatus => {
     editGoalStatus({
       variables: {
         where: {
@@ -236,15 +230,9 @@ function Post({
         showTopBorder && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.borderBlack },
         showThread && { borderBottomWidth: 0 },
         showRepost && { paddingTop: 7 },
-      ]}
-    >
+      ]}>
       {showRepost && <RepostedBy postId={post.id} />}
-      {!!post.goal && (
-        <GoalHeader
-          goalStatus={post.goalStatus}
-          hasUpdates={!!post.updates && Array.isArray(post.updates) && post.updates.length > 0}
-        />
-      )}
+      {!!post.goal && <GoalHeader goalStatus={post.goalStatus} hasUpdates={!!post.updates && Array.isArray(post.updates) && post.updates.length > 0} />}
       <View style={styles.post}>
         <View style={styles.leftColumn}>
           <ProfilePic user={post.owner} size="medium" enableIntro={!disableVideo} enableStory={!disableVideo} />
@@ -305,7 +293,9 @@ function areEqual(prevProps, nextProps) {
   otherwise return false
   */
 
-  if (prevProps.post === nextProps.post) return true;
+  if (prevProps.post === nextProps.post) {
+    return true;
+  }
 
   // console.log(prevProps.post.id);
 

@@ -4,20 +4,8 @@ import Video from 'react-native-video';
 
 import Loader from 'library/components/UI/Loader';
 
-function StoryImage({
-  videoRef,
-  item,
-  isActiveItem,
-  isBuffering,
-  setIsBuffering,
-  paused,
-  setPaused,
-  videoStarted,
-  setVideoStarted,
-  incrementIndex,
-}) {
-
-  const [readyForDisplay, setReadyForDisplay] = useState(false)
+function StoryImage({ videoRef, item, isActiveItem, isBuffering, setIsBuffering, paused, setPaused, videoStarted, setVideoStarted, incrementIndex }) {
+  const [readyForDisplay, setReadyForDisplay] = useState(false);
 
   function onProgress(data) {
     // console.log('onProgress', item.id);
@@ -60,7 +48,6 @@ function StoryImage({
   //   }
   // }
 
-
   function renderMedia() {
     const { type, url } = item;
 
@@ -86,7 +73,6 @@ function StoryImage({
           // onSeek={({ currentTime, seekTime }) => console.log('on seek', currentTime, seekTime)}
           paused={paused}
           rate={isActiveItem ? 1 : 0}
-
           // automaticallyWaitsToMinimizeStalling={false}
           bufferConfig={{
             minBufferMs: 10000, // 15000 default

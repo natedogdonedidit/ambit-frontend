@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -14,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import StoriesHome from 'library/components/stories/StoriesHome';
 import HomeTimelineTabs from 'library/components/UI/HomeTimelineTabs';
 import MessagesDot from '../UI/icons/MessagesDot';
+import ProgressBarLoader from 'library/components/stories/ProgressBarLoader';
 
 const HeaderHome = ({ handleMiddle, activeTimeline, setActiveTimeline }) => {
   const navigation = useNavigation();
@@ -31,10 +32,7 @@ const HeaderHome = ({ handleMiddle, activeTimeline, setActiveTimeline }) => {
           <Text style={{ ...defaultStyles.ambitLogo }}>ambit</Text>
         </TouchableOpacity>
         <View style={styles.rightSide}>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('MyTopicsList')}
-            hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('MyTopicsList')} hitSlop={{ top: 5, bottom: 5, right: 5, left: 5 }}>
             <View style={styles.iconCircle}>
               <Icon name="star" solid size={16} color={colors.black} style={{ paddingLeft: 1 }} />
             </View>
@@ -42,6 +40,7 @@ const HeaderHome = ({ handleMiddle, activeTimeline, setActiveTimeline }) => {
           <MessagesDot />
         </View>
       </View>
+      <ProgressBarLoader />
       <StoriesHome />
       <HomeTimelineTabs activeTimeline={activeTimeline} setActiveTimeline={setActiveTimeline} />
     </View>

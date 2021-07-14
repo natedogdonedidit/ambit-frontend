@@ -8,56 +8,55 @@ import TextButton from 'library/components/UI/buttons/TextButton';
 const BenefitsScreen1 = ({ navigation }) => {
   const { width } = Dimensions.get('window');
   const flatlistRef = useRef();
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const data = [
     {
-      key: "1",
+      key: '1',
       image: require('../../library/assets/images/BenefitsScreen1.png'),
       title: 'Hey there!',
-      text: "You're about to go on an adventure. Before you leave, let's go over what you'll need, and what you can expect on your journey."
+      text: "You're about to go on an adventure. Before you leave, let's go over what you'll need, and what you can expect on your journey.",
     },
     {
-      key: "2",
+      key: '2',
       image: require('../../library/assets/images/BenefitsScreen2.png'),
       title: 'Make a map.',
-      text: "Before you start your journey, you'll need to make a map that includes your destination, and a plan for how you'll get there. You'll do this on Ambit, but we call them goals and projects."
+      text:
+        "Before you start your journey, you'll need to make a map that includes your destination, and a plan for how you'll get there. You'll do this on Ambit, but we call them goals and projects.",
     },
     {
-      key: "3",
+      key: '3',
       image: require('../../library/assets/images/BenefitsScreen3.png'),
       title: 'Lean on community.',
-      text: "Even though you map out a plan, you'll still hit roadblocks along the way. That's okay, you'll have a community supporting you on your journey. On Ambit, our communities are called topics."
+      text:
+        "Even though you map out a plan, you'll still hit roadblocks along the way. That's okay, you'll have a community supporting you on your journey. On Ambit, our communities are called topics.",
     },
     {
-      key: "4",
+      key: '4',
       image: require('../../library/assets/images/BenefitsScreen4.png'),
       title: 'Build Relationships.',
-      text: "You'll meet people along the way who will help you reach your destinatino quicker. On Ambit, you'll build these relationships by networking and connecting with informal mentors."
+      text:
+        "You'll meet people along the way who will help you reach your destination quicker. On Ambit, you'll build these relationships by networking and connecting with informal mentors.",
     },
     {
-      key: "5",
+      key: '5',
       image: require('../../library/assets/images/BenefitsScreen5.png'),
       title: "You've arrived!",
-      text: "Eventually, you'll arrive at your destination. Don't forget who helped you get there, and make sure you pay it forward."
-    }
-  ]
+      text: "Eventually, you'll arrive at your destination. Don't forget who helped you get there, and make sure you pay it forward.",
+    },
+  ];
 
-  const onViewableItemsChanged = ({
-    viewableItems,
-  }) => {
+  const onViewableItemsChanged = ({ viewableItems }) => {
     // console.log(viewableItems)
 
     // Do stuff
     if (viewableItems && viewableItems.length > 0) {
       // always grab the later item
       const currentIndex = viewableItems[viewableItems.length - 1].index;
-      setActiveIndex(currentIndex)
+      setActiveIndex(currentIndex);
     }
   };
-  const viewabilityConfigCallbackPairs = useRef([
-    { onViewableItemsChanged },
-  ]);
+  const viewabilityConfigCallbackPairs = useRef([{ onViewableItemsChanged }]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -80,22 +79,16 @@ const BenefitsScreen1 = ({ navigation }) => {
             //     setActiveIndex(currentIndex)
             //   }
             // }}
-            viewabilityConfigCallbackPairs={
-              viewabilityConfigCallbackPairs.current
-            }
+            viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs.current}
             viewabilityConfig={{
-              viewAreaCoveragePercentThreshold: 100
+              viewAreaCoveragePercentThreshold: 100,
             }}
             data={data}
             renderItem={({ item, index }) => {
               return (
                 <View style={{ width: width, height: '100%' }}>
                   <View style={{ width: '100%', height: '60%', paddingHorizontal: 15, paddingTop: 10 }}>
-                    <Image
-                      style={{ width: '100%', height: '100%' }}
-                      resizeMode="contain"
-                      source={item.image}
-                    />
+                    <Image style={{ width: '100%', height: '100%' }} resizeMode="contain" source={item.image} />
                   </View>
                   <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 40, paddingBottom: 60, display: 'flex', justifyContent: 'center' }}>
                     <Text style={{ ...defaultStyles.headerLarge, color: colors.purp, paddingBottom: 20 }}>{item.title}</Text>
@@ -105,7 +98,6 @@ const BenefitsScreen1 = ({ navigation }) => {
               );
             }}
           />
-
         </View>
 
         <View style={styles.bottom}>
@@ -115,10 +107,10 @@ const BenefitsScreen1 = ({ navigation }) => {
           <View style={styles.circles}>
             {data.map((slide, i) => {
               if (i === activeIndex) {
-                return <View key={i} style={styles.circleFilled} />
+                return <View key={i} style={styles.circleFilled} />;
               }
 
-              return <View key={i} style={styles.circle} />
+              return <View key={i} style={styles.circle} />;
             })}
           </View>
           <View style={{ width: 80, flexDirection: 'row', justifyContent: 'flex-end' }}>
@@ -128,18 +120,16 @@ const BenefitsScreen1 = ({ navigation }) => {
               <TextButton
                 onPress={() => {
                   if (activeIndex < data.length - 1) {
-                    flatlistRef.current.scrollToIndex({ index: activeIndex + 1, viewPosition: 0.5 })
+                    flatlistRef.current.scrollToIndex({ index: activeIndex + 1, viewPosition: 0.5 });
                   }
-                }}
-              >
+                }}>
                 Next
               </TextButton>
             )}
-
           </View>
         </View>
       </SafeAreaView>
-    </View >
+    </View>
   );
 };
 

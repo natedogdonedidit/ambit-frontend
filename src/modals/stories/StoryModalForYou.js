@@ -54,11 +54,11 @@ const StoryModalForYou = ({ navigation }) => {
     if (moreAvailable && !loadingStoriesHome) {
       // load more if less than 3 remaining in Q
       if (activeStoryIndex >= storyQ.length - 4) {
-        console.log(`near end of Q - getting more stories...`);
+        console.log('near end of Q - getting more stories...');
         console.log(`${activeStoryIndex} / ${storyQ.length}`);
 
         // so we dont refetch stories curretnly in the Q
-        const storyQIDs = storyQ.map((s) => s.id);
+        const storyQIDs = storyQ.map(s => s.id);
 
         // manually send network request for more stories w/ updated variables
         const getNewStories = async () => {
@@ -93,9 +93,9 @@ const StoryModalForYou = ({ navigation }) => {
 
         // remove stories with ZERO items (can eliminate this step later) or stories already in the Q
         // also, if first load, remove stories we've already viewed in this session
-        const storyQIDs = storyQ.map((s) => s.id);
+        const storyQIDs = storyQ.map(s => s.id);
         const storiesToAdd = data.storiesForYou.filter(
-          (s) => s.items.length > 0 && !storyQIDs.includes(s.id) && !(isFirstLoad && viewedStoriesLocal.includes(s.id))
+          s => s.items.length > 0 && !storyQIDs.includes(s.id) && !(isFirstLoad && viewedStoriesLocal.includes(s.id))
         );
 
         setStoryQ([...storyQ, ...storiesToAdd]);
@@ -144,11 +144,11 @@ const StoryModalForYou = ({ navigation }) => {
 
   // CUSTOM FUNCTIONS
   function goToPrevStory() {
-    setActiveStoryIndex((prevState) => prevState - 1);
+    setActiveStoryIndex(prevState => prevState - 1);
   }
 
   function goToNextStory() {
-    setActiveStoryIndex((prevState) => prevState + 1);
+    setActiveStoryIndex(prevState => prevState + 1);
   }
 
   function tryGoToNextStory() {
@@ -184,9 +184,7 @@ const StoryModalForYou = ({ navigation }) => {
   if (storyQ.length <= 0 && loadingStoriesHome) {
     return (
       <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: colors.purp }}>
-        <Text style={{ paddingTop: 200, ...defaultStyles.hugeBold, textAlign: 'center', color: 'white', paddingBottom: 10 }}>
-          Loading stories...
-        </Text>
+        <Text style={{ paddingTop: 200, ...defaultStyles.hugeBold, textAlign: 'center', color: 'white', paddingBottom: 10 }}>Loading stories...</Text>
         {/* <Text style={{ ...defaultStyles.hugeBold, textAlign: 'center', color: 'white' }}>One sec!</Text> */}
         <View style={{ height: 50 }}>
           <Loader size="small" backgroundColor="transparent" color="white" />
@@ -198,9 +196,7 @@ const StoryModalForYou = ({ navigation }) => {
   if (error) {
     return (
       <View style={{ ...StyleSheet.absoluteFillObject, backgroundColor: colors.purp }}>
-        <Text style={{ paddingTop: 200, ...defaultStyles.hugeBold, textAlign: 'center', color: 'white' }}>
-          There was an error loading stories.
-        </Text>
+        <Text style={{ paddingTop: 200, ...defaultStyles.hugeBold, textAlign: 'center', color: 'white' }}>There was an error loading stories.</Text>
         <Text style={{ ...defaultStyles.hugeBold, textAlign: 'center', color: 'white' }}>Sorry! Check back soon!</Text>
         <Text style={{ ...defaultStyles.hugeBold, textAlign: 'center', color: 'white' }}>✌🏻</Text>
       </View>
@@ -232,6 +228,10 @@ const StoryModalForYou = ({ navigation }) => {
           const storyIsActive = index === activeStoryIndex;
 
           if (item === 'blank') {
+            if (moreAvailable) {
+              return null;
+            }
+
             return <NoMoreStories key="12341241" tryGoToPrevStory={tryGoToPrevStory} />;
           }
 

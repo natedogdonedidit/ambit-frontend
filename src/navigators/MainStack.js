@@ -52,6 +52,7 @@ import AddUpdateModal from 'modals/post/AddUpdateModal';
 import AddCommentModal from 'modals/post/AddCommentModal';
 
 // popups
+import PopupTest from 'modals/general/PopupTest';
 import GenericPopupMenu from 'modals/general/GenericPopupMenu';
 import SharePopup from 'modals/general/SharePopup';
 import DMPostPopup from 'modals/general/DMPostPopup';
@@ -131,21 +132,21 @@ const MainStack = ({ navigation }) => {
         const apnToken = await getApnToken();
 
         // 3. save Async Storage apn to the database if they don't match
-        if (!!currentUsername && !!apnToken && (apnToken !== databaseApn)) {
-          console.log('writing apn token to database')
-          console.log('db:', databaseApn, 'async:', apnToken)
+        if (!!currentUsername && !!apnToken && apnToken !== databaseApn) {
+          console.log('writing apn token to database');
+          console.log('db:', databaseApn, 'async:', apnToken);
           await writeApn({
             variables: {
               where: { username: currentUsername },
               data: { apnToken: apnToken },
             },
-          })
+          });
         }
       }
-    }
+    };
 
     compareAPN();
-  }, [userApnTokenData])
+  }, [userApnTokenData]);
 
   // this might cause the splash screen to render every time current_user_query runs
   // this should only render upon the first time we are loading the CURRENT_USER_QUERY
@@ -159,9 +160,8 @@ const MainStack = ({ navigation }) => {
       mode="modal"
       headerMode="none"
       screenOptions={{
-        gestureResponseDistance: { vertical: 500 }
-      }}
-    >
+        gestureResponseDistance: { vertical: 500 },
+      }}>
       <Stack.Screen name="MainDrawer" component={MainDrawer} />
 
       {/* modals */}
@@ -281,6 +281,8 @@ const MainStack = ({ navigation }) => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
       />
+
+      <Stack.Screen name="PopupTest" component={PopupTest} options={halfModalOptions} />
       <Stack.Screen name="EditLocationRadiusModal" component={EditLocationRadiusModal} />
       <Stack.Screen name="EditProfileModal" component={EditProfileModal} />
       <Stack.Screen name="EditAboutModal" component={EditAboutModal} />

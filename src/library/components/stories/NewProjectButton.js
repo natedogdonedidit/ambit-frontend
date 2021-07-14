@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
 import { useQuery } from '@apollo/client';
 import Feather from 'react-native-vector-icons/Feather';
@@ -11,11 +11,15 @@ import ProfilePic from 'library/components/UI/ProfilePic';
 import Loader from 'library/components/UI/Loader';
 import CURRENT_USER_QUERY from 'library/queries/CURRENT_USER_QUERY';
 import { useNavigation } from '@react-navigation/native';
+import { UserContext } from 'library/utils/UserContext';
 
 const profilePicExample = 'https://gfp-2a3tnpzj.stackpathdns.com/wp-content/uploads/2016/07/Goldendoodle-600x600.jpg';
 
 const NewProjectButton = ({ loadingCreateStory }) => {
   const navigation = useNavigation();
+
+  const { uploadingStory } = useContext(UserContext);
+
   const { data } = useQuery(CURRENT_USER_QUERY);
   if (!data) {
     return null;
@@ -29,10 +33,10 @@ const NewProjectButton = ({ loadingCreateStory }) => {
 
   return (
     <TouchableOpacity
+      disabled={uploadingStory}
       activeOpacity={0.8}
       onPress={() => navigation.navigate('StoryCameraModal', { isNewProject: true })}
-      style={styles.storyBox}
-    >
+      style={styles.storyBox}>
       <View style={{ width: '100%', height: 76 }}>
         <Image
           style={{ width: '100%', height: '100%' }}
@@ -50,8 +54,7 @@ const NewProjectButton = ({ loadingCreateStory }) => {
           position: 'absolute',
           justifyContent: 'center',
           alignItems: 'center',
-        }}
-      >
+        }}>
         <View
           style={{
             width: 38,
@@ -60,8 +63,7 @@ const NewProjectButton = ({ loadingCreateStory }) => {
             backgroundColor: colors.lightGray,
             justifyContent: 'center',
             alignItems: 'center',
-          }}
-        >
+          }}>
           <View
             style={{
               width: 32,
@@ -70,9 +72,12 @@ const NewProjectButton = ({ loadingCreateStory }) => {
               backgroundColor: colors.purp,
               justifyContent: 'center',
               alignItems: 'center',
-            }}
-          >
-            <Icon name="camera" size={16} color={colors.lightGray} style={{}} />
+            }}>
+            {uploadingStory ? (
+              <Loader loading={uploadingStory} size="small" color="white" backgroundColor="transparent" />
+            ) : (
+              <Icon name="camera" size={16} color={colors.lightGray} style={{}} />
+            )}
           </View>
         </View>
       </View>
@@ -82,9 +87,10 @@ const NewProjectButton = ({ loadingCreateStory }) => {
           flex: 1,
           paddingTop: 20,
           paddingHorizontal: 8,
-        }}
-      >
-        <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>New</Text>
+        }}>
+        <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>
+          {uploadingStory ? 'Uploading' : 'New'}
+        </Text>
         {/* <Text style={{ ...defaultStyles.defaultSemibold, textAlign: 'center', fontSize: 13, color: colors.blueGray }}>Bit</Text> */}
       </View>
       {loadingCreateStory && (
@@ -97,8 +103,7 @@ const NewProjectButton = ({ loadingCreateStory }) => {
             height: 136,
             justifyContent: 'center',
             alignItems: 'center',
-          }}
-        >
+          }}>
           <Loader loading={loadingCreateStory} size="large" color={colors.gray60} />
         </View>
       )}

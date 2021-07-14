@@ -6,8 +6,8 @@ import { enableScreens } from 'react-native-screens';
 import unfetch from 'unfetch';
 
 // PUSH NOTIFICATIONS
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
-import PushNotification from "react-native-push-notification";
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotification from 'react-native-push-notification';
 
 // APOLLO SETUP AFTER SUBSCRIPTIONS
 import {
@@ -23,19 +23,13 @@ import {
 import { onError } from '@apollo/client/link/error';
 import { setContext } from '@apollo/client/link/context';
 import { WebSocketLink } from '@apollo/client/link/ws';
-import {
-  relayStylePagination,
-  getMainDefinition,
-} from '@apollo/client/utilities';
+import { relayStylePagination, getMainDefinition } from '@apollo/client/utilities';
 
 // for analytics
 import analytics from '@segment/analytics-react-native';
 import mixpanel from '@segment/analytics-react-native-mixpanel';
 
-import {
-  SafeAreaProvider,
-  initialWindowMetrics,
-} from 'react-native-safe-area-context';
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { UserContextProvider } from 'library/utils/UserContext';
 import { getToken } from 'library/utils/authUtil';
 import AppNavigator from './App';
@@ -70,15 +64,15 @@ import { saveApnToken, getApnToken } from 'library/utils/apnUtil';
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
   onRegister: function ({ os, token }) {
-    console.log("TOKEN:", token);
+    console.log('TOKEN:', token);
 
     // save new APN token to Async Storage
-    saveApnToken(token)
+    saveApnToken(token);
   },
 
   // (required) Called when a remote is received or opened, or local notification is opened
   onNotification: function (notification) {
-    console.log("NOTIFICATION:", notification);
+    console.log('NOTIFICATION:', notification);
 
     // process the notification
 
@@ -88,8 +82,8 @@ PushNotification.configure({
 
   // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
   onAction: function (notification) {
-    console.log("ACTION:", notification.action);
-    console.log("NOTIFICATION:", notification);
+    console.log('ACTION:', notification.action);
+    console.log('NOTIFICATION:', notification);
 
     // process the action
   },
@@ -180,7 +174,8 @@ const wsLink = new WebSocketLink({
     // ios: 'ws://192.168.0.16:4000', // Moms
     // ios: 'ws://ambit-yoga-prod.herokuapp.com/',
     // ios: 'ws://ambit-backend-nexus.herokuapp.com/graphql', // heroku prod - old DB
-    ios: 'https://ambit-backend-nexus-v2.herokuapp.com/graphql', // heroku prod
+    // ios: 'https://ambit-backend-nexus-v2.herokuapp.com/graphql', // heroku prod - why does this one say https?
+    ios: 'ws://ambit-backend-nexus-v2.herokuapp.com/graphql', // heroku prod
   }),
   options: {
     reconnect: true,
@@ -193,13 +188,10 @@ const link = split(
   // split based on operation type
   ({ query }) => {
     const definition = getMainDefinition(query);
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    );
+    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
   },
   wsLink,
-  httpLink,
+  httpLink
 );
 
 // create apollo client
@@ -211,18 +203,12 @@ const client = new ApolloClient({
       Query: {
         fields: {
           user(existingData, { args, toReference }) {
-            return (
-              existingData ||
-              toReference({ __typename: 'User', username: args.where.username })
-            );
+            return existingData || toReference({ __typename: 'User', username: args.where.username });
           },
           post(existingData, { args, toReference, canRead }) {
             // const item = existingData || toReference({ __typename: 'Post', id: args.where.id });
             // return canRead(item) ? item : null;
-            return (
-              existingData ||
-              toReference({ __typename: 'Post', id: args.where.id })
-            );
+            return existingData || toReference({ __typename: 'Post', id: args.where.id });
           },
           postsForYou: {
             keyArgs: ['feed'],
@@ -255,11 +241,7 @@ const client = new ApolloClient({
               // console.log(options);
 
               // if it is a subscription - put message first
-              if (
-                !options.args.orderBy &&
-                !options.args.first &&
-                !options.args.after
-              ) {
+              if (!options.args.orderBy && !options.args.first && !options.args.after) {
                 return [...incoming, ...existing];
               }
 
